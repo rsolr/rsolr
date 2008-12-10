@@ -1,0 +1,4 @@
+Look at http://lab.cisti-icist.nrc-cnrc.gc.ca/cistilabswiki/index.php/LuSql
+	
+	db_mapper = Solr::DBMapper.new(:host=>'', :database=>'')
+	
