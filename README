@@ -1,8 +1,6 @@
 =Solr
 A Ruby client for Apache Solr
 
-This is a beta and intended for review.
-
 To run tests:
 	
 	Copy a Solr 1.3.0 distribution into this directory
