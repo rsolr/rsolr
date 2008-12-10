@@ -1,9 +1,9 @@
 =Solr
-A Ruby client for Apache Solr
+A Ruby client for Apache Solr. Has transparent JRuby support by using "org.apache.solr.servlet.DirectSolrConnection" as a connection adapter.
 
 To run tests:
 	
-	Copy a Solr 1.3.0 distribution into this directory
+	Copy a Solr 1.3.0 (or later) distribution into this directory and rename to "apache-solr"
 	Start Solr HTTP: 	rake start_test_server
 	MRI Ruby: 			rake
 	JRuby: 				jruby -S rake
@@ -12,7 +12,7 @@ To get a connection in Ruby:
 	
 	solr = Solr.connect(:http, wrapper_opts, adapter_opts)
 
-To get a connection in jRuby:
+To get a connection in jRuby using DirectSolrConnection:
 	
 	solr = Solr.connect(:direct, wrapper_opts, adapter_opts)
 
@@ -32,6 +32,7 @@ Once you have an instance of Solr::Connection, you can execute queries, updates 
   response = solr.query(:q=>'washington', :facet=>true, :facet.limit=>-1, :facet.field=cat, :facet.field=>inStock)
 
   response = solr.find_by_id(1)
+
 
 ====Pagination
 You can enable pagination methods in the "request" and "response" by using the "extend" method on a solr instance:
