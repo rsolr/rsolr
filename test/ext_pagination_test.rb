@@ -2,10 +2,22 @@ require File.join(File.dirname(__FILE__), 'test_helpers')
 
 class ExtPaginationTest < Test::Unit::TestCase
   
+  class DummyPaginator
+    include Solr::Connection::PaginationExt
+  end
+  
   def create_response(params={})
     response = Solr::Response::Query.new(mock_query_response)
     response.params.merge! params
     response
+  end
+  
+  # test the Solr::Connection::PaginationExt #calculate_start method
+  def test_pagination_ext_calculate_start
+    dp = DummyPaginator.new
+    assert_equal 15, dp.send(:calculate_start, 2, 15)
+    assert_equal 450, dp.send(:calculate_start, 10, 50)
+    assert_equal 0, dp.send(:calculate_start, 0, 50)
   end
   
   def test_math
