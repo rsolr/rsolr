@@ -5,9 +5,9 @@ require 'java'
 #
 # Connection for JRuby + DirectSolrConnection
 #
-class Solr::Connection::Adapter::Direct
+class Solr::Adapter::Direct
   
-  include Solr::Connection::Adapter::Helpers
+  include Solr::Adapter::CommonMethods
   
   attr_accessor :opts, :connection, :home_dir
   
@@ -42,7 +42,7 @@ class Solr::Connection::Adapter::Direct
     begin
       @connection.request(full_path, data)
     rescue
-      raise Solr::Connection::Adapter::RequestError.new($!.message)
+      raise Solr::RequestError.new($!.message)
     end
   end
   

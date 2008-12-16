@@ -1,9 +1,6 @@
-#
-# Connection decorator
-#
 module Solr::Connection
   
-  autoload :Wrapper, 'solr/connection/wrapper'
-  autoload :Adapter, 'solr/connection/adapter'
+  autoload :Base, 'solr/connection/base'
+  autoload :SearchExt, 'solr/connection/search_ext'
   
 end

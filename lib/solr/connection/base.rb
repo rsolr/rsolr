@@ -1,8 +1,11 @@
-class Solr::Connection::Wrapper
+#
+# Connection adapter decorator
+#
+class Solr::Connection::Base
   
   attr_reader :adapter, :opts
   
-  include Solr::Ext::Search
+  include Solr::Connection::SearchExt
   
   # conection is instance of:
   #   Solr::Adapter::HTTP

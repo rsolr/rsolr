@@ -3,9 +3,9 @@ require 'net/http'
 #
 # Connection for standard HTTP Solr server
 #
-class Solr::Connection::Adapter::HTTP
+class Solr::Adapter::HTTP
   
-  include Solr::Connection::Adapter::Helpers
+  include Solr::Adapter::CommonMethods
   
   attr_accessor :opts, :connection, :url
   
@@ -35,7 +35,7 @@ class Solr::Connection::Adapter::HTTP
       response = @connection.get(full_path)
     end
     unless response.code=='200'
-      raise Solr::Connection::Adapter::RequestError.new(parse_solr_html_error(response.body))
+      raise Solr::RequestError.new(parse_solr_html_error(response.body))
     end
     response.body
   end

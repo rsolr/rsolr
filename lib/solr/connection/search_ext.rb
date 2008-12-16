@@ -1,4 +1,4 @@
-module Solr::Ext::Search
+module Solr::Connection::SearchExt
   
   def search(query, params={})
     if params[:fields].is_a?(Array)

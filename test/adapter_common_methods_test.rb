@@ -1,9 +1,9 @@
 require File.join(File.dirname(__FILE__), 'test_helpers')
 
-class AdapterHelpersTest < Test::Unit::TestCase
+class AdapterCommonMethodsTest < Test::Unit::TestCase
   
   class DummyClass
-    include Solr::Connection::Adapter::Helpers
+    include Solr::Adapter::CommonMethods
   end
   
   def setup

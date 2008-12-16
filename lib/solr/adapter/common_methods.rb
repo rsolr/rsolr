@@ -9,7 +9,7 @@
 #   data is optional string of xml
 #
 #
-module Solr::Connection::Adapter::Helpers
+module Solr::Adapter::CommonMethods
   
   # send a request to the "select" handler
   def query(params)

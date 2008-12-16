@@ -9,6 +9,7 @@ module Solr
   
   VERSION = '0.5.0'
   
+  autoload :Adapter, 'solr/adapter'
   autoload :Message, 'solr/message'
   autoload :Response, 'solr/response'
   autoload :Connection, 'solr/connection'
@@ -25,9 +26,11 @@ module Solr
       :http=>'HTTP',
       :direct=>'Direct'
     }
-    adapter_class_name = "Solr::Connection::Adapter::#{types[adapter_name]}"
+    adapter_class_name = "Solr::Adapter::#{types[adapter_name]}"
     adapter_class = Kernel.eval adapter_class_name
-    Solr::Connection::Wrapper.new(adapter_class.new(adapter_opts), wrapper_opts)
+    Solr::Connection::Base.new(adapter_class.new(adapter_opts), wrapper_opts)
   end
+  
+  class RequestError < RuntimeError; end
   
 end
