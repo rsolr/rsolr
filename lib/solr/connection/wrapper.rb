@@ -2,6 +2,8 @@ class Solr::Connection::Wrapper
   
   attr_reader :adapter, :opts
   
+  include Solr::Ext::Search
+  
   # conection is instance of:
   #   Solr::Adapter::HTTP
   #   Solr::Adapter::Direct (jRuby only)
@@ -34,6 +36,19 @@ class Solr::Connection::Wrapper
     params = map_params(params)
     response = @adapter.query(params)
     params[:wt]==:ruby ? Solr::Response::Query.new(response) : response
+  end
+  
+  # paginate(:page=>1, :per_page=>10, :q=>'*:*')
+  def paginate(params)
+    required = [:page, :per_page]
+    pkeys = params.keys
+    raise ':per_page and :page are required' unless required.all?{|rkey| pkeys.include?(rkey) }
+    # allow :per_page to be used as "rows", only if :per_page is set
+    params[:rows] = params.delete(:per_page)
+    page = (params.delete(:page) || 1).to_i
+    page = (page <= 0 ? 1 : page)
+    params[:start] = (page - 1) * params[:rows].to_i
+    query(params)
   end
   
   # Finds a document by its id

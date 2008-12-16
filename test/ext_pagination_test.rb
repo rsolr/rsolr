@@ -4,7 +4,6 @@ class ExtPaginationTest < Test::Unit::TestCase
   
   def create_response(params={})
     response = Solr::Response::Query.new(mock_query_response)
-    response.extend Solr::Ext::Pagination::Response
     response.params.merge! params
     response
   end

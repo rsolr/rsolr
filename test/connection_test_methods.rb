@@ -79,20 +79,4 @@ module ConnectionTestMethods
     assert [true, false].include?(response.has_deletions?)
   end
   
-  # extend the solr connection object with Solr::Ext:Pagination
-  # can manipulate :start and :rows by setting :page and :per_page
-  # test the values and ensure that :page and :per_page are removed
-  def test_calulate_start_in_pagination_ext
-    solr = @solr.clone
-    solr.extend Solr::Ext::Pagination
-    params={}
-    params[:page]=3
-    params[:per_page]=20
-    solr.send(:calculate_start, params)
-    assert_equal 40, params[:start]
-    assert_equal 20, params[:rows]
-    assert params[:page].nil?
-    assert params[:per_page].nil?
-  end
-  
 end

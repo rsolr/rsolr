@@ -1,6 +1,3 @@
-#
-# NOTE: some of this was borrowed from delsolr ;)
-#
 module Solr::Ext::Search
   
   def search(query, params={})
@@ -32,6 +29,8 @@ module Solr::Ext::Search
     params[:qt] ||= :dismax
     self.query params
   end
+  
+  protected
   
   # returns the query param
   def build_query(queries)

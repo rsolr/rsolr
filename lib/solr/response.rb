@@ -80,6 +80,36 @@ module Solr::Response
       @start = @response['start']
     end
     
+    def per_page
+      @per_page = params['rows'].to_s.to_i
+    end
+
+    def current_page
+      @current_page = self.per_page > 0 ? ((self.start / self.per_page).ceil) : 1
+      @current_page == 0 ? 1 : @current_page
+    end
+
+    alias :page :current_page
+
+    def page_count
+      @page_count = self.per_page > 0 ? (self.total / self.per_page.to_f).ceil : 1
+    end
+
+    # supports WillPaginate
+    alias :total_pages :page_count
+
+    alias :pages :page_count
+
+    # supports WillPaginate
+    def previous_page
+      (current_page > 1) ? current_page - 1 : 1
+    end
+
+    # supports WillPaginate
+    def next_page
+      (current_page < page_count) ? current_page + 1 : page_count
+    end
+    
   end
   
   # response class for update requests
