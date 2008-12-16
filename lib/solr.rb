@@ -3,7 +3,7 @@
 proc {|base, files|
   $: << base unless $:.include?(base) || $:.include?(File.expand_path(base))
   files.each {|f| require f}
-}.call(File.dirname(__FILE__), ['xout', 'core_ext'])
+}.call(File.dirname(__FILE__), ['core_ext'])
 
 module Solr
   

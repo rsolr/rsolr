@@ -26,6 +26,7 @@ Rake::TestTask.new("test_units") { |t|
 desc 'Clean up tmp files.'
 task :clean do |t|
   FileUtils.rm_rf "doc"
+  FileUtils.rm_rf "pkg"
 end
 
 # Rdoc
@@ -57,11 +58,13 @@ spec = Gem::Specification.new do |s|
   s.has_rdoc = true
   s.extra_rdoc_files = ["README.rdoc"]
   s.rdoc_options << '--line-numbers' << '--inline-source'
+  s.requirements << 'rubygems'
+  s.requirements << 'builder'
 end
 
 # build the package - using github for now
-#require 'rake/gempackagetask'
-#Rake::GemPackageTask.new(spec) do |pkg|
-#  pkg.need_zip = true
-#  pkg.need_tar = true
-#end
+require 'rake/gempackagetask'
+Rake::GemPackageTask.new(spec) do |pkg|
+  pkg.need_zip = true
+  pkg.need_tar = true
+end

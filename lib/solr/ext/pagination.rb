@@ -22,7 +22,20 @@ module Solr::Ext::Pagination
       @page_count = self.per_page > 0 ? (self.total / self.per_page.to_f).ceil : 1
     end
     
+    # supports WillPaginate
+    alias :total_pages :page_count
+    
     alias :pages :page_count
+    
+    # supports WillPaginate
+    def previous_page
+      (current_page > 1) ? current_page - 1 : 1
+    end
+    
+    # supports WillPaginate
+    def next_page
+      (current_page < page_count) ? current_page + 1 : page_count
+    end
     
   end
   

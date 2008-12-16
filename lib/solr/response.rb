@@ -24,6 +24,46 @@ module Solr::Response
     
   end
   
+=begin
+  class Document
+    
+    attr_reader :data
+    
+    def initialize(source_hash)
+      source_hash.each do |k,v|
+        @data[k.to_sym]=v
+        instance_eval <<-EOF
+          def #{k}
+            @data[:#{k}]
+          end
+        EOF
+      end
+    end
+    
+    #
+    # doc.has?(:location_facet, 'Clemons')
+    # doc.has?(:id, 'h009', /^u/i)
+    #
+    def has?(k, *values)
+      return if @data[k].nil?
+      target = @data[k]
+      if target.is_a?(Array)
+        values.each do |val|
+          return target.any?{|tv| val.is_a?(Regexp) ? (tv =~ val) : (tv==val)}
+        end
+      else
+        return values.any? {|val| val.is_a?(Regexp) ? (target =~ val) : (target == val)}
+      end
+    end
+
+    #
+    def get(key, default=nil)
+      @data[key] || default
+    end
+    
+  end
+=end
+  
   # response for queries
   class Query < Base
     
