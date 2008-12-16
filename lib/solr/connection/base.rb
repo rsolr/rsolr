@@ -6,7 +6,6 @@ class Solr::Connection::Base
   attr_reader :adapter, :opts
   
   include Solr::Connection::SearchExt
-  include Solr::Connection::PaginationExt
   
   # conection is instance of:
   #   Solr::Adapter::HTTP
@@ -27,7 +26,7 @@ class Solr::Connection::Base
   # sets default params etc.. - could be used as a mapping hook
   # type of request should be passed in here? -> map_params(:query, {})
   def map_params(params)
-    opts[:global_params].dup.merge(params)
+    opts[:global_params].dup.merge(params).dup
   end
   
   # send request to the select handler
@@ -37,7 +36,7 @@ class Solr::Connection::Base
   #   otherwise, an instance of Solr::Response::Query is returned
   #   NOTE: to get raw ruby, use :wt=>'ruby'
   def query(params)
-    params = map_params(params)
+    params = map_params(modify_params_for_pagination(params))
     response = @adapter.query(params)
     params[:wt]==:ruby ? Solr::Response::Query.new(response) : response
   end
@@ -104,6 +103,20 @@ class Solr::Connection::Base
   # shortcut to solr::message
   def message
     Solr::Message
+  end
+  
+  def modify_params_for_pagination(params)
+    return params unless params[:page]
+    params = params.dup # be nice
+    params[:per_page]||=10
+    params[:rows] = params.delete(:per_page).to_i
+    params[:start] = calculate_start(params.delete(:page).to_i, params[:rows])
+    params
+  end
+  
+  def calculate_start(current_page, per_page)
+    page = current_page > 0 ? current_page : 1
+    (page - 1) * per_page
   end
   
 end
