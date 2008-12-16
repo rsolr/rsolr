@@ -57,7 +57,7 @@ There are helper methods available that make building more complex solr queries 
 
 
 === Updating
-Updating is done using native Ruby structures. Hashes are used for single documents and arrays are used for a collection of documents (hashes). These structures get turned into simple XML "messages" using the Xout library: http://github.com/mwmitchell/xout/tree/master
+Updating is done using native Ruby structures. Hashes are used for single documents and arrays are used for a collection of documents (hashes). These structures get turned into simple XML "messages".
 
 Single document
   response = solr.add(:id=>1, :price=>1.00)
