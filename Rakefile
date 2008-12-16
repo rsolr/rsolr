@@ -29,7 +29,7 @@ task :clean do |t|
 end
 
 # Rdoc
-desc 'Generate documentation for the paperclip plugin.'
+desc 'Generate documentation for the solr-ruby gem.'
 Rake::RDocTask.new(:doc) do |rdoc|
   rdoc.rdoc_dir = 'doc'
   rdoc.title = 'Solr-Ruby'
@@ -43,9 +43,9 @@ spec = Gem::Specification.new do |s|
   s.version = Solr::VERSION
   s.author = "Matt Mitchell"
   s.email = "goodieboy@gmail.com"
-  s.homepage = "http://github.com/mwmitchell/solr-ruby/wikis"
+  s.homepage = "http://github.com/mwmitchell/solr-ruby/wikis/"
   s.platform = Gem::Platform::RUBY
-  s.summary = "Ruby client for Solr"
+  s.summary = "A Ruby client for Apache Solr"
   s.files = FileList[
     "README.rdoc",
     "LICENSE",
