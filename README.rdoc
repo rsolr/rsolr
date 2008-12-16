@@ -1,4 +1,5 @@
-=Solr
+=Solr Ruby
+
 A Ruby client for Apache Solr. Has transparent JRuby support by using "org.apache.solr.servlet.DirectSolrConnection" as a connection adapter.
 
 To run tests:
@@ -64,7 +65,7 @@ or an array of ids
 delete by query:
   response = solr.delete_by_query('price:1.00')
 delete by array of queries
-  response = solr.delete_by_query(['price:1.00', 'price:1.00'])
+  response = solr.delete_by_query(['price:1.00', 'price:10.00'])
 
 commit
   solr.commit
@@ -73,4 +74,4 @@ optimize
   solr.optimize
 
 ==Response Formats
-The default response format is Ruby. When the :wt params is set to :ruby, the response is evaled and wrapped up in a nice Solr::Response class. You can get raw ruby by setting the :wt to "ruby" - notice, a string not a symbol. All other response formats are available as expected, :wt=>'xml' etc.. Currently, the only response format that gets evaled and wrapped is :ruby.
+The default response format is Ruby. When the :wt param is set to :ruby, the response is evaled and wrapped up in a nice Solr::Response class. You can get raw ruby by setting the :wt to "ruby" - notice, the string, not symbol. All other response formats are available as expected, :wt=>'xml' etc.. Currently, the only response format that gets evaled and wrapped is :ruby.
