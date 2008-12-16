@@ -66,11 +66,11 @@ Multiple documents
   response = solr.add([{:id=>1, :price=>1.00}, {:id=>2, :price=>10.50}])
 
 When adding, you can also supply "add" attributes and/or a block for digging into the Solr "add" params:
-	
-	doc = {:id=>1, :price=>1.00}
-	solr.add(doc, {:allowDups=>false, :commitWithin=>10.0}) do |doc|
-		doc.attrs[:boost] = 10.0
-	end
+
+  doc = {:id=>1, :price=>1.00}
+  solr.add(doc, {:allowDups=>false, :commitWithin=>10.0}) do |doc|
+    doc.attrs[:boost] = 10.0
+  end
 
 Delete by id
   response = solr.delete_by_id(1)
