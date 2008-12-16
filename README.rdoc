@@ -5,9 +5,9 @@ A Ruby client for Apache Solr. Has transparent JRuby support by using "org.apach
 To run tests:
 	
 	Copy a Solr 1.3.0 (or later) distribution into this directory and rename to "apache-solr"
-	Start Solr HTTP: 	rake start_test_server
-	MRI Ruby: 			rake
-	JRuby: 				jruby -S rake
+	Start Solr HTTP:    rake start_test_server
+	MRI Ruby:           rake
+	JRuby:              jruby -S rake
 
 To get a connection in Ruby:
 	
