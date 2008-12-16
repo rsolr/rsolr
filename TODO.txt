@@ -1,7 +1,7 @@
 Look at http://lab.cisti-icist.nrc-cnrc.gc.ca/cistilabswiki/index.php/LuSql
-	
-	db_mapper = Solr::DBMapper.new(:host=>'', :database=>'')
-	
+
+  db_mapper = Solr::DBMapper.new(:host=>'', :database=>'')
+
 Check out http://github.com/dan-manges/mixology/tree/master for extensions/mixins framework?
 
 Check out the following:
@@ -9,3 +9,9 @@ Check out the following:
 http://wiki.apache.org/solr-data/attachments/solr(2d)ruby(2f)BrainStorming/attachments/rich.rb%200.1.3%20-%20Support%20for%20Rich%20Documents
 http://wiki.apache.org/solr/solr-ruby/BrainStorming
 http://wiki.apache.org/solr/solr-ruby/ToDo
+
+Add message objects to Solr::Message so attributes such as :boost are available as Ruby attributes:
+
+  sold.add(hash_doc) do |doc|
+    doc.boost=10.0
+  end

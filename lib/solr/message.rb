@@ -12,7 +12,7 @@ class Solr::Message
       data.inject(Xout.new(:add, opts)) do |add_xml, item|
         doc_xml = add_xml.child(:doc) do |doc_xml|
           # convert keys into strings and perform an alpha sort (easier testing between ruby and jruby)
-          # but probably not good for performance?
+          # but probably not great for performance? whatever...
           item_s = item.inject({}) {|acc,(k,v)| acc.merge({k.to_s=>v})}
           item_s.keys.sort.each do |k|
             field=doc_xml.child(:field, item_s[k], :name=>k)

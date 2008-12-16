@@ -52,9 +52,9 @@ class Solr::Connection::Wrapper
   # if :ruby is the :wt, then Solr::Response::Base is returned
   # -- there's not really a way to figure out what kind of handler request this is.
   
-  def update(data, params={}, auto_commit=nil, &block)
+  def update(data, params={}, auto_commit=nil)
     params = map_params(params)
-    response = @adapter.update(data, params, &block)
+    response = @adapter.update(data, params)
     self.commit if auto_commit.nil? ? @opts[:auto_commit]==true : auto_commit
     params[:wt]==:ruby ? Solr::Response::Update.new(response) : response
   end

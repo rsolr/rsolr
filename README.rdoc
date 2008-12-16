@@ -3,35 +3,40 @@
 A Ruby client for Apache Solr. Has transparent JRuby support by using "org.apache.solr.servlet.DirectSolrConnection" as a connection adapter.
 
 To run tests:
-	
-	Copy a Solr 1.3.0 (or later) distribution into this directory and rename to "apache-solr"
-	Start Solr HTTP:    rake start_test_server
-	MRI Ruby:           rake
-	JRuby:              jruby -S rake
+  
+  Copy a Solr 1.3.0 (or later) distribution into this directory and rename to "apache-solr"
+  Start Solr HTTP:    rake start_test_server
+  MRI Ruby:           rake
+  JRuby:              jruby -S rake
 
 To get a connection in Ruby:
-	
-	solr = Solr.connect(:http, wrapper_opts, adapter_opts)
+  
+  solr = Solr.connect(:http, adapter_opts, wrapper_opts)
 
 To get a connection in jRuby using DirectSolrConnection:
-	
-	solr = Solr.connect(:direct, wrapper_opts, adapter_opts)
+  
+  solr = Solr.connect(:direct, adapter_opts, wrapper_opts)
 
-"wrapper_opts" can be a hash with settings that change the wrapper class; Solr::Connection::Wraper. Valid options are:
-	
-	:auto_commit - default is false
-	:global_params - default is {:wt=>:ruby, :echoParams=>'EXPLICIT'}
+"wrapper_opts" can be a hash with settings that change the wrapper class; Solr::Connection::Wrapper. Valid options are:
+  
+  :auto_commit - default is false
+  :global_params - default is {:wt=>:ruby, :echoParams=>'EXPLICIT'}
 
 "adapter_opts" is a hash that gets sent directly to the adapter class.
 
+Solr.connect also yields the adapter instance if a block is supplied:
+  
+  solr = Solr.connect(:http) do |net_http|
+    net_http.class == Net::HTTP
+    # set ssl options etc..
+  end
 
-== Connection Requests
-Once you have an instance of Solr::Connection, you can execute queries, updates etc..
+== Requests
+Once you have a connection, you can execute queries, updates etc..
 
 
 === Querying
   response = solr.query(:q=>'washington', :facet=>true, :facet.limit=>-1, :facet.field=cat, :facet.field=>inStock)
-
   response = solr.find_by_id(1)
 
 
@@ -45,33 +50,43 @@ You can enable pagination methods in the "request" and "response" by using the "
   response.current_page
 
 ===Simplified Querying
-There are helper methods available that build-up complex solr queries. The Solr::Ext::Search module adds a "search" method and defaults to the DisMax handler:
+There are helper methods available that make building more complex solr queries easier. The Solr::Ext::Search module adds a "search" method and defaults to the DisMax handler:
 
   solr.extend Solr::Ext::Search
   response = solr.search 'my search', :filters=>{:price=>(0.00..10.00)}
 
 
 === Updating
-single document
+Updating is done using native Ruby structures. Hashes are used for single documents and arrays are used for a collection of documents (hashes). These structures get turned into simple XML "messages" using the Xout library: http://github.com/mwmitchell/xout/tree/master
+
+Single document
   response = solr.add(:id=>1, :price=>1.00)
-multiple documents
+
+Multiple documents
   response = solr.add([{:id=>1, :price=>1.00}, {:id=>2, :price=>10.50}])
 
-delete by id
+When adding, you can also supply "add" attributes and/or a block for digging into the Solr "add" params:
+	
+	doc = {:id=>1, :price=>1.00}
+	solr.add(doc, {:allowDups=>false, :commitWithin=>10.0}) do |doc|
+		doc.attrs[:boost] = 10.0
+	end
+
+Delete by id
   response = solr.delete_by_id(1)
 or an array of ids
   response = solr.delete_by_id([1, 2, 3, 4])
 
-delete by query:
+Delete by query:
   response = solr.delete_by_query('price:1.00')
-delete by array of queries
+Delete by array of queries
   response = solr.delete_by_query(['price:1.00', 'price:10.00'])
 
-commit
+Commit
   solr.commit
 
-optimize
+Optimize
   solr.optimize
 
 ==Response Formats
-The default response format is Ruby. When the :wt param is set to :ruby, the response is evaled and wrapped up in a nice Solr::Response class. You can get raw ruby by setting the :wt to "ruby" - notice, the string, not symbol. All other response formats are available as expected, :wt=>'xml' etc.. Currently, the only response format that gets evaled and wrapped is :ruby.
+The default response format is Ruby. When the :wt param is set to :ruby, the response is eval'd and wrapped up in a nice Solr::Response class. You can get raw ruby by setting the :wt to "ruby" - notice, the string -- not a symbol. All other response formats are available as expected, :wt=>'xml' etc.. Currently, the only response format that gets eval'd and wrapped is :ruby.
