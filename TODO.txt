@@ -5,7 +5,11 @@ Change Solr.connect from 3 arguments to 2:
 	
 	- Pass in all opts to the adapter instance
 
-Is "solr" a good name for this?
+Is "solr" a good name for this gem?
+
+Add a doc set to the query response object:
+
+  solr.query(...).documents
 
 Look at http://lab.cisti-icist.nrc-cnrc.gc.ca/cistilabswiki/index.php/LuSql
 
