@@ -46,5 +46,5 @@ Gem::Specification.new do |s|
   ]
   s.rdoc_options = ["--main", "README.rdoc"]
   s.extra_rdoc_files = []
-  s.add_dependency("builder", ["> 2.1.2"])
+  s.add_dependency("builder", [">= 2.1.2"])
 end
