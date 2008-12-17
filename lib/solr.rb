@@ -19,16 +19,16 @@ module Solr
   
   # factory for creating connections
   # adapter name is either :http or :direct
-  # adapter_opts are sent to the adapter instance (:url for http, :dist_dir for :direct etc.)
-  # connection_opts are sent to the connection instance (:auto_commit etc.)
-  def self.connect(adapter_name, adapter_opts={}, wrapper_opts={})
+  # opts are sent to the adapter instance (:url for http, :dist_dir for :direct etc.)
+  # and to the connection instance
+  def self.connect(adapter_name, opts={})
     types = {
       :http=>'HTTP',
       :direct=>'Direct'
     }
     adapter_class_name = "Solr::Adapter::#{types[adapter_name]}"
     adapter_class = Kernel.eval adapter_class_name
-    Solr::Connection::Base.new(adapter_class.new(adapter_opts), wrapper_opts)
+    Solr::Connection::Base.new(adapter_class.new(opts), opts)
   end
   
   class RequestError < RuntimeError; end

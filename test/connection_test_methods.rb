@@ -5,10 +5,11 @@
 
 module ConnectionTestMethods
   
-  def teardown
-    response = @solr.delete_by_query('id:[* TO *]')
-    assert_equal 0, @solr.query(:q=>'*:*').docs.size
-  end
+  #def teardown
+  #  @solr.delete_by_query('id:[* TO *]')
+  #  @solr.commit
+  #  assert_equal 0, @solr.query(:q=>'*:*').docs.size
+  #end
   
   # setting adapter options in Solr.connect method should set them in the adapter
   def test_set_adapter_options
@@ -18,7 +19,7 @@ module ConnectionTestMethods
   
   # setting connection options in Solr.connect method should set them in the connection
   def test_set_connection_options
-    solr = Solr.connect(:http, {}, :default_wt=>:json)
+    solr = Solr.connect(:http, :default_wt=>:json)
     assert_equal :json, solr.opts[:default_wt]
   end
   
@@ -48,15 +49,18 @@ module ConnectionTestMethods
   def test_add
     assert_equal 0, @solr.query(:q=>'*:*').total
     response = @solr.add(:id=>100)
+    @solr.commit
     assert_equal 1, @solr.query(:q=>'*:*').total
     assert response.is_a?(Solr::Response::Update)
   end
   
   def test_delete_by_id
     @solr.add(:id=>100)
+    @solr.commit
     total = @solr.query(:q=>'*:*').total
     assert_equal 1, total
     delete_response = @solr.delete_by_id(100)
+    @solr.commit
     assert delete_response.is_a?(Solr::Response::Update)
     total = @solr.query(:q=>'*:*').total
     assert_equal 0, total
@@ -64,8 +68,10 @@ module ConnectionTestMethods
   
   def test_delete_by_query
     @solr.add(:id=>1, :name=>'BLAH BLAH BLAH')
+    @solr.commit
     assert_equal 1, @solr.query(:q=>'*:*').total
     response = @solr.delete_by_query('name:BLAH BLAH BLAH')
+    @solr.commit
     assert response.is_a?(Solr::Response::Update)
     assert_equal 0, @solr.query(:q=>'*:*').total
   end

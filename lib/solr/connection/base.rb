@@ -12,7 +12,6 @@ class Solr::Connection::Base
   #   Solr::Adapter::Direct (jRuby only)
   def initialize(adapter, opts={})
     @adapter=adapter
-    opts[:auto_commit]||=false
     opts[:global_params]||={}
     default_global_params = {
       :wt=>:ruby,
@@ -57,10 +56,9 @@ class Solr::Connection::Base
   # if :ruby is the :wt, then Solr::Response::Base is returned
   # -- there's not really a way to figure out what kind of handler request this is.
   
-  def update(data, params={}, auto_commit=nil)
+  def update(data, params={})
     params = map_params(params)
     response = @adapter.update(data, params)
-    self.commit if auto_commit.nil? ? @opts[:auto_commit]==true : auto_commit
     params[:wt]==:ruby ? Solr::Response::Update.new(response) : response
   end
   
@@ -70,7 +68,7 @@ class Solr::Connection::Base
   
   # send </commit>
   def commit(opts={})
-    update message.commit, opts, false
+    update message.commit, opts
   end
   
   # send </optimize>

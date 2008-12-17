@@ -12,7 +12,9 @@ class DirectTest < Test::Unit::TestCase
     base = File.expand_path( File.dirname(__FILE__) )
     dist = File.join(base, '..', 'apache-solr')
     home = File.join(dist, 'example', 'solr')
-    @solr = Solr.connect(:direct, {:home_dir=>home, :dist_dir=>dist}, :auto_commit=>true)
+    @solr = Solr.connect(:direct, :home_dir=>home, :dist_dir=>dist)
+    @solr.delete_by_query('*:*')
+    @solr.commit
   end
   
 end

@@ -7,7 +7,9 @@ class HTTPTest < Test::Unit::TestCase
   include ConnectionTestMethods
   
   def setup
-    @solr = Solr.connect(:http, {}, :auto_commit=>true)
+    @solr = Solr.connect :http
+    @solr.delete_by_query('*:*')
+    @solr.commit
   end
   
 end
