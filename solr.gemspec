@@ -44,7 +44,7 @@ Gem::Specification.new do |s|
     "test/ruby-lang.org.rss.xml",
     "test/test_helpers.rb",
   ]
-  s.rdoc_options = ["--main", "README.rdoc"]
+  #s.rdoc_options = ["--main", "README.rdoc"]
   s.extra_rdoc_files = []
   s.add_dependency("builder", [">= 2.1.2"])
 end
