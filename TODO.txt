@@ -1,15 +1,4 @@
-Change Solr.connect from 3 arguments to 2:
-	
-	Solr.connect(:http, :auto_commit=>false)
-	Solr.connect(:direct, :auto_commit=>false, :home_dir=>'/path/to/solr-home', :dist_dir=>'/path/to/solr-dist')
-	
-	- Pass in all opts to the adapter instance
-
 Is "solr" a good name for this gem?
-
-Add a doc set to the query response object:
-
-  solr.query(...).documents
 
 Look at http://lab.cisti-icist.nrc-cnrc.gc.ca/cistilabswiki/index.php/LuSql
 
@@ -23,8 +12,11 @@ http://wiki.apache.org/solr-data/attachments/solr(2d)ruby(2f)BrainStorming/attac
 http://wiki.apache.org/solr/solr-ruby/BrainStorming
 http://wiki.apache.org/solr/solr-ruby/ToDo
 
-Add message objects to Solr::Message so attributes such as :boost are available as Ruby attributes:
+=Param naming style
+convert all incoming solr params from :this_style to 'thisStyle'?
 
-  sold.add(hash_doc) do |doc|
-    doc.boost=10.0
-  end
+  EXAMPLE: solr.query(:debug_query) is sent as 'debugQuery'
+
+convert all solr response params (not docs or schema field names) from 'thisStyle' to :this_style?
+
+  EXAMPLE: response[:num_found]

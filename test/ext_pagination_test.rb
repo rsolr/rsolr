@@ -3,7 +3,7 @@ require File.join(File.dirname(__FILE__), 'test_helpers')
 class ExtPaginationTest < Test::Unit::TestCase
   
   def create_response(params={})
-    response = Solr::Response::Query.new(mock_query_response)
+    response = Solr::Response::Query::Base.new(mock_query_response)
     response.params.merge! params
     response
   end
@@ -32,7 +32,7 @@ class ExtPaginationTest < Test::Unit::TestCase
     assert_equal response.params['rows'], response.per_page
     assert_equal 26, response.total
     assert_equal 1, response.current_page
-    assert_equal 6, response.page_count
+    assert_equal 6, response.total_pages
     
     # now switch the rows (per_page)
     # total and current page should remain the same value
@@ -42,7 +42,7 @@ class ExtPaginationTest < Test::Unit::TestCase
     assert_equal response.params['rows'], response.per_page
     assert_equal 26, response.total
     assert_equal 1, response.current_page
-    assert_equal 13, response.page_count
+    assert_equal 13, response.total_pages
     
     # now switch the start
     
@@ -52,7 +52,7 @@ class ExtPaginationTest < Test::Unit::TestCase
     assert_equal 26, response.total
     # 2 per page, currently on the 10th item
     assert_equal 1, response.current_page
-    assert_equal 9, response.page_count
+    assert_equal 9, response.total_pages
   end
   
 end

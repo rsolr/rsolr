@@ -39,7 +39,7 @@ module ConnectionTestMethods
   
   def test_query_responses
     r = @solr.query(:q=>'*:*')
-    assert r.is_a?(Solr::Response::Query)
+    assert r.is_a?(Solr::Response::Query::Base)
     # catch exceptions for bad queries
     assert_raise Solr::RequestError do
       @solr.query(:q=>'!')
