@@ -39,6 +39,7 @@ Rake::RDocTask.new(:doc) do |rdoc|
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
 
+=begin
 spec = Gem::Specification.new do |s|
   s.name = "solr-ruby"
   s.version = Solr::VERSION
@@ -68,3 +69,4 @@ Rake::GemPackageTask.new(spec) do |pkg|
   pkg.need_zip = true
   pkg.need_tar = true
 end
+=end
