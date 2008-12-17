@@ -19,7 +19,7 @@ To get a direct connection in jRuby using DirectSolrConnection:
 
 You can set global connection options like:
   
-  connection_opts = {:auto_commit=>false, :global_params=>{:wt=>:ruby, :echoParams=>'EXPLICIT'}}
+  connection_opts = {:global_params=>{:wt=>:ruby, :echoParams=>'EXPLICIT'}}
   solr = Solr.connect(:http, {}, connection_opts)
 
 Solr.connect also yields the adapter instance if a block is supplied:
