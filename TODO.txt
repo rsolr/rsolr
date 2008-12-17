@@ -5,6 +5,8 @@ Change Solr.connect from 3 arguments to 2:
 	
 	- Pass in all opts to the adapter instance
 
+Is "solr" a good name for this?
+
 Look at http://lab.cisti-icist.nrc-cnrc.gc.ca/cistilabswiki/index.php/LuSql
 
   db_mapper = Solr::DBMapper.new(:host=>'', :database=>'')

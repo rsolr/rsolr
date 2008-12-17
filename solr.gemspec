@@ -1,11 +1,11 @@
 Gem::Specification.new do |s|
-  s.name = "solr-ruby"
+  s.name = "solr"
   s.version = "0.5.0"
   s.date = "2008-12-16"
   s.summary = "Ruby client for Apache Solr"
   s.email = "goodieboy@gmail.com"
-  s.homepage = "http://github.com/mwmitchell/solr-ruby"
-  s.description = "solr-ruby is a Ruby gem for working with Apache Solr"
+  s.homepage = "http://github.com/mwmitchell/solr"
+  s.description = "solr is a Ruby gem for working with Apache Solr"
   s.has_rdoc = true
   s.authors = ["Matt Mitchell"]
   s.files = [

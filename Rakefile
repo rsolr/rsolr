@@ -41,11 +41,11 @@ end
 
 =begin
 spec = Gem::Specification.new do |s|
-  s.name = "solr-ruby"
+  s.name = "solr"
   s.version = Solr::VERSION
   s.author = "Matt Mitchell"
   s.email = "goodieboy@gmail.com"
-  s.homepage = "http://github.com/mwmitchell/solr-ruby/wikis/"
+  s.homepage = "http://github.com/mwmitchell/solr/wikis/"
   s.platform = Gem::Platform::RUBY
   s.summary = "A Ruby client for Apache Solr"
   s.files = FileList[
