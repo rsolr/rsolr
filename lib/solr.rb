@@ -7,7 +7,7 @@ proc {|base, files|
 
 module Solr
   
-  VERSION = '0.5.0'
+  VERSION = '0.5.1'
   
   autoload :Adapter, 'solr/adapter'
   autoload :Message, 'solr/message'
