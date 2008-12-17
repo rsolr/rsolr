@@ -11,18 +11,16 @@ To run tests:
 
 To get a connection in Ruby:
   
-  solr = Solr.connect(:http, adapter_opts, wrapper_opts)
+  solr = Solr.connect(:http)
 
-To get a connection in jRuby using DirectSolrConnection:
+To get a direct connection in jRuby using DirectSolrConnection:
   
-  solr = Solr.connect(:direct, adapter_opts, wrapper_opts)
+  solr = Solr.connect(:direct, :home_dir=>'/path/to/solr/home', :dist_dir=>'/path/to/solr/distribution')
 
-"wrapper_opts" can be a hash with settings that change the wrapper class; Solr::Connection::Wrapper. Valid options are:
+You can set global connection options like:
   
-  :auto_commit - default is false
-  :global_params - default is {:wt=>:ruby, :echoParams=>'EXPLICIT'}
-
-"adapter_opts" is a hash that gets sent directly to the adapter class.
+  connection_opts = {:auto_commit=>false, :global_params=>{:wt=>:ruby, :echoParams=>'EXPLICIT'}}
+  solr = Solr.connect(:http, {}, connection_opts)
 
 Solr.connect also yields the adapter instance if a block is supplied:
   
@@ -30,6 +28,7 @@ Solr.connect also yields the adapter instance if a block is supplied:
     net_http.class == Net::HTTP
     # set ssl options etc..
   end
+
 
 == Requests
 Once you have a connection, you can execute queries, updates etc..

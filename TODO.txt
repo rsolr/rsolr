@@ -1,3 +1,10 @@
+Change Solr.connect from 3 arguments to 2:
+	
+	Solr.connect(:http, :auto_commit=>false)
+	Solr.connect(:direct, :auto_commit=>false, :home_dir=>'/path/to/solr-home', :dist_dir=>'/path/to/solr-dist')
+	
+	- Pass in all opts to the adapter instance
+
 Look at http://lab.cisti-icist.nrc-cnrc.gc.ca/cistilabswiki/index.php/LuSql
 
   db_mapper = Solr::DBMapper.new(:host=>'', :database=>'')
