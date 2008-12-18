@@ -92,10 +92,10 @@ Commit & Optimize
 The default response format is Ruby. When the :wt param is set to :ruby, the response is eval'd and wrapped up in a nice Solr::Response class. You can get raw ruby by setting the :wt to "ruby" - notice, the string -- not a symbol. All other response formats are available as expected, :wt=>'xml' etc.. Currently, the only response format that gets eval'd and wrapped is :ruby.
 
 ==Data Mapping
-The Solr::Mapper::Base class provides some nice ways of mapping data. You provide a hash mapping and a "data source". The keys of the hash mapping become the Solr field names. The values of the hash mapping get processed differently based on the type of value. The data source must be an Enumerable type object. The hash mapping is called for each item in the data source.
+The Solr::Mapper::Base class provides some nice ways of mapping data. You provide a hash mapping and a "data source". The keys of the hash mapping become the Solr field names. The values of the hash mapping get processed differently based on the value. The data source must be an Enumerable type object. The hash mapping is processed for each item in the data source.
 
 ===Hash Map Processing
-If the value is a string, the String is used as the final Solr field value. If the value is a Symbol, the Symbol is used as a key on the data source. An Enumerable type does the same as the Symbol, but for each item. The most interesting processing occurs when the value is a Proc. When a Proc is used as a hash mapping value, the Solr::Mapper::Base executes the Proc's #call method, passing in the current data source item.
+If the value is a string, the value of the String is used as the final Solr field value. If the value is a Symbol, the Symbol is used as a key on the data source. An Enumerable type does the same as the Symbol, but for each item in the set. The most interesting and flexible processing occurs when the value is a Proc. When a Proc is used as a hash mapping value, the mapper executes the Proc's #call method, passing in the current data source item.
 
 ===Examples
 
@@ -146,3 +146,25 @@ If the value is a string, the String is used as the final Solr field value. If t
       :web_id=>'web_id_for_doc_2_for_example'
     }
   ]
+
+===RSS Mapper
+There is currently one built in mapper, Solr::Mapper::RSS. Here's an example usage:
+  
+  mapper = Solr::Mapper::RSS.new
+  mapping = {
+    :channel=>:'channel.title',
+    :url=>:'channel.link',
+    :total=>:'items.size',
+    :title=>proc {|item,m| item.title },
+    :link=>proc {|item,m| item.link },
+    :published=>proc {|item,m| item.date },
+    :description=>proc {|item,m| item.description }
+  }
+  mapped_data = m.map('http://site.com/feed.rss')
+
+==Indexing
+Solr (ruby) comes with a simple indexer that makes use of the Mapper::Base class. Here's an example using the mapping and mapped_data above of the RSS mapper above (mapped_data):
+
+  solr = Solr.connect(:http)
+  i = Solr::Indexer.new(solr, mapping)
+  i.index(data_source)

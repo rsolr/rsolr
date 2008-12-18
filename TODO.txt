@@ -20,3 +20,5 @@ convert all incoming solr params from :this_style to 'thisStyle'?
 convert all solr response params (not docs or schema field names) from 'thisStyle' to :this_style?
 
   EXAMPLE: response[:num_found]
+
+Create HTTP client wrapper to swap in/out Net::HTTP or curb (for example).
