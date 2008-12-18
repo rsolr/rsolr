@@ -1,17 +1,21 @@
-# response for queries
+# response module for queries
 module Solr::Response::Query
   
   # module for adding some helper methods for each document
   module DocExt
-
+    
+    # Provide "method accessors" to the data.
+    # This might be better implemented using instance_eval
+    # to create the methods?
     def method_missing(k, *args)
       has_key?(k) ? self[k] : super(k, *args)
     end
-
-    #
+    
+    # Helper method to check if value/values exist for a given key.
+    # The value can be a string, or a RegExp
+    # Example:
     # doc.has?(:location_facet, 'Clemons')
     # doc.has?(:id, 'h009', /^u/i)
-    #
     def has?(k, *values)
       return if self[k].nil?
       target = self[k]
@@ -28,31 +32,32 @@ module Solr::Response::Query
   
   module Pagination
     
+    # alias to the Solr param, 'rows'
     def per_page
       @per_page = params['rows'].to_s.to_i
     end
     
     # Returns the current page calculated from 'rows' and 'start'
-    # supports WillPaginate
+    # WillPaginate hook
     def current_page
       @current_page = self.per_page > 0 ? ((self.start / self.per_page).ceil) : 1
       @current_page == 0 ? 1 : @current_page
     end
     
     # Calcuates the total pages from 'numFound' and 'rows'
-    # supports WillPaginate
+    # WillPaginate hook
     def total_pages
       self.per_page > 0 ? (self.total / self.per_page.to_f).ceil : 1
     end
     
     # returns the previous page number or 1
-    # supports WillPaginate
+    # WillPaginate hook
     def previous_page
       (current_page > 1) ? current_page - 1 : 1
     end
     
     # returns the next page number or the last
-    # supports WillPaginate
+    # WillPaginate hook
     def next_page
       (current_page < total_pages) ? current_page + 1 : total_pages
     end
