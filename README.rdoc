@@ -34,12 +34,15 @@ Once you have a connection, you can execute queries, updates etc..
 
 
 === Querying
-  response = solr.query(:q=>'washington', :facet=>true, :facet.limit=>-1, :facet.field=cat, :facet.field=>inStock)
+  response = solr.query(:q=>'washington', :facet=>true, :facet.limit=>-1, :facet.field=>cat, :facet.field=>inStock)
   response = solr.find_by_id(1)
 
 Using the #search method makes building more complex Solr queries easier:
   
   response = solr.search 'my search', :filters=>{:price=>(0.00..10.00)}
+  response.docs.each do |doc|
+    doc.price
+  end
 
 ====Pagination
 Pagination is simplified by using the :page and :per_page params:
@@ -55,8 +58,10 @@ If you use WillPaginate, just pass-in the response to the #will_paginate view he
   
   <%= will_paginate(@response) %>
 
+The #query and #search methods automatically figure out the :start and :rows value, based on the values of :page and :per_page. The will_paginate view helper just needs the right methods (#current_page, #previous_page, #next_page and #total_pages) to create the pagination view widget.
 
-=== Updating
+
+=== Updating Solr
 Updating is done using native Ruby structures. Hashes are used for single documents and arrays are used for a collection of documents (hashes). These structures get turned into simple XML "messages".
 
 Single document
@@ -163,7 +168,7 @@ There is currently one built in mapper, Solr::Mapper::RSS. Here's an example usa
   mapped_data = m.map('http://site.com/feed.rss')
 
 ==Indexing
-Solr (ruby) comes with a simple indexer that makes use of the Mapper::Base class. Here's an example using the mapping and mapped_data above of the RSS mapper above (mapped_data):
+Solr (ruby) comes with a simple indexer that makes use of the Solr mapper. Here's an example, using the "mapping" and "mapped_data" variables above (RSS mapper):
 
   solr = Solr.connect(:http)
   i = Solr::Indexer.new(solr, mapping)
