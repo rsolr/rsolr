@@ -176,7 +176,7 @@ Solr (ruby) comes with a simple indexer that makes use of the Solr mapper. Here'
 
 
 ==HTTP Client
-===jruby and Apache Commons HttpClient
-Solr::Adapter::HTTP.http_client_adapter_type = :apache_commons
-s = Solr.connect(:http, :url=>'http://solrpowr.lib.virginia.edu:8080/solr')
-r = s.query(:q=>'pepsi', :rows=>500, :fl=>'id, title_display, marc_display')
+You can specify the Ruby http client to use by setting Solr::Adapter::HTTP.http_client_adapter_type to one of:
+  :net_http (uses the standard Net::HTTP library)
+  :curb (uses the Ruby "curl" bindings)
+After reading this article: http://apocryph.org/2008/11/09/more_indepth_analysis_ruby_http_client_performance/ - I would recommend using the :curb adapter. NOTE: You can't use this adapter under jRuby.
