@@ -7,9 +7,10 @@ require 'java'
 #
 class Solr::Adapter::Direct
   
+  include Solr::HTTP::Util
   include Solr::Adapter::CommonMethods
   
-  attr_accessor :opts, :connection, :home_dir
+  attr_accessor :opts, :home_dir
   
   # required: opts[:home_dir] is absolute path to solr home (the directory with "data", "config" etc.)
   # opts must also contain either
@@ -30,17 +31,18 @@ class Solr::Adapter::Direct
     @opts = default_options.merge(opts)
     require_jars(@opts[:jar_paths])
     import_dependencies
-    @connection = DirectSolrConnection.new(@home_dir, @opts[:data_dir], nil)
-    yield @connection if block_given?
+  end
+  
+  def connection
+    @connection ||= DirectSolrConnection.new(@home_dir, @opts[:data_dir], nil)
   end
   
   # send a request to the connection
   # request '/update', :wt=>:xml, '</commit>'
-  def send_request(request_url_path, params={}, data=nil)
+  def send_request(path, params={}, data=nil)
     data = data.to_xml if data.respond_to?(:to_xml)
-    full_path = build_url(request_url_path, params)
     begin
-      @connection.request(full_path, data)
+      connection.request(build_url(path, params), data)
     rescue
       raise Solr::RequestError.new($!.message)
     end

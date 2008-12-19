@@ -16,6 +16,7 @@ module Solr
   autoload :Ext, 'solr/ext'
   autoload :Mapper, 'solr/mapper'
   autoload :Indexer, 'solr/indexer'
+  autoload :HTTP, 'solr/http'
   
   # factory for creating connections
   # adapter name is either :http or :direct

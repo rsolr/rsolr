@@ -173,3 +173,10 @@ Solr (ruby) comes with a simple indexer that makes use of the Solr mapper. Here'
   solr = Solr.connect(:http)
   i = Solr::Indexer.new(solr, mapping)
   i.index(data_source)
+
+
+==HTTP Client
+===jruby and Apache Commons HttpClient
+Solr::Adapter::HTTP.http_client_adapter_type = :apache_commons
+s = Solr.connect(:http, :url=>'http://solrpowr.lib.virginia.edu:8080/solr')
+r = s.query(:q=>'pepsi', :rows=>500, :fl=>'id, title_display, marc_display')

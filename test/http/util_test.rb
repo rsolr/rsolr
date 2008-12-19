@@ -1,22 +1,13 @@
-require File.join(File.dirname(__FILE__), 'test_helpers')
+require File.join(File.dirname(__FILE__), '..', 'test_helpers')
 
-class AdapterCommonMethodsTest < Test::Unit::TestCase
+class HTTPUtilTest < Test::Unit::TestCase
   
   class DummyClass
-    include Solr::Adapter::CommonMethods
+    include Solr::HTTP::Util
   end
   
   def setup
     @c = DummyClass.new
-  end
-  
-  def test_default_options
-    target = {
-      :select_path => '/select',
-      :update_path => '/update',
-      :luke_path => '/admin/luke'
-    }
-    assert_equal target, @c.default_options
   end
   
   def test_build_url

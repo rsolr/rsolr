@@ -11,6 +11,16 @@ module ConnectionTestMethods
   #  assert_equal 0, @solr.query(:q=>'*:*').docs.size
   #end
   
+  
+  def test_default_options
+    target = {
+      :select_path => '/select',
+      :update_path => '/update',
+      :luke_path => '/admin/luke'
+    }
+    assert_equal target, @solr.adapter.default_options
+  end
+  
   # setting adapter options in Solr.connect method should set them in the adapter
   def test_set_adapter_options
     solr = Solr.connect(:http, :select_path=>'/select2')

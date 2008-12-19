@@ -4,7 +4,7 @@ require File.join(File.dirname(__FILE__), 'test_helpers')
 
 require 'connection_test_methods'
 
-class DirectTest < Test::Unit::TestCase
+class AdapterDirectTest < Test::Unit::TestCase
   
   include ConnectionTestMethods
   
