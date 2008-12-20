@@ -13,7 +13,9 @@ class Solr::HTTP::Adapter::NetHTTP
   end
   
   def get(path, params={})
-    response = @c.get(_build_url(path, params))
+    url = _build_url(path, params)
+    puts url
+    response = @c.get(url)
     raise Solr::RequestError.new(response.body) unless response.code.to_s=='200'
     response.body
   end

@@ -21,4 +21,15 @@ convert all solr response params (not docs or schema field names) from 'thisStyl
 
   EXAMPLE: response[:num_found]
 
-Create HTTP client wrapper to swap in/out Net::HTTP or curb (for example).
+Solr::HTTP::Adapter::* should return a response "context":
+
+	{
+	  :params=>{:q=>''}
+	  :body=>'<xml..',
+	  :url=>'http://solr.com/select?q=xxx...,
+	  :status_code=>200
+	}
+
+	Then send that context into the response as "request" or "request_context".
+
+	?? what about non-:ruby :wt values? return the "context" as the response?

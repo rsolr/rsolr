@@ -175,7 +175,7 @@ Solr (ruby) comes with a simple indexer that makes use of the Solr mapper. Here'
   i.index(data_source)
 
 
-==HTTP Client
+==HTTP Client Adapter
 You can specify the Ruby http client to use by setting Solr::Adapter::HTTP.http_client_adapter_type to one of:
   :net_http     uses the standard Net::HTTP library
   :curb         uses the Ruby "curl" bindings

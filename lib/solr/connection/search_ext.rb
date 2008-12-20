@@ -1,32 +1,29 @@
 module Solr::Connection::SearchExt
   
-  def search(query, params={})
-    if params[:fields].is_a?(Array)
-      params[:fl] = params.delete(:fields).join(' ')
-    else
-      params[:fl] = params.delete :fields
+  def search(q_param, params={})
+    if params[:fields]
+      fields = params.delete :fields
+      params[:fl] = fields.is_a?(Array) ? fields.join(' ') : fields
     end
-    fq = build_filters(params.delete(:filters)).join(' ') if params[:filters]
-    if params[:fq] and fq
-      params[:fq] += " AND #{fq}"
-    else
-      params[:fq] = fq
-    end
+    
+    params[:fq] = build_filters(params.delete(:filters)) if params[:filters]
     facets = params.delete(:facets) if params[:facets]
+    
     if facets
       if facets.is_a?(Array)
-        params << {:facet => true}
-        params += build_facets(facets)          
+        params.merge!({:facet => true})
+        params.merge! build_facets(facets)          
       elsif facets.is_a?(Hash)
-        params << {:facet => true}
-        params += build_facet(facets)
+        params.mrege!({:facet => true})
+        #params += build_facet(facets)
       elsif facets.is_a?(String)
-        params += facets
+        #params += facets
       else
         raise 'facets must either be a Hash or an Array'
       end
     end
-    params[:qt] ||= :dismax
+    #params[:qt] ||= :dismax
+    params[:q] = build_query(q_param)
     self.query params
   end
   
@@ -81,10 +78,11 @@ module Solr::Connection::SearchExt
     end
     params
   end
-
+  
   def build_facets(facet_array)
-    facet_array.inject([]) do |params, facet_hash|
-      params.push build_facet(facet_hash)
+    facet_array.inject({}) do |p, facet_hash|
+      build_facet(facet_hash).each {|k| p.merge!(k) }
+      p
     end
   end
 
@@ -96,10 +94,12 @@ module Solr::Connection::SearchExt
       if 'field' == k.to_s
         params << {"facet.field" => v}
       elsif 'query' == k.to_s
-        q = build_query("facet.query", v)
-        params << q
-      elsif ['name', :name].include?(k.to_s)
-        # do nothing
+        q = build_query(v)
+        params << {"facet.query"=>q}
+        if facet_name
+          # keep track of names => facet_queries
+          name_to_facet_query[facet_name] = q['facet.query']
+        end
       else
         params << {"f.#{facet_hash[:field]}.facet.#{k}" => v}
       end
@@ -107,4 +107,8 @@ module Solr::Connection::SearchExt
     params
   end
   
+  def name_to_facet_query
+    @name_to_facet_query ||= {}
+  end
+
 end

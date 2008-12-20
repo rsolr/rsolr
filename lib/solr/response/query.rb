@@ -80,8 +80,10 @@ module Solr::Response::Query
     def initialize(data)
       super(data)
       @response = @data['response']
-      @docs = @response['docs'].clone.collect do |d|
-        d.clone.extend Solr::Response::Query::DocExt
+      @docs = @response['docs']
+      puts @docs.size
+      @docs.each do |d|
+        d.extend Solr::Response::Query::DocExt
       end
       @num_found = @response['numFound']
       @start = @response['start']
