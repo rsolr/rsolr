@@ -67,4 +67,14 @@ class MessageTest < Test::Unit::TestCase
     assert_equal expected, message.to_s
   end
   
+  # multiValue field support test, thanks to Fouad Mardini!
+  def test_add_multi_valued_field
+    data = {
+      :id   => 1,
+      :name => ['matt1', 'matt2']
+    }
+    expected = '<add><doc><field name="id">1</field><field name="name">matt1</field><field name="name">matt2</field></doc></add>'
+    assert_equal expected, Solr::Message.add(data).to_s
+  end
+  
 end

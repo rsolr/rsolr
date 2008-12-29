@@ -4,9 +4,7 @@ class IndexerTest < Test::Unit::TestCase
   
   def test_something
     data = nil
-    mapping = {
-      
-    }
+    mapping = {}
     i = Solr::Indexer.new(Solr.connect(:http), mapping)
     i.index([])
   end

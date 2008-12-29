@@ -1,17 +1,15 @@
-require 'net/http'
-
 #
 # Connection for standard HTTP Solr server
 #
-class Solr::Adapter::HTTP
+class Solr::Connection::Adapter::HTTP
   
   class << self
-    attr_accessor :http_client_adapter_type
+    attr_accessor :client_adapter
   end
   
-  @http_client_adapter_type = :net_http
+  @client_adapter = :net_http
   
-  include Solr::Adapter::CommonMethods
+  include Solr::Connection::Adapter::CommonMethods
   
   attr_reader :opts
   
@@ -27,7 +25,7 @@ class Solr::Adapter::HTTP
   end
   
   def connection
-    @connection ||= Solr::HTTP.connect(@opts[:url], self.class.http_client_adapter_type)
+    @connection ||= Solr::HTTPClient.connect(@opts[:url], self.class.client_adapter)
   end
   
   # send a request to the connection
@@ -35,10 +33,12 @@ class Solr::Adapter::HTTP
   def send_request(path, params={}, data=nil)
     data = data.to_xml if data.respond_to?(:to_xml)
     if data
-      connection.post(path, data, params, post_headers)
+      http_context = connection.post(path, data, params, post_headers)
     else
-      connection.get(path, params)
+      http_context = connection.get(path, params)
     end
+    raise Solr::RequestError.new(http_context[:body]) unless http_context[:status_code] == 200
+    http_context
   end
   
   protected

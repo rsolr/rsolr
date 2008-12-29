@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), 'test_helpers')
 
-class ExtPaginationTest < Test::Unit::TestCase
+class PaginationTest < Test::Unit::TestCase
   
   def create_response(params={})
     response = Solr::Response::Query::Base.new(mock_query_response)
@@ -10,19 +10,19 @@ class ExtPaginationTest < Test::Unit::TestCase
   
   # test the Solr::Connection pagination methods
   def test_connection_calculate_start
-    dp = Solr::Connection::Base.new(nil)
-    assert_equal 15, dp.send(:calculate_start, 2, 15)
-    assert_equal 450, dp.send(:calculate_start, 10, 50)
-    assert_equal 0, dp.send(:calculate_start, 0, 50)
+    dummy_connection = Solr::Connection::Base.new(nil)
+    assert_equal 15, dummy_connection.send(:calculate_start, 2, 15)
+    assert_equal 450, dummy_connection.send(:calculate_start, 10, 50)
+    assert_equal 0, dummy_connection.send(:calculate_start, 0, 50)
   end
   
   def test_connection_modify_params_for_pagination
-    dp = Solr::Connection::Base.new(nil)
-    p = dp.send(:modify_params_for_pagination, {:page=>1})
+    dummy_connection = Solr::Connection::Base.new(nil)
+    p = dummy_connection.send(:modify_params_for_pagination, {:page=>1})
     assert_equal 0, p[:start]
     assert_equal 10, p[:rows]
     #
-    p = dp.send(:modify_params_for_pagination, {:page=>10, :per_page=>100})
+    p = dummy_connection.send(:modify_params_for_pagination, {:page=>10, :per_page=>100})
     assert_equal 900, p[:start]
     assert_equal 100, p[:rows]
   end

@@ -1,0 +1,28 @@
+0.5.4 - December 29, 2008
+	
+	Re-organized the main Solr adapters, they're now in Solr::Connection::Adapter instead of Solr::Adapter
+	
+	All responses from HTTPClient and Connection::Adapter::Direct return a hash with the following keys:
+		
+		:status_code
+		:body
+		:params
+		:url
+		:path
+		:headers
+		:data
+	
+	This hash is now available in the solr response objects as #source - this will be useful in testing and debugging by allowing you to see the generated params and queries... example:
+		
+		response = Solr.query(:q=>'*:*')
+		response.source[:params]
+		response.source[:body]
+		response.source[:url]
+	
+	Added MultiValue field support in Solr::Message, thanks to Fouad Mardini
+	
+	Bug in Solr::Connection::SearchExt where the :q params was not getting generated - fixed by Fouad Mardini
+	
+	Organized tests a bit, moved connection tests into test/connection
+	
+	Fixed a bug in Solr::Connection::Adapter::HTTP where invalid HTTP POST headers were being generated

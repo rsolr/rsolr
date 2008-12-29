@@ -21,13 +21,6 @@ You can set Solr params that will be sent for every request:
   
   solr = Solr.connect(:http, :global_params=>{:wt=>:ruby, :echoParams=>'EXPLICIT'})
 
-Solr.connect also yields the adapter instance if a block is supplied:
-  
-  solr = Solr.connect(:http) do |net_http|
-    net_http.class == Net::HTTP
-    # set ssl options etc..
-  end
-
 
 == Requests
 Once you have a connection, you can execute queries, updates etc..
@@ -94,7 +87,9 @@ Commit & Optimize
 
 
 ==Response Formats
-The default response format is Ruby. When the :wt param is set to :ruby, the response is eval'd and wrapped up in a nice Solr::Response class. You can get raw ruby by setting the :wt to "ruby" - notice, the string -- not a symbol. All other response formats are available as expected, :wt=>'xml' etc.. Currently, the only response format that gets eval'd and wrapped is :ruby.
+The default response format is Ruby. When the :wt param is set to :ruby, the response is eval'd and wrapped up in a nice Solr::Response class. You can get an unwrapped response by setting the :wt to "ruby" - notice, the string -- not a symbol. All other response formats are available as expected, :wt=>'xml' etc.. Currently, the only response format that gets eval'd and wrapped is :ruby.
+
+You can access the original request context (path, params, url etc.) from response.source. The response.source is a hash that contains the generated params, url, path, post data, headers etc.. This could be useful for debugging and testing.
 
 ==Data Mapping
 The Solr::Mapper::Base class provides some nice ways of mapping data. You provide a hash mapping and a "data source". The keys of the hash mapping become the Solr field names. The values of the hash mapping get processed differently based on the value. The data source must be an Enumerable type object. The hash mapping is processed for each item in the data source.
@@ -176,7 +171,15 @@ Solr (ruby) comes with a simple indexer that makes use of the Solr mapper. Here'
 
 
 ==HTTP Client Adapter
-You can specify the Ruby http client to use by setting Solr::Adapter::HTTP.http_client_adapter_type to one of:
+You can specify the Ruby http client to use by setting Solr::Adapter::HTTP.client_adapter to one of:
   :net_http     uses the standard Net::HTTP library
   :curb         uses the Ruby "curl" bindings
-After reading this http://apocryph.org/2008/11/09/more_indepth_analysis_ruby_http_client_performance/ - I would recommend using the :curb adapter. NOTE: You can't use the :curb adapter under jRuby.
+
+Example:
+	
+	hclient = Solr::HTTPClient.connect(url, :curb)
+	hclient = Solr::HTTPClient.connect(url, :net_http)
+
+After reading this http://apocryph.org/2008/11/09/more_indepth_analysis_ruby_http_client_performance/ - I would recommend using the :curb adapter. NOTE: You can't use the :curb adapter under jRuby. To install curb:
+
+  sudo gem install curb

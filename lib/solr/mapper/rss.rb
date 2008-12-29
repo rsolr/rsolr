@@ -1,3 +1,5 @@
+#TODO - this could use the http wrapper stuff instead of open-uri/net::http
+
 require 'rss'
 require 'open-uri'
 

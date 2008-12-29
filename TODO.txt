@@ -1,3 +1,5 @@
+Remove those pesky test warnings about constants already being defined etc.
+
 Is "solr" a good name for this gem?
 
 Look at http://lab.cisti-icist.nrc-cnrc.gc.ca/cistilabswiki/index.php/LuSql
@@ -21,15 +23,32 @@ convert all solr response params (not docs or schema field names) from 'thisStyl
 
   EXAMPLE: response[:num_found]
 
-Solr::HTTP::Adapter::* should return a response "context":
 
-	{
-	  :params=>{:q=>''}
-	  :body=>'<xml..',
-	  :url=>'http://solr.com/select?q=xxx...,
-	  :status_code=>200
-	}
+Add :phrase_filters to search_ext for phrase quoting:
+	search('blah', :phrase_filters=>{:title=>'Book One'})
+	-> fq=title:"Book One"
 
-	Then send that context into the response as "request" or "request_context".
 
-	?? what about non-:ruby :wt values? return the "context" as the response?
+Demo app
+	
+	show faceting, searching + filtering constraints
+	indexing
+	request/response context output (query, params etc.)
+	
+	docs.each do |doc|
+		doc.extend XMLDocument::Base
+			# loads xml file IO into memory if it hasn't already been (memory cache)
+			# seeks/loads start/stop as string if it hasn't already been loaded (memory cache)
+		book = doc.ancestors.select{|a|a.type=='Book'}
+		
+	end
+	
+	indexing:
+		parse document and re-create file, store start/stop pos of nodes as attributes
+		reload doc into LibXML::XML::Reader w/dsl layer
+		index, store start/stop in solr
+
+
+Push HTTPClient and Mapper into separate gems?
+
+Connection pooling?

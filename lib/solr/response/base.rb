@@ -3,14 +3,21 @@
 # So far, all response classes extend this
 class Solr::Response::Base
   
+  attr_reader :source
+  
   attr_reader :raw_response, :data, :header, :params, :status, :query_time
   
   def initialize(data)
-    if data.is_a?(String)
-      @raw_response = data
-      @data = Kernel.eval(@raw_response)
+    if data.is_a?(Hash) and data.has_key?(:body)
+      @data = Kernel.eval(data[:body])
+      @source = data
     else
-      @data = data
+      if data.is_a?(String)
+        @raw_response = data
+        @data = Kernel.eval(@raw_response)
+      elsif data.is_a?(Hash)
+        @data = data
+      end
     end
     @header = @data['responseHeader']
     @params = @header['params']

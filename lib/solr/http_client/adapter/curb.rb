@@ -1,9 +1,9 @@
 require 'rubygems'
 require 'curb'
 
-class Solr::HTTP::Adapter::Curb
+class Solr::HTTPClient::Adapter::Curb
   
-  include Solr::HTTP::Util
+  include Solr::HTTPClient::Util
   
   attr :uri
   attr :c
@@ -17,19 +17,29 @@ class Solr::HTTP::Adapter::Curb
     @c.url = _build_url(path, params)
     @c.multipart_form_post = false
     @c.perform
-    raise Solr::RequestError unless @c.response_code.to_s=='200'
-    @c.body_str
+    create_http_context(path, params)
   end
   
   def post(path, data, params={}, headers={})
     @c.url = _build_url(path, params)
     @c.headers = headers
     @c.http_post(data)
-    raise Solr::RequestError unless @c.response_code.to_s=='200'
-    @c.body_str
+    create_http_context(path, params, data, headers)
   end
   
   protected
+  
+  def create_http_context(path, params, data=nil, headers={})
+    {
+      :status_code=>@c.response_code.to_i,
+      :url=>@c.url,
+      :body=>@c.body_str,
+      :path=>path,
+      :params=>params,
+      :data=>data,
+      :headers=>headers
+    }
+  end
   
   def _build_url(path, params={})
     url = @uri.scheme + '://' + @uri.host

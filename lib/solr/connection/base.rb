@@ -36,7 +36,6 @@ class Solr::Connection::Base
   #   NOTE: to get raw ruby, use :wt=>'ruby'
   def query(params)
     params = map_params(modify_params_for_pagination(params))
-    puts params.inspect
     response = @adapter.query(params)
     params[:wt]==:ruby ? Solr::Response::Query::Base.new(response) : response
   end

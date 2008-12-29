@@ -3,7 +3,7 @@ require File.join(File.dirname(__FILE__), '..', 'test_helpers')
 class HTTPUtilTest < Test::Unit::TestCase
   
   class DummyClass
-    include Solr::HTTP::Util
+    include Solr::HTTPClient::Util
   end
   
   def setup

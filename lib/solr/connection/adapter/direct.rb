@@ -5,10 +5,10 @@ require 'java'
 #
 # Connection for JRuby + DirectSolrConnection
 #
-class Solr::Adapter::Direct
+class Solr::Connection::Adapter::Direct
   
-  include Solr::HTTP::Util
-  include Solr::Adapter::CommonMethods
+  include Solr::HTTPClient::Util
+  include Solr::Connection::Adapter::CommonMethods
   
   attr_accessor :opts, :home_dir
   
@@ -20,32 +20,45 @@ class Solr::Adapter::Direct
   # OTHER OPTS:
   #   :select_path => 'the/select/handler'
   #   :update_path => 'the/update/handler'
-  # If a block is given, the @connection instance (DirectSolrConnection) is yielded
   def initialize(opts, &block)
-    @home_dir = opts[:home_dir]
-    opts[:data_dir] ||= File.join(@home_dir , 'data')
+    @home_dir = opts[:home_dir].to_s
+    opts[:data_dir] ||= File.join(@home_dir, 'data')
     if opts[:dist_dir]
       # add the standard lib and dist directories to the :jar_paths
       opts[:jar_paths] = [File.join(opts[:dist_dir], 'lib'), File.join(opts[:dist_dir], 'dist')]
     end
     @opts = default_options.merge(opts)
-    require_jars(@opts[:jar_paths])
-    import_dependencies
   end
   
+  # loads/imports the java dependencies
+  # sets the @connection instance variable
   def connection
-    @connection ||= DirectSolrConnection.new(@home_dir, @opts[:data_dir], nil)
+    @connection ||= (
+      require_jars(@opts[:jar_paths]) if @opts[:jar_paths]
+      import_dependencies
+      DirectSolrConnection.new(@home_dir, @opts[:data_dir], nil)
+    )
   end
   
   # send a request to the connection
   # request '/update', :wt=>:xml, '</commit>'
   def send_request(path, params={}, data=nil)
     data = data.to_xml if data.respond_to?(:to_xml)
+    url = build_url(path, params)
     begin
-      connection.request(build_url(path, params), data)
+      body = connection.request(url, data)
     rescue
       raise Solr::RequestError.new($!.message)
     end
+    {
+      :status_code=>'',
+      :body=>body,
+      :url=>url,
+      :path=>path,
+      :params=>params,
+      :data=>data,
+      :headers=>{}
+    }
   end
   
   protected

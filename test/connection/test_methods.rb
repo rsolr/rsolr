@@ -37,14 +37,14 @@ module ConnectionTestMethods
   # Raw ruby can be returned by using :wt=>'ruby', not :ruby
   def test_raw_response_formats
     ruby_response = @solr.query(:q=>'*:*', :wt=>'ruby')
-    assert ruby_response.is_a?(String)
-    assert ruby_response=~%r('wt'=>'ruby')
+    assert ruby_response[:body].is_a?(String)
+    assert ruby_response[:body]=~%r('wt'=>'ruby')
     # xml?
     xml_response = @solr.query(:q=>'*:*', :wt=>'xml')
-    assert xml_response=~%r(<str name="wt">xml</str>)
+    assert xml_response[:body]=~%r(<str name="wt">xml</str>)
     # json?
     json_response = @solr.query(:q=>'*:*', :wt=>'json')
-    assert json_response=~%r("wt":"json")
+    assert json_response[:body]=~%r("wt":"json")
   end
   
   def test_query_responses

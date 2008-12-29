@@ -4,15 +4,15 @@ unless defined?(JRUBY_VERSION)
 
   require File.join(File.dirname(__FILE__), '..', 'test_helpers')
   
-  require File.join(File.dirname(__FILE__), 'http_test_methods')
+  require File.join(File.dirname(__FILE__), 'test_methods')
 
   class CurbTest < Test::Unit::TestCase
   
     def setup
-      @c ||= Solr::HTTP.connect(URL, :curb)
+      @c ||= Solr::HTTPClient.connect(URL, :curb)
     end
   
-    include HTTPTestMethods
+    include HTTPClientTestMethods
   
   end
   

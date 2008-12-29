@@ -7,7 +7,7 @@
 #   request_path is a string to a handler (/select)
 #   params is a hash for query string params
 #   data is optional string of xml
-module Solr::Adapter::CommonMethods
+module Solr::Connection::Adapter::CommonMethods
   
   # send a request to the "select" handler
   def query(params)

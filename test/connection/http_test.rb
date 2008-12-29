@@ -1,8 +1,8 @@
 unless defined?(JRUBY_VERSION)
 
-  require File.join(File.dirname(__FILE__), 'test_helpers')
-
-  require 'connection_test_methods'
+  require File.join(File.dirname(__FILE__), '..', 'test_helpers')
+  
+  require File.join(File.dirname(__FILE__), 'test_methods')
 
   class AdapterHTTPTest < Test::Unit::TestCase
   

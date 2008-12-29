@@ -2,6 +2,14 @@ $: << File.dirname(__FILE__)
 require File.join(File.dirname(__FILE__), '..', 'lib', 'solr')
 require 'test/unit'
 
+class SolrBaseTest < Test::Unit::TestCase
+  
+  def default_test
+    
+  end
+  
+end
+
 #begin
 #  require 'rubygems'
 #  require 'redgreen'

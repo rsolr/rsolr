@@ -81,7 +81,6 @@ module Solr::Response::Query
       super(data)
       @response = @data['response']
       @docs = @response['docs']
-      puts @docs.size
       @docs.each do |d|
         d.extend Solr::Response::Query::DocExt
       end

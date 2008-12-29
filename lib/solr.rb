@@ -7,16 +7,15 @@ proc {|base, files|
 
 module Solr
   
-  VERSION = '0.5.3'
+  VERSION = '0.5.4'
   
-  autoload :Adapter, 'solr/adapter'
   autoload :Message, 'solr/message'
   autoload :Response, 'solr/response'
   autoload :Connection, 'solr/connection'
   autoload :Ext, 'solr/ext'
   autoload :Mapper, 'solr/mapper'
   autoload :Indexer, 'solr/indexer'
-  autoload :HTTP, 'solr/http'
+  autoload :HTTPClient, 'solr/http_client'
   
   # factory for creating connections
   # adapter name is either :http or :direct
@@ -27,8 +26,7 @@ module Solr
       :http=>'HTTP',
       :direct=>'Direct'
     }
-    adapter_class_name = "Solr::Adapter::#{types[adapter_name]}"
-    adapter_class = Kernel.eval adapter_class_name
+    adapter_class = Solr::Connection::Adapter.const_get(types[adapter_name])
     Solr::Connection::Base.new(adapter_class.new(opts), opts)
   end
   

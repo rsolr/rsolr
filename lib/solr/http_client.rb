@@ -3,11 +3,26 @@ require 'uri'
 # A simple wrapper for different http client implementations
 # that supports #get and #post
 # This was motivated by: http://apocryph.org/2008/11/09/more_indepth_analysis_ruby_http_client_performance/
-# Curb/curl is the default adapter
+# Net::HTTP is the default adapter
 
-module Solr::HTTP
+# Each adapter response should be a hash with the following keys:
+#   :status_code
+#   :url
+#   :body
+#   :path
+#   :params
+#   :data
+#   :headers
+
+# Example:
+#hclient = Solr::HTTPClient.connect('http://www.google.com', :net_http)
+#response = hclient.get('/search', :hl=>:en, :q=>:ruby, :btnG=>:Search)
+#puts response[:status_code]
+#puts response[:body]
+
+module Solr::HTTPClient
   
-  autoload :Adapter, 'solr/http/adapter'
+  autoload :Adapter, 'solr/http_client/adapter'
   
   class UnkownAdapterError < RuntimeError; end
   
@@ -20,8 +35,7 @@ module Solr::HTTP
     else
       raise UnkownAdapterError.new("Name: #{adapter_name}")
     end
-    a = Kernel.eval("Solr::HTTP::Adapter::#{klass}").new(url)
-    Base.new(a)
+    Base.new Solr::HTTPClient::Adapter.const_get(klass).new(url)
   end
   
   class Base
@@ -34,18 +48,20 @@ module Solr::HTTP
     
     def get(path, params={})
       begin
-        @adapter.get(path, params)
+        http_context = @adapter.get(path, params)
       rescue
         raise Solr::RequestError.new($!)
       end
+      http_context
     end
     
     def post(path, data, params={}, headers={})
       begin
-        @adapter.post(path, data, params, headers)
+        http_context = @adapter.post(path, data, params, headers)
       rescue
         raise Solr::RequestError.new($!)
       end
+      http_context
     end
     
   end
