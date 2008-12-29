@@ -27,8 +27,10 @@ Once you have a connection, you can execute queries, updates etc..
 
 
 === Querying
-  response = solr.query(:q=>'washington', :facet=>true, :facet.limit=>-1, :facet.field=>cat, :facet.field=>inStock)
+  response = solr.query(:q=>'washington', :facet=>true, :facet.limit=>-1, :facet.field=>'cat', :facet.field=>'inStock')
   response = solr.find_by_id(1)
+
+* thanks to a little Ruby magic, we can chain symbols to create Solr "dot" syntax: :facet.field=>'cat'
 
 Using the #search method makes building more complex Solr queries easier:
   
@@ -171,14 +173,18 @@ Solr (ruby) comes with a simple indexer that makes use of the Solr mapper. Here'
 
 
 ==HTTP Client Adapter
-You can specify the Ruby http client to use by setting Solr::Adapter::HTTP.client_adapter to one of:
+You can specify the Ruby http client to use by setting Solr::Connection::Adapter::HTTP.client_adapter to one of:
   :net_http     uses the standard Net::HTTP library
   :curb         uses the Ruby "curl" bindings
 
 Example:
 	
-	hclient = Solr::HTTPClient.connect(url, :curb)
-	hclient = Solr::HTTPClient.connect(url, :net_http)
+  Solr::Connection::Adapter::HTTP.client_adapter = :curb
+	
+Example of just using the HTTP client:
+	
+  hclient = Solr::HTTPClient.connect(url, :curb)
+  hclient = Solr::HTTPClient.connect(url, :net_http)
 
 After reading this http://apocryph.org/2008/11/09/more_indepth_analysis_ruby_http_client_performance/ - I would recommend using the :curb adapter. NOTE: You can't use the :curb adapter under jRuby. To install curb:
 
