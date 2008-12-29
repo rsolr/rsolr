@@ -1,3 +1,21 @@
+0.5.5 - December 29, 2008
+
+	Fixed bug where accessing a field by method name failed:
+		
+		docs.each do |doc|
+			doc.timestamp
+		end
+	
+	Fixed bug where using the #has? method on a doc failed:
+		
+		docs.each do |doc|
+			doc.has?('timestamp')
+		end
+	
+	Removed invalid autoload in Solr module
+	
+	Fixed spelling error in Solr::Connection::SearchExt (thanks to matthewrudy)
+	
 0.5.4 - December 29, 2008
 	
 	Re-organized the main Solr adapters, they're now in Solr::Connection::Adapter instead of Solr::Adapter

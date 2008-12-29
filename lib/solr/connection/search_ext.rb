@@ -14,7 +14,7 @@ module Solr::Connection::SearchExt
         params.merge!({:facet => true})
         params.merge! build_facets(facets)          
       elsif facets.is_a?(Hash)
-        params.mrege!({:facet => true})
+        params.merge!({:facet => true})
         #params += build_facet(facets)
       elsif facets.is_a?(String)
         #params += facets

@@ -7,12 +7,11 @@ proc {|base, files|
 
 module Solr
   
-  VERSION = '0.5.4'
+  VERSION = '0.5.5'
   
   autoload :Message, 'solr/message'
   autoload :Response, 'solr/response'
   autoload :Connection, 'solr/connection'
-  autoload :Ext, 'solr/ext'
   autoload :Mapper, 'solr/mapper'
   autoload :Indexer, 'solr/indexer'
   autoload :HTTPClient, 'solr/http_client'

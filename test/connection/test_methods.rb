@@ -56,6 +56,31 @@ module ConnectionTestMethods
     end
   end
   
+  def test_query_response_docs
+    @solr.add(:id=>1, :price=>1.00, :cat=>['electronics', 'something else'])
+    @solr.commit
+    r = @solr.query(:q=>'*:*')
+    assert r.is_a?(Solr::Response::Query::Base)
+    assert_equal Array, r.docs.class
+    first = r.docs.first
+    assert first.respond_to?(:price)
+    assert first.respond_to?(:cat)
+    assert first.respond_to?(:id)
+    assert first.respond_to?(:timestamp)
+    
+    # test the has? method
+    assert first.has?('price', 1.00)
+    assert first.has?('cat', 'electronics')
+    assert first.has?('cat', 'something else')
+    
+    assert first.has?('cat', /something/)
+    
+    # has? only works with strings at this time
+    assert_nil first.has?(:cat)
+    
+    assert false == first.has?('cat', /zxcv/)
+  end
+  
   def test_add
     assert_equal 0, @solr.query(:q=>'*:*').total
     response = @solr.add(:id=>100)

@@ -169,7 +169,7 @@ Solr (ruby) comes with a simple indexer that makes use of the Solr mapper. Here'
 
   solr = Solr.connect(:http)
   i = Solr::Indexer.new(solr, mapping)
-  i.index(data_source)
+  i.index(mapped_data)
 
 
 ==HTTP Client Adapter

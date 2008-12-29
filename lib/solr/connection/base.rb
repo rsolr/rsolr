@@ -7,7 +7,7 @@ class Solr::Connection::Base
   
   include Solr::Connection::SearchExt
   
-  # conection is instance of:
+  # "adapter" is instance of:
   #   Solr::Adapter::HTTP
   #   Solr::Adapter::Direct (jRuby only)
   def initialize(adapter, opts={})

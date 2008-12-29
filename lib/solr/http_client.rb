@@ -1,7 +1,7 @@
-require 'uri'
+#require 'uri'
 
-# A simple wrapper for different http client implementations
-# that supports #get and #post
+# A simple wrapper for different http client implementations.
+# Supports #get and #post
 # This was motivated by: http://apocryph.org/2008/11/09/more_indepth_analysis_ruby_http_client_performance/
 # Net::HTTP is the default adapter
 
@@ -15,10 +15,10 @@ require 'uri'
 #   :headers
 
 # Example:
-#hclient = Solr::HTTPClient.connect('http://www.google.com', :net_http)
-#response = hclient.get('/search', :hl=>:en, :q=>:ruby, :btnG=>:Search)
-#puts response[:status_code]
-#puts response[:body]
+#   hclient = Solr::HTTPClient.connect('http://www.google.com', :net_http)
+#   response = hclient.get('/search', :hl=>:en, :q=>:ruby, :btnG=>:Search)
+#   puts response[:status_code]
+#   puts response[:body]
 
 module Solr::HTTPClient
   

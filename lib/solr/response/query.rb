@@ -1,23 +1,26 @@
 # response module for queries
 module Solr::Response::Query
   
-  # module for adding some helper methods for each document
+  # module for adding helper methods to each Hash document
   module DocExt
     
-    # Provide "method accessors" to the data.
-    # This might be better implemented using instance_eval
-    # to create the methods?
-    def method_missing(k, *args)
-      has_key?(k) ? self[k] : super(k, *args)
+    def self.extended(base)
+      base.keys.each do |k,v|
+        base.instance_eval <<-EOF
+        def #{k}; self['#{k.to_s}']; end
+        EOF
+      end
     end
     
-    # Helper method to check if value/values exist for a given key.
+    # Helper method to check if value/multi-values exist for a given key.
     # The value can be a string, or a RegExp
     # Example:
+    # doc.has?(:location_facet)
     # doc.has?(:location_facet, 'Clemons')
     # doc.has?(:id, 'h009', /^u/i)
     def has?(k, *values)
       return if self[k].nil?
+      return true if self.has_key?(k) and values.empty?
       target = self[k]
       if target.is_a?(Array)
         values.each do |val|

@@ -9,7 +9,8 @@ class Solr::Response::Base
   
   def initialize(data)
     if data.is_a?(Hash) and data.has_key?(:body)
-      @data = Kernel.eval(data[:body])
+      @raw_response = data[:body]
+      @data = Kernel.eval(@raw_response)
       @source = data
     else
       if data.is_a?(String)

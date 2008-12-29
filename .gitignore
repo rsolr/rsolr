@@ -1,3 +1,4 @@
 apache-solr/*
 .DS_Store
 pkg/*
+experiments
