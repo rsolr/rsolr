@@ -181,8 +181,8 @@ Example:
 	
   Solr::Connection::Adapter::HTTP.client_adapter = :curb
 	
-Example of just using the HTTP client:
-	
+Example of using the HTTP client only:
+  
   hclient = Solr::HTTPClient.connect(url, :curb)
   hclient = Solr::HTTPClient.connect(url, :net_http)
 
