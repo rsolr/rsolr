@@ -19,11 +19,15 @@ module Solr::Mapper
     # returns an array with one or more mapped hashes
     def map(source, override_mapping=nil)
       source = [source] if source.is_a?(Hash)
-      m = override_mapping || @mapping
+      mapping = override_mapping || @mapping
+      index = -1
+      # collect a bunch of hashes...
       source.collect do |src|
-        m.inject({}) do |mapped_data, (field_name, mapped_value)|
-          value = mapped_field_value(src, mapped_value)
-          value.to_s.empty? ? mapped_data : mapped_data.merge!({field_name=>value})
+        index += 1
+        # for each mapping item, inject data into a new hash
+        mapping.inject({}) do |a_new_hash, (map_key, map_value)|
+          value = mapped_field_value(src, map_value, index)
+          value.to_s.empty? ? a_new_hash : a_new_hash.merge!({map_key=>value})
         end
       end
     end
@@ -31,20 +35,20 @@ module Solr::Mapper
     protected
   
     # This is a hook method useful for subclassing
-    def source_field_value(source, field_name)
+    def source_field_value(source, field_name, index)
       source[field_name]
     end
   
-    def mapped_field_value(source, mapped_value)
+    def mapped_field_value(source, mapped_value, index)
       case mapped_value
         when String
           mapped_value
         when Symbol
-          source_field_value(source, mapped_value)
+          source_field_value(source, mapped_value, index)
         when Proc
-          mapped_value.call(source, self)
+          mapped_value.call(source, index)
         when Enumerable
-          mapped_value.collect {|key| source_field_value(source, key)}.flatten
+          mapped_value.collect {|key| source_field_value(source, key, index)}.flatten
         else
           # try to turn it into a string, else raise UnkownMappingValue
           mapped_value.respond_to?(:to_s) ? mapped_value.to_s : raise(UnkownMappingValue.new(mapped_value))

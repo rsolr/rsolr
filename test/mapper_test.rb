@@ -40,8 +40,8 @@ class MapperTest < Test::Unit::TestCase
   def test_proc
     data = [{:name=>'-bach;'}]
     mapping = {
-      :name=>proc{|d,mapper|
-        assert_equal Solr::Mapper::Base, mapper.class
+      :name=>proc{|d,index|
+        assert_equal Fixnum, index.class
         d[:name].gsub(/\W+/, '')
       }
     }
@@ -63,10 +63,10 @@ class MapperTest < Test::Unit::TestCase
       :channel=>rss.channel.title,
       :url=>rss.channel.link,
       :total=>rss.items.size,
-      :title=>proc {|item,m| item.title },
-      :link=>proc{|item,m| item.link },
-      :published=>proc{|item,m| item.date },
-      :description=>proc{|item,m| item.description }
+      :title=>proc {|item,index| item.title },
+      :link=>proc{|item,index| item.link },
+      :published=>proc{|item,index| item.date },
+      :description=>proc{|item,index| item.description }
     }
     mapper = Solr::Mapper::Base.new(mapping)
     mapper.map(rss.items)
@@ -81,10 +81,10 @@ class MapperTest < Test::Unit::TestCase
       :channel=>:'channel.title',
       :url=>:'channel.link',
       :total=>:'items.size',
-      :title=>proc {|item,m| item.title },
-      :link=>proc {|item,m| item.link },
-      :published=>proc {|item,m| item.date },
-      :description=>proc {|item,m| item.description }
+      :title=>proc {|item,index| item.title },
+      :link=>proc {|item,index| item.link },
+      :published=>proc {|item,index| item.date },
+      :description=>proc {|item,index| item.description }
     }
     m.map(rss_file, mapping)
   end

@@ -20,9 +20,9 @@ class Solr::Mapper::RSS < Solr::Mapper::Base
   # sends methods chain down into the @rss object
   # example: :'channel.title' == @rss.channel.title
   # if the method chain doesn't exist, the super #source_field_value method is called
-  def source_field_value(source, method_path)
+  def source_field_value(source, method_path, index)
     method_path.to_s.split('.').inject(@rss) do |rss, m|
-      rss.respond_to?(m) ? rss.send(m.to_sym) : super(source, method_path)
+      rss.respond_to?(m) ? rss.send(m.to_sym) : super(source, method_path, index)
     end
   end
   
