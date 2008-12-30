@@ -18,6 +18,11 @@ class MapperTest < Test::Unit::TestCase
     assert_equal expected, mapper.map(data)
   end
   
+  # TODO
+  def test_add_and_set_doc_attributes
+    assert false
+  end
+  
   # test enumerable/array mappings
   def test_array_multi_value
     data = {

@@ -28,7 +28,7 @@ class Solr::Message
             sorted_items = item.inject({}) {|acc,(k,v)| acc.merge({k.to_s=>v})}
             sorted_items.keys.sort.each do |k|
               doc_attrs = {:name=>k}
-              yield doc_attrs if block_given?
+              yield item, doc_attrs if block_given?
               [sorted_items[k]].flatten.each do |v| # multiValued attributes
                 doc_xml.field(v, doc_attrs)
               end

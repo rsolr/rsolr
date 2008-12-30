@@ -51,7 +51,7 @@ class PaginationTest < Test::Unit::TestCase
     assert_equal response.params['rows'], response.per_page
     assert_equal 26, response.total
     # 2 per page, currently on the 10th item
-    assert_equal 1, response.current_page
+    assert_equal 2, response.current_page
     assert_equal 9, response.total_pages
   end
   

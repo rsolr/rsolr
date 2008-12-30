@@ -103,10 +103,11 @@ class Solr::Connection::Base
     Solr::Message
   end
   
-  def modify_params_for_pagination(params)
-    return params unless params[:page]
-    params = params.dup # be nice
-    params[:per_page]||=10
+  def modify_params_for_pagination(orig_params)
+    return orig_params unless orig_params[:page] || orig_params[:per_page]
+    params = orig_params.dup # be nice
+    params[:page] ||= 1
+    params[:per_page] ||= 10
     params[:rows] = params.delete(:per_page).to_i
     params[:start] = calculate_start(params.delete(:page).to_i, params[:rows])
     params

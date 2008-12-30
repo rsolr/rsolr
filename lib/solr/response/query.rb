@@ -37,32 +37,31 @@ module Solr::Response::Query
     
     # alias to the Solr param, 'rows'
     def per_page
-      @per_page = params['rows'].to_s.to_i
+      @per_page ||= params['rows'].to_s.to_i
     end
     
     # Returns the current page calculated from 'rows' and 'start'
     # WillPaginate hook
     def current_page
-      @current_page = self.per_page > 0 ? ((self.start / self.per_page).ceil) : 1
-      @current_page == 0 ? 1 : @current_page
+      @current_page ||= (self.start / self.per_page).ceil + 1
     end
     
     # Calcuates the total pages from 'numFound' and 'rows'
     # WillPaginate hook
     def total_pages
-      self.per_page > 0 ? (self.total / self.per_page.to_f).ceil : 1
+      @total_pages ||= self.per_page > 0 ? (self.total / self.per_page.to_f).ceil : 1
     end
     
     # returns the previous page number or 1
     # WillPaginate hook
     def previous_page
-      (current_page > 1) ? current_page - 1 : 1
+      @previous_page ||= (current_page > 1) ? current_page - 1 : 1
     end
     
     # returns the next page number or the last
     # WillPaginate hook
     def next_page
-      (current_page < total_pages) ? current_page + 1 : total_pages
+      @next_page ||= (current_page < total_pages) ? current_page + 1 : total_pages
     end
     
   end
