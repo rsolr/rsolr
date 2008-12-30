@@ -1,3 +1,7 @@
+Look into HashWithIndifferentAccess or Merb's Mash class for response document field access
+	
+	not sure if accessing fields with dynamic methods is a good idea...
+
 Remove those pesky test warnings about constants already being defined etc.
 
 Is "solr" a good name for this gem?

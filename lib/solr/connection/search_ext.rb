@@ -6,6 +6,18 @@ module Solr::Connection::SearchExt
       params[:fl] = fields.is_a?(Array) ? fields.join(' ') : fields
     end
     
+    # adds quoted values to the :filters hash
+    if params[:phrase_filters]
+      phrase_filters = params.delete(:phrase_filters)
+      params[:filters] ||= {}
+      phrase_filters.each do |filter,values|
+        params[:filters][filter] ||= []
+        values.each do |v|
+          params[:filters][filter] << "\"#{v}\""
+        end
+      end
+    end
+    
     params[:fq] = build_filters(params.delete(:filters)) if params[:filters]
     facets = params.delete(:facets) if params[:facets]
     
