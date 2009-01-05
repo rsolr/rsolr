@@ -1,3 +1,7 @@
+0.5.7 - January 5, 2009
+	Changed name from Solr to RSolr, changed all references to Solr to RSolr
+	Added new tests for RSolr::Mapper and RSolr::Message
+	
 0.5.6 - December 30, 2008
 	solr.gemspec cleanedup thanks to shairontoledo on github! :)
 	Added Solr::Response::Query::Facet module with helpers from the delsolr project
