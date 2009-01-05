@@ -44,7 +44,6 @@ Gem::Specification.new do |s|
     "test/connection/direct_test.rb",
     "test/connection/http_test.rb",
     "test/connection/test_methods.rb",
-    "test/connection/search_ext_test_methods.rb",
     "test/core_ext_test",
     "test/http_client/curb_test.rb",
     "test/http_client/net_http_test.rb",
@@ -53,9 +52,12 @@ Gem::Specification.new do |s|
     "test/indexer.rb",
     "test/mapper_test.rb",
     "test/message_test.rb",
-    "test/pagination_test.rb",
-    "test/ruby-lang.org.rss.xml",
+    "test/response/base_test.rb",
+    "test/response/pagination_test.rb",
+    "test/response/query_test.rb",
+    "test/response/search_ext_test.rb",
     "test/rsolr_test",
+    "test/ruby-lang.org.rss.xml",
     "test/test_helpers.rb",
   ]
   #s.rdoc_options = ["--main", "README.rdoc"]
