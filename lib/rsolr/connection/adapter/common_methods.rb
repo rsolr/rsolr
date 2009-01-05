@@ -39,7 +39,6 @@ module RSolr::Connection::Adapter::CommonMethods
   
   # send a request to the adapter (allows requests like /admin/luke etc.)
   def send_request(handler_path, params={}, data=nil)
-    params = map_params(params)
     @adapter.send_request(handler_path, params, data)
   end
   

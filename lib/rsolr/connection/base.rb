@@ -19,13 +19,13 @@ class RSolr::Connection::Base
       :debugQuery=>true
     }
     opts[:global_params] = default_global_params.merge(opts[:global_params])
-    @opts=opts
+    @opts = opts
   end
   
   # sets default params etc.. - could be used as a mapping hook
   # type of request should be passed in here? -> map_params(:query, {})
   def map_params(params)
-    opts[:global_params].dup.merge(params).dup
+    opts[:global_params].dup.merge(params).to_mash
   end
   
   # send request to the select handler

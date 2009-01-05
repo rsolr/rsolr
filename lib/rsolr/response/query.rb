@@ -2,15 +2,7 @@
 module RSolr::Response::Query
   
   # module for adding helper methods to each Hash document
-  module DocExt
-    
-    def self.extended(base)
-      base.keys.each do |k,v|
-        base.instance_eval <<-EOF
-        def #{k}; self['#{k.to_s}']; end
-        EOF
-      end
-    end
+  class Doc < Mash
     
     # Helper method to check if value/multi-values exist for a given key.
     # The value can be a string, or a RegExp
@@ -20,7 +12,7 @@ module RSolr::Response::Query
     # doc.has?(:id, 'h009', /^u/i)
     def has?(k, *values)
       return if self[k].nil?
-      return true if self.has_key?(k) and values.empty?
+      return true if self.key?(k) and values.empty?
       target = self[k]
       if target.is_a?(Array)
         values.each do |val|
@@ -30,7 +22,7 @@ module RSolr::Response::Query
         return values.any? {|val| val.is_a?(Regexp) ? (target =~ val) : (target == val)}
       end
     end
-
+    
   end
   
   # from the delsolr project -> http://github.com/avvo/delsolr/tree/master/lib/delsolr/response.rb
@@ -150,19 +142,16 @@ module RSolr::Response::Query
     include RSolr::Response::Query::Facets
     
     attr_reader :response, :docs, :num_found, :start
-  
+    
     alias :total :num_found
     alias :offset :start
-  
+    
     def initialize(data)
       super(data)
-      @response = @data['response']
-      @docs = @response['docs']
-      @docs.each do |d|
-        d.extend RSolr::Response::Query::DocExt
-      end
-      @num_found = @response['numFound']
-      @start = @response['start']
+      @response = @data[:response]
+      @docs = @response[:docs].collect{ |d| Doc.new(d) }
+      @num_found = @response[:numFound]
+      @start = @response[:start]
     end
   
   end

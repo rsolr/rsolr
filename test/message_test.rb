@@ -17,7 +17,9 @@ class MessageTest < RSolrBaseTest
     result = RSolr::Message.add({:id=>1}, :boost=>200.00) do |hash_doc, doc_xml_attrs|
       doc_xml_attrs[:boost] = 10
     end
-    assert_equal '<add boost="200.0"><doc><field name="id" boost="10">1</field></doc></add>', result
+    assert result =~ /add boost="200.0"/
+    assert result =~ /boost="10"/
+    #assert_equal '<add boost="200.0"><doc><field name="id" boost="10">1</field></doc></add>', result
   end
   
   def test_delete_by_id

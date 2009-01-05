@@ -3,11 +3,11 @@
 proc {|base, files|
   $: << base unless $:.include?(base) || $:.include?(File.expand_path(base))
   files.each {|f| require f}
-}.call(File.dirname(__FILE__), ['core_ext'])
+}.call(File.dirname(__FILE__), ['core_ext', 'mash'])
 
 module RSolr
   
-  VERSION = '0.5.7'
+  VERSION = '0.5.8'
   
   autoload :Message, 'rsolr/message'
   autoload :Response, 'rsolr/response'

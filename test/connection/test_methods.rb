@@ -62,20 +62,18 @@ module ConnectionTestMethods
     assert r.is_a?(RSolr::Response::Query::Base)
     assert_equal Array, r.docs.class
     first = r.docs.first
-    assert first.respond_to?(:price)
-    assert first.respond_to?(:cat)
-    assert first.respond_to?(:id)
-    assert first.respond_to?(:timestamp)
     
     # test the has? method
     assert first.has?('price', 1.00)
+    assert ! first.has?('price', 10.00)
     assert first.has?('cat', 'electronics')
     assert first.has?('cat', 'something else')
+    assert first.has?(:cat, 'something else')
     
     assert first.has?('cat', /something/)
     
     # has? only works with strings at this time
-    assert_nil first.has?(:cat)
+    assert first.has?(:cat)
     
     assert false == first.has?('cat', /zxcv/)
   end

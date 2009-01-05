@@ -3,31 +3,23 @@
 # So far, all response classes extend this
 class RSolr::Response::Base
   
-  attr_reader :source
+  # the object that contains the original :body, :params, full solr :query, post :data etc.
+  attr_reader :input
   
-  attr_reader :raw_response, :data, :header, :params, :status, :query_time
+  attr_reader :data, :header, :params, :status, :query_time
   
-  def initialize(data)
-    if data.is_a?(Hash) and data.has_key?(:body)
-      @raw_response = data[:body]
-      @data = Kernel.eval(@raw_response)
-      @source = data
-    else
-      if data.is_a?(String)
-        @raw_response = data
-        @data = Kernel.eval(@raw_response)
-      elsif data.is_a?(Hash)
-        @data = data
-      end
-    end
-    @header = @data['responseHeader']
-    @params = @header['params']
-    @status = @header['status']
-    @query_time = @header['QTime']
+  def initialize(input)
+    input = {:body=>input} if input.is_a?(String)
+    @input = input
+    @data = Kernel.eval(input[:body]).to_mash
+    @header = @data[:responseHeader]
+    @params = @header[:params]
+    @status = @header[:status]
+    @query_time = @header[:QTime]
   end
   
   def ok?
-    self.status==0
+    self.status == 0
   end
   
 end

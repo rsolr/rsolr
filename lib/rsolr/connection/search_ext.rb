@@ -1,6 +1,7 @@
 module RSolr::Connection::SearchExt
   
-  def search(q_param, params={})
+  def search(params={})
+    params = params.to_mash
     if params[:fields]
       fields = params.delete :fields
       params[:fl] = fields.is_a?(Array) ? fields.join(' ') : fields
@@ -35,7 +36,7 @@ module RSolr::Connection::SearchExt
       end
     end
     #params[:qt] ||= :dismax
-    params[:q] = build_query(q_param)
+    params[:q] = build_query(params[:q])
     self.query params
   end
   

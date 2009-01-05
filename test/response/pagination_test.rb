@@ -1,6 +1,6 @@
-require File.join(File.dirname(__FILE__), 'test_helpers')
+require File.join(File.dirname(__FILE__), '..', 'test_helpers')
 
-class PaginationTest < RSolrBaseTest
+class ResponsePaginationTest < RSolrBaseTest
   
   def create_response(params={})
     response = RSolr::Response::Query::Base.new(mock_query_response)

@@ -1,8 +1,6 @@
 facets_by_hash method not ordered - needs to be an array
 
-Look into HashWithIndifferentAccess or Merb's Mash class for response document field access
-	
-	not sure if accessing fields with dynamic methods is a good idea...
+Apply ExtLib's Mash class to incoming param hashes and response hashes
 
 Remove those pesky test warnings about constants already being defined etc.
 

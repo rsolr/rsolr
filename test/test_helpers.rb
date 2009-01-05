@@ -4,6 +4,10 @@ require 'test/unit'
 
 class RSolrBaseTest < Test::Unit::TestCase
   
+  def assert_class(expected, instance)
+    assert_equal expected, instance.class
+  end
+  
   def default_test
     
   end
@@ -17,7 +21,7 @@ end
 #end
 
 def mock_query_response
-  {'responseHeader'=>{
+  %({'responseHeader'=>{
     'status'=>0,'QTime'=>43,'params'=>{
       'q'=>'*:*','wt'=>'ruby','echoParams'=>'EXPLICIT'
     }
@@ -35,5 +39,5 @@ def mock_query_response
       {'id'=>'3007WFP','inStock'=>true,'includes'=>'USB cable','manu'=>'Dell, Inc.','name'=>'Dell Widescreen UltraSharp 3007WFP','popularity'=>6,'price'=>2199.0,'sku'=>'3007WFP','timestamp'=>'2008-11-21T17:21:55.724Z','weight'=>401.6,'cat'=>['electronics','monitor'],'spell'=>['Dell Widescreen UltraSharp 3007WFP'],'features'=>['30" TFT active matrix LCD, 2560 x 1600, .25mm dot pitch, 700:1 contrast']},
       {'id'=>'VA902B','inStock'=>true,'manu'=>'ViewSonic Corp.','name'=>'ViewSonic VA902B - flat panel display - TFT - 19"','popularity'=>6,'price'=>279.95,'sku'=>'VA902B','timestamp'=>'2008-11-21T17:21:55.734Z','weight'=>190.4,'cat'=>['electronics','monitor'],'spell'=>['ViewSonic VA902B - flat panel display - TFT - 19"'],'features'=>['19" TFT active matrix LCD, 8ms response time, 1280 x 1024 native resolution']}]
     }
-  }
+  })
 end

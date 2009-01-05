@@ -102,7 +102,7 @@ Commit & Optimize
 ==Response Formats
 The default response format is Ruby. When the :wt param is set to :ruby, the response is eval'd and wrapped up in a nice RSolr::Response class. You can get an unwrapped response by setting the :wt to "ruby" - notice, the string -- not a symbol. All other response formats are available as expected, :wt=>'xml' etc.. Currently, the only response format that gets eval'd and wrapped is :ruby.
 
-You can access the original request context (path, params, url etc.) from response.source. The response.source is a hash that contains the generated params, url, path, post data, headers etc.. This could be useful for debugging and testing.
+You can access the original request context (path, params, url etc.) from response.request. The response.request is a hash that contains the generated params, url, path, post data, headers etc., very useful for debugging and testing.
 
 ==Data Mapping
 The RSolr::Mapper::Base class provides some nice ways of mapping data. You provide a hash mapping and a "data source". The keys of the hash mapping become the Solr field names. The values of the hash mapping get processed differently based on the value. The data source must be an Enumerable type object. The hash mapping is processed for each item in the data source.
