@@ -2,7 +2,7 @@ require File.join(File.dirname(__FILE__), 'test_helpers')
 
 require 'rss'
 
-class MapperTest < Test::Unit::TestCase
+class MapperTest < RSolrBaseTest
   
   # simple replacement
   def test_string_map
@@ -13,14 +13,27 @@ class MapperTest < Test::Unit::TestCase
       :id=>'one',
       :name=>'foo'
     }
-    mapper = Solr::Mapper::Base.new(mapping)
+    mapper = RSolr::Mapper::Base.new(mapping)
     expected = [mapping]
     assert_equal expected, mapper.map(data)
   end
   
-  # TODO
-  def test_add_and_set_doc_attributes
-    assert false
+  def test_map_yields_if_block_given
+    data = {
+      :NUMID=>100,
+      :type=>:type_val,
+      :code=>:code_val
+    }
+    mapping = {
+      :id=>:NUMID,
+      :name=>'foo',
+      :category=>[:type, :code]
+    }
+    mapper = RSolr::Mapper::Base.new(mapping)
+    expected = [{:name=>"foo", :category=>[:type_val, :code_val], :id=>100}]
+    result = mapper.map(data) do |doc|
+      assert expected, doc
+    end
   end
   
   # test enumerable/array mappings
@@ -35,7 +48,7 @@ class MapperTest < Test::Unit::TestCase
       :name=>'foo',
       :category=>[:type, :code]
     }
-    mapper = Solr::Mapper::Base.new(mapping)
+    mapper = RSolr::Mapper::Base.new(mapping)
     expected = [{:name=>"foo", :category=>[:type_val, :code_val], :id=>100}]
     assert_equal expected, mapper.map(data)
   end
@@ -50,7 +63,7 @@ class MapperTest < Test::Unit::TestCase
         d[:name].gsub(/\W+/, '')
       }
     }
-    mapper = Solr::Mapper::Base.new(mapping)
+    mapper = RSolr::Mapper::Base.new(mapping)
     expected = [{:name=>"bach"}]
     assert_equal expected, mapper.map(data)
   end
@@ -73,7 +86,7 @@ class MapperTest < Test::Unit::TestCase
       :published=>proc{|item,index| item.date },
       :description=>proc{|item,index| item.description }
     }
-    mapper = Solr::Mapper::Base.new(mapping)
+    mapper = RSolr::Mapper::Base.new(mapping)
     mapper.map(rss.items)
   end
   
@@ -81,7 +94,7 @@ class MapperTest < Test::Unit::TestCase
   # create a mapping
   # map it and test the fields
   def rss_mapper_docs
-    m = Solr::Mapper::RSS.new
+    m = RSolr::Mapper::RSS.new
     mapping = {
       :channel=>:'channel.title',
       :url=>:'channel.link',

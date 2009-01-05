@@ -15,14 +15,14 @@
 #   :headers
 
 # Example:
-#   hclient = Solr::HTTPClient.connect('http://www.google.com', :net_http)
+#   hclient = RSolr::HTTPClient.connect('http://www.google.com', :net_http)
 #   response = hclient.get('/search', :hl=>:en, :q=>:ruby, :btnG=>:Search)
 #   puts response[:status_code]
 #   puts response[:body]
 
-module Solr::HTTPClient
+module RSolr::HTTPClient
   
-  autoload :Adapter, 'solr/http_client/adapter'
+  autoload :Adapter, 'rsolr/http_client/adapter'
   
   class UnkownAdapterError < RuntimeError; end
   
@@ -35,7 +35,7 @@ module Solr::HTTPClient
     else
       raise UnkownAdapterError.new("Name: #{adapter_name}")
     end
-    Base.new Solr::HTTPClient::Adapter.const_get(klass).new(url)
+    Base.new RSolr::HTTPClient::Adapter.const_get(klass).new(url)
   end
   
   class Base
@@ -50,7 +50,7 @@ module Solr::HTTPClient
       begin
         http_context = @adapter.get(path, params)
       rescue
-        raise Solr::RequestError.new($!)
+        raise RSolr::RequestError.new($!)
       end
       http_context
     end
@@ -59,7 +59,7 @@ module Solr::HTTPClient
       begin
         http_context = @adapter.post(path, data, params, headers)
       rescue
-        raise Solr::RequestError.new($!)
+        raise RSolr::RequestError.new($!)
       end
       http_context
     end

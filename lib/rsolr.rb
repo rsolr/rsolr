@@ -5,16 +5,16 @@ proc {|base, files|
   files.each {|f| require f}
 }.call(File.dirname(__FILE__), ['core_ext'])
 
-module Solr
+module RSolr
   
-  VERSION = '0.5.6'
+  VERSION = '0.5.7'
   
-  autoload :Message, 'solr/message'
-  autoload :Response, 'solr/response'
-  autoload :Connection, 'solr/connection'
-  autoload :Mapper, 'solr/mapper'
-  autoload :Indexer, 'solr/indexer'
-  autoload :HTTPClient, 'solr/http_client'
+  autoload :Message, 'rsolr/message'
+  autoload :Response, 'rsolr/response'
+  autoload :Connection, 'rsolr/connection'
+  autoload :Mapper, 'rsolr/mapper'
+  autoload :Indexer, 'rsolr/indexer'
+  autoload :HTTPClient, 'rsolr/http_client'
   
   # factory for creating connections
   # adapter name is either :http or :direct
@@ -25,8 +25,8 @@ module Solr
       :http=>'HTTP',
       :direct=>'Direct'
     }
-    adapter_class = Solr::Connection::Adapter.const_get(types[adapter_name])
-    Solr::Connection::Base.new(adapter_class.new(opts), opts)
+    adapter_class = RSolr::Connection::Adapter.const_get(types[adapter_name])
+    RSolr::Connection::Base.new(adapter_class.new(opts), opts)
   end
   
   class RequestError < RuntimeError; end

@@ -3,7 +3,7 @@
 require 'rss'
 require 'open-uri'
 
-class Solr::Mapper::RSS < Solr::Mapper::Base
+class RSolr::Mapper::RSS < RSolr::Mapper::Base
   
   attr_reader :rss
   

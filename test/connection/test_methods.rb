@@ -11,7 +11,6 @@ module ConnectionTestMethods
   #  assert_equal 0, @solr.query(:q=>'*:*').docs.size
   #end
   
-  
   def test_default_options
     target = {
       :select_path => '/select',
@@ -23,13 +22,13 @@ module ConnectionTestMethods
   
   # setting adapter options in Solr.connect method should set them in the adapter
   def test_set_adapter_options
-    solr = Solr.connect(:http, :select_path=>'/select2')
+    solr = RSolr.connect(:http, :select_path=>'/select2')
     assert_equal '/select2', solr.adapter.opts[:select_path]
   end
   
   # setting connection options in Solr.connect method should set them in the connection
   def test_set_connection_options
-    solr = Solr.connect(:http, :default_wt=>:json)
+    solr = RSolr.connect(:http, :default_wt=>:json)
     assert_equal :json, solr.opts[:default_wt]
   end
   
@@ -49,9 +48,9 @@ module ConnectionTestMethods
   
   def test_query_responses
     r = @solr.query(:q=>'*:*')
-    assert r.is_a?(Solr::Response::Query::Base)
+    assert r.is_a?(RSolr::Response::Query::Base)
     # catch exceptions for bad queries
-    assert_raise Solr::RequestError do
+    assert_raise RSolr::RequestError do
       @solr.query(:q=>'!')
     end
   end
@@ -60,7 +59,7 @@ module ConnectionTestMethods
     @solr.add(:id=>1, :price=>1.00, :cat=>['electronics', 'something else'])
     @solr.commit
     r = @solr.query(:q=>'*:*')
-    assert r.is_a?(Solr::Response::Query::Base)
+    assert r.is_a?(RSolr::Response::Query::Base)
     assert_equal Array, r.docs.class
     first = r.docs.first
     assert first.respond_to?(:price)
@@ -86,7 +85,7 @@ module ConnectionTestMethods
     response = @solr.add(:id=>100)
     @solr.commit
     assert_equal 1, @solr.query(:q=>'*:*').total
-    assert response.is_a?(Solr::Response::Update)
+    assert response.is_a?(RSolr::Response::Update)
   end
   
   def test_delete_by_id
@@ -96,7 +95,7 @@ module ConnectionTestMethods
     assert_equal 1, total
     delete_response = @solr.delete_by_id(100)
     @solr.commit
-    assert delete_response.is_a?(Solr::Response::Update)
+    assert delete_response.is_a?(RSolr::Response::Update)
     total = @solr.query(:q=>'*:*').total
     assert_equal 0, total
   end
@@ -107,13 +106,13 @@ module ConnectionTestMethods
     assert_equal 1, @solr.query(:q=>'*:*').total
     response = @solr.delete_by_query('name:BLAH BLAH BLAH')
     @solr.commit
-    assert response.is_a?(Solr::Response::Update)
+    assert response.is_a?(RSolr::Response::Update)
     assert_equal 0, @solr.query(:q=>'*:*').total
   end
   
   def test_index_info
     response = @solr.index_info
-    assert response.is_a?(Solr::Response::IndexInfo)
+    assert response.is_a?(RSolr::Response::IndexInfo)
     # make sure the ? methods are true/false
     assert [true, false].include?(response.current?)
     assert [true, false].include?(response.optimized?)

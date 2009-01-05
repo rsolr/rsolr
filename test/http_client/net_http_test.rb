@@ -2,10 +2,10 @@ require File.join(File.dirname(__FILE__), '..', 'test_helpers')
 
 require File.join(File.dirname(__FILE__), 'test_methods')
 
-class NetHTTPTest < Test::Unit::TestCase
+class NetHTTPTest < RSolrBaseTest
   
   def setup
-    @c ||= Solr::HTTPClient.connect(URL, :net_http)
+    @c ||= RSolr::HTTPClient.connect(URL, :net_http)
   end
   
   include HTTPClientTestMethods

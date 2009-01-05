@@ -1,13 +1,13 @@
 require File.join(File.dirname(__FILE__), 'test_helpers.rb')
 
-class SolrTest < SolrBaseTest
+class SolrTest < RSolrBaseTest
   
   def test_adapter_types
-    solr = Solr.connect(:http)
-    assert Solr::Connection::Adapter::HTTP, solr.adapter.class
+    solr = RSolr.connect(:http)
+    assert RSolr::Connection::Adapter::HTTP, solr.adapter.class
     if defined?(JRUBY_VERSION)
-      solr = Solr.connect(:direct)
-      assert Solr::Connection::Adapter::Direct, solr.adapter.class
+      solr = RSolr.connect(:direct)
+      assert RSolr::Connection::Adapter::Direct, solr.adapter.class
     end
   end
   

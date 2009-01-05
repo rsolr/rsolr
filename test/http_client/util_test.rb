@@ -1,9 +1,9 @@
 require File.join(File.dirname(__FILE__), '..', 'test_helpers')
 
-class HTTPUtilTest < Test::Unit::TestCase
+class HTTPUtilTest < RSolrBaseTest
   
   class DummyClass
-    include Solr::HTTPClient::Util
+    include RSolr::HTTPClient::Util
   end
   
   def setup

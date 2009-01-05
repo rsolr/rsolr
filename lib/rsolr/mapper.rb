@@ -1,6 +1,6 @@
-module Solr::Mapper
+module RSolr::Mapper
   
-  autoload :RSS, 'solr/mapper/rss'
+  autoload :RSS, 'rsolr/mapper/rss'
   
   class UnkownMappingValue < RuntimeError; end
   
@@ -17,7 +17,7 @@ module Solr::Mapper
     # source - a hash or array of source data
     # override_mapping - an alternate mapper
     # returns an array with one or more mapped hashes
-    def map(source, override_mapping=nil)
+    def map(source, override_mapping=nil, &block)
       source = [source] if source.is_a?(Hash)
       mapping = override_mapping || @mapping
       index = -1
@@ -25,10 +25,12 @@ module Solr::Mapper
       source.collect do |src|
         index += 1
         # for each mapping item, inject data into a new hash
-        mapping.inject({}) do |a_new_hash, (map_key, map_value)|
+        final_hash = mapping.inject({}) do |a_new_hash, (map_key, map_value)|
           value = mapped_field_value(src, map_value, index)
           value.to_s.empty? ? a_new_hash : a_new_hash.merge!({map_key=>value})
         end
+        yield final_hash if block_given?
+        final_hash
       end
     end
   

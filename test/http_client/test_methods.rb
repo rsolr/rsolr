@@ -3,8 +3,8 @@ module HTTPClientTestMethods
   URL = 'http://localhost:8983/solr/'
   
   def test_raise_unknown_adapter
-    assert_raise Solr::HTTPClient::UnkownAdapterError do
-      c = Solr::HTTPClient.connect(URL, :blah)
+    assert_raise RSolr::HTTPClient::UnkownAdapterError do
+      c = RSolr::HTTPClient.connect(URL, :blah)
     end
   end
   

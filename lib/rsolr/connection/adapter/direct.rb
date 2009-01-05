@@ -5,10 +5,10 @@ require 'java'
 #
 # Connection for JRuby + DirectSolrConnection
 #
-class Solr::Connection::Adapter::Direct
+class RSolr::Connection::Adapter::Direct
   
-  include Solr::HTTPClient::Util
-  include Solr::Connection::Adapter::CommonMethods
+  include RSolr::HTTPClient::Util
+  include RSolr::Connection::Adapter::CommonMethods
   
   attr_accessor :opts, :home_dir
   
@@ -48,7 +48,7 @@ class Solr::Connection::Adapter::Direct
     begin
       body = connection.request(url, data)
     rescue
-      raise Solr::RequestError.new($!.message)
+      raise RSolr::RequestError.new($!.message)
     end
     {
       :status_code=>'',

@@ -1,7 +1,7 @@
 # default/base response object
 # This is where the ruby "eval" happens
 # So far, all response classes extend this
-class Solr::Response::Base
+class RSolr::Response::Base
   
   attr_reader :source
   

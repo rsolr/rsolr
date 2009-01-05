@@ -1,5 +1,5 @@
 # response for /admin/luke
-class Solr::Response::IndexInfo < Solr::Response::Base
+class RSolr::Response::IndexInfo < RSolr::Response::Base
   
   attr_reader :index, :directory, :has_deletions, :optimized, :current, :max_doc, :num_docs, :version
   

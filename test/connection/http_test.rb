@@ -4,12 +4,12 @@ unless defined?(JRUBY_VERSION)
   
   require File.join(File.dirname(__FILE__), 'test_methods')
 
-  class AdapterHTTPTest < Test::Unit::TestCase
+  class AdapterHTTPTest < RSolrBaseTest
   
     include ConnectionTestMethods
   
     def setup
-      @solr = Solr.connect :http
+      @solr = RSolr.connect :http
       @solr.delete_by_query('*:*')
       @solr.commit
     end

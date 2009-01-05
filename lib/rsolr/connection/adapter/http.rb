@@ -1,7 +1,7 @@
 #
 # Connection for standard HTTP Solr server
 #
-class Solr::Connection::Adapter::HTTP
+class RSolr::Connection::Adapter::HTTP
   
   class << self
     attr_accessor :client_adapter
@@ -9,7 +9,7 @@ class Solr::Connection::Adapter::HTTP
   
   @client_adapter = :net_http
   
-  include Solr::Connection::Adapter::CommonMethods
+  include RSolr::Connection::Adapter::CommonMethods
   
   attr_reader :opts
   
@@ -25,7 +25,7 @@ class Solr::Connection::Adapter::HTTP
   end
   
   def connection
-    @connection ||= Solr::HTTPClient.connect(@opts[:url], self.class.client_adapter)
+    @connection ||= RSolr::HTTPClient.connect(@opts[:url], self.class.client_adapter)
   end
   
   # send a request to the connection
@@ -37,7 +37,7 @@ class Solr::Connection::Adapter::HTTP
     else
       http_context = connection.get(path, params)
     end
-    raise Solr::RequestError.new(http_context[:body]) unless http_context[:status_code] == 200
+    raise RSolr::RequestError.new(http_context[:body]) unless http_context[:status_code] == 200
     http_context
   end
   

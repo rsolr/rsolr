@@ -1,10 +1,10 @@
-class Solr::Indexer
+class RSolr::Indexer
   
   attr_reader :solr, :mapper, :opts
   
   def initialize(solr, mapping_or_mapper, opts={})
     @solr = solr
-    @mapper = mapping_or_mapper.is_a?(Hash) ? Solr::Mapper::Base.new(mapping_or_mapper) : mapping_or_mapper
+    @mapper = mapping_or_mapper.is_a?(Hash) ? RSolr::Mapper::Base.new(mapping_or_mapper) : mapping_or_mapper
     @opts = opts
   end
   

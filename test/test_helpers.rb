@@ -1,8 +1,8 @@
 $: << File.dirname(__FILE__)
-require File.join(File.dirname(__FILE__), '..', 'lib', 'solr')
+require File.join(File.dirname(__FILE__), '..', 'lib', 'rsolr')
 require 'test/unit'
 
-class SolrBaseTest < Test::Unit::TestCase
+class RSolrBaseTest < Test::Unit::TestCase
   
   def default_test
     

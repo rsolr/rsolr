@@ -1,4 +1,4 @@
-module Solr::Connection::SearchExt
+module RSolr::Connection::SearchExt
   
   def search(q_param, params={})
     if params[:fields]

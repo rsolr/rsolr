@@ -1,9 +1,9 @@
 require 'rubygems'
 require 'curb'
 
-class Solr::HTTPClient::Adapter::Curb
+class RSolr::HTTPClient::Adapter::Curb
   
-  include Solr::HTTPClient::Util
+  include RSolr::HTTPClient::Util
   
   attr :uri
   attr :c

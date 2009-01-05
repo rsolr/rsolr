@@ -6,10 +6,10 @@ unless defined?(JRUBY_VERSION)
   
   require File.join(File.dirname(__FILE__), 'test_methods')
 
-  class CurbTest < Test::Unit::TestCase
+  class CurbTest < RSolrBaseTest
   
     def setup
-      @c ||= Solr::HTTPClient.connect(URL, :curb)
+      @c ||= RSolr::HTTPClient.connect(URL, :curb)
     end
   
     include HTTPClientTestMethods

@@ -1,11 +1,11 @@
 # Must be executed using jruby
-require File.join(File.dirname(__FILE__), '..', 'lib', 'solr')
+require File.join(File.dirname(__FILE__), '..', 'lib', 'rsolr')
 
 base = File.expand_path( File.dirname(__FILE__) )
 dist = File.join(base, '..', 'apache-solr')
 home = File.join(dist, 'example', 'solr')
 
-solr = Solr.connect(:direct, :home_dir=>home, :dist_dir=>dist)
+solr = RSolr.connect(:direct, :home_dir=>home, :dist_dir=>dist)
 
 `cd ../apache-solr/example/exampledocs && ./post.sh ./*.xml`
 

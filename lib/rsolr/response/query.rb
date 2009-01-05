@@ -1,5 +1,5 @@
 # response module for queries
-module Solr::Response::Query
+module RSolr::Response::Query
   
   # module for adding helper methods to each Hash document
   module DocExt
@@ -144,10 +144,10 @@ module Solr::Response::Query
   # adds to the Solr::Response::Base class by defining a few more attributes,
   # includes the Pagination module, and extends each of the doc hashes
   # with Solr::Response::Query::DocExt
-  class Base < Solr::Response::Base
+  class Base < RSolr::Response::Base
     
-    include Solr::Response::Query::Pagination
-    include Solr::Response::Query::Facets
+    include RSolr::Response::Query::Pagination
+    include RSolr::Response::Query::Facets
     
     attr_reader :response, :docs, :num_found, :start
   
@@ -159,7 +159,7 @@ module Solr::Response::Query
       @response = @data['response']
       @docs = @response['docs']
       @docs.each do |d|
-        d.extend Solr::Response::Query::DocExt
+        d.extend RSolr::Response::Query::DocExt
       end
       @num_found = @response['numFound']
       @start = @response['start']

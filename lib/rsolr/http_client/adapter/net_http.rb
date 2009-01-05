@@ -1,8 +1,8 @@
 require 'net/http'
 
-class Solr::HTTPClient::Adapter::NetHTTP
+class RSolr::HTTPClient::Adapter::NetHTTP
   
-  include Solr::HTTPClient::Util
+  include RSolr::HTTPClient::Util
   
   attr :uri
   attr :c

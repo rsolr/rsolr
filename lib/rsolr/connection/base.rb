@@ -1,15 +1,15 @@
 #
 # Connection adapter decorator
 #
-class Solr::Connection::Base
+class RSolr::Connection::Base
   
   attr_reader :adapter, :opts
   
-  include Solr::Connection::SearchExt
+  include RSolr::Connection::SearchExt
   
   # "adapter" is instance of:
-  #   Solr::Adapter::HTTP
-  #   Solr::Adapter::Direct (jRuby only)
+  #   RSolr::Adapter::HTTP
+  #   RSolr::Adapter::Direct (jRuby only)
   def initialize(adapter, opts={})
     @adapter=adapter
     opts[:global_params]||={}
@@ -32,12 +32,12 @@ class Solr::Connection::Base
   # params is hash with valid solr request params (:q, :fl, :qf etc..)
   #   if params[:wt] is not set, the default is :ruby (see opts[:global_params])
   #   if :wt is something other than :ruby, the raw response body is returned
-  #   otherwise, an instance of Solr::Response::Query is returned
+  #   otherwise, an instance of RSolr::Response::Query is returned
   #   NOTE: to get raw ruby, use :wt=>'ruby'
   def query(params)
     params = map_params(modify_params_for_pagination(params))
     response = @adapter.query(params)
-    params[:wt]==:ruby ? Solr::Response::Query::Base.new(response) : response
+    params[:wt]==:ruby ? RSolr::Response::Query::Base.new(response) : response
   end
   
   # Finds a document by its id
@@ -50,7 +50,7 @@ class Solr::Connection::Base
   def index_info(params={})
     params = map_params(params)
     response = @adapter.index_info(params)
-    params[:wt] == :ruby ? Solr::Response::IndexInfo.new(response) : response
+    params[:wt] == :ruby ? RSolr::Response::IndexInfo.new(response) : response
   end
   
   # if :ruby is the :wt, then Solr::Response::Base is returned
@@ -59,7 +59,7 @@ class Solr::Connection::Base
   def update(data, params={})
     params = map_params(params)
     response = @adapter.update(data, params)
-    params[:wt]==:ruby ? Solr::Response::Update.new(response) : response
+    params[:wt]==:ruby ? RSolr::Response::Update.new(response) : response
   end
   
   def add(hash_or_array, opts={}, &block)
@@ -100,7 +100,7 @@ class Solr::Connection::Base
   
   # shortcut to solr::message
   def message
-    Solr::Message
+    RSolr::Message
   end
   
   def modify_params_for_pagination(orig_params)

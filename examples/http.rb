@@ -1,7 +1,7 @@
 # Must be executed using jruby
-require File.join(File.dirname(__FILE__), '..', 'lib', 'solr')
+require File.join(File.dirname(__FILE__), '..', 'lib', 'rsolr')
 
-solr = Solr.connect(:http)
+solr = RSolr.connect(:http)
 
 `cd ../apache-solr/example/exampledocs && ./post.sh ./*.xml`
 

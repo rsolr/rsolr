@@ -16,9 +16,9 @@ proc {|files|
 
 require 'uri'
 
-class Solr::HTTP::Adapter::ApacheCommons
+class RSolr::HTTP::Adapter::ApacheCommons
   
-  include Solr::HTTP::Util
+  include RSolr::HTTP::Util
   
   attr :c, :uri
   
