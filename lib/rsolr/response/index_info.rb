@@ -20,4 +20,14 @@ class RSolr::Response::IndexInfo < RSolr::Response::Base
     @version = @index[:version]
   end
   
+  # Returns an array of fields from the index
+  # An optional rule can be used for "grepping" field names:
+  # field_list(/_facet$/)
+  def field_list(rule=nil)
+    @data[:fields].select do |k,v|
+      rule ? k =~ rule : true
+    end.collect{|k,v|k}
+  end
+  
+  
 end

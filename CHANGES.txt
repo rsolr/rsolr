@@ -1,9 +1,10 @@
-0.5.8 - January 5, 2009
+0.5.8 - January 7, 2009
 	Finally brought in the ExtLib Mash classes for incoming params and response hashes from solr
 	  - this gives the ability to access/set values for hashes using strings OR symbols (HashWithIndifferentAccess)
 	Organized response tests
 	Added more response tests
 	Simplified the RSolr::Response::Base class by supporting only raw/string ruby input
+	Added method to Response::IndexInfo for grabbing a Solr field list
 	
 0.5.7 - January 5, 2009
 	Changed name from Solr to RSolr, changed all references to Solr to RSolr

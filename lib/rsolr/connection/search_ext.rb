@@ -1,5 +1,7 @@
 module RSolr::Connection::SearchExt
   
+  # TODO : clean this thing up dude
+  
   def search(params={})
     params = params.to_mash
     if params[:fields]
@@ -12,14 +14,19 @@ module RSolr::Connection::SearchExt
       phrase_filters = params.delete(:phrase_filters)
       params[:filters] ||= {}
       phrase_filters.each do |filter,values|
+        values = [values] unless values.is_a?(Array)
         params[:filters][filter] ||= []
+        params[:filters][filter] = [params[:filters][filter]] unless params[:filters][filter].is_a?(Array)
         values.each do |v|
-          params[:filters][filter] << "\"#{v}\""
+          params[:filters][filter] << %(\"#{v}\")
         end
       end
     end
     
-    params[:fq] = build_filters(params.delete(:filters)) if params[:filters]
+    if params[:filters]
+      filter_params = params.delete(:filters)
+      params[:fq] = build_filters(filter_params)
+    end 
     facets = params.delete(:facets) if params[:facets]
     
     if facets
