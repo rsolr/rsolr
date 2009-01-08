@@ -1,4 +1,4 @@
-0.5.8 - January 7, 2009
+0.5.9 - January 7, 2009
 	Finally brought in the ExtLib Mash classes for incoming params and response hashes from solr
 	  - this gives the ability to access/set values for hashes using strings OR symbols (HashWithIndifferentAccess)
 	Organized response tests
