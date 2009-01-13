@@ -9,7 +9,7 @@ unless defined?(JRUBY_VERSION)
     include ConnectionTestMethods
   
     def setup
-      @solr = RSolr.connect :http
+      @solr = RSolr.connect
       @solr.delete_by_query('*:*')
       @solr.commit
     end

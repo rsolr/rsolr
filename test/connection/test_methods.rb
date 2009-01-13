@@ -22,13 +22,13 @@ module ConnectionTestMethods
   
   # setting adapter options in Solr.connect method should set them in the adapter
   def test_set_adapter_options
-    solr = RSolr.connect(:http, :select_path=>'/select2')
+    solr = RSolr.connect(:select_path=>'/select2')
     assert_equal '/select2', solr.adapter.opts[:select_path]
   end
   
   # setting connection options in Solr.connect method should set them in the connection
   def test_set_connection_options
-    solr = RSolr.connect(:http, :default_wt=>:json)
+    solr = RSolr.connect(:default_wt=>:json)
     assert_equal :json, solr.opts[:default_wt]
   end
   

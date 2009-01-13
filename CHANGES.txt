@@ -1,3 +1,13 @@
+0.6.1 - January 13, 2009
+	Removed SearchExt and mapping until this library gets some real use
+	The only param mapping now is for :page and :per_page via the #search method
+	The Connection::Base #query method does NO mapping now
+	
+0.6.0 - January 9, 2009
+	Removed first argument from RSolr.connect, the "adapter_name"
+		The adapter is now set using the :adapter key when passing in options to RSolr.connect:
+		s = RSolr.connect(:adapter=>:direct)
+	
 0.5.9 - January 7, 2009
 	Finally brought in the ExtLib Mash classes for incoming params and response hashes from solr
 	  - this gives the ability to access/set values for hashes using strings OR symbols (HashWithIndifferentAccess)

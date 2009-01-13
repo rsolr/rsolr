@@ -7,7 +7,7 @@ proc {|base, files|
 
 module RSolr
   
-  VERSION = '0.5.9'
+  VERSION = '0.6.0'
   
   autoload :Message, 'rsolr/message'
   autoload :Response, 'rsolr/response'
@@ -17,10 +17,11 @@ module RSolr
   autoload :HTTPClient, 'rsolr/http_client'
   
   # factory for creating connections
-  # adapter name is either :http or :direct
+  # opts[:adapter] is either :http or :direct
   # opts are sent to the adapter instance (:url for http, :dist_dir for :direct etc.)
   # and to the connection instance
-  def self.connect(adapter_name, opts={})
+  def self.connect(opts={})
+    adapter_name = opts[:adapter] ||= :http
     types = {
       :http=>'HTTP',
       :direct=>'Direct'

@@ -5,8 +5,6 @@ class RSolr::Connection::Base
   
   attr_reader :adapter, :opts
   
-  include RSolr::Connection::SearchExt
-  
   # "adapter" is instance of:
   #   RSolr::Adapter::HTTP
   #   RSolr::Adapter::Direct (jRuby only)
@@ -25,19 +23,26 @@ class RSolr::Connection::Base
   # sets default params etc.. - could be used as a mapping hook
   # type of request should be passed in here? -> map_params(:query, {})
   def map_params(params)
-    opts[:global_params].dup.merge(params).to_mash
+    {}.merge(@opts[:global_params]).merge(params).to_mash
   end
   
-  # send request to the select handler
+  # send request (no param mapping) to the select handler
   # params is hash with valid solr request params (:q, :fl, :qf etc..)
   #   if params[:wt] is not set, the default is :ruby (see opts[:global_params])
   #   if :wt is something other than :ruby, the raw response body is returned
   #   otherwise, an instance of RSolr::Response::Query is returned
   #   NOTE: to get raw ruby, use :wt=>'ruby'
+  # There is NO param mapping here, what you put it is what gets sent to Solr
   def query(params)
-    params = map_params(modify_params_for_pagination(params))
-    response = @adapter.query(params)
-    params[:wt]==:ruby ? RSolr::Response::Query::Base.new(response) : response
+    p = map_params(params)
+    response = @adapter.query(p)
+    p[:wt]==:ruby ? RSolr::Response::Query::Base.new(response) : response
+  end
+  
+  # same as the #query method, but with additional param mapping
+  # currently only :page and :per_page
+  def search(params)
+    self.query(modify_params_for_pagination(params))
   end
   
   # Finds a document by its id
@@ -103,19 +108,13 @@ class RSolr::Connection::Base
     RSolr::Message
   end
   
-  def modify_params_for_pagination(orig_params)
-    return orig_params unless orig_params[:page] || orig_params[:per_page]
-    params = orig_params.dup # be nice
-    params[:page] ||= 1
-    params[:per_page] ||= 10
-    params[:rows] = params.delete(:per_page).to_i
-    params[:start] = calculate_start(params.delete(:page).to_i, params[:rows])
-    params
-  end
-  
-  def calculate_start(current_page, per_page)
-    page = current_page > 0 ? current_page : 1
-    (page - 1) * per_page
+  def modify_params_for_pagination(p)
+    per_page = p.delete(:per_page).to_s.to_i
+    p[:rows] = per_page==0 ? 10 : per_page
+    page = p.delete(:page).to_s.to_i
+    page = page > 0 ? page : 1
+    p[:start] = (page - 1) * (p[:rows] || 0)
+    p
   end
   
 end

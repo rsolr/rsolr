@@ -5,7 +5,7 @@ class IndexerTest < RSolrBaseTest
   def test_something
     data = nil
     mapping = {}
-    i = RSolr::Indexer.new(RSolr.connect(:http), mapping)
+    i = RSolr::Indexer.new(RSolr.connect, mapping)
     i.index([])
   end
   

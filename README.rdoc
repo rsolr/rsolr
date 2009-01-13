@@ -9,7 +9,7 @@ A Ruby client for Apache Solr. Has transparent JRuby support by using "org.apach
 Simple usage:
   require 'rubygems'
   require 'rsolr'
-  rsolr = RSolr.connect(:http)
+  rsolr = RSolr.connect
   response = rsolr.query(:q=>'*:*')
 
 
@@ -22,15 +22,15 @@ To run tests:
 
 To get a connection in MRI/standard Ruby:
   
-  solr = RSolr.connect(:http)
+  solr = RSolr.connect
 
 To get a direct connection (no http) in jRuby using DirectSolrConnection:
   
-  solr = RSolr.connect(:direct, :home_dir=>'/path/to/solr/home', :dist_dir=>'/path/to/solr/distribution')
+  solr = RSolr.connect(:adapter=>:direct, :home_dir=>'/path/to/solr/home', :dist_dir=>'/path/to/solr/distribution')
 
 You can set RSolr params that will be sent on every request:
   
-  solr = RSolr.connect(:http, :global_params=>{:wt=>:ruby, :echoParams=>'EXPLICIT'})
+  solr = RSolr.connect(:global_params=>{:wt=>:ruby, :echoParams=>'EXPLICIT'})
 
 
 == Requests
@@ -38,22 +38,17 @@ Once you have a connection, you can execute queries, updates etc..
 
 
 === Querying
+Use the #query method to send requests to Solr as-is (no param mapping)
+Use the #search method to take advantage of some of the param mapping (currently only :page and :per_page)
   response = solr.query(:q=>'washington', :facet=>true, :facet.limit=>-1, :facet.field=>'cat', :facet.field=>'inStock')
   response = solr.find_by_id(1)
 
 Thanks to a little Ruby magic, we can chain symbols to create Solr "dot" syntax: :facet.field=>'cat'
 
-Using the #search method makes building more complex Solr queries easier:
-  
-  response = solr.search 'my search', :filters=>{:price=>(0.00..10.00)}
-  response.docs.each do |doc|
-    doc[:price]
-  end
-
 ====Pagination
-Pagination is simplified by using the :page and :per_page params:
+Pagination is simplified by using the :page and :per_page params when using the #search method:
 
-  response = solr.query(:page=>1, :per_page=>10, :q=>'*:*')
+  response = solr.search(:page=>1, :per_page=>10, :q=>'*:*')
   response.per_page
   response.total_pages
   response.current_page
@@ -64,7 +59,9 @@ If you use WillPaginate, just pass-in the response to the #will_paginate view he
   
   <%= will_paginate(@response) %>
 
-The #query and #search methods automatically figure out the :start and :rows value, based on the values of :page and :per_page. The will_paginate view helper just needs the right methods (#current_page, #previous_page, #next_page and #total_pages) to create the pagination view widget.
+The #search method automatically figure out the :start and :rows value, based on the values of :page and :per_page. The will_paginate view helper just needs the right methods (#current_page, #previous_page, #next_page and #total_pages) to create the pagination view widget.
+
+The #search method will be providing more param mapping, but not until RSolr gets more use. If you have ideas for a param mapping interface, let me know!
 
 
 === Updating Solr
