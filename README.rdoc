@@ -59,9 +59,9 @@ If you use WillPaginate, just pass-in the response to the #will_paginate view he
   
   <%= will_paginate(@response) %>
 
-The #search method automatically figure out the :start and :rows value, based on the values of :page and :per_page. The will_paginate view helper just needs the right methods (#current_page, #previous_page, #next_page and #total_pages) to create the pagination view widget.
+The #search method automatically figures out the :start and :rows values, based on the values of :page and :per_page. The will_paginate view helper uses the methods: #current_page, #previous_page, #next_page and #total_pages to create the pagination view widget.
 
-The #search method will be providing more param mapping, but not until RSolr gets more use. If you have ideas for a param mapping interface, let me know!
+The #search method will be providing more param mapping, but not until RSolr gets more use. If you have ideas for a param mapping interface, let me know! I'll be throwing some stuff together as well.
 
 
 === Updating Solr
