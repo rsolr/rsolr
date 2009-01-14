@@ -1,3 +1,8 @@
+0.6.2 - January 14, 2009
+	Removed mapping and indexer modules -- seems to me that a general purpose mapping library
+	would be more valuable than an embedded module in RSolr ( RMapper ?)
+	This helps lighten RSolr a bit too
+	
 0.6.1 - January 13, 2009
 	Removed SearchExt and mapping until this library gets some real use
 	The only param mapping now is for :page and :per_page via the #search method

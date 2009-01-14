@@ -1,11 +1,9 @@
-#require 'uri'
-
 # A simple wrapper for different http client implementations.
 # Supports #get and #post
 # This was motivated by: http://apocryph.org/2008/11/09/more_indepth_analysis_ruby_http_client_performance/
 # Net::HTTP is the default adapter
 
-# Each adapter response should be a hash with the following keys:
+# Each adapters response should be a hash with the following keys:
 #   :status_code
 #   :url
 #   :body

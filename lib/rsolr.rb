@@ -7,12 +7,11 @@ proc {|base, files|
 
 module RSolr
   
-  VERSION = '0.6.1'
+  VERSION = '0.6.2'
   
   autoload :Message, 'rsolr/message'
   autoload :Response, 'rsolr/response'
   autoload :Connection, 'rsolr/connection'
-  autoload :Mapper, 'rsolr/mapper'
   autoload :Indexer, 'rsolr/indexer'
   autoload :HTTPClient, 'rsolr/http_client'
   

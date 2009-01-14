@@ -41,6 +41,8 @@ class RSolr::Connection::Base
   
   # same as the #query method, but with additional param mapping
   # currently only :page and :per_page
+  # TODO: need to get some nice and friendly param mapping here:
+  # search(:fields=>'', :facet_fields=>[], :filters=>{})
   def search(params)
     self.query(modify_params_for_pagination(params))
   end
@@ -108,9 +110,18 @@ class RSolr::Connection::Base
     RSolr::Message
   end
   
+  # given a hash, this method will attempt to produce the
+  # correct :start and :rows values for Solr
+  # -- if the hash contains a :per_page value, it's used for the rows
+  # if the :per_page value doesn't exist (nil), the :rows value is
+  # used, and if :rows is not set, the default value is 10
+  # -- if the hash contains a :page value (the current page)
+  # it is used to calculate the :start value
+  # returns a hash with the :rows and :start values
+  # :per_page and :page are deleted
   def modify_params_for_pagination(p)
     per_page = p.delete(:per_page).to_s.to_i
-    p[:rows] = per_page==0 ? 10 : per_page
+    p[:rows] = per_page==0 ? (p[:rows] || 10) : per_page
     page = p.delete(:page).to_s.to_i
     page = page > 0 ? page : 1
     p[:start] = (page - 1) * (p[:rows] || 0)

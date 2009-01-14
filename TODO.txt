@@ -1,6 +1,6 @@
 facets_by_hash method not ordered - needs to be an array - OrderedHash?
 
-Push HTTPClient and Mapper into separate gems?
+Push HTTPClient into separate gem?
 
 Remove those pesky test warnings about constants already being defined etc.
 

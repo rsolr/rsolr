@@ -5,22 +5,22 @@ class RSolr::HTTPClient::Adapter::NetHTTP
   include RSolr::HTTPClient::Util
   
   attr :uri
-  attr :c
+  attr :connection
   
   def initialize(url)
     @uri = URI.parse(url)
-    @c = Net::HTTP.new(@uri.host, @uri.port)
+    @connection = Net::HTTP.new(@uri.host, @uri.port)
   end
   
   def get(path, params={})
     url = _build_url(path, params)
-    net_http_response = @c.get(url)
+    net_http_response = @connection.get(url)
     create_http_context(net_http_response, url, path, params)
   end
   
   def post(path, data, params={}, headers={})
     url = _build_url(path, params)
-    net_http_response = @c.post(url, data, headers)
+    net_http_response = @connection.post(url, data, headers)
     create_http_context(net_http_response, url, path, params, data, headers)
   end
   
@@ -42,7 +42,7 @@ class RSolr::HTTPClient::Adapter::NetHTTP
   end
   
   def _build_url(path, params={})
-    build_url(@uri.path + path, params, @uri.query)
+    build_url(@uri.path + path, params, @uri.query) # build_url is coming from RSolr::HTTPClient::Util
   end
   
 end
