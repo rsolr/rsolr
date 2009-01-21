@@ -45,7 +45,23 @@ Use the #search method to take advantage of some of the param mapping (currently
 
 Thanks to a little Ruby magic, we can chain symbols to create Solr "dot" syntax: :facet.field=>'cat'
 
-====Pagination
+==== Search Params
+The #search method can accept the following params:
+===== When :qt is :standard
+  :page
+  :per_page
+  :queries
+  :filters
+  :phrase_queries
+  :phrase_filters
+  :facets
+===== When :qt is :dismax (also includes the :standard params)
+  :alternate_query
+  :query_fields
+  :phrase_fields
+  :boost_query
+
+==== Pagination
 Pagination is simplified by using the :page and :per_page params when using the #search method:
 
   response = solr.search(:page=>1, :per_page=>10, :q=>'*:*')
@@ -56,13 +72,10 @@ Pagination is simplified by using the :page and :per_page params when using the 
   response.next_page
 
 If you use WillPaginate, just pass-in the response to the #will_paginate view helper:
-  
+
   <%= will_paginate(@response) %>
 
 The #search method automatically figures out the :start and :rows values, based on the values of :page and :per_page. The will_paginate view helper uses the methods: #current_page, #previous_page, #next_page and #total_pages to create the pagination view widget.
-
-The #search method will be providing more param mapping, but not until RSolr gets more use. If you have ideas for a param mapping interface, let me know! I'll be throwing some stuff together as well.
-
 
 === Updating Solr
 Updating is done using native Ruby structures. Hashes are used for single documents and arrays are used for a collection of documents (hashes). These structures get turned into simple XML "messages".
@@ -96,13 +109,13 @@ Commit & Optimize
   solr.optimize
 
 
-==Response Formats
+== Response Formats
 The default response format is Ruby. When the :wt param is set to :ruby, the response is eval'd and wrapped up in a nice RSolr::Response class. You can get an unwrapped response by setting the :wt to "ruby" - notice, the string -- not a symbol. All other response formats are available as expected, :wt=>'xml' etc.. Currently, the only response format that gets eval'd and wrapped is :ruby.
 
 You can access the original request context (path, params, url etc.) from response.request. The response.request is a hash that contains the generated params, url, path, post data, headers etc., very useful for debugging and testing.
 
 
-==HTTP Client Adapter
+== HTTP Client Adapter
 You can specify the http client adapter to use by setting RSolr::Connection::Adapter::HTTP.client_adapter to one of:
   :net_http     uses the standard Net::HTTP library
   :curb         uses the Ruby "curl" bindings
@@ -116,6 +129,6 @@ Example of using the HTTP client only:
   hclient = RSolr::HTTPClient.connect(url, :curb)
   hclient = RSolr::HTTPClient.connect(url, :net_http)
 
-After reading this http://apocryph.org/2008/11/09/more_indepth_analysis_ruby_http_client_performance/ - I would recommend using the :curb adapter. NOTE: You can't use the :curb adapter under jRuby. To install curb:
+After reading this http://apocryph.org/2008/11/09/more_indepth_analysis_ruby_http_client_performance - I would recommend using the :curb adapter. NOTE: You can't use the :curb adapter under jRuby. To install curb:
 
   sudo gem install curb

@@ -16,17 +16,6 @@ class ResponsePaginationTest < RSolrBaseTest
     #assert_equal 0, dummy_connection.send(:calculate_start, 0, 50)
   end
   
-  def test_connection_modify_params_for_pagination
-    dummy_connection = RSolr::Connection::Base.new(nil)
-    p = dummy_connection.send(:modify_params_for_pagination, {:page=>1})
-    assert_equal 0, p[:start]
-    assert_equal 10, p[:rows]
-    #
-    p = dummy_connection.send(:modify_params_for_pagination, {:page=>10, :per_page=>100})
-    assert_equal 900, p[:start]
-    assert_equal 100, p[:rows]
-  end
-  
   def test_math
     response = create_response({'rows'=>5})
     assert_equal response.params['rows'], response.per_page

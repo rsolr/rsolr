@@ -1,3 +1,9 @@
+0.6.3 - January 21, 2009
+	Added a new param mapping module: RSolr::Connection::ParamMapping
+	Mapping only for fields that need conversion/escaping or nested (facet.*) etc.
+	This new module can be activated by using the #search method
+	New tests for ParamMapping
+
 0.6.2 - January 14, 2009
 	Removed mapping and indexer modules -- seems to me that a general purpose mapping library
 	would be more valuable than an embedded module in RSolr ( RMapper ?)

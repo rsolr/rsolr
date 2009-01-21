@@ -5,11 +5,17 @@ class RSolr::Connection::Base
   
   attr_reader :adapter, :opts
   
+  attr_accessor :param_mappers
+  
   # "adapter" is instance of:
   #   RSolr::Adapter::HTTP
   #   RSolr::Adapter::Direct (jRuby only)
   def initialize(adapter, opts={})
     @adapter=adapter
+    @param_mappers = {
+      :standard=>RSolr::Connection::ParamMapping::Standard,
+      :dismax=>RSolr::Connection::ParamMapping::Dismax
+    }
     opts[:global_params]||={}
     default_global_params = {
       :wt=>:ruby,
@@ -39,12 +45,12 @@ class RSolr::Connection::Base
     p[:wt]==:ruby ? RSolr::Response::Query::Base.new(response) : response
   end
   
-  # same as the #query method, but with additional param mapping
-  # currently only :page and :per_page
-  # TODO: need to get some nice and friendly param mapping here:
-  # search(:fields=>'', :facet_fields=>[], :filters=>{})
-  def search(params)
-    self.query(modify_params_for_pagination(params))
+  # register your own mapper?
+  def search(params,&blk)
+    qt = params[:qt] ? params[:qt].to_sym : :dismax
+    mapper_class = @param_mappers[qt]
+    mapper = mapper_class.new(params)
+    query(mapper.map(&blk))
   end
   
   # Finds a document by its id
@@ -108,24 +114,6 @@ class RSolr::Connection::Base
   # shortcut to solr::message
   def message
     RSolr::Message
-  end
-  
-  # given a hash, this method will attempt to produce the
-  # correct :start and :rows values for Solr
-  # -- if the hash contains a :per_page value, it's used for the rows
-  # if the :per_page value doesn't exist (nil), the :rows value is
-  # used, and if :rows is not set, the default value is 10
-  # -- if the hash contains a :page value (the current page)
-  # it is used to calculate the :start value
-  # returns a hash with the :rows and :start values
-  # :per_page and :page are deleted
-  def modify_params_for_pagination(p)
-    per_page = p.delete(:per_page).to_s.to_i
-    p[:rows] = per_page==0 ? (p[:rows] || 10) : per_page
-    page = p.delete(:page).to_s.to_i
-    page = page > 0 ? page : 1
-    p[:start] = (page - 1) * (p[:rows] || 0)
-    p
   end
   
 end

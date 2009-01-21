@@ -5,6 +5,7 @@
 
 module ConnectionTestMethods
   
+  
   #def teardown
   #  @solr.delete_by_query('id:[* TO *]')
   #  @solr.commit
@@ -80,10 +81,11 @@ module ConnectionTestMethods
   
   def test_add
     assert_equal 0, @solr.query(:q=>'*:*').total
-    response = @solr.add(:id=>100)
+    update_response = @solr.add(:id=>100)
+    assert update_response.is_a?(RSolr::Response::Update)
+    #
     @solr.commit
     assert_equal 1, @solr.query(:q=>'*:*').total
-    assert response.is_a?(RSolr::Response::Update)
   end
   
   def test_delete_by_id
