@@ -52,7 +52,8 @@ class ParamMappingTest < RSolrBaseTest
     mapper = Dismax.new(input)
     output = mapper.map
     assert_equal 'can_be_a_string_hash_or_array:OK', output[:q.alt]
-    assert_equal 'another_field_to_boost^200 a_field_to_boost^20', output[:qf]
+    assert output[:qf]=~/another_field_to_boost\^200/
+    assert output[:qf]=~/a_field_to_boost\^20/
     assert_equal 'phrase_field^20', output[:pf]
     assert_equal 'field_to_use_for_boost_query:a test', output[:bq]
   end
