@@ -33,7 +33,11 @@ module RSolr::HTTPClient
     else
       raise UnkownAdapterError.new("Name: #{adapter_name}")
     end
-    Base.new RSolr::HTTPClient::Adapter.const_get(klass).new(url)
+    begin
+      Base.new RSolr::HTTPClient::Adapter.const_get(klass).new(url)
+    rescue URI::InvalidURIError
+      raise "#{$!} == #{url}"
+    end
   end
   
   class Base

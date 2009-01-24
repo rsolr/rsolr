@@ -11,7 +11,7 @@ class RSolr::Connection::Base
   #   RSolr::Adapter::HTTP
   #   RSolr::Adapter::Direct (jRuby only)
   def initialize(adapter, opts={})
-    @adapter=adapter
+    @adapter = adapter
     @param_mappers = {
       :standard=>RSolr::Connection::ParamMapping::Standard,
       :dismax=>RSolr::Connection::ParamMapping::Dismax
@@ -45,7 +45,7 @@ class RSolr::Connection::Base
     p[:wt]==:ruby ? RSolr::Response::Query::Base.new(response) : response
   end
   
-  # register your own mapper?
+  # register your own mapper if you want?
   def search(params,&blk)
     qt = params[:qt] ? params[:qt].to_sym : :dismax
     mapper_class = @param_mappers[qt]

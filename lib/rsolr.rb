@@ -20,6 +20,7 @@ module RSolr
   # opts are sent to the adapter instance (:url for http, :dist_dir for :direct etc.)
   # and to the connection instance
   def self.connect(opts={})
+    opts = opts.to_mash
     adapter_name = opts[:adapter] ||= :http
     types = {
       :http=>'HTTP',
