@@ -13,12 +13,9 @@ module ConnectionTestMethods
   #end
   
   def test_default_options
-    target = {
-      :select_path => '/select',
-      :update_path => '/update',
-      :luke_path => '/admin/luke'
-    }
-    assert_equal target, @solr.adapter.default_options
+    assert_equal '/select', @solr.adapter.default_options[:select_path]
+    assert_equal '/update', @solr.adapter.default_options[:update_path]
+    assert_equal '/admin/luke', @solr.adapter.default_options[:luke_path]
   end
   
   # setting adapter options in Solr.connect method should set them in the adapter

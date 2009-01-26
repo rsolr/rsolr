@@ -2,7 +2,7 @@
 module RSolr::Response::Query
   
   # module for adding helper methods to each Hash document
-  class Doc < Mash
+  module DocExt
     
     # Helper method to check if value/multi-values exist for a given key.
     # The value can be a string, or a RegExp
@@ -149,7 +149,7 @@ module RSolr::Response::Query
     def initialize(data)
       super(data)
       @response = @data[:response]
-      @docs = @response[:docs].collect{ |d| Doc.new(d) }
+      @docs = @response[:docs].collect{ |d| d=d.to_mash; d.extend(DocExt); d }
       @num_found = @response[:numFound]
       @start = @response[:start]
     end

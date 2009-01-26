@@ -29,7 +29,7 @@ class RSolr::Connection::Base
   # sets default params etc.. - could be used as a mapping hook
   # type of request should be passed in here? -> map_params(:query, {})
   def map_params(params)
-    {}.merge(@opts[:global_params]).merge(params).to_mash
+    {}.merge(@opts[:global_params]).merge(params)
   end
   
   # send request (no param mapping) to the select handler

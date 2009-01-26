@@ -17,6 +17,10 @@ class ConnectionDirectTest < RSolrBaseTest
     @solr.commit
   end
   
+  def teardown
+    @solr.adapter.close
+  end
+  
 end
 
 end

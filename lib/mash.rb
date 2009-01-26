@@ -1,6 +1,5 @@
-
-# From the ExtLib gem library: http://github.com/sam/extlib/tree/master
-
+# This class has dubious semantics and we only have it so that people can write
+# params[:key] instead of params['key'].
 class Mash < Hash
 
   # @param constructor<Object>

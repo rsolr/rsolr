@@ -23,7 +23,7 @@ class RSolr::Connection::Adapter::Direct
   def initialize(opts, &block)
     @home_dir = opts[:home_dir].to_s
     opts[:data_dir] ||= File.join(@home_dir, 'data')
-    if opts[:dist_dir] and ! opts[:jar_paths]
+    if opts[:dist_dir]# and ! opts[:jar_paths]
       # add the standard lib and dist directories to the :jar_paths
       opts[:jar_paths] = [File.join(opts[:dist_dir], 'lib'), File.join(opts[:dist_dir], 'dist')]
     end
@@ -38,6 +38,13 @@ class RSolr::Connection::Adapter::Direct
       import_dependencies
       DirectSolrConnection.new(@home_dir, @opts[:data_dir], nil)
     )
+  end
+  
+  def close
+    if @connection
+      @connection.close
+      @connection=nil
+    end
   end
   
   # send a request to the connection
@@ -73,7 +80,7 @@ class RSolr::Connection::Adapter::Direct
     paths = [paths] unless paths.is_a?(Array)
     paths.each do |path|
       jar_pattern = File.join(path,"**", "*.jar")
-      Dir[jar_pattern].each {|jar_file| require jar_file}
+      Dir[jar_pattern].each {|jar_file|require jar_file}
     end
   end
   

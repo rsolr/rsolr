@@ -5,7 +5,7 @@ base = File.expand_path( File.dirname(__FILE__) )
 dist = File.join(base, '..', 'apache-solr')
 home = File.join(dist, 'example', 'solr')
 
-solr = RSolr.connect(:direct, :home_dir=>home, :dist_dir=>dist)
+solr = RSolr.connect(:adapter=>:direct, :home_dir=>home, :dist_dir=>dist)
 
 `cd ../apache-solr/example/exampledocs && ./post.sh ./*.xml`
 
