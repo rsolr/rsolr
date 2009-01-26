@@ -23,7 +23,7 @@ class RSolr::Connection::Adapter::Direct
   def initialize(opts, &block)
     @home_dir = opts[:home_dir].to_s
     opts[:data_dir] ||= File.join(@home_dir, 'data')
-    if opts[:dist_dir]
+    if opts[:dist_dir] and ! opts[:jar_paths]
       # add the standard lib and dist directories to the :jar_paths
       opts[:jar_paths] = [File.join(opts[:dist_dir], 'lib'), File.join(opts[:dist_dir], 'dist')]
     end
