@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = "rsolr"
-  s.version = "0.6.4"
+  s.version = "0.6.5"
   s.date = "2009-01-26"
   s.summary = "A Ruby client for Apache Solr"
   s.email = "goodieboy@gmail.com"

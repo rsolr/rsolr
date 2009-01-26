@@ -1,3 +1,14 @@
+0.6.5 - January 26, 2009
+	Removed to_mash everywhere, except for usage in RSolr::Response
+	Added a #close method to the Direct adapter
+		- this closes the connection and sets the @connection variable to nil
+	Removed to_mash in RSolr::Connection::Base
+	Changed RSolr::Response::Query::Doc to DocExt
+		- this no longer extends Mash
+		- each doc in the response now uses the #extend method to mixin the new DocExt module
+	Added #teardown method in direct connection test, this method closes the connection
+	Updated the connection test methods a bit
+
 0.6.4 - January 26, 2009
 	Updated the mapping output for the :filters and :phrase_filters (when using the #search method)
 		- now sending multiple fq's instead of one
