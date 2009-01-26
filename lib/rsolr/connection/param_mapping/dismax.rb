@@ -4,7 +4,7 @@ class RSolr::Connection::ParamMapping::Dismax < RSolr::Connection::ParamMapping:
     super
     
     mapping_for :alternate_query, :q.alt do |val|
-      format_query(val)
+      format_query(val).join(' ')
     end
     
     mapping_for :query_fields, :qf do |val|
@@ -16,7 +16,7 @@ class RSolr::Connection::ParamMapping::Dismax < RSolr::Connection::ParamMapping:
     end
     
     mapping_for :boost_query, :bq do |val|
-      format_query(val)
+      format_query(val).join(' ')
     end
     
   end

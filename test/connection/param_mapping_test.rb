@@ -20,7 +20,7 @@ class ParamMappingTest < RSolrBaseTest
     output = mapper.map
     
     assert_equal "a query \"a phrase query\"", output[:q]
-    assert_equal "a filter \"a phrase filter\"", output[:fq]
+    assert_equal ["a filter", "\"a phrase filter\""], output[:fq]
     assert_equal 0, output[:start]
     assert_equal 10, output[:rows]
     # facet.field can be specified multiple times, so we need an array
@@ -38,8 +38,8 @@ class ParamMappingTest < RSolrBaseTest
     mapper = Standard.new(input)
     output = mapper.map
     
-    assert_equal "a query field:value blah \"a phrase\" phrase_field:\"phrase value\"", output[:q]
-    assert_equal "a filter filter:field blah can_also_be_a:\"hash\"", output[:fq]
+    assert_equal "a query field:(value) blah \"a phrase\" phrase_field:(\"phrase value\")", output[:q]
+    assert_equal ["a filter", "filter:(field)", "blah", "can_also_be_a:(\"hash\")"], output[:fq]
   end
   
   def test_dismax
@@ -51,11 +51,11 @@ class ParamMappingTest < RSolrBaseTest
     }
     mapper = Dismax.new(input)
     output = mapper.map
-    assert_equal 'can_be_a_string_hash_or_array:OK', output[:q.alt]
+    assert_equal 'can_be_a_string_hash_or_array:(OK)', output[:q.alt]
     assert output[:qf]=~/another_field_to_boost\^200/
     assert output[:qf]=~/a_field_to_boost\^20/
     assert_equal 'phrase_field^20', output[:pf]
-    assert_equal 'field_to_use_for_boost_query:a test', output[:bq]
+    assert_equal 'field_to_use_for_boost_query:(a) test', output[:bq]
   end
   
 end

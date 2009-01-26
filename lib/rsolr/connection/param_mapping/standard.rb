@@ -28,7 +28,11 @@ class RSolr::Connection::ParamMapping::Standard
     end
     
     mapping_for :phrase_queries, :q do |val|
-      [@output[:q], format_query(val, true)].reject{|v|v.to_s.empty?}.join(' ')
+      values = [@output[:q], format_query(val, true)]
+      # remove blank items
+      values.reject!{|v|v.to_s.empty?}
+      # join all items on a space
+      values.join(' ')
     end
     
     mapping_for :filters, :fq do |val|
@@ -37,7 +41,14 @@ class RSolr::Connection::ParamMapping::Standard
     
     # this must come after the :filter/:fq mapper
     mapping_for :phrase_filters, :fq do |val|
-      [@output[:fq], format_query(val, true)].reject{|v|v.to_s.empty?}.join(' ')
+      # use the previously set fq queries and generate the new phrased based ones
+      values = [@output[:fq], format_query(val, true)]
+      # flatten (need to do this because the previous fq could have been an array)
+      values = values.flatten
+      # remove blank items
+      values.reject!{|v|v.to_s.empty?} # don't join -- instead create multiple fq params
+      # don't join... fq needs to be an array so multiple fq params are sent to solr
+      values
     end
     
     mapping_for :facets do |input|
@@ -72,6 +83,7 @@ class RSolr::Connection::ParamMapping::Standard
     end
   end
   
+  # takes an input and returns a formatted value
   def format_query(input, quote=false)
     case input
     when Array
@@ -86,7 +98,7 @@ class RSolr::Connection::ParamMapping::Standard
   def format_array_query(input, quote)
     input.collect do |v|
       v.is_a?(Hash) ? format_hash_query(v, quote) : prep_value(v, quote)
-    end.join(' ')
+    end
   end
   
   # groups values to a single field: title:(value1 value2) instead of title:value1 title:value2
@@ -101,11 +113,11 @@ class RSolr::Connection::ParamMapping::Standard
         vv.is_a?(Range) ? "[#{vv.min} TO #{vv.max}]" : prep_value(vv, quote)
       end
       field = field.to_s.empty? ? '' : "#{field}:"
-      if fielded_queries.size > 0
-        q << (fielded_queries.size > 1 ? "#{field}(#{fielded_queries.join(' ')})" : "#{field}#{fielded_queries.to_s}")
+      fielded_queries.each do |fq|
+        q << "#{field}(#{fq})"
       end
     end
-    q.join(' ')
+    q
   end
   
   def prep_value(val, quote=false)
