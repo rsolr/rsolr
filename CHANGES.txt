@@ -1,3 +1,12 @@
+0.6.6 - January 26, 2009
+	Added #get method helper to RSolr::Response::Query::DocExt
+	# doc.get(key, opts)
+	# key is the name of the field
+	# opts is a hash with the following valid keys:
+	#  - :sep - a string used for joining multivalued field values
+	#  - :default - a value to return when the key doesn't exist
+	# if :sep is nil and the field is a multivalued field, the array is returned
+
 0.6.5 - January 26, 2009
 	Removed to_mash everywhere, except for usage in RSolr::Response
 	Added a #close method to the Direct adapter

@@ -23,6 +23,21 @@ module RSolr::Response::Query
       end
     end
     
+    # helper
+    # key is the name of the field
+    # opts is a hash with the following valid keys:
+    #  - :sep - a string used for joining multivalued field values
+    #  - :default - a value to return when the key doesn't exist
+    # if :sep is nil and the field is a multivalued field, the array is returned
+    def get(key, opts={:sep=>', ', :default=>nil})
+      if self.key? key
+        val = self[key]
+        (val.is_a?(Array) and opts[:sep]) ? val.join(opts[:sep]) : val
+      else
+        opts[:default]
+      end
+    end
+    
   end
   
   # from the delsolr project -> http://github.com/avvo/delsolr/tree/master/lib/delsolr/response.rb
