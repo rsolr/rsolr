@@ -54,13 +54,13 @@ class RSolr::Connection::ParamMapping::Standard
     mapping_for :facets do |input|
       next if input.to_s.empty?
       @output[:facet] = true
-      @output[:facet.field] = []
+      @output['facet.field'] = []
       if input[:queries]
         # convert to an array if needed
         input[:queries] = [input[:queries]] unless input[:queries].is_a?(Array)
         @output[:facet.query] = input[:queries].map{|q|format_query(q)}
       end
-      common_sub_fields = [:sort, :limit, :missing, :mincount, :prefix, :offset, :method, :enum.cache.minDf]
+      common_sub_fields = [:sort, :limit, :missing, :mincount, :prefix, :offset, :method, 'enum.cache.minDf']
       (common_sub_fields).each do |subfield|
         next unless input[subfield]
         @output["facet.#{subfield}"] = input[subfield]
@@ -76,7 +76,7 @@ class RSolr::Connection::ParamMapping::Standard
               @output["f.#{key}.facet.#{subfield}"] = input[subfield]
             end
           else
-            @output[:facet.field] << f
+            @output['facet.field'] << f
           end
         end
       end

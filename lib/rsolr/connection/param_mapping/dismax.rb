@@ -3,7 +3,7 @@ class RSolr::Connection::ParamMapping::Dismax < RSolr::Connection::ParamMapping:
   def setup_mappings
     super
     
-    mapping_for :alternate_query, :q.alt do |val|
+    mapping_for :alternate_query, 'q.alt' do |val|
       format_query(val).join(' ')
     end
     

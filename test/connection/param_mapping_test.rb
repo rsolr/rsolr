@@ -25,7 +25,7 @@ class ParamMappingTest < RSolrBaseTest
     assert_equal 10, output[:rows]
     # facet.field can be specified multiple times, so we need an array
     # the url builder automatically adds multiple params for arrays
-    assert_equal [:one, :two], output[:facet.field]
+    assert_equal [:one, :two], output['facet.field']
   end
   
   def test_standard_complex
@@ -51,7 +51,7 @@ class ParamMappingTest < RSolrBaseTest
     }
     mapper = Dismax.new(input)
     output = mapper.map
-    assert_equal 'can_be_a_string_hash_or_array:(OK)', output[:q.alt]
+    assert_equal 'can_be_a_string_hash_or_array:(OK)', output['q.alt']
     assert output[:qf]=~/another_field_to_boost\^200/
     assert output[:qf]=~/a_field_to_boost\^20/
     assert_equal 'phrase_field^20', output[:pf]
