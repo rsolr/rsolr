@@ -7,7 +7,7 @@ proc {|base, files|
 
 module RSolr
   
-  VERSION = '0.6.6'
+  VERSION = '0.6.7'
   
   autoload :Message, 'rsolr/message'
   autoload :Response, 'rsolr/response'

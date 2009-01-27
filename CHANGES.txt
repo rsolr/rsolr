@@ -1,3 +1,7 @@
+0.6.7 - January 27, 2009
+	The Symbol extension in core_ext.rb was cause for some REALLY painful debuging - so I removed it :(
+	This means no more :q.alt or :facet.field until RSolr gets a really nice query-builder module happening.
+
 0.6.6 - January 26, 2009
 	Added #get method helper to RSolr::Response::Query::DocExt
 	# doc.get(key, opts)
