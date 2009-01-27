@@ -40,10 +40,8 @@ Once you have a connection, you can execute queries, updates etc..
 === Querying
 Use the #query method to send requests to Solr as-is (no param mapping)
 Use the #search method to take advantage of some of the param mapping (currently only :page and :per_page)
-  response = solr.query(:q=>'washington', :facet=>true, :facet.limit=>-1, :facet.field=>'cat', :facet.field=>'inStock')
+  response = solr.query(:q=>'washington', :facet=>true, 'facet.limit'=>-1, 'facet.field'=>'cat', 'facet.field'=>'inStock')
   response = solr.find_by_id(1)
-
-Thanks to a little Ruby magic, we can chain symbols to create Solr "dot" syntax: :facet.field=>'cat'
 
 ==== Search Params
 The #search method can accept the following params:
