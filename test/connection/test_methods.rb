@@ -116,4 +116,13 @@ module ConnectionTestMethods
     assert [true, false].include?(response.has_deletions?)
   end
   
+  def test_search_facet_by_name
+    @solr.add([{:id=>1, :cat=>'eletronics'}, {:id=>2, :cat=>'software'}]) and @solr.commit
+    response = @solr.search_facet_by_name('cat', {:q=>'*:*'})
+    assert_equal 2, response.facet_field_values(:cat).size
+    #
+    response = @solr.search_facet_by_name('cat', {:q=>'*:*'})
+    assert_equal 0, response.docs.size
+  end
+  
 end

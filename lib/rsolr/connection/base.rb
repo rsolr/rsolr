@@ -53,6 +53,22 @@ class RSolr::Connection::Base
     query(mapper.map(&blk))
   end
   
+  # "facet_field" -- the name of a facet field: language_facet
+  # "params" -- the standard #search method params
+  # Returns an instance of RSolr::Response::Query::Base
+  def search_facet_by_name(facet_field, params, &blk)
+    params[:per_page] = 0
+    params[:rows] = 0
+    params[:facets] ||= {}
+    params[:facets][:fields] = [facet_field]
+    params[:facets][:mincount] ||= 1
+    params[:facets][:prefix] ||= nil
+    params[:facets][:missing] ||= false
+    params[:facets][:sort] ||= :count
+    params[:facets][:offset] ||= 0
+    self.search(params, &blk)
+  end
+  
   # Finds a document by its id
   def find_by_id(id, params={})
     params = map_params(params)

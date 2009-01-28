@@ -1,3 +1,12 @@
+0.6.8 - January 28, 2009
+	New method added to RSolr::Connection::Base - #find_values_for_facet
+	This method searches for facet values only, and sets the :rows param to 0
+	- returns an RSolr::Response::Query::Base instance
+	Example:
+		search_params[:facets][:offset]=0
+		search_params[:facets][:limit]=5
+		response = solr.search_facet_by_name(:language_facet, search_params)
+
 0.6.7 - January 27, 2009
 	The Symbol extension in core_ext.rb was cause for some REALLY painful debuging - so I removed it :(
 	This means no more :q.alt or :facet.field until RSolr gets a really nice query-builder module happening.
