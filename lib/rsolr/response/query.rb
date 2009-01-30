@@ -43,70 +43,59 @@ module RSolr::Response::Query
   # from the delsolr project -> http://github.com/avvo/delsolr/tree/master/lib/delsolr/response.rb
   module Facets
     
+    class FacetValue
+      attr_reader :value,:hits
+      def initialize(value,hits)
+        @value,@hits=value,hits
+      end
+    end
+    
+    class Facet
+      attr_reader :field
+      attr_accessor :values
+      def initialize(field)
+        @field=field
+        @values=[]
+      end
+    end
+    
+    # @response.facet_fields.each do |facet|
+    #   facet.field
+    # end
+    # "caches" the result in the @facets instance var
     def facets
+      @facets ||= (
+        facet_fields.inject([]) do |acc,(facet_field_name,values_and_hits_list)|
+          acc << facet = Facet.new(facet_field_name)
+          # the values_and_hits_list is an array where a value is immediately followed by it's hit count
+          # so we shift off an item (the value)
+          while value = values_and_hits_list.shift
+            # and then shift off the next to get the hit value
+            facet.values << FacetValue.new(value, values_and_hits_list.shift)
+            # repeat until there are no more pairs in the values_and_hits_list array
+          end
+          acc
+        end
+      )
+    end
+    
+    # pass in a facet field name and get back a Facet instance
+    def facet_by_field_name(name)
+      facets.detect{|facet|facet.field.to_s == name.to_s}
+    end
+    
+    def facet_counts
       @facets ||= data['facet_counts'] || {}
     end
-
+    
     # Returns the hash of all the facet_fields (ie: {'instock_b' => ['true', 123, 'false', 20]}
     def facet_fields
-      @facet_fields ||= facets['facet_fields'] || {}
+      @facet_fields ||= facet_counts['facet_fields'] || {}
     end
-
+    
     # Returns all of the facet queries
     def facet_queries
-      @facet_queries ||= facets['facet_queries'] || {}
-    end
-
-    # Returns a hash of hashs rather than a hash of arrays (ie: {'instock_b' => {'true' => 123', 'false', => 20} })
-    def facet_fields_by_hash
-      @facet_fields_by_hash ||= begin
-        f = {}
-        if facet_fields
-          facet_fields.each do |field,value_and_counts|
-            f[field] = {}
-            value_and_counts.each_with_index do |v, i|
-              if i % 2 == 0
-                f[field][v] = value_and_counts[i+1]
-              end
-            end
-          end
-        end
-        f
-      end
-    end
-
-    # Returns an array of value/counts for a given field (ie: ['true', 123, 'false', 20]
-    def facet_field(field)
-      facet_fields[field.to_s]
-    end
-
-    # Returns the array of field values for the given field in the order they were returned from solr
-    def facet_field_values(field)
-      facet_field_values ||= {}
-      facet_field_values[field.to_s] ||= begin
-        a = []
-        return unless facet_field(field)
-        facet_field(field).each_with_index do |val_or_count, i|
-          a << val_or_count if i % 2 == 0 && facet_field(field)[i+1] > 0
-        end
-        a
-      end
-    end
-
-    # Returns a hash of value/counts for a given field (ie: {'true' => 123, 'false' => 20}
-    def facet_field_by_hash(field)
-      facet_fields_by_hash[field.to_s]
-    end
-
-    # Returns the count for the given field/value pair
-    def facet_field_count(field, value)
-      facet_fields_by_hash[field.to_s][value.to_s] if facet_fields_by_hash[field.to_s]
-    end
-
-    # Returns the counts for a given facet_query_name
-    def facet_query_count_by_name(facet_query_name)
-      query_string = query_builder.facet_query_by_name(facet_query_name)
-      facet_queries[query_string] if query_string
+      @facet_queries ||= facet_counts['facet_queries'] || {}
     end
     
   end

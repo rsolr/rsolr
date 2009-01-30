@@ -1,3 +1,15 @@
+0.6.9 - January 29, 2009
+	Simplified facet response methods
+	Main facet method is called #facets
+	  - returns an array of Response::Facet instances
+	  - each Facet instance has field and values attributes
+	  -- the values attribute is an array with FacetValue instances which have @value and @hits
+	Added ability to set Connection::Base @param_adapters using :dismax or :standard
+	  instead of full class constant
+	  updated comments for #search method
+	Updated tests
+	Bumped up version
+ 
 0.6.8 - January 28, 2009
 	New method added to RSolr::Connection::Base - #find_values_for_facet
 	This method searches for facet values only, and sets the :rows param to 0

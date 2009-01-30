@@ -119,7 +119,17 @@ module ConnectionTestMethods
   def test_search_facet_by_name
     @solr.add([{:id=>1, :cat=>'eletronics'}, {:id=>2, :cat=>'software'}]) and @solr.commit
     response = @solr.search_facet_by_name('cat', {:q=>'*:*'})
-    assert_equal 2, response.facet_field_values(:cat).size
+    
+    response.facets.each do |facet|
+      puts facet.field
+      puts facet.values.inspect
+      facet.values.each do |value|
+        puts value.value
+        puts value.hits
+      end
+    end
+    
+    assert_equal 2, response.facet_by_field_name(:cat).values.size
     #
     response = @solr.search_facet_by_name('cat', {:q=>'*:*'})
     assert_equal 0, response.docs.size

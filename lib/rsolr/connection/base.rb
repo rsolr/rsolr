@@ -45,10 +45,26 @@ class RSolr::Connection::Base
     p[:wt]==:ruby ? RSolr::Response::Query::Base.new(response) : response
   end
   
-  # register your own mapper if you want?
+  # The #search method uses a param mapper to prepare the request for solr.
+  # For example, instead of doing your fq params by hand,
+  # you can use the simplified :filters param instead.
+  # The 2 built in mappers are for dismax and standard: RSolr::Connection::ParamMapping::*
+  # The default is :dismax
+  # If you create your own request handler in solrconfig.xml,
+  # you can use it by setting the :qt=>:my_handler
+  # You'll need to set the correct param mapper class (when using the search method)
+  # To take advantage of the param mapping
+  # If your request handler uses the solr dismax class, then do nothing
+  # if it uses the standard, you'll need to set it like:
+  # solr.param_mappers[:my_search_handler] = :standard
+  # The value can also be a custom class constant that must have a #map method
+  # The initialize method must accept a hash of input params
+  # The #map method must handle a block being passed in and return a new hash of raw solr params
   def search(params,&blk)
     qt = params[:qt] ? params[:qt].to_sym : :dismax
     mapper_class = @param_mappers[qt]
+    mapper_class = RSolr::Connection::ParamMapping::Dismax if mapper_class==:dismax
+    mapper_class = RSolr::Connection::ParamMapping::Standard if mapper_class==:standard
     mapper = mapper_class.new(params)
     query(mapper.map(&blk))
   end
