@@ -1,5 +1,5 @@
-0.6.9 - January 29, 2009
-	Removed all param mapping behavior
+0.7.0 - February 20, 2009
+	Removed all param mapping behavior, code and tests
 	  - this stuff just gunks up rsole and should be in an extension of some sort
 
 0.6.9 - January 29, 2009
