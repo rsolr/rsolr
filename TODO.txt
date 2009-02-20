@@ -1,3 +1,5 @@
+pure?
+
 facets_by_hash method not ordered - needs to be an array - OrderedHash?
 
 Push HTTPClient into separate gem?
