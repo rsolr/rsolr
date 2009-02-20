@@ -1,4 +1,8 @@
 0.6.9 - January 29, 2009
+	Removed all param mapping behavior
+	  - this stuff just gunks up rsole and should be in an extension of some sort
+
+0.6.9 - January 29, 2009
 	Simplified facet response methods
 	Main facet method is called #facets
 	  - returns an array of Response::Facet instances

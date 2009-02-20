@@ -1,10 +1,4 @@
-pure?
-
-facets_by_hash method not ordered - needs to be an array - OrderedHash?
-
-Push HTTPClient into separate gem?
-
-Remove those pesky test warnings about constants already being defined etc.
+Remove those pesky warnings about constants already being defined etc. when running rake
 
 Look at http://lab.cisti-icist.nrc-cnrc.gc.ca/cistilabswiki/index.php/LuSql
 
@@ -19,5 +13,3 @@ http://wiki.apache.org/solr/solr-ruby/BrainStorming
 http://wiki.apache.org/solr/solr-ruby/ToDo
 
 Connection pooling?
-
-Work out a good query param mapping/dsl scheme, based on use cases

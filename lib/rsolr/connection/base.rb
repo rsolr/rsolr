@@ -5,31 +5,12 @@ class RSolr::Connection::Base
   
   attr_reader :adapter, :opts
   
-  attr_accessor :param_mappers
-  
   # "adapter" is instance of:
   #   RSolr::Adapter::HTTP
   #   RSolr::Adapter::Direct (jRuby only)
   def initialize(adapter, opts={})
     @adapter = adapter
-    @param_mappers = {
-      :standard=>RSolr::Connection::ParamMapping::Standard,
-      :dismax=>RSolr::Connection::ParamMapping::Dismax
-    }
-    opts[:global_params]||={}
-    default_global_params = {
-      :wt=>:ruby,
-      :echoParams=>'EXPLICIT',
-      :debugQuery=>true
-    }
-    opts[:global_params] = default_global_params.merge(opts[:global_params])
     @opts = opts
-  end
-  
-  # sets default params etc.. - could be used as a mapping hook
-  # type of request should be passed in here? -> map_params(:query, {})
-  def map_params(params)
-    {}.merge(@opts[:global_params]).merge(params)
   end
   
   # send request (no param mapping) to the select handler
@@ -43,46 +24,6 @@ class RSolr::Connection::Base
     p = map_params(params)
     response = @adapter.query(p)
     p[:wt]==:ruby ? RSolr::Response::Query::Base.new(response) : response
-  end
-  
-  # The #search method uses a param mapper to prepare the request for solr.
-  # For example, instead of doing your fq params by hand,
-  # you can use the simplified :filters param instead.
-  # The 2 built in mappers are for dismax and standard: RSolr::Connection::ParamMapping::*
-  # The default is :dismax
-  # If you create your own request handler in solrconfig.xml,
-  # you can use it by setting the :qt=>:my_handler
-  # You'll need to set the correct param mapper class (when using the search method)
-  # To take advantage of the param mapping
-  # If your request handler uses the solr dismax class, then do nothing
-  # if it uses the standard, you'll need to set it like:
-  # solr.param_mappers[:my_search_handler] = :standard
-  # The value can also be a custom class constant that must have a #map method
-  # The initialize method must accept a hash of input params
-  # The #map method must handle a block being passed in and return a new hash of raw solr params
-  def search(params,&blk)
-    qt = params[:qt] ? params[:qt].to_sym : :dismax
-    mapper_class = @param_mappers[qt]
-    mapper_class = RSolr::Connection::ParamMapping::Dismax if mapper_class==:dismax
-    mapper_class = RSolr::Connection::ParamMapping::Standard if mapper_class==:standard
-    mapper = mapper_class.new(params)
-    query(mapper.map(&blk))
-  end
-  
-  # "facet_field" -- the name of a facet field: language_facet
-  # "params" -- the standard #search method params
-  # Returns an instance of RSolr::Response::Query::Base
-  def search_facet_by_name(facet_field, params, &blk)
-    params[:per_page] = 0
-    params[:rows] = 0
-    params[:facets] ||= {}
-    params[:facets][:fields] = [facet_field]
-    params[:facets][:mincount] ||= 1
-    params[:facets][:prefix] ||= nil
-    params[:facets][:missing] ||= false
-    params[:facets][:sort] ||= :count
-    params[:facets][:offset] ||= 0
-    self.search(params, &blk)
   end
   
   # Finds a document by its id
@@ -104,7 +45,7 @@ class RSolr::Connection::Base
   def update(data, params={})
     params = map_params(params)
     response = @adapter.update(data, params)
-    params[:wt]==:ruby ? RSolr::Response::Update.new(response) : response
+    params[:wt] == :ruby ? RSolr::Response::Update.new(response) : response
   end
   
   def add(hash_or_array, opts={}, &block)
@@ -146,6 +87,12 @@ class RSolr::Connection::Base
   # shortcut to solr::message
   def message
     RSolr::Message
+  end
+  
+  # sets default params etc.. - could be used as a mapping hook
+  # type of request should be passed in here? -> map_params(:query, {})
+  def map_params(params)
+    {:wt=>:ruby}.merge(params)
   end
   
 end
