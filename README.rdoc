@@ -31,7 +31,7 @@ To get a direct connection (no http) in jRuby using DirectSolrConnection:
 
 You can set the request handler paths for every request:
   
-  solr = RSolr.connect(:select_path=>'select', :update_path=>'update', :admin_luke=>'admin/luke')
+  solr = RSolr.connect(:select_path=>'select', :update_path=>'update', :luke_path=>'admin/luke')
 
 
 == Requests
