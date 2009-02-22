@@ -12,18 +12,6 @@ module ConnectionTestMethods
   #  assert_equal 0, @solr.query(:q=>'*:*').docs.size
   #end
   
-  def test_default_options
-    assert_equal '/select', @solr.adapter.default_options[:select_path]
-    assert_equal '/update', @solr.adapter.default_options[:update_path]
-    assert_equal '/admin/luke', @solr.adapter.default_options[:luke_path]
-  end
-  
-  # setting adapter options in Solr.connect method should set them in the adapter
-  def test_set_adapter_options
-    solr = RSolr.connect(:select_path=>'/select2')
-    assert_equal '/select2', solr.adapter.opts[:select_path]
-  end
-  
   # setting connection options in Solr.connect method should set them in the connection
   def test_set_connection_options
     solr = RSolr.connect(:default_wt=>:json)
@@ -115,16 +103,5 @@ module ConnectionTestMethods
     assert [true, false].include?(response.optimized?)
     assert [true, false].include?(response.has_deletions?)
   end
-  
-  def test_expand_args
-    assert_equal 'blah', @solr.expand_args(['blah'])
-    expected_hash = {:a=>:b}
-    assert_equal expected_hash, @solr.expand_args([expected_hash])
-    assert_equal ['blah', expected_hash], @solr.expand_args(['blah', expected_hash])
-  end
-  
-  #def test_that_request_path_can_be_set_with_the_first_argument
-  #  @solr.query('/blah')
-  #end
   
 end

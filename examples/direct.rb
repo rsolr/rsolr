@@ -9,7 +9,8 @@ solr = RSolr.connect(:adapter=>:direct, :home_dir=>home, :dist_dir=>dist)
 
 `cd ../apache-solr/example/exampledocs && ./post.sh ./*.xml`
 
-response = solr.search :q=>'ipod', :fq=>'price:[0 TO 50]', :per_page=>2, :page=>1
+# the 'select' here is optional
+response = solr.query 'select', :q=>'ipod', :fq=>'price:[0 TO 50]', :rows=>2, :start=>0
 
 solr.delete_by_query('*:*')
 

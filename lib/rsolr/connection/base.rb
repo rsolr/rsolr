@@ -13,10 +13,6 @@ class RSolr::Connection::Base
     @opts = opts
   end
   
-  def expand_args(args)
-    args.size > 1 ? args[0..-2] + [args[-1]] : args[0]
-  end
-  
   # send request (no param mapping) to the select handler
   # params is hash with valid solr request params (:q, :fl, :qf etc..)
   #   if params[:wt] is not set, the default is :ruby (see opts[:global_params])
@@ -25,57 +21,67 @@ class RSolr::Connection::Base
   #   NOTE: to get raw ruby, use :wt=>'ruby'
   # There is NO param mapping here, what you put it is what gets sent to Solr
   def query(*args)
-    path, params = expand_args(args)
-    p = map_params(params)
-    response = @adapter.query(path, p)
-    p[:wt]==:ruby ? RSolr::Response::Query::Base.new(response) : response
+    params = map_params(args.extract_options!)
+    args << params
+    response = @adapter.query(*args)
+    params[:wt] == :ruby ? RSolr::Response::Query::Base.new(response) : response
   end
   
   # Finds a document by its id
-  def find_by_id(id, params={})
-    params = map_params(params)
+  def find_by_id(*args)
+    params = map_params(args.extract_options!)
     params[:q] = 'id:"#{id}"'
-    query params
+    args << params
+    self.query(*args)
   end
   
-  def index_info(params={})
-    params = map_params(params)
-    response = @adapter.index_info(params)
+  # 
+  def update(*args)
+    params = map_params(args.extract_options!)
+    args << params
+    response = @adapter.update(*args)
+    params[:wt] == :ruby ? RSolr::Response::Update.new(response) : response
+  end
+  
+  def index_info(*args)
+    params = map_params(args.extract_options!)
+    args << params
+    response = @adapter.index_info(*args)
     params[:wt] == :ruby ? RSolr::Response::IndexInfo.new(response) : response
   end
   
-  def add(hash_or_array, opts={}, &block)
-    update message.add(hash_or_array, opts, &block)
+  def add(*args, &block)
+    update message.add(*args, &block)
   end
   
   # send </commit>
-  def commit(opts={})
-    update message.commit, opts
+  def commit(*args)
+    update message.commit, *args
   end
   
   # send </optimize>
-  def optimize(opts={})
-    update message.optimize, opts
+  def optimize(*args)
+    update message.optimize, *args
   end
   
   # send </rollback>
   # NOTE: solr 1.4 only
-  def rollback(opts={})
-    update message.rollback, opts
+  def rollback(*args)
+    update message.rollback, *args
   end
   
   # Delete one or many documents by id
   #   solr.delete_by_id 10
   #   solr.delete_by_id([12, 41, 199])
-  def delete_by_id(ids, opts={})
-    update message.delete_by_id(ids), opts
+  def delete_by_id(*args)
+    update message.delete_by_id(args.shift), *args
   end
   
   # delete one or many documents by query
   #   solr.delete_by_query 'available:0'
   #   solr.delete_by_query ['quantity:0', 'manu:"FQ"']
-  def delete_by_query(queries, opts={})
-    update message.delete_by_query(queries), opts
+  def delete_by_query(*args)
+    update message.delete_by_query(args.shift), *args
   end
   
   protected
@@ -90,12 +96,6 @@ class RSolr::Connection::Base
   def map_params(params)
     params||={}
     {:wt=>:ruby}.merge(params)
-  end
-  
-  def update(data, params={})
-    params = map_params(params)
-    response = @adapter.update(data, params)
-    params[:wt] == :ruby ? RSolr::Response::Update.new(response) : response
   end
   
 end

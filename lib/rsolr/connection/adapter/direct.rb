@@ -27,7 +27,7 @@ class RSolr::Connection::Adapter::Direct
       # add the standard lib and dist directories to the :jar_paths
       opts[:jar_paths] = [File.join(opts[:dist_dir], 'lib'), File.join(opts[:dist_dir], 'dist')]
     end
-    @opts = default_options.merge(opts)
+    @opts = opts
   end
   
   # loads/imports the java dependencies

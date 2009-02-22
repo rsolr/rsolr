@@ -10,8 +10,9 @@ Simple usage:
   require 'rubygems'
   require 'rsolr'
   rsolr = RSolr.connect
-  response = rsolr.query(:q=>'*:*')
-
+  response = rsolr.query(:q=>'*:*') # becomes /solr/select?q=*:*
+  # can also set the request handler path like:
+  response = rsolr.query('catalog', :q=>'*:*') # becomes /solr/catalog?q=*:*
 
 To run tests:
   
@@ -36,6 +37,14 @@ You can set RSolr params that will be sent on every request:
 == Requests
 Once you have a connection, you can execute queries, updates etc..
 
+You can optionally specify the request handler path by sending it in as the first argument:
+  solr.query 'catalog', :q=>'object_type:"book"'
+  solr.update 'my/update', '<xml/>'
+
+The default request handler path value for each of the different methods are as follows:
+  find_by_id, query == '/select'
+  add, update, commit, optimize, rollback, delete_by_id, delete_by_query == '/update'
+  index_info == '/admin/luke'
 
 === Querying
 Use the #query method to send requests to the /select handler:
@@ -45,7 +54,7 @@ Use the #query method to send requests to the /select handler:
 ==== Pagination
 Pagination is simplified from having a few helpful response methods:
   
-  response = solr.search(:start=>0, :rows=>10, :q=>'*:*')
+  response = solr.query(:start=>0, :rows=>10, :q=>'*:*')
   response.per_page
   response.total_pages
   response.current_page
