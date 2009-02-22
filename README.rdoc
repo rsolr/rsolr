@@ -29,9 +29,9 @@ To get a direct connection (no http) in jRuby using DirectSolrConnection:
   
   solr = RSolr.connect(:adapter=>:direct, :home_dir=>'/path/to/solr/home', :dist_dir=>'/path/to/solr/distribution')
 
-You can set RSolr params that will be sent on every request:
+You can set the request handler paths for every request:
   
-  solr = RSolr.connect(:global_params=>{:wt=>:ruby, :echoParams=>'EXPLICIT'})
+  solr = RSolr.connect(:select_path=>'select', :update_path=>'update', :admin_luke=>'admin/luke')
 
 
 == Requests
@@ -42,9 +42,12 @@ You can optionally specify the request handler path by sending it in as the firs
   solr.update 'my/update', '<xml/>'
 
 The default request handler path value for each of the different methods are as follows:
-  find_by_id, query == '/select'
-  add, update, commit, optimize, rollback, delete_by_id, delete_by_query == '/update'
-  index_info == '/admin/luke'
+  find_by_id, query == 'select'
+  add, update, commit, optimize, rollback, delete_by_id, delete_by_query == 'update'
+  index_info == 'admin/luke'
+
+Please note that the path you specify should be relative.
+
 
 === Querying
 Use the #query method to send requests to the /select handler:
