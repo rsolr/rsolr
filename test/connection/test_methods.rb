@@ -116,4 +116,15 @@ module ConnectionTestMethods
     assert [true, false].include?(response.has_deletions?)
   end
   
+  def test_expand_args
+    assert_equal 'blah', @solr.expand_args(['blah'])
+    expected_hash = {:a=>:b}
+    assert_equal expected_hash, @solr.expand_args([expected_hash])
+    assert_equal ['blah', expected_hash], @solr.expand_args(['blah', expected_hash])
+  end
+  
+  #def test_that_request_path_can_be_set_with_the_first_argument
+  #  @solr.query('/blah')
+  #end
+  
 end

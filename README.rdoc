@@ -38,31 +38,14 @@ Once you have a connection, you can execute queries, updates etc..
 
 
 === Querying
-Use the #query method to send requests to Solr as-is (no param mapping)
-Use the #search method to take advantage of some of the param mapping (currently only :page and :per_page)
+Use the #query method to send requests to the /select handler:
   response = solr.query(:q=>'washington', :facet=>true, 'facet.limit'=>-1, 'facet.field'=>'cat', 'facet.field'=>'inStock')
   response = solr.find_by_id(1)
 
-==== Search Params
-The #search method can accept the following params:
-===== When :qt is :standard
-  :page
-  :per_page
-  :queries
-  :filters
-  :phrase_queries
-  :phrase_filters
-  :facets
-===== When :qt is :dismax (also includes the :standard params)
-  :alternate_query
-  :query_fields
-  :phrase_fields
-  :boost_query
-
 ==== Pagination
-Pagination is simplified by using the :page and :per_page params when using the #search method:
-
-  response = solr.search(:page=>1, :per_page=>10, :q=>'*:*')
+Pagination is simplified from having a few helpful response methods:
+  
+  response = solr.search(:start=>0, :rows=>10, :q=>'*:*')
   response.per_page
   response.total_pages
   response.current_page
@@ -73,7 +56,6 @@ If you use WillPaginate, just pass-in the response to the #will_paginate view he
 
   <%= will_paginate(@response) %>
 
-The #search method automatically figures out the :start and :rows values, based on the values of :page and :per_page. The will_paginate view helper uses the methods: #current_page, #previous_page, #next_page and #total_pages to create the pagination view widget.
 
 === Updating Solr
 Updating is done using native Ruby structures. Hashes are used for single documents and arrays are used for a collection of documents (hashes). These structures get turned into simple XML "messages".

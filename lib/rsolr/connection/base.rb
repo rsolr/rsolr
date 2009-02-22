@@ -13,6 +13,10 @@ class RSolr::Connection::Base
     @opts = opts
   end
   
+  def expand_args(args)
+    args.size > 1 ? args[0..-2] + [args[-1]] : args[0]
+  end
+  
   # send request (no param mapping) to the select handler
   # params is hash with valid solr request params (:q, :fl, :qf etc..)
   #   if params[:wt] is not set, the default is :ruby (see opts[:global_params])
@@ -20,9 +24,10 @@ class RSolr::Connection::Base
   #   otherwise, an instance of RSolr::Response::Query is returned
   #   NOTE: to get raw ruby, use :wt=>'ruby'
   # There is NO param mapping here, what you put it is what gets sent to Solr
-  def query(params)
+  def query(*args)
+    path, params = expand_args(args)
     p = map_params(params)
-    response = @adapter.query(p)
+    response = @adapter.query(path, p)
     p[:wt]==:ruby ? RSolr::Response::Query::Base.new(response) : response
   end
   
@@ -37,15 +42,6 @@ class RSolr::Connection::Base
     params = map_params(params)
     response = @adapter.index_info(params)
     params[:wt] == :ruby ? RSolr::Response::IndexInfo.new(response) : response
-  end
-  
-  # if :ruby is the :wt, then Solr::Response::Base is returned
-  # -- there's not really a way to figure out what kind of handler request this is.
-  
-  def update(data, params={})
-    params = map_params(params)
-    response = @adapter.update(data, params)
-    params[:wt] == :ruby ? RSolr::Response::Update.new(response) : response
   end
   
   def add(hash_or_array, opts={}, &block)
@@ -92,7 +88,14 @@ class RSolr::Connection::Base
   # sets default params etc.. - could be used as a mapping hook
   # type of request should be passed in here? -> map_params(:query, {})
   def map_params(params)
+    params||={}
     {:wt=>:ruby}.merge(params)
+  end
+  
+  def update(data, params={})
+    params = map_params(params)
+    response = @adapter.update(data, params)
+    params[:wt] == :ruby ? RSolr::Response::Update.new(response) : response
   end
   
 end

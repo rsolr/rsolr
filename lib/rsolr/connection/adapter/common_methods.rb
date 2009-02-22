@@ -10,8 +10,14 @@
 module RSolr::Connection::Adapter::CommonMethods
   
   # send a request to the "select" handler
-  def query(params)
-    send_request @opts[:select_path], params
+  def query(path='select', params={})
+    send_request "/#{path}", params
+  end
+  
+  # sends a request to the admin luke handler to get info on the index
+  def index_info(path='admin/luke', params={})
+    params[:numTerms]||=0
+    send_request "/#{path}", params
   end
   
   # sends data to the update handler
@@ -19,22 +25,8 @@ module RSolr::Connection::Adapter::CommonMethods
   #   string (valid solr update xml)
   #   object with respond_to?(:to_xml)
   # params is a hash with valid solr update params
-  def update(data, params={})
-    send_request @opts[:update_path], params, data
-  end
-  
-  # sends a request to the admin luke handler to get info on the index
-  def index_info(params={})
-    params[:numTerms]||=0
-    send_request @opts[:luke_path], params
-  end
-  
-  def default_options
-    {
-      :select_path => '/select',
-      :update_path => '/update',
-      :luke_path => '/admin/luke'
-    }
+  def update(path='update', data='', params={})
+    send_request "/#{path}", params, data
   end
   
   # send a request to the adapter (allows requests like /admin/luke etc.)

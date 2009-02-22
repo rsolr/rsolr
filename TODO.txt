@@ -5,12 +5,6 @@ Look at http://lab.cisti-icist.nrc-cnrc.gc.ca/cistilabswiki/index.php/LuSql
   db_mapper = Solr::DBMapper.new(:host=>'', :database=>'')
 
 Check out http://github.com/dan-manges/mixology/tree/master for extensions/mixins framework?
-
-Or just use the standard Ruby "include" and "extend":
-	
-	solr = RSolr.connect
-	solr.extend MappingDSL
-	solr.extend RSolr::Ext::Pagination
 	
 Check out the following:
 
@@ -19,3 +13,9 @@ http://wiki.apache.org/solr/solr-ruby/BrainStorming
 http://wiki.apache.org/solr/solr-ruby/ToDo
 
 Connection pooling?
+
+Change query method to "get" ??? Then... specify the handler path directly in the query method?
+  solr.get('select', :q=>'blah')
+  solr.get('catalog', :q=>'blah')
+  
+  solr.add('update', )
