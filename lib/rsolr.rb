@@ -27,7 +27,7 @@ module RSolr
     }
     opts[:select_path] ||= 'select'
     opts[:update_path] ||= 'update'
-    opts[:admin_luke_path] ||= 'admin/luke'
+    opts[:luke_path] ||= 'admin/luke'
     adapter_class = RSolr::Connection::Adapter.const_get(types[adapter_name])
     RSolr::Connection::Base.new(adapter_class.new(opts), opts)
   end

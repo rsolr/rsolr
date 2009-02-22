@@ -23,7 +23,7 @@ module RSolr::Connection::Adapter::CommonMethods
   # the last argument is a hash of params
   def index_info(*args)
     params = args.extract_options!
-    path = args.first || @opts[:admin_luke_path]
+    path = args.first || @opts[:luke_path]
     params[:numTerms]||=0
     self.send_request "/#{path}", params
   end
