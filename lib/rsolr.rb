@@ -7,13 +7,14 @@ proc {|base, files|
 
 module RSolr
   
-  VERSION = '0.7.0'
+  VERSION = '0.7.1'
   
   autoload :Message, 'rsolr/message'
   autoload :Response, 'rsolr/response'
   autoload :Connection, 'rsolr/connection'
   autoload :Indexer, 'rsolr/indexer'
   autoload :HTTPClient, 'rsolr/http_client'
+  autoload :Query, 'rsolr/query'
   
   # factory for creating connections
   # opts[:adapter] is either :http or :direct

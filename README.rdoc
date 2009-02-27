@@ -55,7 +55,7 @@ Use the #query method to send requests to the /select handler:
   response = solr.find_by_id(1)
 
 ==== Pagination
-Pagination is simplified from having a few helpful response methods:
+Pagination is simplified by having a few helpful response methods:
   
   response = solr.query(:start=>0, :rows=>10, :q=>'*:*')
   response.per_page

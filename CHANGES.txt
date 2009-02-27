@@ -1,3 +1,8 @@
+0.7.1 - February 27, 2009
+  Added simple query helper module -> RSolr::Query
+  Added tests for RSolr::Query
+  Modified Test::Unit::TestCase in test/test_helpers.rb
+
 0.7.0 - February 20, 2009
   Removed all param mapping behavior, code and tests
    - this stuff just gunks up rsolr and should be in an extension of some sort
@@ -17,7 +22,7 @@
 	  updated comments for #search method
 	Updated tests
 	Bumped up version
- 
+
 0.6.8 - January 28, 2009
 	New method added to RSolr::Connection::Base - #find_values_for_facet
 	This method searches for facet values only, and sets the :rows param to 0
