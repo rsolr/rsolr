@@ -2,14 +2,6 @@
 
 A Ruby client for Apache Solr. Has transparent JRuby support by using "org.apache.solr.servlet.DirectSolrConnection" as a connection adapter.
 
-NOTE: Please consider using the "pure" branch. This branch will soon become the master. The main differences are:
-  - no tricky param mapping
-  - much simplified code base
-  - ability to set the request handler paths whenever a call is made to solr.
-
-Param mapping will be wrapped up in a different library/extension.
-
-
 ==Installation:
   gem sources -a http://gems.github.com
   sudo gem install mwmitchell-rsolr
@@ -59,7 +51,7 @@ Please note that the path you specify should be relative.
 
 === Querying
 Use the #query method to send requests to the /select handler:
-  response = solr.query(:q=>'washington', :facet=>true, 'facet.limit'=>-1, 'facet.field'=>'cat', 'facet.field'=>'inStock')
+  response = solr.query(:q=>'washington', :facet=>true, 'facet.limit'=>-1, 'facet.field'=>'cat', 'facet.field'=>'inStock', :start=>0, :rows=>10)
   response = solr.find_by_id(1)
 
 ==== Pagination
