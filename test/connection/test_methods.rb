@@ -12,18 +12,6 @@ module ConnectionTestMethods
   #  assert_equal 0, @solr.query(:q=>'*:*').docs.size
   #end
   
-  def test_default_options
-    assert_equal '/select', @solr.adapter.default_options[:select_path]
-    assert_equal '/update', @solr.adapter.default_options[:update_path]
-    assert_equal '/admin/luke', @solr.adapter.default_options[:luke_path]
-  end
-  
-  # setting adapter options in Solr.connect method should set them in the adapter
-  def test_set_adapter_options
-    solr = RSolr.connect(:select_path=>'/select2')
-    assert_equal '/select2', solr.adapter.opts[:select_path]
-  end
-  
   # setting connection options in Solr.connect method should set them in the connection
   def test_set_connection_options
     solr = RSolr.connect(:default_wt=>:json)
@@ -114,25 +102,6 @@ module ConnectionTestMethods
     assert [true, false].include?(response.current?)
     assert [true, false].include?(response.optimized?)
     assert [true, false].include?(response.has_deletions?)
-  end
-  
-  def test_search_facet_by_name
-    @solr.add([{:id=>1, :cat=>'eletronics'}, {:id=>2, :cat=>'software'}]) and @solr.commit
-    response = @solr.search_facet_by_name('cat', {:q=>'*:*'})
-    
-    response.facets.each do |facet|
-      puts facet.field
-      puts facet.values.inspect
-      facet.values.each do |value|
-        puts value.value
-        puts value.hits
-      end
-    end
-    
-    assert_equal 2, response.facet_by_field_name(:cat).values.size
-    #
-    response = @solr.search_facet_by_name('cat', {:q=>'*:*'})
-    assert_equal 0, response.docs.size
   end
   
 end

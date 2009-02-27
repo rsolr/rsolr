@@ -21,7 +21,7 @@ class RSolr::Connection::Adapter::HTTP
   #
   def initialize(opts={}, &block)
     opts[:url]||='http://127.0.0.1:8983/solr'
-    @opts = default_options.merge(opts).to_mash # default_options are coming from RSolr::Connection::Adapter::CommonMethods
+    @opts = opts
   end
   
   def connection

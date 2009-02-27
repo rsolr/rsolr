@@ -19,3 +19,7 @@ http://wiki.apache.org/solr/solr-ruby/ToDo
 Connection pooling?
 
 Work out a good query param mapping/dsl scheme, based on use cases
+
+solr.query 'select', :q=>'ipod'
+solr.add '<xml/>', :autoCommit=>true
+solr.add 'update', '<xml/>', :autoCommit=>true

@@ -1,3 +1,11 @@
+0.7.0 - February 20, 2009
+  Removed all param mapping behavior, code and tests
+   - this stuff just gunks up rsolr and should be in an extension of some sort
+  Can now specify the request handler in all RSolr::Connection::Base methods as the first argument:
+    - solr.query 'select', :q=>'ipod'
+    - solr.query 'catalog', :q=>'humphry'
+    - solr.query :q=>'big' # defaults to the /select handler
+
 0.6.9 - January 29, 2009
 	Simplified facet response methods
 	Main facet method is called #facets

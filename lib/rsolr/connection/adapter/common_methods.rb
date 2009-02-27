@@ -4,42 +4,47 @@
 # The classes that include this module only need to provide a request method like:
 #   send_request(request_path, params, data)
 # where:
-#   request_path is a string to a handler (/select)
+#   request_path is a string to a handler (/select etc.)
 #   params is a hash for query string params
 #   data is optional string of xml
 module RSolr::Connection::Adapter::CommonMethods
   
   # send a request to the "select" handler
-  def query(params)
-    send_request @opts[:select_path], params
-  end
-  
-  # sends data to the update handler
-  # data can be:
-  #   string (valid solr update xml)
-  #   object with respond_to?(:to_xml)
-  # params is a hash with valid solr update params
-  def update(data, params={})
-    send_request @opts[:update_path], params, data
+  # the first argument is the select handler path
+  # the last argument is a hash of params
+  def query(*args)
+    params = args.extract_options!
+    path = args.first || @opts[:select_path]
+    self.send_request "/#{path}", params
   end
   
   # sends a request to the admin luke handler to get info on the index
-  def index_info(params={})
+  # the first argument is the admin/luke request handler path
+  # the last argument is a hash of params
+  def index_info(*args)
+    params = args.extract_options!
+    path = args.first || @opts[:luke_path]
     params[:numTerms]||=0
-    send_request @opts[:luke_path], params
+    self.send_request "/#{path}", params
   end
   
-  def default_options
-    {
-      :select_path => '/select',
-      :update_path => '/update',
-      :luke_path => '/admin/luke'
-    }
-  end
-  
-  # send a request to the adapter (allows requests like /admin/luke etc.)
-  def send_request(handler_path, params={}, data=nil)
-    @adapter.send_request(handler_path, params, data)
+  # sends data to the update handler
+  # If 2 arguments are passed in:
+  #   - the first should be the POST data string
+  #   - the second can be an optional url params hash
+  #   - the path is defaulted to '/update'
+  # If 3 arguments are passed in:
+  #   - the first argument should be the url path ('/my-update-handler' etc.)
+  #   - the second should be the POST data string
+  #   - the last/third should be an optional url params hash
+  # data can be:
+  #   string (valid solr update xml)
+  #   object with respond_to?(:to_xml)
+  def update(*args)
+    params = args.extract_options!
+    data = args.last
+    path = args.size == 2 ? args.first : @opts[:update_path]
+    self.send_request "/#{path}", params, data
   end
   
 end

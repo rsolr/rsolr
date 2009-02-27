@@ -7,7 +7,7 @@ proc {|base, files|
 
 module RSolr
   
-  VERSION = '0.6.9'
+  VERSION = '0.7.0'
   
   autoload :Message, 'rsolr/message'
   autoload :Response, 'rsolr/response'
@@ -25,6 +25,9 @@ module RSolr
       :http=>'HTTP',
       :direct=>'Direct'
     }
+    opts[:select_path] ||= 'select'
+    opts[:update_path] ||= 'update'
+    opts[:luke_path] ||= 'admin/luke'
     adapter_class = RSolr::Connection::Adapter.const_get(types[adapter_name])
     RSolr::Connection::Base.new(adapter_class.new(opts), opts)
   end
