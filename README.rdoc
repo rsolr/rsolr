@@ -6,7 +6,10 @@ A Ruby client for Apache Solr. Has transparent JRuby support by using "org.apach
   gem sources -a http://gems.github.com
   sudo gem install mwmitchell-rsolr
 
-Simple usage:
+==Community
+  http://groups.google.com/group/rsolr
+
+==Simple usage:
   require 'rubygems'
   require 'rsolr'
   rsolr = RSolr.connect
