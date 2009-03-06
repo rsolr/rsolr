@@ -1,6 +1,6 @@
 0.8.0 - March 6, 2009
   Removed all response wrapper classes (now returning a simple hash for ruby responses)
-  Removed RSolr::Query - this library needs a paired up extension lib, RSolrExt etc..
+  Removed RSolr::Query - this library needs an external partner lib, RSolrExt etc..
   changed query method to select
   added send_request method to Connection for custom requests:
     send_request '/my-handler', {:start=>0}, post_data=nil
