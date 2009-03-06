@@ -7,15 +7,16 @@ A Ruby client for Apache Solr. Has transparent JRuby support by using "org.apach
   sudo gem install mwmitchell-rsolr
 
 ==Community
-  http://groups.google.com/group/rsolr
+http://groups.google.com/group/rsolr
 
 ==Simple usage:
   require 'rubygems'
   require 'rsolr'
   rsolr = RSolr.connect
   response = rsolr.select(:q=>'*:*') # becomes /solr/select?q=*:*
+  
   # can also set the request handler path like:
-  response = rsolr.select(:q=>'*:*') # becomes /solr/catalog?q=*:*
+  response = rsolr.send_request('/catalog', :q=>'*:*') # becomes /solr/catalog?q=*:*
 
 To run tests:
   
