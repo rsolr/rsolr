@@ -1,4 +1,5 @@
-require File.join(File.dirname(__FILE__), 'test_helpers')
+
+require 'helper'
 
 class MessageTest < RSolrBaseTest
   

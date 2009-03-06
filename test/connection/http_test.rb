@@ -1,9 +1,8 @@
 unless defined?(JRUBY_VERSION)
-
-  require File.join(File.dirname(__FILE__), '..', 'test_helpers')
   
-  require File.join(File.dirname(__FILE__), 'test_methods')
-
+  require 'helper'
+  require 'connection/test_methods'
+  
   class AdapterHTTPTest < RSolrBaseTest
   
     include ConnectionTestMethods
