@@ -15,12 +15,6 @@ class RSolr::Connection
     send_request('/select', map_params(params), &blk)
   end
   
-  # sends a request to the admin luke handler to get info on the index
-  def index_info(params={}, &blk)
-    params[:numTerms] ||= 0
-    send_request('/admin/luke', map_params(params), &blk)
-  end
-  
   # sends data to the update handler
   # data can be a string of xml, or an object that returns xml from its #to_s method
   def update(data, params={}, &blk)
