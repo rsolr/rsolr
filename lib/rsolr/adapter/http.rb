@@ -1,17 +1,9 @@
 #
 # Connection for standard HTTP Solr server
 #
-class RSolr::Connection::Adapter::HTTP
+class RSolr::Adapter::HTTP
   
-  class << self
-    attr_accessor :client_adapter
-  end
-  
-  @client_adapter = :net_http
-  
-  include RSolr::Connection::Adapter::CommonMethods
-  
-  attr_reader :opts
+  attr_reader :opts, :connector, :connection
   
   # opts can have:
   #   :url => 'http://localhost:8080/solr'
@@ -22,10 +14,11 @@ class RSolr::Connection::Adapter::HTTP
   def initialize(opts={}, &block)
     opts[:url]||='http://127.0.0.1:8983/solr'
     @opts = opts
+    @connector = RSolr::HTTPClient::Connector.new
   end
   
   def connection
-    @connection ||= RSolr::HTTPClient.connect(@opts[:url], self.class.client_adapter)
+    @connection ||= @connector.connect(@opts[:url])
   end
   
   # send a request to the connection

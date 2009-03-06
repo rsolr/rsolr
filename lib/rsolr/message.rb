@@ -1,4 +1,3 @@
-
 # http://builder.rubyforge.org/
 require 'rubygems'
 require 'builder'
@@ -10,7 +9,7 @@ class RSolr::Message
   class << self
     
     def xml
-      Builder::XmlMarkup.new
+      ::Builder::XmlMarkup.new
     end
     
     # add({})

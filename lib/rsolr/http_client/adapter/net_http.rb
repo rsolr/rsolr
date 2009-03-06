@@ -32,8 +32,8 @@ class RSolr::HTTPClient::Adapter::NetHTTP
     full_url += url
     {
       :status_code=>net_http_response.code.to_i,
-      :body=>net_http_response.body,
       :url=>full_url,
+      :body=>net_http_response.body,
       :path=>path,
       :params=>params,
       :data=>data,

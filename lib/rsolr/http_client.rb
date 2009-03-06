@@ -1,7 +1,7 @@
 # A simple wrapper for different http client implementations.
 # Supports #get and #post
 # This was motivated by: http://apocryph.org/2008/11/09/more_indepth_analysis_ruby_http_client_performance/
-# Net::HTTP is the default adapter
+# Curb is the default adapter
 
 # Each adapters response should be a hash with the following keys:
 #   :status_code
@@ -13,10 +13,14 @@
 #   :headers
 
 # Example:
-#   hclient = RSolr::HTTPClient.connect('http://www.google.com', :net_http)
+#   connector = RSolr::HTTPClient.Connector.new
+#   connector.adapter_name = :net_http # switch to Net::HTTP before calling "connect"
+#   hclient = connector.connect('http://www.google.com')
 #   response = hclient.get('/search', :hl=>:en, :q=>:ruby, :btnG=>:Search)
 #   puts response[:status_code]
 #   puts response[:body]
+
+require 'uri'
 
 module RSolr::HTTPClient
   
@@ -24,20 +28,30 @@ module RSolr::HTTPClient
   
   class UnkownAdapterError < RuntimeError; end
   
-  def self.connect(url, adapter_name=:net_http)
-    case adapter_name
-    when :curb
-      klass = 'Curb'
-    when :net_http
-      klass = 'NetHTTP'
-    else
-      raise UnkownAdapterError.new("Name: #{adapter_name}")
+  class Connector
+    
+    attr_accessor :adapter_name
+    
+    def initialize(adapter_name = :curb)
+      @adapter_name = adapter_name
     end
-    begin
-      Base.new RSolr::HTTPClient::Adapter.const_get(klass).new(url)
-    rescue URI::InvalidURIError
-      raise "#{$!} == #{url}"
+    
+    def connect(url)
+      case adapter_name
+      when :curb
+        klass = 'Curb'
+      when :net_http
+        klass = 'NetHTTP'
+      else
+        raise UnkownAdapterError.new("Name: #{adapter_name}")
+      end
+      begin
+        RSolr::HTTPClient::Base.new RSolr::HTTPClient::Adapter.const_get(klass).new(url)
+      rescue ::URI::InvalidURIError
+        raise "#{$!} == #{url}"
+      end
     end
+    
   end
   
   class Base

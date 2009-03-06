@@ -9,7 +9,7 @@ unless defined?(JRUBY_VERSION)
   class CurbTest < RSolrBaseTest
   
     def setup
-      @c ||= RSolr::HTTPClient.connect(URL, :curb)
+      @c ||= RSolr::HTTPClient::Connector.new(:curb).connect(URL)
     end
   
     include HTTPClientTestMethods

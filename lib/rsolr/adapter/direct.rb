@@ -5,10 +5,9 @@ require 'java'
 #
 # Connection for JRuby + DirectSolrConnection
 #
-class RSolr::Connection::Adapter::Direct
+class RSolr::Adapter::Direct
   
   include RSolr::HTTPClient::Util
-  include RSolr::Connection::Adapter::CommonMethods
   
   attr_accessor :opts, :home_dir
   
@@ -58,13 +57,13 @@ class RSolr::Connection::Adapter::Direct
       raise RSolr::RequestError.new($!.message)
     end
     {
-      :status_code=>'',
+      :status_code=>nil,
       :body=>body,
       :url=>url,
       :path=>path,
       :params=>params,
       :data=>data,
-      :headers=>{}
+      :headers=>nil
     }
   end
   
