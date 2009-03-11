@@ -9,99 +9,89 @@ module ConnectionTestMethods
   #def teardown
   #  @solr.delete_by_query('id:[* TO *]')
   #  @solr.commit
-  #  assert_equal 0, @solr.query(:q=>'*:*').docs.size
+  #  assert_equal 0, @solr.select(:q=>'*:*').docs.size
   #end
   
-  # setting connection options in Solr.connect method should set them in the connection
-  def test_set_connection_options
-    solr = RSolr.connect(:default_wt=>:json)
-    assert_equal :json, solr.opts[:default_wt]
-  end
-  
-  # If :wt is NOT :ruby, the format doesn't get wrapped in a Solr::Response class
+  # If :wt is NOT :ruby, the format doesn't get converted into a Mash (special Hash; see lib/mash.rb)
   # Raw ruby can be returned by using :wt=>'ruby', not :ruby
   def test_raw_response_formats
-    ruby_response = @solr.query(:q=>'*:*', :wt=>'ruby')
-    assert ruby_response[:body].is_a?(String)
-    assert ruby_response[:body]=~%r('wt'=>'ruby')
+    ruby_response = @solr.select(:q=>'*:*', :wt=>'ruby')
+    assert ruby_response.is_a?(String)
+    assert ruby_response =~ %r('wt'=>'ruby')
     # xml?
-    xml_response = @solr.query(:q=>'*:*', :wt=>'xml')
-    assert xml_response[:body]=~%r(<str name="wt">xml</str>)
+    xml_response = @solr.select(:q=>'*:*', :wt=>'xml')
+    assert xml_response.is_a?(String)
+    assert xml_response =~ %r(<str name="wt">xml</str>)
     # json?
-    json_response = @solr.query(:q=>'*:*', :wt=>'json')
-    assert json_response[:body]=~%r("wt":"json")
+    json_response = @solr.select(:q=>'*:*', :wt=>'json')
+    assert json_response.is_a?(String)
+    assert json_response =~ %r("wt":"json")
   end
   
-  def test_query_responses
-    r = @solr.query(:q=>'*:*')
-    assert r.is_a?(RSolr::Response::Query::Base)
-    # catch exceptions for bad queries
+  def test_raise_on_invalid_query
     assert_raise RSolr::RequestError do
-      @solr.query(:q=>'!')
+      @solr.select(:q=>'!')
     end
   end
   
-  def test_query_response_docs
+  def test_select_response_docs
     @solr.add(:id=>1, :price=>1.00, :cat=>['electronics', 'something else'])
     @solr.commit
-    r = @solr.query(:q=>'*:*')
-    assert r.is_a?(RSolr::Response::Query::Base)
-    assert_equal Array, r.docs.class
-    first = r.docs.first
+    r = @solr.select(:q=>'*:*')
+    assert r.is_a?(Mash)
+    
+    docs = r[:response][:docs]
+    assert_equal Array, docs.class
+    first = docs.first
     
     # test the has? method
-    assert first.has?('price', 1.00)
-    assert ! first.has?('price', 10.00)
-    assert first.has?('cat', 'electronics')
-    assert first.has?('cat', 'something else')
-    assert first.has?(:cat, 'something else')
+    assert_equal 1.00, first[:price]
     
-    assert first.has?('cat', /something/)
+    assert_equal Array, first[:cat].class
+    assert first[:cat].include?('electronics')
+    assert first[:cat].include?('something else')
+    assert first[:cat].include?('something else')
     
-    # has? only works with strings at this time
-    assert first.has?(:cat)
-    
-    assert false == first.has?('cat', /zxcv/)
   end
   
   def test_add
-    assert_equal 0, @solr.query(:q=>'*:*').total
+    assert_equal 0, @solr.select(:q=>'*:*')[:response][:numFound]
     update_response = @solr.add(:id=>100)
-    assert update_response.is_a?(RSolr::Response::Update)
+    assert update_response.is_a?(Mash)
     #
     @solr.commit
-    assert_equal 1, @solr.query(:q=>'*:*').total
+    assert_equal 1, @solr.select(:q=>'*:*')[:response][:numFound]
   end
   
   def test_delete_by_id
     @solr.add(:id=>100)
     @solr.commit
-    total = @solr.query(:q=>'*:*').total
+    total = @solr.select(:q=>'*:*')[:response][:numFound]
     assert_equal 1, total
     delete_response = @solr.delete_by_id(100)
     @solr.commit
-    assert delete_response.is_a?(RSolr::Response::Update)
-    total = @solr.query(:q=>'*:*').total
+    assert delete_response.is_a?(Mash)
+    total = @solr.select(:q=>'*:*')[:response][:numFound]
     assert_equal 0, total
   end
   
   def test_delete_by_query
     @solr.add(:id=>1, :name=>'BLAH BLAH BLAH')
     @solr.commit
-    assert_equal 1, @solr.query(:q=>'*:*').total
+    assert_equal 1, @solr.select(:q=>'*:*')[:response][:numFound]
     response = @solr.delete_by_query('name:BLAH BLAH BLAH')
     @solr.commit
-    assert response.is_a?(RSolr::Response::Update)
-    assert_equal 0, @solr.query(:q=>'*:*').total
+    assert response.is_a?(Mash)
+    assert_equal 0, @solr.select(:q=>'*:*')[:response][:numFound]
   end
   
-  def test_index_info
-    response = @solr.index_info
-    assert response.is_a?(RSolr::Response::IndexInfo)
+  def test_admin_luke_index_info
+    response = @solr.send_request('/admin/luke', :numTerms=>0)
+    assert response.is_a?(Mash)
     # make sure the ? methods are true/false
-    assert [true, false].include?(response.current?)
-    assert [true, false].include?(response.optimized?)
-    assert [true, false].include?(response.has_deletions?)
+    assert [true, false].include?(response[:index][:current])
+    assert [true, false].include?(response[:index][:optimized])
+    assert [true, false].include?(response[:index][:hasDeletions])
   end
   
 end

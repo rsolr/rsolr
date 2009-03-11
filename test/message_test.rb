@@ -1,4 +1,5 @@
-require File.join(File.dirname(__FILE__), 'test_helpers')
+
+require 'helper'
 
 class MessageTest < RSolrBaseTest
   
@@ -52,9 +53,8 @@ class MessageTest < RSolrBaseTest
       :id=>1,
       :name=>'matt'
     }
-    
-    expected = '<add><doc><field name="id">1</field><field name="name">matt</field></doc></add>'
-    assert_equal expected, RSolr::Message.add(data).to_s
+    assert RSolr::Message.add(data).to_s =~ /<field name="name">matt<\/field>/
+    assert RSolr::Message.add(data).to_s =~ /<field name="id">1<\/field>/
   end
   
   # add an array of hashes
@@ -73,7 +73,8 @@ class MessageTest < RSolrBaseTest
     message = RSolr::Message.add(data)
     expected = '<add><doc><field name="id">1</field><field name="name">matt</field></doc><doc><field name="id">2</field><field name="name">sam</field></doc></add>'
     
-    assert_equal expected, message.to_s
+    assert message.to_s=~/<field name="name">matt<\/field>/
+    assert message.to_s=~/<field name="name">sam<\/field>/
   end
   
   # multiValue field support test, thanks to Fouad Mardini!
@@ -82,8 +83,8 @@ class MessageTest < RSolrBaseTest
       :id   => 1,
       :name => ['matt1', 'matt2']
     }
-    expected = '<add><doc><field name="id">1</field><field name="name">matt1</field><field name="name">matt2</field></doc></add>'
-    assert_equal expected, RSolr::Message.add(data).to_s
+    assert RSolr::Message.add(data).to_s =~ /<field name="name">matt1<\/field>/
+    assert RSolr::Message.add(data).to_s =~ /<field name="name">matt2<\/field>/
   end
   
 end

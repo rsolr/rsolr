@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name = "rsolr"
-  s.version = "0.7.1"
-  s.date = "2009-01-27"
+  s.version = "0.8.0"
+  s.date = "2009-03-6"
   s.summary = "A Ruby client for Apache Solr"
   s.email = "goodieboy@gmail.com"
   s.homepage = "http://github.com/mwmitchell/rsolr"
@@ -14,24 +14,16 @@ Gem::Specification.new do |s|
     "lib/core_ext.rb",
     "lib/mash.rb",
     "lib/rsolr.rb",
-    "lib/rsolr/connection/adapter/common_methods.rb",
-    "lib/rsolr/connection/adapter/direct.rb",
-    "lib/rsolr/connection/adapter/http.rb",
-    "lib/rsolr/connection/adapter.rb",
-    "lib/rsolr/connection/base.rb",
+    "lib/rsolr/adapter/common_methods.rb",
+    "lib/rsolr/adapter/direct.rb",
+    "lib/rsolr/adapter/http.rb",
+    "lib/rsolr/adapter.rb",
     "lib/rsolr/connection.rb",
     "lib/rsolr/http_client/adapter/curb.rb",
     "lib/rsolr/http_client/adapter/net_http.rb",
     "lib/rsolr/http_client/adapter.rb",
     "lib/rsolr/http_client.rb",
-    "lib/rsolr/indexer.rb",
     "lib/rsolr/message.rb",
-    "lib/rsolr/response/base.rb",
-    "lib/rsolr/response/index_info.rb",
-    "lib/rsolr/response/query.rb",
-    "lib/rsolr/response/update.rb",
-    "lib/rsolr/response.rb",
-    "lib/rsolr/query.rb",
     "LICENSE",
     "Rakefile",
     "README.rdoc",
@@ -46,14 +38,8 @@ Gem::Specification.new do |s|
     "test/http_client/net_http_test.rb",
     "test/http_client/test_methods.rb",
     "test/http_client/util_test.rb",
-    "test/indexer.rb",
     "test/message_test.rb",
-    "test/query_helper_test.rb",
-    "test/response/base_test.rb",
-    "test/response/pagination_test.rb",
-    "test/response/query_test.rb",
     "test/rsolr_test",
-    "test/ruby-lang.org.rss.xml",
     "test/test_helpers.rb",
   ]
   #s.rdoc_options = ["--main", "README.rdoc"]

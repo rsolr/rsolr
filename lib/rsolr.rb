@@ -7,30 +7,26 @@ proc {|base, files|
 
 module RSolr
   
-  VERSION = '0.7.1'
+  VERSION = '0.8.0'
   
   autoload :Message, 'rsolr/message'
-  autoload :Response, 'rsolr/response'
   autoload :Connection, 'rsolr/connection'
-  autoload :Indexer, 'rsolr/indexer'
+  autoload :Adapter, 'rsolr/adapter'
   autoload :HTTPClient, 'rsolr/http_client'
-  autoload :Query, 'rsolr/query'
   
   # factory for creating connections
-  # opts[:adapter] is either :http or :direct
-  # opts are sent to the adapter instance (:url for http, :dist_dir for :direct etc.)
-  # and to the connection instance
-  def self.connect(opts={})
-    adapter_name = opts[:adapter] ||= :http
+  # connection_opts[:adapter] is either :http or :direct
+  # connection_opts are sent to the connection instance
+  # adapter_opts are passed to the actually adapter instance
+  def self.connect(connection_opts={}, adapter_opts={})
+    adapter_name = connection_opts[:adapter] ||= :http
     types = {
       :http=>'HTTP',
       :direct=>'Direct'
     }
-    opts[:select_path] ||= 'select'
-    opts[:update_path] ||= 'update'
-    opts[:luke_path] ||= 'admin/luke'
-    adapter_class = RSolr::Connection::Adapter.const_get(types[adapter_name])
-    RSolr::Connection::Base.new(adapter_class.new(opts), opts)
+    adapter_class = RSolr::Adapter.const_get(types[adapter_name])
+    adapter = adapter_class.new(adapter_opts)
+    RSolr::Connection.new(adapter, connection_opts)
   end
   
   class RequestError < RuntimeError; end

@@ -1,4 +1,4 @@
-$: << File.dirname(__FILE__)
+
 require File.join(File.dirname(__FILE__), '..', 'lib', 'rsolr')
 require 'test/unit'
 
@@ -32,11 +32,11 @@ class RSolrBaseTest < Test::Unit::TestCase
   
 end
 
-#begin
-#  require 'rubygems'
-#  require 'redgreen'
-#rescue LoadError
-#end
+begin
+  require 'rubygems'
+  require 'redgreen'
+rescue LoadError
+end
 
 def mock_query_response
   %({'responseHeader'=>{

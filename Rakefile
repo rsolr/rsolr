@@ -2,8 +2,6 @@ require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
 
-require File.join(File.dirname(__FILE__), 'lib', 'rsolr')
-
 namespace :rsolr do
   
   desc "Starts the HTTP server used for running HTTP connection tests"
@@ -20,6 +18,7 @@ Rake::TestTask.new("test_units") { |t|
   t.pattern = 'test/**/*_test.rb'
   t.verbose = true
   t.warning = true
+  t.libs << "test"
 }
 
 # Clean house

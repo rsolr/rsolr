@@ -11,15 +11,16 @@ The mapping/response helper stuff in master, will be extracted out into a separa
   sudo gem install mwmitchell-rsolr
 
 ==Community
-  http://groups.google.com/group/rsolr
+http://groups.google.com/group/rsolr
 
 ==Simple usage:
   require 'rubygems'
   require 'rsolr'
   rsolr = RSolr.connect
-  response = rsolr.query(:q=>'*:*') # becomes /solr/select?q=*:*
+  response = rsolr.select(:q=>'*:*') # becomes /solr/select?q=*:*
+  
   # can also set the request handler path like:
-  response = rsolr.query('catalog', :q=>'*:*') # becomes /solr/catalog?q=*:*
+  response = rsolr.send_request('/catalog', :q=>'*:*') # becomes /solr/catalog?q=*:*
 
 To run tests:
   
@@ -34,46 +35,15 @@ To get a connection in MRI/standard Ruby:
 
 To get a direct connection (no http) in jRuby using DirectSolrConnection:
   
-  solr = RSolr.connect(:adapter=>:direct, :home_dir=>'/path/to/solr/home', :dist_dir=>'/path/to/solr/distribution')
-
-You can set the request handler paths for every request:
-  
-  solr = RSolr.connect(:select_path=>'select', :update_path=>'update', :luke_path=>'admin/luke')
+  solr = RSolr.connect({:adapter=>:direct}, {:home_dir=>'/path/to/solr/home', :dist_dir=>'/path/to/solr/distribution'})
 
 
 == Requests
 Once you have a connection, you can execute queries, updates etc..
 
-You can optionally specify the request handler path by sending it in as the first argument:
-  solr.query 'catalog', :q=>'object_type:"book"'
-  solr.update 'my/update', '<xml/>'
-
-The default request handler path value for each of the different methods are as follows:
-  find_by_id, query == 'select'
-  add, update, commit, optimize, rollback, delete_by_id, delete_by_query == 'update'
-  index_info == 'admin/luke'
-
-Please note that the path you specify should be relative.
-
-
 === Querying
-Use the #query method to send requests to the /select handler:
-  response = solr.query(:q=>'washington', :facet=>true, 'facet.limit'=>-1, 'facet.field'=>'cat', 'facet.field'=>'inStock', :start=>0, :rows=>10)
-  response = solr.find_by_id(1)
-
-==== Pagination
-Pagination is simplified by having a few helpful response methods:
-  
-  response = solr.query(:start=>0, :rows=>10, :q=>'*:*')
-  response.per_page
-  response.total_pages
-  response.current_page
-  response.previous_page
-  response.next_page
-
-If you use WillPaginate, just pass-in the response to the #will_paginate view helper:
-
-  <%= will_paginate(@response) %>
+Use the #select method to send requests to the /select handler:
+  response = solr.select(:q=>'washington', :facet=>true, 'facet.limit'=>-1, 'facet.field'=>'cat', 'facet.field'=>'inStock', :start=>0, :rows=>10)
 
 
 === Updating Solr
@@ -109,24 +79,32 @@ Commit & Optimize
 
 
 == Response Formats
-The default response format is Ruby. When the :wt param is set to :ruby, the response is eval'd and wrapped up in a nice RSolr::Response class. You can get an unwrapped response by setting the :wt to "ruby" - notice, the string -- not a symbol. All other response formats are available as expected, :wt=>'xml' etc.. Currently, the only response format that gets eval'd and wrapped is :ruby.
+The default response format is Ruby. When the :wt param is set to :ruby, the response is eval'd and wrapped up in a nice Mash (Hash) class. You can get a raw response by setting the :wt to "ruby" - notice, the string -- not a symbol. All other response formats are available as expected, :wt=>'xml' etc..
 
-You can access the original request context (path, params, url etc.) from response.request. The response.request is a hash that contains the generated params, url, path, post data, headers etc., very useful for debugging and testing.
+You can access the original request context (path, params, url etc.) by using a block:
+  solr.select(:q=>'*:*') do |solr_response, adapter_response|
+    adapter_response[:status_code]
+    adapter_response[:body]
+    adapter_response[:url]
+  end
+
+The adapter_response is a hash that contains the generated params, url, path, post data, headers etc., very useful for debugging and testing.
 
 
 == HTTP Client Adapter
-You can specify the http client adapter to use by setting RSolr::Connection::Adapter::HTTP.client_adapter to one of:
+You can specify the http client adapter to use by setting solr.adapter.connector.adapter_name to one of:
   :net_http     uses the standard Net::HTTP library
   :curb         uses the Ruby "curl" bindings
 
 Example:
 	
-  RSolr::Connection::Adapter::HTTP.client_adapter = :curb
+  solr.adapter.connector.adapter_name = :curb
 
 Example of using the HTTP client only:
   
-  hclient = RSolr::HTTPClient.connect(url, :curb)
-  hclient = RSolr::HTTPClient.connect(url, :net_http)
+  hclient = RSolr::HTTPClient::Connector.new(:curb).connect(url)
+  hclient = RSolr::HTTPClient::Connector.new(:net_http).connect(url)
+  hclient.get('/')
 
 After reading this http://apocryph.org/2008/11/09/more_indepth_analysis_ruby_http_client_performance - I would recommend using the :curb adapter. NOTE: You can't use the :curb adapter under jRuby. To install curb:
 
