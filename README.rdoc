@@ -2,10 +2,6 @@
 
 A Ruby client for Apache Solr. Has transparent JRuby support by using "org.apache.solr.servlet.DirectSolrConnection" as a connection adapter.
 
-=NOTE
-Please look at the latest code/branch here: http://github.com/mwmitchell/rsolr/tree/no-response-wrap
-The mapping/response helper stuff in master, will be extracted out into a separate Gem.
-
 ==Installation:
   gem sources -a http://gems.github.com
   sudo gem install mwmitchell-rsolr
