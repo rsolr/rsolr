@@ -85,8 +85,8 @@ module ConnectionTestMethods
     assert_equal 0, @solr.select(:q=>'*:*')[:response][:numFound]
   end
   
-  def test_index_info
-    response = @solr.index_info
+  def test_admin_luke_index_info
+    response = @solr.send_request('/admin/luke', :numTerms=>0)
     assert response.is_a?(Mash)
     # make sure the ? methods are true/false
     assert [true, false].include?(response[:index][:current])

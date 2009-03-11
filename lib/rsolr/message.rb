@@ -15,7 +15,7 @@ class RSolr::Message
     # add({})
     # add([{}, {}])
     # add(docs) do |doc|
-    #   doc.boost = 10.0
+    #   doc[:boost] = 10.0
     # end
     def add(data, opts={}, &block)
       data = [data] if data.respond_to?(:each_pair) # if it's a hash, put it in an array
@@ -24,11 +24,11 @@ class RSolr::Message
           add_xml.doc do |doc_xml|
             # convert keys into strings and perform an alpha sort (easier testing between ruby and jruby)
             # but probably not great for performance? whatever...
-            sorted_items = item.inject({}) {|acc,(k,v)| acc.merge({k.to_s=>v})}
-            sorted_items.keys.sort.each do |k|
+            #sorted_items = item.inject({}) {|acc,(k,v)| acc.merge({k.to_s=>v})}
+            item.keys.each do |k|
               doc_attrs = {:name=>k}
               yield item, doc_attrs if block_given?
-              [sorted_items[k]].flatten.each do |v| # multiValued attributes
+              [item[k]].flatten.each do |v| # multiValued attributes
                 doc_xml.field(v, doc_attrs)
               end
             end
