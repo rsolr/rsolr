@@ -15,12 +15,13 @@ class MessageTest < RSolrBaseTest
   end
   
   def test_add_yields_field_attrs_if_block_given
-    result = RSolr::Message.add({:id=>1}, :boost=>200.00) do |hash_doc, doc_xml_attrs|
-      doc_xml_attrs[:boost] = 10
+    add_attrs = {:boost=>200.00}
+    result = RSolr::Message.add({:id=>1, :name=>'sam'}, add_attrs) do |hash_doc, doc_xml_attrs, field_xml_attrs, field_value|
+      field_xml_attrs[:boost] = 10 if field_xml_attrs[:name]==:name
     end
     assert result =~ /add boost="200.0"/
     assert result =~ /boost="10"/
-    #assert_equal '<add boost="200.0"><doc><field name="id" boost="10">1</field></doc></add>', result
+    assert result =~ /<field name="id">/
   end
   
   def test_delete_by_id
@@ -83,8 +84,11 @@ class MessageTest < RSolrBaseTest
       :id   => 1,
       :name => ['matt1', 'matt2']
     }
-    assert RSolr::Message.add(data).to_s =~ /<field name="name">matt1<\/field>/
-    assert RSolr::Message.add(data).to_s =~ /<field name="name">matt2<\/field>/
+    
+    result = RSolr::Message.add(data)
+    
+    assert result.to_s =~ /<field name="name">matt1<\/field>/
+    assert result.to_s =~ /<field name="name">matt2<\/field>/
   end
   
 end

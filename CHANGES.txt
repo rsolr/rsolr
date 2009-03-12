@@ -1,3 +1,8 @@
+0.8.1 - March 12, 2009
+  Added RSolr.escape and RSolr::Connection.new.escape
+    - tests in rsolr_test
+  Added ability to set doc and field attributes when adding documents via Message.add
+
 0.8.0 - March 6, 2009
   Removed all response wrapper classes (now returning a simple hash for ruby responses)
   Removed RSolr::Query - this library needs an external partner lib, RSolrExt etc..
