@@ -32,9 +32,11 @@ class HTTPUtilTest < RSolrBaseTest
       :q=>'test',
       :d=>[1, 2, 3, 4],
       :b=>:zxcv,
-      :x=>['!', '*', nil]
+      :x=>['!', '*', nil],
+      :hash_with_single_value=>{:name=>'hello!'},
+      :hash_with_array_value=>{:name=>['one', 'two']}
     }
-    assert_equal 'b=zxcv&d=1&d=2&d=3&d=4&q=test&x=%21&x=%2A&z=should+be+last', @c.hash_to_params(my_params)
+    assert_equal 'b=zxcv&d=1&d=2&d=3&d=4&hash_with_array_value.name=one&hash_with_array_value.name=two&hash_with_single_value.name=hello%21&q=test&x=%21&x=%2A&z=should+be+last', @c.hash_to_params(my_params)
   end
   
 end

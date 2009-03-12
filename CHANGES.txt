@@ -1,3 +1,8 @@
+0.8.1 - March 12, 2009
+  Added ability to do fielded/dot based params:
+    solr.select(:facet=>{:field=>['one', 'two']})
+  -- sends facet.field=one&facet.field=two to solr
+
 0.8.0 - March 6, 2009
   Removed all response wrapper classes (now returning a simple hash for ruby responses)
   Removed RSolr::Query - this library needs an external partner lib, RSolrExt etc..

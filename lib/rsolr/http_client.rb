@@ -105,9 +105,9 @@ module RSolr::HTTPClient
     #
     # converts hash into URL query string, keys get an alpha sort
     # if a value is an array, the array values get mapped to the same key:
-    #   hash_to_params(:q=>'blah', 'facet.field'=>['location_facet', 'format_facet'])
+    #   hash_to_params(:q=>'blah', :fq=>['blah', 'blah'], :facet=>{:field=>['location_facet', 'format_facet']})
     # returns:
-    #   ?q=blah&facet.field=location_facet&facet.field=format.facet
+    #   ?q=blah&fq=blah&fq=blah&facet.field=location_facet&facet.field=format.facet
     #
     # if a value is empty/nil etc., the key is not added
     def hash_to_params(params)
@@ -119,6 +119,14 @@ module RSolr::HTTPClient
         v = params[k]
         if v.is_a?(Array)
           acc << v.reject{|i|i.to_s.empty?}.collect{|vv|build_param(k, vv)}
+        elsif v.is_a?(Hash)
+          # creates dot based params like:
+          # hash_to_params(:facet=>{:field=>['one', 'two']}) == facet.field=one&facet.field=two
+          # TODO: should this go into a non-solr based param builder?
+          #   - dotted syntax is special to solr only
+          v.each_pair do |field,field_value|
+            acc.push(hash_to_params({"#{k}.#{field}"=>field_value}))
+          end
         elsif ! v.to_s.empty?
           acc.push(build_param(k, v))
         end
