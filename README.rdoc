@@ -54,7 +54,7 @@ Multiple documents
 When adding, you can also supply "add" attributes and/or a block for digging into the Solr "add" params:
 
   doc = {:id=>1, :price=>1.00}
-  solr.add(doc, {:allowDups=>false, :commitWithin=>10.0}) do |doc_attrs|
+  solr.add(doc, {:allowDups=>false, :commitWithin=>10.0}) do |current_doc, doc_attrs|
     doc_attrs[:boost] = 10.0
   end
 
