@@ -120,13 +120,14 @@ module RSolr::HTTPClient
         if v.is_a?(Array)
           acc << v.reject{|i|i.to_s.empty?}.collect{|vv|build_param(k, vv)}
         elsif v.is_a?(Hash)
+          # NOT USED
           # creates dot based params like:
           # hash_to_params(:facet=>{:field=>['one', 'two']}) == facet.field=one&facet.field=two
           # TODO: should this go into a non-solr based param builder?
           #   - dotted syntax is special to solr only
-          v.each_pair do |field,field_value|
-            acc.push(hash_to_params({"#{k}.#{field}"=>field_value}))
-          end
+          #v.each_pair do |field,field_value|
+          #  acc.push(hash_to_params({"#{k}.#{field}"=>field_value}))
+          #end
         elsif ! v.to_s.empty?
           acc.push(build_param(k, v))
         end
