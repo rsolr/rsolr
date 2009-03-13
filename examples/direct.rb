@@ -7,7 +7,12 @@ home = File.join(dist, 'example', 'solr')
 
 solr = RSolr.connect({:adapter=>:direct}, {:home_dir=>home, :dist_dir=>dist})
 
-`cd ../apache-solr/example/exampledocs && ./post.sh ./*.xml`
+Dir['../apache-solr/example/exampledocs/*.xml'].each do |xml_file|
+  puts "Updating with #{xml_file}"
+  solr.update File.read(xml_file)
+end
+
+puts
 
 response = solr.select :q=>'ipod', :fq=>'price:[0 TO 50]', :rows=>2, :start=>0
 
