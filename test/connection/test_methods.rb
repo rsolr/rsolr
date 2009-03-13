@@ -6,11 +6,11 @@
 module ConnectionTestMethods
   
   
-  #def teardown
-  #  @solr.delete_by_query('id:[* TO *]')
-  #  @solr.commit
-  #  assert_equal 0, @solr.select(:q=>'*:*').docs.size
-  #end
+  def teardown
+    @solr.delete_by_query('id:[* TO *]')
+    @solr.commit
+    assert_equal 0, @solr.select(:q=>'*:*')[:response][:docs].size
+  end
   
   # If :wt is NOT :ruby, the format doesn't get converted into a Mash (special Hash; see lib/mash.rb)
   # Raw ruby can be returned by using :wt=>'ruby', not :ruby
@@ -56,7 +56,7 @@ module ConnectionTestMethods
   
   def test_add
     assert_equal 0, @solr.select(:q=>'*:*')[:response][:numFound]
-    update_response = @solr.add(:id=>100)
+    update_response = @solr.add({:id=>100})
     assert update_response.is_a?(Mash)
     #
     @solr.commit
@@ -79,7 +79,7 @@ module ConnectionTestMethods
     @solr.add(:id=>1, :name=>'BLAH BLAH BLAH')
     @solr.commit
     assert_equal 1, @solr.select(:q=>'*:*')[:response][:numFound]
-    response = @solr.delete_by_query('name:BLAH BLAH BLAH')
+    response = @solr.delete_by_query('name:"BLAH BLAH BLAH"')
     @solr.commit
     assert response.is_a?(Mash)
     assert_equal 0, @solr.select(:q=>'*:*')[:response][:numFound]
