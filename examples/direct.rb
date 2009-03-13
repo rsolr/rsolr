@@ -18,3 +18,5 @@ docs.each do |doc|
 end
 
 solr.delete_by_query('*:*') and solr.commit
+
+solr.adapter.close

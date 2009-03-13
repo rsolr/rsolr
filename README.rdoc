@@ -49,13 +49,18 @@ Single document
   response = solr.add(:id=>1, :price=>1.00)
 
 Multiple documents
-  response = solr.add([{:id=>1, :price=>1.00}, {:id=>2, :price=>10.50}])
+  documents = [{:id=>1, :price=>1.00}, {:id=>2, :price=>10.50}]
+  response = solr.add(documents)
 
-When adding, you can also supply "add" attributes and/or a block for digging into the Solr "add" params:
-
+When adding, you can also supply "add" xml element attributes and/or a block for manipulating other "add" related elements:
+  
   doc = {:id=>1, :price=>1.00}
-  solr.add(doc, {:allowDups=>false, :commitWithin=>10.0}) do |current_doc, doc_attrs|
-    doc_attrs[:boost] = 10.0
+  add_attributes = {:allowDups=>false, :commitWithin=>10.0}
+  solr.add(doc, add_attributes) do |doc|
+    # boost each document
+    doc.attrs[:boost] = 1.5
+    # boost the price field:
+    doc.field_by_name(:price).attrs[:boost] = 2.0
   end
 
 Delete by id
@@ -76,6 +81,13 @@ Commit & Optimize
 
 == Response Formats
 The default response format is Ruby. When the :wt param is set to :ruby, the response is eval'd and wrapped up in a nice Mash (Hash) class. You can get a raw response by setting the :wt to "ruby" - notice, the string -- not a symbol. All other response formats are available as expected, :wt=>'xml' etc..
+
+===XML:
+  solr.select(:wt=>:xml)
+===JSON:
+  solr.select(:wt=>:json)
+===Raw Ruby
+  solr.select(:wt=>'ruby')
 
 You can access the original request context (path, params, url etc.) by using a block:
   solr.select(:q=>'*:*') do |solr_response, adapter_response|
