@@ -1,3 +1,9 @@
+0.8.2 - March 24, 2009
+  Changed RSolr.connect method to accept one options hash argument
+    - This hash gets passed to the Connection object and the adapter
+  Updated tests, examples and README.rdoc to reflect this change
+  Bumped the version up in gemspec and the RSolr module
+
 0.8.1 - March 12, 2009
   Added RSolr.escape and RSolr::Connection.new.escape
     - tests in rsolr_test

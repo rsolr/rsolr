@@ -31,12 +31,15 @@ To get a connection in MRI/standard Ruby:
 
 To change the Solr HTTP host:
   
-  solr = RSolr.connect({}, {:url=>'http://solrserver.com'})
+  solr = RSolr.connect(:url=>'http://solrserver.com')
 
 To get a direct connection (no http) in jRuby using DirectSolrConnection:
   
-  solr = RSolr.connect({:adapter=>:direct}, {:home_dir=>'/path/to/solr/home', :dist_dir=>'/path/to/solr/distribution'})
-
+  solr = RSolr.connect({
+    :adapter=>:direct,
+    :home_dir=>'/path/to/solr/home',
+    :dist_dir=>'/path/to/solr/distribution'
+  )
 
 == Requests
 Once you have a connection, you can execute queries, updates etc..

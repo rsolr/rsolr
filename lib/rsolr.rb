@@ -7,7 +7,7 @@ proc {|base, files|
 
 module RSolr
   
-  VERSION = '0.8.1'
+  VERSION = '0.8.2'
   
   autoload :Message, 'rsolr/message'
   autoload :Connection, 'rsolr/connection'
@@ -15,18 +15,17 @@ module RSolr
   autoload :HTTPClient, 'rsolr/http_client'
   
   # factory for creating connections
-  # connection_opts[:adapter] is either :http or :direct
-  # connection_opts are sent to the connection instance
-  # adapter_opts are passed to the actually adapter instance
-  def self.connect(connection_opts={}, adapter_opts={})
-    adapter_name = connection_opts[:adapter] ||= :http
+  # "options" is a hash that gets used by the Connection
+  # object AND the adapter object.
+  def self.connect(options={})
+    adapter_name = options[:adapter] ||= :http
     types = {
       :http=>'HTTP',
       :direct=>'Direct'
     }
     adapter_class = RSolr::Adapter.const_get(types[adapter_name])
-    adapter = adapter_class.new(adapter_opts)
-    RSolr::Connection.new(adapter, connection_opts)
+    adapter = adapter_class.new(options)
+    RSolr::Connection.new(adapter, options)
   end
   
   module Char
