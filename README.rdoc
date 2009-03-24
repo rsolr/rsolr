@@ -13,10 +13,10 @@ http://groups.google.com/group/rsolr
   require 'rubygems'
   require 'rsolr'
   rsolr = RSolr.connect
-  response = rsolr.select(:q=>'*:*') # becomes /solr/select?q=*:*
+  response = rsolr.select(:q=>'*:*') # sends a request to /solr/select?q=*:*
   
   # can also set the request handler path like:
-  response = rsolr.send_request('/catalog', :q=>'*:*') # becomes /solr/catalog?q=*:*
+  response = rsolr.send_request('/catalog', :q=>'*:*') # sends a request to /solr/catalog?q=*:*
 
 To run tests:
   
@@ -28,6 +28,10 @@ To run tests:
 To get a connection in MRI/standard Ruby:
   
   solr = RSolr.connect
+
+To change the Solr HTTP host:
+  
+  solr = RSolr.connect({}, {:url=>'http://solrserver.com'})
 
 To get a direct connection (no http) in jRuby using DirectSolrConnection:
   
