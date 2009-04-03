@@ -53,22 +53,26 @@ Use the #select method to send requests to the /select handler:
     :start=>0,
     :rows=>10
   })
+  
+Use the #send_request method to set a custom request handler path:
+  response = solr.send_request('/documents', {:q=>'test'})
 
 
 === Updating Solr
 Updating can be done using native Ruby structures. Hashes are used for single documents and arrays are used for a collection of documents (hashes). These structures get turned into simple XML "messages". Raw XML can also be used of course.
 
-Raw XML
-  response = solr.update('</optimize>')
+Raw XML via  #update
+  solr.update('</commit>')
+  solr.update('</optimize>')
 
-Single document
+Single document via #add
   solr.add(:id=>1, :price=>1.00)
 
-Multiple documents
+Multiple documents via #add
   documents = [{:id=>1, :price=>1.00}, {:id=>2, :price=>10.50}]
   solr.add(documents)
 
-When adding, you can also supply "add" xml element attributes and/or a block for manipulating other "add" related elements:
+When adding, you can also supply "add" xml element attributes and/or a block for manipulating other "add" related elements (docs and fields) when using the #add method:
   
   doc = {:id=>1, :price=>1.00}
   add_attributes = {:allowDups=>false, :commitWithin=>10.0}
