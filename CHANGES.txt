@@ -1,3 +1,12 @@
+0.8.3 - April 3, 2009
+  RSolr::Connection
+    - removed the block functionality of send_request and related methods
+      - this was used to gain access to the raw adapter response
+    - added #adapter_response method to all response objects
+      - this is used to get access to the original adapter response:
+        response = rsolr.select(:q=>'test')
+        response.adapter_response[:status_code]
+
 0.8.2 - March 24, 2009
   Changed RSolr.connect method to accept one options hash argument
     - This hash gets passed to the Connection object and the adapter

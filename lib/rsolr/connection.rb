@@ -16,9 +16,9 @@ class RSolr::Connection
   end
   
   # sends data to the update handler
-  # data can be a string of xml, or an object that returns xml from its #to_s method
-  def update(data, params={}, &blk)
-    send_request('/update', map_params(params), data, &blk)
+  # data can be a string of xml, or an object that returns xml from its #to_xml method
+  def update(data, params={})
+    send_request('/update', map_params(params), data)
   end
   
   # send request solr
@@ -27,16 +27,11 @@ class RSolr::Connection
   #   if :wt is something other than :ruby, the raw response body is used
   #   otherwise, a simple Hash is returned
   #   NOTE: to get raw ruby, use :wt=>'ruby' <- a string, not a symbol like :ruby  
-  # 
-  # use a block to get access to the adapter response:
-  # solr.send_request('/select', :q=>'blue') do |solr_response, adapter_response|
-  #   raise 'Woops!' if adapter_response[:status] != 200
-  #   solr_response[:response][:docs].each {|doc|}
-  # end
   #
-  def send_request(path, params={}, data=nil, &blk)
+  #
+  def send_request(path, params={}, data=nil)
     response = @adapter.send_request(path, map_params(params), data)
-    adapt_response(response, &blk)
+    adapt_response(response)
   end
   
   # 
@@ -94,14 +89,27 @@ class RSolr::Connection
     {:wt=>:ruby}.merge(params)
   end
   
-  # 
+  # "adapter_response" must be a hash with the following keys:
+  #   :params - a sub hash of standard solr params
+  #   : body - the raw response body from the solr server
+  # This method will evaluate the :body value if the params[:wt] == :ruby
+  # otherwise, the body is returned
+  # The return object has a special method attached called #adapter_response
+  # This method gives you access to the original response from the adapter,
+  # so you can access things like the actual :url sent to solr,
+  # the raw :body, original :params and original :data
   def adapt_response(adapter_response)
+    data = adapter_response[:body]
+    # if the wt is :ruby, evaluate the ruby string response
     if adapter_response[:params][:wt] == :ruby
-      data = Kernel.eval(adapter_response[:body]).to_mash
-    else
-      data = adapter_response[:body]
+      data = Kernel.eval(data).to_mash
     end
-    block_given? ? yield(data, adapter_response) : data
+    # attach a method called #adapter_response that returns the original adapter response value
+    def data.adapter_response
+      @adapter_response
+    end
+    data.send(:instance_variable_set, '@adapter_response', adapter_response)
+    data
   end
   
 end

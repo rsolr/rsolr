@@ -13,10 +13,12 @@ http://groups.google.com/group/rsolr
   require 'rubygems'
   require 'rsolr'
   rsolr = RSolr.connect
-  response = rsolr.select(:q=>'*:*') # sends a request to /solr/select?q=*:*
   
-  # can also set the request handler path like:
-  response = rsolr.send_request('/catalog', :q=>'*:*') # sends a request to /solr/catalog?q=*:*
+  # sends a request to /select
+  response = rsolr.select(:q=>'*:*')
+  
+  # send a request to a custom request handler; /catalog
+  response = rsolr.send_request('/catalog', :q=>'*:*')
 
 To run tests:
   
@@ -46,11 +48,22 @@ Once you have a connection, you can execute queries, updates etc..
 
 === Querying
 Use the #select method to send requests to the /select handler:
-  response = solr.select(:q=>'washington', :facet=>true, 'facet.limit'=>-1, 'facet.field'=>'cat', 'facet.field'=>'inStock', :start=>0, :rows=>10)
+  response = solr.select({
+    :q=>'washington',
+    :facet=>true,
+    'facet.limit'=>-1,
+    'facet.field'=>'cat',
+    'facet.field'=>'inStock',
+    :start=>0,
+    :rows=>10
+  })
 
 
 === Updating Solr
 Updating is done using native Ruby structures. Hashes are used for single documents and arrays are used for a collection of documents (hashes). These structures get turned into simple XML "messages".
+
+Raw XML
+  response = solr.update('</optimize>')
 
 Single document
   response = solr.add(:id=>1, :price=>1.00)
@@ -81,7 +94,7 @@ Delete by array of queries
   response = solr.delete_by_query(['price:1.00', 'price:10.00'])
 
 
-Commit & Optimize
+Commit & optimize shortcuts
   solr.commit
   solr.optimize
 
@@ -89,19 +102,21 @@ Commit & Optimize
 == Response Formats
 The default response format is Ruby. When the :wt param is set to :ruby, the response is eval'd and wrapped up in a nice Mash (Hash) class. You can get a raw response by setting the :wt to "ruby" - notice, the string -- not a symbol. All other response formats are available as expected, :wt=>'xml' etc..
 
+===Evaluated Ruby (default)
+  solr.select(:wt=>:ruby) # notice :ruby is a Symbol
+===Raw Ruby
+  solr.select(:wt=>'ruby') # notice 'ruby' is a String
+
 ===XML:
   solr.select(:wt=>:xml)
 ===JSON:
   solr.select(:wt=>:json)
-===Raw Ruby
-  solr.select(:wt=>'ruby')
 
-You can access the original request context (path, params, url etc.) by using a block:
-  solr.select(:q=>'*:*') do |solr_response, adapter_response|
-    adapter_response[:status_code]
-    adapter_response[:body]
-    adapter_response[:url]
-  end
+You can access the original request context (path, params, url etc.) by calling the #adapter_response method:
+  response = solr.select(:q=>'*:*')
+  response.adapter_response[:status_code]
+  response.adapter_response[:body]
+  response.adapter_response[:url]
 
 The adapter_response is a hash that contains the generated params, url, path, post data, headers etc., very useful for debugging and testing.
 

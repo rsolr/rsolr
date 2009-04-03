@@ -1,13 +1,15 @@
 # add this directory to the load path if it hasn't already been added
-# load xout and rfuzz libs
-proc {|base, files|
-  $: << base unless $:.include?(base) || $:.include?(File.expand_path(base))
-  files.each {|f| require f}
-}.call(File.dirname(__FILE__), ['core_ext', 'mash'])
+
+if ! $:.include? File.dirname(__FILE__) or ! $:.include? File.expand_path(File.dirname(__FILE__))
+  $: << File.dirname(__FILE__)
+end
+
+require 'core_ext'
+require 'mash'
 
 module RSolr
   
-  VERSION = '0.8.2'
+  VERSION = '0.8.3'
   
   autoload :Message, 'rsolr/message'
   autoload :Connection, 'rsolr/connection'

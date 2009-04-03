@@ -21,6 +21,26 @@ Rake::TestTask.new("test_units") { |t|
   t.libs << "test"
 }
 
+
+desc 'Run specs' # this task runs each test in its own process
+task :specs do
+  require 'rubygems'
+  require 'facets/more/filelist' unless defined?(FileList)
+  files = FileList["**/*_spec.rb"]
+  p files.to_a
+  files.each do |filename|
+    system "cd #{File.dirname(filename)} && ruby #{File.basename(filename)}"
+  end
+end
+
+#desc "Run specs"
+#Rake::TestTask.new("specs") { |t|
+#  t.pattern = 'spec/**/*_spec.rb'
+#  t.verbose = true
+#  t.warning = true
+#  t.libs += ["lib", "spec"]
+#}
+
 # Clean house
 desc 'Clean up tmp files.'
 task :clean do |t|
