@@ -1,3 +1,7 @@
+0.8.4 - April 3, 2009
+  New test suite using RSpec and mocks coming. Run "rake spec"
+    - added specs for RSolr and RSolr::Connection
+
 0.8.3 - April 3, 2009
   RSolr::Connection
     - removed the block functionality of send_request and related methods

@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name = "rsolr"
-  s.version = "0.8.3"
-  s.date = "2009-03-24"
+  s.version = "0.8.4"
+  s.date = "2009-04-03"
   s.summary = "A Ruby client for Apache Solr"
   s.email = "goodieboy@gmail.com"
   s.homepage = "http://github.com/mwmitchell/rsolr"
@@ -41,6 +41,9 @@ Gem::Specification.new do |s|
     "test/message_test.rb",
     "test/rsolr_test",
     "test/test_helpers.rb",
+    'spec/connection_spec.rb',
+    'spec/helper.rb',
+    'spec/rsolr_spec.rb'
   ]
   #s.rdoc_options = ["--main", "README.rdoc"]
   s.extra_rdoc_files = %w(LICENSE Rakefile README.rdoc CHANGES.txt)
