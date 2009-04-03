@@ -1,6 +1,6 @@
 require 'helper'
 
-describe RSolr::Connection do
+describe RSolr do
   
   context 'the #connect method' do
     
