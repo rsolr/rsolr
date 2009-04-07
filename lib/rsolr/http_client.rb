@@ -1,9 +1,8 @@
 # A simple wrapper for different http client implementations.
 # Supports #get and #post
 # This was motivated by: http://apocryph.org/2008/11/09/more_indepth_analysis_ruby_http_client_performance/
-# Curb is the default adapter
 
-# Each adapters response should be a hash with the following keys:
+# Each adapters' response should be a hash with the following keys:
 #   :status_code
 #   :url
 #   :body
@@ -36,6 +35,13 @@ module RSolr::HTTPClient
       @adapter_name = adapter_name
     end
     
+    # Creates and returns an instance of RSolr::HTTPClient::Adapter::*
+    # The "url" is a full/valid url.
+    # Example:
+    # connector = RSolr::HTTPClient::Connector.new
+    # client = connector.connect('http://google.com')
+    #
+    # TODO: this should be less verbose... something like RSolr:HTTPClient.connect(url, adapter=:curb)
     def connect(url)
       case adapter_name
       when :curb
@@ -54,14 +60,19 @@ module RSolr::HTTPClient
     
   end
   
+  # The base class for interacting with one of the HTTP client adapters
   class Base
     
     attr_reader :adapter
     
+    # requires an instace of RSolr::HTTPClient::*
     def initialize(adapter)
       @adapter = adapter
     end
     
+    # sends a GET reqest to the "path" variable
+    # an optional hash of "params" can be used,
+    # which is later transformed into a GET query string
     def get(path, params={})
       begin
         http_context = @adapter.get(path, params)
@@ -71,6 +82,10 @@ module RSolr::HTTPClient
       http_context
     end
     
+    # sends a POST request to the "path" variable
+    # "data" is required, and must be a string
+    # "params" is an optional hash for query string params...
+    # "headers" is a hash for setting request header values.
     def post(path, data, params={}, headers={})
       begin
         http_context = @adapter.post(path, data, params, headers)
@@ -90,14 +105,22 @@ module RSolr::HTTPClient
         '%'+$1.unpack('H2'*$1.size).join('%').upcase
       }.tr(' ', '+') 
     end
-
+    
+    # creates and returns a url as a string
+    # "url" is the base url
+    # "params" is an optional hash of GET style query params
+    # "string_query" is an extra query string that will be appended to the 
+    # result of "url" and "params".
     def build_url(url='', params={}, string_query='')
       queries = [string_query, hash_to_params(params)]
       queries.delete_if{|i| i.to_s.empty?}
       url += "?#{queries.join('&')}" unless queries.empty?
       url
     end
-
+    
+    # converts a key value pair to an escaped string:
+    # Example:
+    # build_param(:id, 1) == "id=1"
     def build_param(k,v)
       "#{escape(k)}=#{escape(v)}"
     end

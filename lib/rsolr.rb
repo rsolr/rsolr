@@ -30,6 +30,7 @@ module RSolr
     RSolr::Connection.new(adapter, options)
   end
   
+  # A module that contains string related methods
   module Char
     
     # escape - from the solr-ruby library
@@ -49,6 +50,7 @@ module RSolr
   # bring escape into this module (RSolr) -> RSolr.escape('asdf')
   extend Char
   
+  # RequestError is a common/generic exception class used by the adapters
   class RequestError < RuntimeError; end
   
 end

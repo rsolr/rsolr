@@ -7,10 +7,6 @@ class RSolr::Adapter::HTTP
   
   # opts can have:
   #   :url => 'http://localhost:8080/solr'
-  #   :select_path => '/the/url/path/to/the/select/handler'
-  #   :update_path => '/the/url/path/to/the/update/handler'
-  #   :luke_path => '/admin/luke'
-  #
   def initialize(opts={}, &block)
     opts[:url]||='http://127.0.0.1:8983/solr'
     @opts = opts
@@ -36,7 +32,7 @@ class RSolr::Adapter::HTTP
   
   protected
   
-  # The standard post headers
+  # The standard POST headers
   def post_headers
     {"Content-Type" => 'text/xml; charset=utf-8'}
   end
