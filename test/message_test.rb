@@ -104,4 +104,32 @@ class MessageTest < RSolrBaseTest
     assert result.to_s =~ /<field name="name">matt2<\/field>/
   end
   
+  def test_add_single_document
+    document = RSolr::Message::Document.new
+    document.add_field('id', 1)
+    document.add_field('name', 'matt', :boost => 2.0)
+    result = RSolr::Message.add(document)
+    
+    assert result.to_s =~ /<field name="id">1<\/field>/
+    
+    # depending on which ruby version, the attributes can be out of place
+    # so we need to test both... there's gotta be a better way to do this?
+    assert(
+      result.to_s =~ /<field name="name" boost="2.0">matt<\/field>/ || 
+      result.to_s =~ /<field boost="2.0" name="name">matt<\/field>/
+    )
+  end
+
+  def test_add_multiple_documents
+    documents = (1..2).map do |i|
+      doc = RSolr::Message::Document.new
+      doc.add_field('id', i)
+      doc.add_field('name', "matt#{i}")
+      doc
+    end
+    result = RSolr::Message.add(documents)
+
+    assert result.to_s =~ /<field name="name">matt1<\/field>/
+    assert result.to_s =~ /<field name="name">matt2<\/field>/
+  end
 end

@@ -16,7 +16,7 @@ class RSolr::Message
     # "doc_hash" must be a Hash/Mash object
     # If a value in the "doc_hash" is an array,
     # a field object is created for each value...
-    def initialize(doc_hash)
+    def initialize(doc_hash = {})
       @fields = []
       doc_hash.each_pair do |field,values|
         # create a new field for each value (multi-valued)
@@ -35,9 +35,22 @@ class RSolr::Message
       @fields.select{|f|f.name==name}
     end
     
-    # returns the first field that matches the "name" arg
+    # returns the *first* field that matches the "name" arg
     def field_by_name(name)
       @fields.detect{|f|f.name==name}
+    end
+    
+    #
+    # Add a field value to the document. Options map directly to
+    # XML attributes in the Solr <field> node.
+    # See http://wiki.apache.org/solr/UpdateXmlMessages#head-8315b8028923d028950ff750a57ee22cbf7977c6
+    #
+    # === Example:
+    #
+    #   document.add_field('title', 'A Title', :boost => 2.0)
+    #
+    def add_field(name, value, options = {})
+      @fields << Field.new(options.merge({:name=>name}), value)
     end
     
   end
@@ -96,11 +109,11 @@ class RSolr::Message
     # if the doc had a "nickname" field with the value of "Tim".
     #
     def add(data, add_attrs={}, &blk)
-      data = [data] if data.respond_to?(:each_pair)
+      data = [data] unless data.is_a?(Array)
       xml.add(add_attrs) do |add_node|
-        data.each do |item|
+        data.each do |doc|
           # create doc, passing in fields
-          doc = Document.new(item)
+          doc = Document.new(doc) if doc.respond_to?(:each_pair)
           yield doc if block_given?
           add_node.doc(doc.attrs) do |doc_node|
             doc.fields.each do |field_obj|
