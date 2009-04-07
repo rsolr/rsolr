@@ -57,13 +57,11 @@ class RSolr::Adapter::Direct
       raise RSolr::RequestError.new($!.message)
     end
     {
-      :status_code=>nil,
       :body=>body,
       :url=>url,
       :path=>path,
       :params=>params,
       :data=>data,
-      :headers=>nil
     }
   end
   
