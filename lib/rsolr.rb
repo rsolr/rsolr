@@ -9,7 +9,7 @@ require 'mash'
 
 module RSolr
   
-  VERSION = '0.8.4'
+  VERSION = '0.8.5'
   
   autoload :Message, 'rsolr/message'
   autoload :Connection, 'rsolr/connection'

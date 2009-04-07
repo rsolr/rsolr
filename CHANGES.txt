@@ -1,3 +1,11 @@
+0.8.5 - April 7, 2009
+  The RSolr::Message #add method now accepts a single Message::Document or an array of Message::Document objects
+  The Message::Document class has a new method: #add_field
+  Tests added for both changes
+  Permissions of files changed to non-executable
+  -- the above changes were made by Mat Brown, thank you Mat!
+  Added CannedSolrResponse module for mocks in the specs... not used yet
+
 0.8.4 - April 3, 2009
   New test suite using RSpec and mocks coming. Run "rake spec"
     - added specs for RSolr and RSolr::Connection
