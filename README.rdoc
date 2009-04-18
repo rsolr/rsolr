@@ -9,6 +9,10 @@ A Ruby client for Apache Solr. Has transparent JRuby support by using "org.apach
 ==Community
 http://groups.google.com/group/rsolr
 
+==Related Projects
+http://github.com/mwmitchell/rsolr-ext
+http://wiki.apache.org/solr/solr-ruby
+
 ==Simple usage:
   require 'rubygems'
   require 'rsolr'
