@@ -38,7 +38,7 @@ Gem::Specification.new do |s|
     "test/http_client/test_methods.rb",
     "test/http_client/util_test.rb",
     "test/message_test.rb",
-    "test/rsolr_test"
+    "test/rsolr_test.rb"
   ]
   #s.rdoc_options = ["--main", "README.rdoc"]
   s.extra_rdoc_files = %w(LICENSE Rakefile README.rdoc CHANGES.txt)
