@@ -25,7 +25,7 @@ Gem::Specification.new do |s|
     "LICENSE",
     "Rakefile",
     "README.rdoc",
-    "rsolr-ruby.gemspec",
+    "rsolr.gemspec",
     "CHANGES.txt"
   ]
   s.test_files = [
