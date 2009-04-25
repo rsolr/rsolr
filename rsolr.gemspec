@@ -13,7 +13,6 @@ Gem::Specification.new do |s|
     "examples/direct.rb",
     "lib/core_ext.rb",
     "lib/rsolr.rb",
-    "lib/rsolr/adapter/common_methods.rb",
     "lib/rsolr/adapter/direct.rb",
     "lib/rsolr/adapter/http.rb",
     "lib/rsolr/adapter.rb",
