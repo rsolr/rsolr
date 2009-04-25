@@ -16,10 +16,10 @@ puts
 
 response = solr.select :q=>'ipod', :fq=>'price:[0 TO 50]', :rows=>2, :start=>0
 
-docs = response[:response][:docs]
+docs = response['response']['docs']
 
 docs.each do |doc|
-  puts doc[:timestamp]
+  puts doc['timestamp']
 end
 
 solr.delete_by_query('*:*') and solr.commit
