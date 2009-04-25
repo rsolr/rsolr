@@ -8,13 +8,13 @@
   
 #end
 
-class Hash
-  
-  def to_mash
-    self.is_a?(Mash) ? self : Mash.new(self)
-  end
-  
-end
+#class Hash
+#  
+#  def to_mash
+#    self.is_a?(Mash) ? self : Mash.new(self)
+#  end
+#  
+#end
 
 unless Array.respond_to?(:extract_options!)
   class Array

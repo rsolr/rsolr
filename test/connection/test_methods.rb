@@ -9,7 +9,7 @@ module ConnectionTestMethods
   def teardown
     @solr.delete_by_query('id:[* TO *]')
     @solr.commit
-    assert_equal 0, @solr.select(:q=>'*:*')[:response][:docs].size
+    assert_equal 0, @solr.select(:q=>'*:*')['response']['docs'].size
   end
   
   # If :wt is NOT :ruby, the format doesn't get converted into a Mash (special Hash; see lib/mash.rb)
@@ -38,60 +38,60 @@ module ConnectionTestMethods
     @solr.add(:id=>1, :price=>1.00, :cat=>['electronics', 'something else'])
     @solr.commit
     r = @solr.select(:q=>'*:*')
-    assert r.is_a?(Mash)
+    assert r.is_a?(Hash)
     
-    docs = r[:response][:docs]
+    docs = r['response']['docs']
     assert_equal Array, docs.class
     first = docs.first
     
     # test the has? method
-    assert_equal 1.00, first[:price]
+    assert_equal 1.00, first['price']
     
-    assert_equal Array, first[:cat].class
-    assert first[:cat].include?('electronics')
-    assert first[:cat].include?('something else')
-    assert first[:cat].include?('something else')
+    assert_equal Array, first['cat'].class
+    assert first['cat'].include?('electronics')
+    assert first['cat'].include?('something else')
+    assert first['cat'].include?('something else')
     
   end
   
   def test_add
-    assert_equal 0, @solr.select(:q=>'*:*')[:response][:numFound]
+    assert_equal 0, @solr.select(:q=>'*:*')['response']['numFound']
     update_response = @solr.add({:id=>100})
-    assert update_response.is_a?(Mash)
+    assert update_response.is_a?(Hash)
     #
     @solr.commit
-    assert_equal 1, @solr.select(:q=>'*:*')[:response][:numFound]
+    assert_equal 1, @solr.select(:q=>'*:*')['response']['numFound']
   end
   
   def test_delete_by_id
     @solr.add(:id=>100)
     @solr.commit
-    total = @solr.select(:q=>'*:*')[:response][:numFound]
+    total = @solr.select(:q=>'*:*')['response']['numFound']
     assert_equal 1, total
     delete_response = @solr.delete_by_id(100)
     @solr.commit
-    assert delete_response.is_a?(Mash)
-    total = @solr.select(:q=>'*:*')[:response][:numFound]
+    assert delete_response.is_a?(Hash)
+    total = @solr.select(:q=>'*:*')['response']['numFound']
     assert_equal 0, total
   end
   
   def test_delete_by_query
     @solr.add(:id=>1, :name=>'BLAH BLAH BLAH')
     @solr.commit
-    assert_equal 1, @solr.select(:q=>'*:*')[:response][:numFound]
+    assert_equal 1, @solr.select(:q=>'*:*')['response']['numFound']
     response = @solr.delete_by_query('name:"BLAH BLAH BLAH"')
     @solr.commit
-    assert response.is_a?(Mash)
-    assert_equal 0, @solr.select(:q=>'*:*')[:response][:numFound]
+    assert response.is_a?(Hash)
+    assert_equal 0, @solr.select(:q=>'*:*')['response']['numFound']
   end
   
   def test_admin_luke_index_info
     response = @solr.send_request('/admin/luke', :numTerms=>0)
-    assert response.is_a?(Mash)
+    assert response.is_a?(Hash)
     # make sure the ? methods are true/false
-    assert [true, false].include?(response[:index][:current])
-    assert [true, false].include?(response[:index][:optimized])
-    assert [true, false].include?(response[:index][:hasDeletions])
+    assert [true, false].include?(response['index']['current'])
+    assert [true, false].include?(response['index']['optimized'])
+    assert [true, false].include?(response['index']['hasDeletions'])
   end
   
 end

@@ -1,3 +1,6 @@
+0.8.6 - April 25, 2009
+  Removed the Mash stuff -- which means the response keys from solr are only accessable using String based keys. Why? RSolr has an aim to be lean and mean. Solr::Ext will maybe provide the Symbol/Mash stuff.
+
 0.8.5 - April 7, 2009
   The RSolr::Message #add method now accepts a single Message::Document or an array of Message::Document objects
   The Message::Document class has a new method: #add_field

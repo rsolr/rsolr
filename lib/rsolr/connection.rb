@@ -102,7 +102,7 @@ class RSolr::Connection
     data = adapter_response[:body]
     # if the wt is :ruby, evaluate the ruby string response
     if adapter_response[:params][:wt] == :ruby
-      data = Kernel.eval(data).to_mash
+      data = Kernel.eval(data)
     end
     # attach a method called #adapter_response that returns the original adapter response value
     def data.adapter_response

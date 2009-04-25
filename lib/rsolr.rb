@@ -1,15 +1,12 @@
 # add this directory to the load path if it hasn't already been added
 
-if ! $:.include? File.dirname(__FILE__) or ! $:.include? File.expand_path(File.dirname(__FILE__))
-  $: << File.dirname(__FILE__)
-end
+$: << File.dirname(__FILE__) unless $:.include?(File.dirname(__FILE__))
 
 require 'core_ext'
-require 'mash'
 
 module RSolr
   
-  VERSION = '0.8.5'
+  VERSION = '0.8.6'
   
   autoload :Message, 'rsolr/message'
   autoload :Connection, 'rsolr/connection'
