@@ -1,5 +1,3 @@
-Move all core ext to RSolr libs -- then use extend/new?
-
 Push HTTPClient into separate gem?
 
 Remove those pesky test warnings about constants already being defined etc.
