@@ -23,6 +23,9 @@ A Ruby client for Apache Solr. Has transparent JRuby support by using "org.apach
   
   # send a request to a custom request handler; /catalog
   response = rsolr.send_request('/catalog', :q=>'*:*')
+  
+  # alternative to above (uses Ruby's method_missing):
+  response = rsolr.catalog :q=>'*:*'
 
 To run tests:
   
