@@ -2,11 +2,17 @@
 
 $: << File.dirname(__FILE__) unless $:.include?(File.dirname(__FILE__))
 
-require 'core_ext'
+unless Array.respond_to?(:extract_options!)
+  class Array
+    def extract_options!
+      last.is_a?(::Hash) ? pop : {}
+    end
+  end
+end
 
 module RSolr
   
-  VERSION = '0.8.6'
+  VERSION = '0.8.7'
   
   autoload :Message, 'rsolr/message'
   autoload :Connection, 'rsolr/connection'

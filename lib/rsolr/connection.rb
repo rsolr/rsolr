@@ -10,9 +10,15 @@ class RSolr::Connection
     @opts = opts
   end
   
+  # Send a request to a request handler using the method name.
+  # This does not handle data, only selects
+  def method_missing(method_name, params)
+    send_request("/#{method_name}", map_params(params))
+  end
+  
   # send a request to the "select" handler
-  def select(params, &blk)
-    send_request('/select', map_params(params), &blk)
+  def select(params)
+    send_request('/select', map_params(params))
   end
   
   # sends data to the update handler
@@ -103,12 +109,12 @@ class RSolr::Connection
     # if the wt is :ruby, evaluate the ruby string response
     if adapter_response[:params][:wt] == :ruby
       data = Kernel.eval(data)
+      # attach a method called #adapter_response that returns the original adapter response value
+      def data.adapter_response
+        @adapter_response
+      end
+      data.send(:instance_variable_set, '@adapter_response', adapter_response)
     end
-    # attach a method called #adapter_response that returns the original adapter response value
-    def data.adapter_response
-      @adapter_response
-    end
-    data.send(:instance_variable_set, '@adapter_response', adapter_response)
     data
   end
   
