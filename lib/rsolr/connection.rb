@@ -40,6 +40,9 @@ class RSolr::Connection
     adapt_response(response)
   end
   
+  # allow #request to be used like send_request
+  alias_method :request, :send_request
+  
   # 
   # single record:
   # solr.update(:id=>1, :name=>'one')

@@ -1,3 +1,7 @@
+0.8.8 - May 6, 2009
+  Added method :request to RSolr::Connection
+    - this method is an alias for send_request
+
 0.8.7 - May 6, 2009
   Added method_missing to RSolr::Connection, which sets the request handler path,
   based on the method name:
