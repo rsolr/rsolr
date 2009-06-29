@@ -136,7 +136,7 @@ module RSolr::HTTPClient
     def hash_to_params(params)
       return unless params.is_a?(Hash)
       # copy params and convert keys to strings
-      params = params.inject({}){|acc,(k,v)| acc.merge({k.to_s, v}) }
+      params = params.inject({}){|acc,(k,v)| acc.merge(k.to_s => v) }
       # get sorted keys
       params.keys.sort.inject([]) do |acc,k|
         v = params[k]
