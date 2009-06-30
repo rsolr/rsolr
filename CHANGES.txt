@@ -1,3 +1,6 @@
+0.8.9 - June 30, 2009
+  Deprecated hash syntax fix from outoftime/rsolr (Mat Brown)
+
 0.8.8 - May 6, 2009
   Added method :request to RSolr::Connection
     - this method is an alias for send_request
