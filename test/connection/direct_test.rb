@@ -7,17 +7,29 @@ if defined?(JRUBY_VERSION)
     
     include ConnectionTestMethods
     
+    attr :dist
+    attr :home
+    
     def setup
       base = File.expand_path( File.dirname(__FILE__) )
-      dist = File.join(base, '..', '..', 'apache-solr')
-      home = File.join(dist, 'example', 'solr')
-      @solr = RSolr.connect(:adapter=>:direct, :home_dir=>home, :dist_dir=>dist)
+      @dist = File.join(base, '..', '..', 'apache-solr')
+      @home = File.join(dist, 'example', 'solr')
+      @solr = RSolr.connect(:adapter=>:direct, :home_dir=>@home, :dist_dir=>@dist)
       @solr.delete_by_query('*:*')
       @solr.commit
     end
     
     def teardown
       @solr.adapter.close
+    end
+    
+    def test_new_connection_with_existing_core
+      Dir["#{@dist}/dist/*.jar"].each { |p| require p }
+      dc = org.apache.solr.servlet.DirectSolrConnection.new(@home, "#{@home}/data", nil)
+      adapter = RSolr::Adapter::Direct.new dc
+      s = RSolr::Connection.new(adapter)
+      assert_equal Hash, s.request('/admin/ping').class
+      adapter.close
     end
     
   end

@@ -9,8 +9,11 @@ class RSolr::Adapter::Direct
   
   include RSolr::HTTPClient::Util
   
-  attr_accessor :opts, :home_dir
+  attr_accessor :opts
   
+  # opts can be an instance of org.apache.solr.servlet.DirectSolrConnection
+  # if opts is NOT an instance of org.apache.solr.servlet.DirectSolrConnection
+  # then...
   # required: opts[:home_dir] is absolute path to solr home (the directory with "data", "config" etc.)
   # opts must also contain either
   #   :dist_dir => 'absolute path to solr distribution root
@@ -20,22 +23,24 @@ class RSolr::Adapter::Direct
   #   :select_path => 'the/select/handler'
   #   :update_path => 'the/update/handler'
   def initialize(opts, &block)
-    @home_dir = opts[:home_dir].to_s
-    opts[:data_dir] ||= File.join(@home_dir, 'data')
-    if opts[:dist_dir] and ! opts[:jar_paths]
-      # add the standard lib and dist directories to the :jar_paths
-      opts[:jar_paths] = [File.join(opts[:dist_dir], 'lib'), File.join(opts[:dist_dir], 'dist')]
+    if defined?(Java::OrgApacheSolrServlet::DirectSolrConnection) and opts.is_a?(Java::OrgApacheSolrServlet::DirectSolrConnection)
+      @connection = opts
+    else
+      opts[:data_dir] ||= File.join(opts[:home_dir].to_s, 'data')
+      if opts[:dist_dir] and ! opts[:jar_paths]
+        # add the standard lib and dist directories to the :jar_paths
+        opts[:jar_paths] = [File.join(opts[:dist_dir], 'lib'), File.join(opts[:dist_dir], 'dist')]
+      end
+      @opts = opts
     end
-    @opts = opts
   end
   
   # loads/imports the java dependencies
-  # sets the @connection instance variable
+  # sets the @connection instance variable if it has not yet been set
   def connection
     @connection ||= (
       require_jars(@opts[:jar_paths]) if @opts[:jar_paths]
-      import_dependencies
-      DirectSolrConnection.new(@home_dir, @opts[:data_dir], nil)
+      org.apache.solr.servlet.DirectSolrConnection.new(opts[:home_dir], @opts[:data_dir], nil)
     )
   end
   
@@ -67,17 +72,13 @@ class RSolr::Adapter::Direct
   
   protected
   
-  # do the java import thingy
-  def import_dependencies
-    import org.apache.solr.servlet.DirectSolrConnection
-  end
-  
   # require the jar files
   def require_jars(paths)
     paths = [paths] unless paths.is_a?(Array)
     paths.each do |path|
+      raise "Invalid jar path: #{path}" unless File.exists?(path)
       jar_pattern = File.join(path,"**", "*.jar")
-      Dir[jar_pattern].each {|jar_file| require jar_file}
+      Dir[jar_pattern].each {|jar_file| require jar_file }
     end
   end
   
