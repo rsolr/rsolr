@@ -1,6 +1,7 @@
 # http://builder.rubyforge.org/
 require 'rubygems'
-require 'builder'
+
+require File.join(File.dirname(__FILE__), 'message', 'builders')
 
 # The Solr::Message class is the XML generation module for sending updates to Solr.
 
@@ -77,10 +78,10 @@ class RSolr::Message
   end
   
   class << self
-    
-    # shortcut method -> xml = RSolr::Message.xml
-    def xml
-      ::Builder::XmlMarkup.new
+    attr_writer :builder
+
+    def builder
+      @builder ||= Builders::Builder.new
     end
     
     # generates "add" xml for updating solr
@@ -108,59 +109,41 @@ class RSolr::Message
     # The "nickname" field would have a boost="20.0"
     # if the doc had a "nickname" field with the value of "Tim".
     #
-    def add(data, add_attrs={}, &blk)
+    def add(data, add_attrs={})
       data = [data] unless data.is_a?(Array)
-      xml.add(add_attrs) do |add_node|
-        data.each do |doc|
-          # create doc, passing in fields
-          doc = Document.new(doc) if doc.respond_to?(:each_pair)
-          yield doc if block_given?
-          add_node.doc(doc.attrs) do |doc_node|
-            doc.fields.each do |field_obj|
-              doc_node.field(field_obj.value, field_obj.attrs)
-            end
-          end
-        end
+      documents = data.map do |doc|
+        doc = Document.new(doc) if doc.respond_to?(:each_pair)
+        yield doc if block_given?
+        doc
       end
+      builder.add(documents, add_attrs)
     end
     
     # generates a <commit/> message
     def commit(opts={})
-      xml.commit(opts)
+      builder.commit(opts)
     end
     
     # generates a <optimize/> message
     def optimize(opts={})
-      xml.optimize(opts)
+      builder.optimize(opts)
     end
     
     # generates a <rollback/> message
     def rollback
-      xml.rollback
+      builder.rollback
     end
     
     # generates a <delete><id>ID</id></delete> message
     # "ids" can be a single value or array of values
     def delete_by_id(ids)
-      ids = [ids] unless ids.is_a?(Array)
-      xml.delete do |xml|
-        ids.each do |id|
-          xml.id(id)
-        end
-      end
+      builder.delete_by_id(ids)
     end
     
     # generates a <delete><query>ID</query></delete> message
     # "queries" can be a single value or an array of values
     def delete_by_query(queries)
-      queries = [queries] unless queries.is_a?(Array)
-      xml.delete do |xml|
-        queries.each do |query|
-          xml.query(query)
-        end
-      end
+      builder.delete_by_query(queries)
     end
-    
   end
-  
 end

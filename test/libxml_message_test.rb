@@ -1,9 +1,9 @@
 
 require 'helper'
 
-class MessageTest < RSolrBaseTest
+class LibxmlMessageTest < RSolrBaseTest
   def setup
-    RSolr::Message.builder = RSolr::Message::Builders::Builder.new
+    RSolr::Message.builder = RSolr::Message::Builders::Libxml.new
   end
   
   # call all of the simple methods...
