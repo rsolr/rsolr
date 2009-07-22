@@ -1,3 +1,5 @@
+Add Nokogiri builder (can be used in jruby and mri)
+
 Push HTTPClient into separate gem?
 
 Remove those pesky test warnings about constants already being defined etc.

@@ -1,11 +1,8 @@
-# http://builder.rubyforge.org/
-require 'rubygems'
-
-require File.join(File.dirname(__FILE__), 'message', 'builders')
-
 # The Solr::Message class is the XML generation module for sending updates to Solr.
 
 class RSolr::Message
+  
+  autoload :Builders, 'rsolr/message/builders'
   
   # A class that represents a "doc" xml element for a solr update
   class Document

@@ -1,10 +1,7 @@
 
 require 'helper'
 
-class MessageTest < RSolrBaseTest
-  def setup
-    RSolr::Message.builder = RSolr::Message::Builders::Builder.new
-  end
+module MessageTestMethods
   
   # call all of the simple methods...
   # make sure the xml string is valid
@@ -16,7 +13,7 @@ class MessageTest < RSolrBaseTest
       assert_equal String, result.class
     end
   end
-  
+
   def test_add_yields_doc_objects_if_block_given
     documents = [{:id=>1, :name=>'sam', :cat=>['cat 1', 'cat 2']}]
     add_attrs = {:boost=>200.00}
@@ -39,31 +36,31 @@ class MessageTest < RSolrBaseTest
     assert result =~ %r(boost="10")
     assert result =~ %r(<field name="id">1</field>)
   end
-  
+
   def test_delete_by_id
     result = RSolr::Message.delete_by_id(10)
     assert_equal String, result.class
     assert_equal '<delete><id>10</id></delete>', result.to_s
   end
-  
+
   def test_delete_by_multiple_ids
     result = RSolr::Message.delete_by_id([1, 2, 3])
     assert_equal String, result.class
     assert_equal '<delete><id>1</id><id>2</id><id>3</id></delete>', result.to_s
   end
-  
+
   def test_delete_by_query
     result = RSolr::Message.delete_by_query('status:"LOST"')
     assert_equal String, result.class
     assert_equal '<delete><query>status:"LOST"</query></delete>', result.to_s
   end
-  
+
   def test_delete_by_multiple_queries
     result = RSolr::Message.delete_by_query(['status:"LOST"', 'quantity:0'])
     assert_equal String, result.class
     assert_equal '<delete><query>status:"LOST"</query><query>quantity:0</query></delete>', result.to_s
   end
-  
+
   # add a single hash ("doc")
   def test_add_hash
     data = {
@@ -73,7 +70,7 @@ class MessageTest < RSolrBaseTest
     assert RSolr::Message.add(data).to_s =~ /<field name="name">matt<\/field>/
     assert RSolr::Message.add(data).to_s =~ /<field name="id">1<\/field>/
   end
-  
+
   # add an array of hashes
   def test_add_array
     data = [
@@ -86,35 +83,35 @@ class MessageTest < RSolrBaseTest
         :name=>'sam'
       }
     ]
-    
+  
     message = RSolr::Message.add(data)
     expected = '<add><doc><field name="id">1</field><field name="name">matt</field></doc><doc><field name="id">2</field><field name="name">sam</field></doc></add>'
-    
+  
     assert message.to_s=~/<field name="name">matt<\/field>/
     assert message.to_s=~/<field name="name">sam<\/field>/
   end
-  
+
   # multiValue field support test, thanks to Fouad Mardini!
   def test_add_multi_valued_field
     data = {
       :id   => 1,
       :name => ['matt1', 'matt2']
     }
-    
+  
     result = RSolr::Message.add(data)
-    
+  
     assert result.to_s =~ /<field name="name">matt1<\/field>/
     assert result.to_s =~ /<field name="name">matt2<\/field>/
   end
-  
+
   def test_add_single_document
     document = RSolr::Message::Document.new
     document.add_field('id', 1)
     document.add_field('name', 'matt', :boost => 2.0)
     result = RSolr::Message.add(document)
-    
+  
     assert result.to_s =~ /<field name="id">1<\/field>/
-    
+  
     # depending on which ruby version, the attributes can be out of place
     # so we need to test both... there's gotta be a better way to do this?
     assert(
@@ -135,4 +132,33 @@ class MessageTest < RSolrBaseTest
     assert result.to_s =~ /<field name="name">matt1<\/field>/
     assert result.to_s =~ /<field name="name">matt2<\/field>/
   end
+  
+end
+
+#####
+
+unless defined?(JRUBY_VERSION)
+  class LibxmlMessageTest < RSolrBaseTest
+  
+    include MessageTestMethods
+  
+    def setup
+      RSolr::Message.builder = RSolr::Message::Builders::Libxml.new
+    end
+  
+  end
+end
+
+
+#####
+
+class BuilderMessageTest < RSolrBaseTest
+  
+  include MessageTestMethods
+  
+  def setup
+    # RSolr::Message::Builders::Libxml.new
+    RSolr::Message.builder = RSolr::Message::Builders::Builder.new
+  end
+  
 end

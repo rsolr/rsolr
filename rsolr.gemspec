@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name = "rsolr"
-  s.version = "0.9.0"
-  s.date = "2009-07-17"
+  s.version = "0.9.1"
+  s.date = "2009-07-22"
   s.summary = "A Ruby client for Apache Solr"
   s.email = "goodieboy@gmail.com"
   s.homepage = "http://github.com/mwmitchell/rsolr"
@@ -20,6 +20,9 @@ Gem::Specification.new do |s|
     "lib/rsolr/http_client/adapter/net_http.rb",
     "lib/rsolr/http_client/adapter.rb",
     "lib/rsolr/http_client.rb",
+    "lib/rsolr/message/builders/builder.rb",
+    "lib/rsolr/message/builders/libxml.rb",
+    "lib/rsolr/message/builders.rb",
     "lib/rsolr/message.rb",
     "LICENSE",
     "Rakefile",
