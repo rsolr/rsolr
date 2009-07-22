@@ -105,6 +105,9 @@ Commit & optimize shortcuts
   solr.commit
   solr.optimize
 
+===XML Builders for RSolr
+As of version 0.9.1, RSolr can now use LibXml to create the update messages sent to solr. To switch from Builder to LibXml, set the RSolr::Message.builder like so:
+  RSolr::Message.builder = RSolr::Message::Builders::Libxml.new
 
 == Response Formats
 The default response format is Ruby. When the :wt param is set to :ruby, the response is eval'd and wrapped up in a nice Mash (Hash) class. You can get a raw response by setting the :wt to "ruby" - notice, the string -- not a symbol. All other response formats are available as expected, :wt=>'xml' etc..
