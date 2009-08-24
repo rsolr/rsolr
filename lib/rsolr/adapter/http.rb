@@ -3,7 +3,7 @@
 #
 class RSolr::Adapter::HTTP
   
-  attr_reader :opts, :connector, :connection
+  attr_reader :opts, :connector
   
   # opts can have:
   #   :url => 'http://localhost:8080/solr'
