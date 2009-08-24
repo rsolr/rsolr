@@ -31,7 +31,7 @@ module RSolr::HTTPClient
     
     attr_accessor :adapter_name
     
-    def initialize(adapter_name = :curb)
+    def initialize(adapter_name = :net_http)
       @adapter_name = adapter_name
     end
     
