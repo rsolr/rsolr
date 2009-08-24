@@ -136,6 +136,8 @@ You can specify the http client adapter to use by setting solr.adapter.connector
   :net_http     uses the standard Net::HTTP library
   :curb         uses the Ruby "curl" bindings
 
+NOTE: The Net::Http is the default adapter.
+
 Example:
 	
   solr.adapter.connector.adapter_name = :curb
