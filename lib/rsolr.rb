@@ -12,7 +12,7 @@ end
 
 module RSolr
   
-  VERSION = '0.8.8'
+  VERSION = '0.9.1'
   
   autoload :Message, 'rsolr/message'
   autoload :Connection, 'rsolr/connection'
