@@ -6,7 +6,7 @@ Remove those pesky test warnings about constants already being defined etc.
 
 Look at http://lab.cisti-icist.nrc-cnrc.gc.ca/cistilabswiki/index.php/LuSql
 
-  db_mapper = Solr::DBMapper.new(:host=>'', :database=>'')
+  db_mapper = RSolr::DBMapper.new(:host=>'', :database=>'')
 
 Check out http://github.com/dan-manges/mixology/tree/master for extensions/mixins framework?
 
@@ -17,3 +17,29 @@ http://wiki.apache.org/solr/solr-ruby/BrainStorming
 http://wiki.apache.org/solr/solr-ruby/ToDo
 
 Connection pooling?
+
+raw ruby xml writer... this was 3 times faster than libxml and builder:
+
+def hash_to_attrs(h)
+	h.map{|k,v| "#{k}=\"#{v}\"" }.join(' ')
+end
+
+def add(data, add_attrs={})
+	t = Time.now
+	x = "<add #{hash_to_attrs(add_attrs)}>"
+	data = [data] unless data.is_a?(Array)
+	documents = data.map do |doc|
+	doc = Document.new(doc) if doc.respond_to?(:each_pair)
+	yield doc if block_given?
+	x << "<doc #{hash_to_attrs(doc.attrs)}>"
+	doc.fields.each do |f|
+	  x << "<field #{hash_to_attrs(f.attrs)}>#{f.value}</field>"
+	end
+	x << "</doc>"
+	doc
+	end
+	x << "</add>"
+	#builder.add(documents, add_attrs)
+	puts Time.now - t
+	exit
+end
