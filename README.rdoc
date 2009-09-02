@@ -63,6 +63,9 @@ Use the #select method to send requests to the /select handler:
 Use the #request method to set a custom request handler path:
   response = solr.request('/documents', {:q=>'test'})
 
+A shortcut for the above example:
+  response = solr.documents :q=>'test'
+
 
 === Updating Solr
 Updating can be done using native Ruby structures. Hashes are used for single documents and arrays are used for a collection of documents (hashes). These structures get turned into simple XML "messages". Raw XML can also be used of course.
