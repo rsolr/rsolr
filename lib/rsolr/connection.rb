@@ -14,20 +14,15 @@ class RSolr::Connection
   end
   
   # Send a request to a request handler using the method name.
-  # This does not handle data, only selects
-  def method_missing(method_name, params)
-    send_request("/#{method_name}", map_params(params))
-  end
-  
-  # send a request to the "select" handler
-  def select(params)
-    send_request('/select', map_params(params))
+  # This does not handle data/POSTs, only GET requests.
+  def method_missing(method_name, params, &blk)
+    request("/#{method_name}", map_params(params))
   end
   
   # sends data to the update handler
   # data can be a string of xml, or an object that returns xml from its #to_xml method
   def update(data, params={})
-    send_request('/update', map_params(params), data)
+    request('/update', map_params(params), data)
   end
   
   # send request solr
@@ -38,13 +33,10 @@ class RSolr::Connection
   #   NOTE: to get raw ruby, use :wt=>'ruby' <- a string, not a symbol like :ruby  
   #
   #
-  def send_request(path, params={}, data=nil)
-    response = @adapter.send_request(path, map_params(params), data)
+  def request(path, params={}, data=nil)
+    response = @adapter.request(path, map_params(params), data)
     adapt_response(response)
   end
-  
-  # allow #request to be used like send_request
-  alias_method :request, :send_request
   
   # 
   # single record:

@@ -38,17 +38,16 @@ To get a connection in MRI/standard Ruby:
   
   solr = RSolr.connect
 
-To change the Solr HTTP host:
+To change the Solr HTTP url:
   
   solr = RSolr.connect(:url=>'http://solrserver.com')
 
 To get a direct connection (no http) in jRuby using DirectSolrConnection:
   
-  solr = RSolr.connect({
-    :adapter=>:direct,
-    :home_dir=>'/path/to/solr/home',
+  solr = RSolr.connect(:direct,
+	:home_dir=>'/path/to/solr/home',
     :dist_dir=>'/path/to/solr/distribution'
-  })
+  )
 
 == Requests
 Once you have a connection, you can execute queries, updates etc..
@@ -61,8 +60,8 @@ Use the #select method to send requests to the /select handler:
     :rows=>10
   })
   
-Use the #send_request method to set a custom request handler path:
-  response = solr.send_request('/documents', {:q=>'test'})
+Use the #request method to set a custom request handler path:
+  response = solr.request('/documents', {:q=>'test'})
 
 
 === Updating Solr

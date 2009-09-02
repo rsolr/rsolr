@@ -19,7 +19,7 @@ class RSolr::Connection::HTTP
   
   # send a request to the connection
   # request '/update', :wt=>:xml, '</commit>'
-  def send_request(path, params={}, data=nil)
+  def request(path, params={}, data=nil)
     data = data.to_xml if data.respond_to?(:to_xml)
     if data
       http_context = connection.post(path, data, params, post_headers)
