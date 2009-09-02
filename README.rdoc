@@ -45,7 +45,7 @@ To change the Solr HTTP url:
 To get a direct connection (no http) in jRuby using DirectSolrConnection:
   
   solr = RSolr.connect(:direct,
-	:home_dir=>'/path/to/solr/home',
+    :home_dir=>'/path/to/solr/home',
     :dist_dir=>'/path/to/solr/distribution'
   )
 
