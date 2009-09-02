@@ -9,7 +9,7 @@ describe RSolr do
     end
     
     it 'should return an RSolr::Connection object' do
-      RSolr.connect.should be_a(RSolr::Connection)
+      RSolr.connect.should be_a(RSolr::Connection::Base)
     end
     
   end

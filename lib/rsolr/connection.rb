@@ -111,15 +111,15 @@ module RSolr::Connection
       # if the wt is :ruby, evaluate the ruby string response
       if adapter_response[:params][:wt] == :ruby
         data = Kernel.eval(data)
-        # attach a method called #adapter_response that returns the original adapter response value
-        def data.adapter_response
-          @adapter_response
-        end
-        data.send(:instance_variable_set, '@adapter_response', adapter_response)
       end
+      # attach a method called #adapter_response that returns the original adapter response value
+      def data.adapter_response
+        @adapter_response
+      end
+      data.send(:instance_variable_set, '@adapter_response', adapter_response)
       data
     end
-  
+    
   end
   
 end
