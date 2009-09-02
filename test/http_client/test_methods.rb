@@ -4,7 +4,7 @@ module HTTPClientTestMethods
   
   def test_raise_unknown_adapter
     assert_raise RSolr::HTTPClient::UnkownAdapterError do
-      c = RSolr::HTTPClient::Connector.new(:blah).connect(URL)
+      c = RSolr::HTTPClient::connect(:blah, URL)
     end
   end
   

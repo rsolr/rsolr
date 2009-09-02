@@ -7,8 +7,8 @@ class RSolr::HTTPClient::Adapter::NetHTTP
   attr :uri
   attr :connection
   
-  def initialize(url)
-    @uri = URI.parse(url)
+  def initialize(opts={})
+    @uri = URI.parse(opts[:url])
     @connection = Net::HTTP.new(@uri.host, @uri.port)
   end
   

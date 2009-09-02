@@ -4,7 +4,7 @@ require 'http_client/test_methods'
 class NetHTTPTest < RSolrBaseTest
   
   def setup
-    @c ||= RSolr::HTTPClient::Connector.new(:net_http).connect(URL)
+    @c ||= RSolr::HTTPClient::connect(:url=>URL)
   end
   
   include HTTPClientTestMethods

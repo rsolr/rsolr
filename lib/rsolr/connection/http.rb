@@ -3,18 +3,17 @@
 #
 class RSolr::Connection::HTTP
   
-  attr_reader :opts, :connector
+  attr_reader :opts
   
   # opts can have:
   #   :url => 'http://localhost:8080/solr'
   def initialize(opts={}, &block)
-    opts[:url]||='http://127.0.0.1:8983/solr'
+    opts[:url] ||= 'http://127.0.0.1:8983/solr'
     @opts = opts
-    @connector = RSolr::HTTPClient::Connector.new
   end
   
   def connection
-    @connection ||= @connector.connect(@opts[:url])
+    @connection ||= RSolr::HTTPClient.connect(@opts)
   end
   
   # send a request to the connection

@@ -12,9 +12,10 @@
 #   :headers
 
 # Example:
-#   connector = RSolr::HTTPClient.Connector.new
-#   connector.adapter_name = :net_http # switch to Net::HTTP before calling "connect"
-#   hclient = connector.connect('http://www.google.com')
+#   hclient = RSolr::HTTPClient.connect('http://www.google.com')
+#   # SAME AS
+#   hclient = RSolr::HTTPClient.connect(:net_http, 'http://www.google.com')
+#   hclient = RSolr::HTTPClient.connect(:curb, 'http://www.google.com')
 #   response = hclient.get('/search', :hl=>:en, :q=>:ruby, :btnG=>:Search)
 #   puts response[:status_code]
 #   puts response[:body]
@@ -25,39 +26,23 @@ module RSolr::HTTPClient
   
   autoload :Adapter, 'rsolr/http_client/adapter'
   
-  class UnkownAdapterError < RuntimeError; end
+  class UnkownAdapterError < RuntimeError
+  end
   
-  class Connector
-    
-    attr_accessor :adapter_name
-    
-    def initialize(adapter_name = :net_http)
-      @adapter_name = adapter_name
+  def self.connect(*args)
+    type = args.first.is_a?(Symbol) ? args.shift : :net_http
+    opts = args
+    klass = case type
+    when :net_http,nil
+      'NetHTTP'
+    when :curb
+      'Curb'
+    else
+      raise UnkownAdapterError.new("Invalid adapter type: #{type} - use :curb or :net_http or blank for :net_http/default")
     end
-    
-    # Creates and returns an instance of RSolr::HTTPClient::Adapter::*
-    # The "url" is a full/valid url.
-    # Example:
-    # connector = RSolr::HTTPClient::Connector.new
-    # client = connector.connect('http://google.com')
-    #
-    # TODO: this should be less verbose... something like RSolr:HTTPClient.connect(url, adapter=:curb)
-    def connect(url)
-      case adapter_name
-      when :curb
-        klass = 'Curb'
-      when :net_http
-        klass = 'NetHTTP'
-      else
-        raise UnkownAdapterError.new("Name: #{adapter_name}")
-      end
-      begin
-        RSolr::HTTPClient::Base.new RSolr::HTTPClient::Adapter.const_get(klass).new(url)
-      rescue ::URI::InvalidURIError
-        raise "#{$!} == #{url}"
-      end
+    begin
+      Base.new Adapter.const_get(klass).new(*args)
     end
-    
   end
   
   # The base class for interacting with one of the HTTP client adapters
@@ -124,7 +109,7 @@ module RSolr::HTTPClient
     def build_param(k,v)
       "#{escape(k)}=#{escape(v)}"
     end
-
+    
     #
     # converts hash into URL query string, keys get an alpha sort
     # if a value is an array, the array values get mapped to the same key:

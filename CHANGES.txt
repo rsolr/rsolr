@@ -3,6 +3,11 @@
   Renamed Adapter modules to Connection
   Removed the Connection #send_request method (now #request)
   Removed the Connection #select method -- this ends up calling Connection #method_missing
+  Removed HTTPClient::Connector
+    - HTTPClient now uses a method called #connect (like RSolr.connect)
+    - This method accepts 1 or 2 args, see methods comments
+  Changed the way the HTTP client adapter is set. Now just pass in when connecting:
+    - RSolr.connect(:http, :adapter=>curb, :url=>'http://solr.com')
 
 0.9.1 - July 22, 2009
   Added LibXml builder support (Thanks to Mat Brown - github.com/outoftime)

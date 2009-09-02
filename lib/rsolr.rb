@@ -23,23 +23,19 @@ module RSolr
   # # direct connection
   # RSolr.connect :direct, :home_dir=>'solr', :dist_dir=>'solr-nightly'
   def self.connect(*args)
-    type = :http
-    opts = {}
-    if args.size==2
-      type = args.first
-      opts = args.slice(1..-1)
-    end
+    type = args.first.is_a?(Symbol) ? args.shift : :http
+    opts = args
     type_class = case type
-      when :http
+      when :http,nil
         'HTTP'
       when :direct
         'Direct'
       else
         raise "Invalid connection type: #{type} - use :http, :direct or leave nil for :http/default"
       end
-    adapter_class = RSolr::Connection.const_get type_class
-    adapter = adapter_class.new opts
-    RSolr::Connection.new adapter
+    adapter_class = RSolr::Connection.const_get(type_class)
+    adapter = adapter_class.new(*opts)
+    RSolr::Connection.new(adapter)
   end
   
   # A module that contains string related methods

@@ -8,8 +8,8 @@ class RSolr::HTTPClient::Adapter::Curb
   attr :uri
   attr :connection
   
-  def initialize(url)
-    @uri = URI.parse(url)
+  def initialize(opts={})
+    @uri = URI.parse(opts[:url])
     @connection = ::Curl::Easy.new
   end
   
