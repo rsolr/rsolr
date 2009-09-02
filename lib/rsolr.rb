@@ -13,8 +13,8 @@ module RSolr
   # Factory for creating connections.
   # Can specify the connection type by
   # using :http or :direct for the first argument.
-  # The last argument is always used for the connection
-  # adapter instance.
+  # The last arguments are always used for the connection adapter instance.
+  #
   # Examples:
   # # default http connection
   # RSolr.connect

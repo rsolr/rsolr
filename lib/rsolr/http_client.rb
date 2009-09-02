@@ -29,6 +29,18 @@ module RSolr::HTTPClient
   class UnkownAdapterError < RuntimeError
   end
   
+  # Factory for creating connections.
+  # Can specify the connection type by
+  # using :net_http or :curb for the first argument.
+  # The ending arguments are always used for the connection adapter instance.
+  #
+  # Examples:
+  # # default net_http connection
+  # RSolr::HTTPClient.connect :url=>''
+  # # SAME AS
+  # RSolr::HTTPClient.connect :net_http, :url=>''
+  # # curb connection
+  # RSolr.connect :curb, :url=>''
   def self.connect(*args)
     type = args.first.is_a?(Symbol) ? args.shift : :net_http
     opts = args

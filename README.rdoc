@@ -134,21 +134,16 @@ The adapter_response is a hash that contains the generated params, url, path, po
 
 
 == HTTP Client Adapter
-You can specify the http client adapter to use by setting solr.adapter.connector.adapter_name to one of:
+You can specify the http client adapter:
   :net_http     uses the standard Net::HTTP library
   :curb         uses the Ruby "curl" bindings
 
 NOTE: The Net::Http is the default adapter.
 
 Example:
-	
-  solr.adapter.connector.adapter_name = :curb
-
-Example of using the HTTP client only:
   
-  hclient = RSolr::HTTPClient::Connector.new(:curb).connect(url)
-  hclient = RSolr::HTTPClient::Connector.new(:net_http).connect(url)
-  hclient.get('/')
+  solr.connect(:adapter => :curb)
+  solr.connect(:adapter => :net_http)
 
 After reading this http://apocryph.org/2008/11/09/more_indepth_analysis_ruby_http_client_performance - I would recommend using the :curb adapter. NOTE: You can't use the :curb adapter under jRuby. To install curb:
 
