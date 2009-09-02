@@ -16,7 +16,7 @@ response = solr.select(:q=>'ipod', :fq=>'price:[0 TO 50]', :rows=>2, :start=>0)
 
 puts "URL : #{response.adapter_response[:url]} -> #{response.adapter_response[:status_code]}"
 
-solr_response['response']['docs'].each do |doc|
+response['response']['docs'].each do |doc|
   puts doc['timestamp']
 end
 
