@@ -1,19 +1,12 @@
+Convert all tests to rspec
+Remove live connection tests -- use mocks instead
+
 Problem with POST/xml encoding -- example, some binary MARC data has been garbled -- this is coming from the Builder xml escape method. What to do?
-
-Connection adapters have no namepsace
-HTTPClient adapters have namespace: "adapter"
-Message adapters have namespace: "builders"
-
-<- make consistent
-
+<- is this working OK with LibXML?
 
 Add Nokogiri builder (can be used in jruby and mri)
 
-Make the http connection switching (curb etc.) behave like the builder adapters, in otherwords... use instances of the adapter instead of symbols
-
 Push HTTPClient into separate gem?
-
-Remove those pesky test warnings about constants already being defined etc.
 
 Look at http://lab.cisti-icist.nrc-cnrc.gc.ca/cistilabswiki/index.php/LuSql
 
