@@ -82,7 +82,7 @@ module RSolr::Message
     attr_writer :builder
 
     def builder
-      @builder ||= Adapter::Builder.new
+      @builder ||= RSolr::Message::Adapter::Builder.new
     end
     
     # generates "add" xml for updating solr

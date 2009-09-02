@@ -1,5 +1,7 @@
 # add this directory to the load path if it hasn't already been added
 
+require 'rubygems'
+
 $: << File.dirname(__FILE__) unless $:.include?(File.dirname(__FILE__))
 
 module RSolr
