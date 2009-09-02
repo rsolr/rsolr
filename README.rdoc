@@ -142,8 +142,8 @@ NOTE: The Net::Http is the default adapter.
 
 Example:
   
-  solr.connect(:adapter => :curb)
-  solr.connect(:adapter => :net_http)
+  RSolr.connect(:adapter => :curb)
+  RSolr.connect(:adapter => :net_http)
 
 After reading this http://apocryph.org/2008/11/09/more_indepth_analysis_ruby_http_client_performance - I would recommend using the :curb adapter. NOTE: You can't use the :curb adapter under jRuby. To install curb:
 
