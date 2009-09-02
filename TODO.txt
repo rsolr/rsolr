@@ -1,3 +1,7 @@
+Message::Field class to Struct?
+
+dynamic proxy methods for adapter users?
+
 Convert all tests to rspec
 Remove live connection tests -- use mocks instead
 
