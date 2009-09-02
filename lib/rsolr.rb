@@ -35,7 +35,7 @@ module RSolr
       end
     adapter_class = RSolr::Connection::Adapter.const_get(type_class)
     adapter = adapter_class.new(*opts)
-    RSolr::Connection.new(adapter)
+    RSolr::Connection::Base.new(adapter)
   end
   
   # A module that contains string related methods
@@ -53,7 +53,7 @@ module RSolr
   # send the escape method into the Connection class ->
   # solr = RSolr.connect
   # solr.escape('asdf')
-  RSolr::Connection.send(:include, Char)
+  RSolr::Connection::Base.send(:include, Char)
   
   # bring escape into this module (RSolr) -> RSolr.escape('asdf')
   extend Char

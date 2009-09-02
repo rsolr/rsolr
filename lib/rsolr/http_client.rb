@@ -32,6 +32,42 @@ module RSolr::HTTPClient
   class UnkownAdapterError < RuntimeError
   end
   
+  class Base
+
+    attr_reader :adapter
+  
+    # requires an instace of RSolr::HTTPClient::*
+    def initialize(adapter)
+      @adapter = adapter
+    end
+  
+    # sends a GET reqest to the "path" variable
+    # an optional hash of "params" can be used,
+    # which is later transformed into a GET query string
+    def get(path, params={})
+      begin
+        http_context = @adapter.get(path, params)
+      rescue
+        raise RSolr::RequestError.new($!)
+      end
+      http_context
+    end
+  
+    # sends a POST request to the "path" variable
+    # "data" is required, and must be a string
+    # "params" is an optional hash for query string params...
+    # "headers" is a hash for setting request header values.
+    def post(path, data, params={}, headers={})
+      begin
+        http_context = @adapter.post(path, data, params, headers)
+      rescue
+        raise RSolr::RequestError.new($!)
+      end
+      http_context
+    end
+    
+  end
+  
   # Factory for creating connections.
   # Can specify the connection type by
   # using :net_http or :curb for the first argument.
@@ -58,43 +94,6 @@ module RSolr::HTTPClient
     begin
       Base.new Adapter.const_get(klass).new(*args)
     end
-  end
-  
-  # The base class for interacting with one of the HTTP client adapters
-  class Base
-    
-    attr_reader :adapter
-    
-    # requires an instace of RSolr::HTTPClient::*
-    def initialize(adapter)
-      @adapter = adapter
-    end
-    
-    # sends a GET reqest to the "path" variable
-    # an optional hash of "params" can be used,
-    # which is later transformed into a GET query string
-    def get(path, params={})
-      begin
-        http_context = @adapter.get(path, params)
-      rescue
-        raise RSolr::RequestError.new($!)
-      end
-      http_context
-    end
-    
-    # sends a POST request to the "path" variable
-    # "data" is required, and must be a string
-    # "params" is an optional hash for query string params...
-    # "headers" is a hash for setting request header values.
-    def post(path, data, params={}, headers={})
-      begin
-        http_context = @adapter.post(path, data, params, headers)
-      rescue
-        raise RSolr::RequestError.new($!)
-      end
-      http_context
-    end
-    
   end
   
   module Util

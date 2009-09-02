@@ -1,6 +1,6 @@
 # The Solr::Message class is the XML generation module for sending updates to Solr.
 
-class RSolr::Message
+module RSolr::Message
   
   module Adapter
     autoload :Builder, 'rsolr/message/adapter/builder'
