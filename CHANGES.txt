@@ -1,7 +1,9 @@
 0.9.5 - September 1, 2009
   Removed Array #extract_options!
   Renamed Adapter modules to Connection
-  
+  Removed the Connection #send_request method (now #request)
+  Removed the Connection #select method -- this ends up calling Connection #method_missing
+
 0.9.1 - July 22, 2009
   Added LibXml builder support (Thanks to Mat Brown - github.com/outoftime)
 
