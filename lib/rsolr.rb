@@ -11,9 +11,9 @@ module RSolr
   autoload :HTTPClient, 'rsolr/http_client'
   
   # Factory for creating connections.
-  # Can specify the connection type by
-  # using :http or :direct for the first argument.
-  # The last arguments are always used for the connection adapter instance.
+  # 2 modes of argument operations:
+  #   1. first argument is solr-adapter type, second arg is options hash for solr-adapter instance.
+  #   2. options hash for solr-adapter only (no adapter type as first arg)
   #
   # Examples:
   # # default http connection
@@ -33,7 +33,7 @@ module RSolr
       else
         raise "Invalid connection type: #{type} - use :http, :direct or leave nil for :http/default"
       end
-    adapter_class = RSolr::Connection.const_get(type_class)
+    adapter_class = RSolr::Connection::Adapter.const_get(type_class)
     adapter = adapter_class.new(*opts)
     RSolr::Connection.new(adapter)
   end

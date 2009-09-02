@@ -143,7 +143,7 @@ unless defined?(JRUBY_VERSION)
     include MessageTestMethods
   
     def setup
-      RSolr::Message.builder = RSolr::Message::Builders::Libxml.new
+      RSolr::Message.builder = RSolr::Message::Adapter::Libxml.new
     end
   
   end
@@ -157,8 +157,7 @@ class BuilderMessageTest < RSolrBaseTest
   include MessageTestMethods
   
   def setup
-    # RSolr::Message::Builders::Libxml.new
-    RSolr::Message.builder = RSolr::Message::Builders::Builder.new
+    RSolr::Message.builder = RSolr::Message::Adapter::Builder.new
   end
   
 end

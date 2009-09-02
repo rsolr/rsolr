@@ -1,5 +1,12 @@
 Problem with POST/xml encoding -- example, some binary MARC data has been garbled -- this is coming from the Builder xml escape method. What to do?
 
+Connection adapters have no namepsace
+HTTPClient adapters have namespace: "adapter"
+Message adapters have namespace: "builders"
+
+<- make consistent
+
+
 Add Nokogiri builder (can be used in jruby and mri)
 
 Make the http connection switching (curb etc.) behave like the builder adapters, in otherwords... use instances of the adapter instead of symbols

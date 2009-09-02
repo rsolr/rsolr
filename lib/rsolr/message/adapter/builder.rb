@@ -1,6 +1,6 @@
 require 'builder'
 
-class RSolr::Message::Builders::Builder
+class RSolr::Message::Adapter::Builder
   
   # shortcut method -> xml = RSolr::Message.xml
   def xml

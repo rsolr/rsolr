@@ -5,7 +5,7 @@ require 'java'
 #
 # Connection for JRuby + DirectSolrConnection
 #
-class RSolr::Connection::Direct
+class RSolr::Connection::Adapter::Direct
   
   include RSolr::HTTPClient::Util
   
@@ -52,6 +52,7 @@ class RSolr::Connection::Direct
   end
   
   # send a request to the connection
+  # request '/select', :q=>'something'
   # request '/update', :wt=>:xml, '</commit>'
   def request(path, params={}, data=nil)
     data = data.to_xml if data.respond_to?(:to_xml)

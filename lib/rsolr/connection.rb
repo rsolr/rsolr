@@ -1,7 +1,9 @@
 class RSolr::Connection
   
-  autoload :Direct, 'rsolr/connection/direct'
-  autoload :HTTP, 'rsolr/connection/http'
+  module Adapter
+    autoload :Direct, 'rsolr/connection/adapter/direct'
+    autoload :HTTP, 'rsolr/connection/adapter/http'
+  end
   
   attr_reader :adapter
   

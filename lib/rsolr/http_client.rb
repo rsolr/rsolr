@@ -24,7 +24,10 @@ require 'uri'
 
 module RSolr::HTTPClient
   
-  autoload :Adapter, 'rsolr/http_client/adapter'
+  module Adapter
+    autoload :Curb, 'rsolr/http_client/adapter/curb'
+    autoload :NetHTTP, 'rsolr/http_client/adapter/net_http'
+  end
   
   class UnkownAdapterError < RuntimeError
   end

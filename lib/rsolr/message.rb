@@ -2,7 +2,10 @@
 
 class RSolr::Message
   
-  autoload :Builders, 'rsolr/message/builders'
+  module Adapter
+    autoload :Builder, 'rsolr/message/adapter/builder'
+    autoload :Libxml, 'rsolr/message/adapter/libxml'
+  end
   
   # A class that represents a "doc" xml element for a solr update
   class Document
@@ -79,7 +82,7 @@ class RSolr::Message
     attr_writer :builder
 
     def builder
-      @builder ||= Builders::Builder.new
+      @builder ||= Adapter::Builder.new
     end
     
     # generates "add" xml for updating solr

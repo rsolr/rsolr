@@ -1,6 +1,6 @@
 require 'libxml'
 
-class RSolr::Message::Builders::Libxml
+class RSolr::Message::Adapter::Libxml
   
   def add(documents, attributes = {})
     add_node = new_node('add', attributes)
