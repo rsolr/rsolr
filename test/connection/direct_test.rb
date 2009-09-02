@@ -26,7 +26,7 @@ if defined?(JRUBY_VERSION)
     def test_new_connection_with_existing_core
       Dir["#{@dist}/dist/*.jar"].each { |p| require p }
       dc = org.apache.solr.servlet.DirectSolrConnection.new(@home, "#{@home}/data", nil)
-      adapter = RSolr::Adapter::Direct.new dc
+      adapter = RSolr::Connection::Direct.new dc
       s = RSolr::Connection.new(adapter)
       assert_equal Hash, s.request('/admin/ping').class
       adapter.close

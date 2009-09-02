@@ -2,35 +2,44 @@
 
 $: << File.dirname(__FILE__) unless $:.include?(File.dirname(__FILE__))
 
-unless Array.respond_to?(:extract_options!)
-  class Array
-    def extract_options!
-      last.is_a?(::Hash) ? pop : {}
-    end
-  end
-end
-
 module RSolr
   
-  VERSION = '0.9.1'
+  VERSION = '0.9.5'
   
   autoload :Message, 'rsolr/message'
   autoload :Connection, 'rsolr/connection'
-  autoload :Adapter, 'rsolr/adapter'
   autoload :HTTPClient, 'rsolr/http_client'
   
-  # factory for creating connections
-  # "options" is a hash that gets used by the Connection
-  # object AND the adapter object.
-  def self.connect(options={})
-    adapter_name = options[:adapter] ||= :http
-    types = {
-      :http=>'HTTP',
-      :direct=>'Direct'
-    }
-    adapter_class = RSolr::Adapter.const_get(types[adapter_name])
-    adapter = adapter_class.new(options)
-    RSolr::Connection.new(adapter, options)
+  # Factory for creating connections.
+  # Can specify the connection type by
+  # using :http or :direct for the first argument.
+  # The last argument is always used for the connection
+  # adapter instance.
+  # Examples:
+  # # default http connection
+  # RSolr.connect
+  # # http connection with custom url
+  # RSolr.connect :url=>'http://solr.web100.org'
+  # # direct connection
+  # RSolr.connect :direct, :home_dir=>'solr', :dist_dir=>'solr-nightly'
+  def self.connect(*args)
+    type = :http
+    opts = {}
+    if args.size==2
+      type = args.first
+      opts = args.slice(1..-1)
+    end
+    type_class = case type
+      when :http
+        'HTTP'
+      when :direct
+        'Direct'
+      else
+        raise "Invalid connection type: #{type} - use :http, :direct or leave nil for :http/default"
+      end
+    adapter_class = RSolr::Connection.const_get type_class
+    adapter = adapter_class.new opts
+    RSolr::Connection.new adapter
   end
   
   # A module that contains string related methods

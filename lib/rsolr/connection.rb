@@ -1,13 +1,16 @@
 class RSolr::Connection
   
-  attr_reader :adapter, :opts
+  autoload :Direct, 'rsolr/connection/direct'
+  autoload :HTTP, 'rsolr/connection/http'
+  
+  attr_reader :adapter
   
   # "adapter" is instance of:
   #   RSolr::Adapter::HTTP
   #   RSolr::Adapter::Direct (jRuby only)
-  def initialize(adapter, opts={})
+  # or any other class that uses the connection "interface"
+  def initialize(adapter)
     @adapter = adapter
-    @opts = opts
   end
   
   # Send a request to a request handler using the method name.

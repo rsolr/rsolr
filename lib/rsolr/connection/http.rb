@@ -1,7 +1,7 @@
 #
 # Connection for standard HTTP Solr server
 #
-class RSolr::Adapter::HTTP
+class RSolr::Connection::HTTP
   
   attr_reader :opts, :connector
   

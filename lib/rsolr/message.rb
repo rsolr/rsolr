@@ -75,6 +75,7 @@ class RSolr::Message
   end
   
   class << self
+    
     attr_writer :builder
 
     def builder

@@ -1,5 +1,7 @@
 Add Nokogiri builder (can be used in jruby and mri)
 
+Make the http connection switching (curb etc.) behave like the builder adapters, in otherwords... use instances of the adapter instead of symbols
+
 Push HTTPClient into separate gem?
 
 Remove those pesky test warnings about constants already being defined etc.
