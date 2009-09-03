@@ -98,11 +98,13 @@ module RSolr::HTTPClient
   
   module Util
     
-    # escapes a query key/value for http
+    # Performs URI escaping so that you can construct proper
+    # query strings faster.  Use this rather than the cgi.rb
+    # version since it's faster.  (Stolen from Rack).
     def escape(s)
       s.to_s.gsub(/([^ a-zA-Z0-9_.-]+)/n) {
         '%'+$1.unpack('H2'*$1.size).join('%').upcase
-      }.tr(' ', '+') 
+      }.tr(' ', '+')
     end
     
     # creates and returns a url as a string
@@ -111,7 +113,7 @@ module RSolr::HTTPClient
     # "string_query" is an extra query string that will be appended to the 
     # result of "url" and "params".
     def build_url(url='', params={}, string_query='')
-      queries = [string_query, hash_to_params(params)]
+      queries = [string_query, hash_to_query(params)]
       queries.delete_if{|i| i.to_s.empty?}
       url += "?#{queries.join('&')}" unless queries.empty?
       url
@@ -127,34 +129,19 @@ module RSolr::HTTPClient
     #
     # converts hash into URL query string, keys get an alpha sort
     # if a value is an array, the array values get mapped to the same key:
-    #   hash_to_params(:q=>'blah', :fq=>['blah', 'blah'], :facet=>{:field=>['location_facet', 'format_facet']})
+    #   hash_to_query(:q=>'blah', :fq=>['blah', 'blah'], :facet=>{:field=>['location_facet', 'format_facet']})
     # returns:
     #   ?q=blah&fq=blah&fq=blah&facet.field=location_facet&facet.field=format.facet
     #
     # if a value is empty/nil etc., the key is not added
-    def hash_to_params(params)
-      return unless params.is_a?(Hash)
-      # copy params and convert keys to strings
-      params = params.inject({}){|acc,(k,v)| acc.merge(k.to_s => v) }
-      # get sorted keys
-      params.keys.sort.inject([]) do |acc,k|
-        v = params[k]
-        if v.is_a?(Array)
-          acc << v.reject{|i|i.to_s.empty?}.collect{|vv|build_param(k, vv)}
-        elsif v.is_a?(Hash)
-          # NOT USED
-          # creates dot based params like:
-          # hash_to_params(:facet=>{:field=>['one', 'two']}) == facet.field=one&facet.field=two
-          # TODO: should this go into a non-solr based param builder?
-          #   - dotted syntax is special to solr only
-          #v.each_pair do |field,field_value|
-          #  acc.push(hash_to_params({"#{k}.#{field}"=>field_value}))
-          #end
-        elsif ! v.to_s.empty?
-          acc.push(build_param(k, v))
+    def hash_to_query(params)
+      params.map { |k, v|
+        if v.class == Array
+          hash_to_query(v.map { |x| [k, x] })
+        else
+          build_param k, v
         end
-        acc
-      end.join('&')
+      }.join("&")
     end
     
   end
