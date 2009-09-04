@@ -6,7 +6,7 @@ A Ruby client for Apache Solr. RSolr has been developed to be simple and extenda
   gem sources -a http://gems.github.com
   sudo gem install mwmitchell-rsolr
 
-==Resources and Related Projects
+==Related Resources & Projects
 * {Solr}[http://lucene.apache.org/solr/]
 * {RSolr Google Group}[http://groups.google.com/group/rsolr]
 * {RSolr::Ext}[http://github.com/mwmitchell/rsolr-ext] -- an extension kit for RSolr
