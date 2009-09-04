@@ -8,11 +8,15 @@ Dir['../apache-solr/example/exampledocs/*.xml'].each do |xml_file|
   solr.update File.read(xml_file)
 end
 
+solr.commit
+
 puts
 
-response = solr.select(:q=>'ipod', :fq=>'price:[0 TO 50]', :rows=>2, :start=>0)
+response = solr.select(:q=>'ipod', :fq=>['price:[0 TO 50]'], :rows=>2, :start=>0)
 
 puts "URL : #{response.adapter_response[:url]} -> #{response.adapter_response[:status_code]}"
+
+puts
 
 response['response']['docs'].each do |doc|
   puts doc['timestamp']

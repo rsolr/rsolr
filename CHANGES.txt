@@ -1,16 +1,22 @@
-0.9.5 - September 1, 2009
+0.9.5 - September 4, 2009
   Removed Array #extract_options!
   Removed the Connection #send_request method (now #request)
-  Removed the Connection #select method -- this ends up calling Connection #method_missing
+  Removed the Connection #select method -- still works, but this now ends up calling Connection #method_missing
   Removed HTTPClient::Connector
     - HTTPClient now uses a method called #connect (like RSolr.connect)
-    - This method accepts 1 or 2 args, see methods comments
+    - This method accepts 1 or 2 args, see the #connect method comments
   Changed the way the HTTP client adapter is set. Now just pass in when connecting:
     - RSolr.connect(:http, :adapter=>curb, :url=>'http://solr.com')
   Moved Message::Builders to Message::Adapter
   Made Connection a module and moved class methods to "Base" class
   Made HTTPClient a module and moved class methods to "Base" class
   Removed the "adapter.rb" files -- Adapter modules are defined in the parent module file.
+  Moved Message module/singleton functionality to Message::Builder class
+  XML message adapter API change: no longer a singleton, must instantiate Message::Builder
+  Made RSolr::Connection #message public -- can change the adapter as needed; connection.message.adapter = RSolr::Message::Adapter::LibXML.new
+  More tests for HTTPClient::Util
+  Simplified url/query building in HTTPClient::Util
+  Updated tests accordingly
 
 0.9.1 - July 22, 2009
   Added LibXml builder support (Thanks to Mat Brown - github.com/outoftime)

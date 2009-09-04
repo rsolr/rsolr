@@ -8,7 +8,7 @@ module RSolr::Connection
   class Base
     
     attr_reader :adapter
-  
+    
     # "adapter" is instance of:
     #   RSolr::Adapter::HTTP
     #   RSolr::Adapter::Direct (jRuby only)
@@ -82,14 +82,14 @@ module RSolr::Connection
     def delete_by_query(query)
       update message.delete_by_query(query)
     end
-  
-    protected
-  
-    # shortcut to solr::message
+    
+    # shortcut to RSolr::Message::Builder
     def message
-      RSolr::Message
+      @message ||= RSolr::Message::Builder.new
     end
-  
+    
+    protected
+    
     # sets default params etc.. - could be used as a mapping hook
     # type of request should be passed in here? -> map_params(:query, {})
     def map_params(params)

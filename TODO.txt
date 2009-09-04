@@ -1,3 +1,9 @@
+RSolr::Message.builder -- should be adapter?
+
+Can the message adapter be sent per connection?
+  solr.connect
+  solr.message_adapter = LibXML.new
+
 Message::Field class to Struct?
 
 dynamic proxy methods for adapter users?

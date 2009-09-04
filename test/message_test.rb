@@ -3,12 +3,16 @@ require 'helper'
 
 module MessageTestMethods
   
+  def builder
+    @builder ||= RSolr::Message::Builder.new
+  end
+  
   # call all of the simple methods...
   # make sure the xml string is valid
   # ensure the class is actually Solr::XML
   def test_simple_methods
     [:optimize, :rollback, :commit].each do |meth|
-      result = RSolr::Message.send(meth)
+      result = self.builder.send(meth)
       assert_equal "<#{meth}/>", result.to_s
       assert_equal String, result.class
     end
@@ -17,7 +21,7 @@ module MessageTestMethods
   def test_add_yields_doc_objects_if_block_given
     documents = [{:id=>1, :name=>'sam', :cat=>['cat 1', 'cat 2']}]
     add_attrs = {:boost=>200.00}
-    result = RSolr::Message.add(documents, add_attrs) do |doc|
+    result = self.builder.add(documents, add_attrs) do |doc|
       doc.field_by_name(:name).attrs[:boost] = 10
       assert_equal 4, doc.fields.size
       assert_equal 2, doc.fields_by_name(:cat).size
@@ -38,25 +42,25 @@ module MessageTestMethods
   end
 
   def test_delete_by_id
-    result = RSolr::Message.delete_by_id(10)
+    result = self.builder.delete_by_id(10)
     assert_equal String, result.class
     assert_equal '<delete><id>10</id></delete>', result.to_s
   end
 
   def test_delete_by_multiple_ids
-    result = RSolr::Message.delete_by_id([1, 2, 3])
+    result = self.builder.delete_by_id([1, 2, 3])
     assert_equal String, result.class
     assert_equal '<delete><id>1</id><id>2</id><id>3</id></delete>', result.to_s
   end
 
   def test_delete_by_query
-    result = RSolr::Message.delete_by_query('status:"LOST"')
+    result = self.builder.delete_by_query('status:"LOST"')
     assert_equal String, result.class
     assert_equal '<delete><query>status:"LOST"</query></delete>', result.to_s
   end
 
   def test_delete_by_multiple_queries
-    result = RSolr::Message.delete_by_query(['status:"LOST"', 'quantity:0'])
+    result = self.builder.delete_by_query(['status:"LOST"', 'quantity:0'])
     assert_equal String, result.class
     assert_equal '<delete><query>status:"LOST"</query><query>quantity:0</query></delete>', result.to_s
   end
@@ -67,8 +71,8 @@ module MessageTestMethods
       :id=>1,
       :name=>'matt'
     }
-    assert RSolr::Message.add(data).to_s =~ /<field name="name">matt<\/field>/
-    assert RSolr::Message.add(data).to_s =~ /<field name="id">1<\/field>/
+    assert self.builder.add(data).to_s =~ /<field name="name">matt<\/field>/
+    assert self.builder.add(data).to_s =~ /<field name="id">1<\/field>/
   end
 
   # add an array of hashes
@@ -84,7 +88,7 @@ module MessageTestMethods
       }
     ]
   
-    message = RSolr::Message.add(data)
+    message = self.builder.add(data)
     expected = '<add><doc><field name="id">1</field><field name="name">matt</field></doc><doc><field name="id">2</field><field name="name">sam</field></doc></add>'
   
     assert message.to_s=~/<field name="name">matt<\/field>/
@@ -98,7 +102,7 @@ module MessageTestMethods
       :name => ['matt1', 'matt2']
     }
   
-    result = RSolr::Message.add(data)
+    result = self.builder.add(data)
   
     assert result.to_s =~ /<field name="name">matt1<\/field>/
     assert result.to_s =~ /<field name="name">matt2<\/field>/
@@ -108,7 +112,7 @@ module MessageTestMethods
     document = RSolr::Message::Document.new
     document.add_field('id', 1)
     document.add_field('name', 'matt', :boost => 2.0)
-    result = RSolr::Message.add(document)
+    result = self.builder.add(document)
   
     assert result.to_s =~ /<field name="id">1<\/field>/
   
@@ -127,7 +131,7 @@ module MessageTestMethods
       doc.add_field('name', "matt#{i}")
       doc
     end
-    result = RSolr::Message.add(documents)
+    result = self.builder.add(documents)
 
     assert result.to_s =~ /<field name="name">matt1<\/field>/
     assert result.to_s =~ /<field name="name">matt2<\/field>/
@@ -143,7 +147,7 @@ unless defined?(JRUBY_VERSION)
     include MessageTestMethods
   
     def setup
-      RSolr::Message.builder = RSolr::Message::Adapter::Libxml.new
+      self.builder.adapter = RSolr::Message::Adapter::Libxml.new
     end
   
   end
@@ -157,7 +161,7 @@ class BuilderMessageTest < RSolrBaseTest
   include MessageTestMethods
   
   def setup
-    RSolr::Message.builder = RSolr::Message::Adapter::Builder.new
+    self.builder.adapter = RSolr::Message::Adapter::Builder.new
   end
   
 end

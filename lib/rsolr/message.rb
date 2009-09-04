@@ -77,12 +77,15 @@ module RSolr::Message
     
   end
   
-  class << self
+  class Builder
     
-    attr_writer :builder
-
-    def builder
-      @builder ||= RSolr::Message::Adapter::Builder.new
+    attr_writer :adapter
+    
+    # b = Builder.new
+    # b.adapter = RSolr::Message::Adapter::LibXML.new
+    # b.optimize == '<optimize/>'
+    def adapter
+      @adapter ||= RSolr::Message::Adapter::Builder.new
     end
     
     # generates "add" xml for updating solr
@@ -117,34 +120,34 @@ module RSolr::Message
         yield doc if block_given?
         doc
       end
-      builder.add(documents, add_attrs)
+      adapter.add(documents, add_attrs)
     end
     
     # generates a <commit/> message
     def commit(opts={})
-      builder.commit(opts)
+      adapter.commit(opts)
     end
     
     # generates a <optimize/> message
     def optimize(opts={})
-      builder.optimize(opts)
+      adapter.optimize(opts)
     end
     
     # generates a <rollback/> message
     def rollback
-      builder.rollback
+      adapter.rollback
     end
     
     # generates a <delete><id>ID</id></delete> message
     # "ids" can be a single value or array of values
     def delete_by_id(ids)
-      builder.delete_by_id(ids)
+      adapter.delete_by_id(ids)
     end
     
     # generates a <delete><query>ID</query></delete> message
     # "queries" can be a single value or an array of values
     def delete_by_query(queries)
-      builder.delete_by_query(queries)
+      adapter.delete_by_query(queries)
     end
   end
 end

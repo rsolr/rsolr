@@ -17,7 +17,7 @@ A Ruby client for Apache Solr. RSolr has been developed to be simple and extenda
 == Simple usage:
   require 'rubygems'
   require 'rsolr'
-  solr = RSolr.connect(:url=>'http://solrserver.com')
+  solr = RSolr.connect :url=>'http://solrserver.com'
   
   # send a request to /select
   response = rsolr.select :q=>'*:*'
@@ -28,7 +28,7 @@ A Ruby client for Apache Solr. RSolr has been developed to be simple and extenda
   # alternative to above:
   response = rsolr.catalog :q=>'*:*'
   
-To get a direct connection (no http) in jRuby using DirectSolrConnection:
+To use a DirectSolrConnection (no http) in JRuby:
   
   solr = RSolr.connect(:direct,
     :home_dir=>'/path/to/solr/home',
@@ -102,7 +102,8 @@ Commit & optimize shortcuts
 
 ===XML Builders for RSolr
 As of version 0.9.1, RSolr can use LibXml to create the update messages sent to solr. To switch from Builder to LibXml, set the RSolr::Message.builder like:
-  RSolr::Message.builder = RSolr::Message::Builders::Libxml.new
+  solr = RSolr.connect
+  solr.message.adapter = RSolr::Message::Adapter::Libxml.new
 
 
 == Response Formats
