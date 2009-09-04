@@ -6,16 +6,12 @@ A Ruby client for Apache Solr. RSolr has been developed to be simple and extenda
   gem sources -a http://gems.github.com
   sudo gem install mwmitchell-rsolr
 
-== Community
-  http://groups.google.com/group/rsolr
-
-== Related Projects
-  http://github.com/mwmitchell/rsolr-ext
-  http://wiki.apache.org/solr/solr-ruby
-
-==Projects using RSolr
-  http://github.com/outoftime/sunspot
-  http://blacklightopac.org
+==Resources
+* {Community} [http://groups.google.com/group/rsolr]
+* {RSolr::Ext} [http://github.com/mwmitchell/rsolr-ext]
+* {solr-ruby} [http://wiki.apache.org/solr/solr-ruby]
+* {Sunspot} [http://github.com/outoftime/sunspot]
+* {Blacklight} [http://blacklightopac.org]  
 
 == Simple usage:
   require 'rubygems'
@@ -38,8 +34,7 @@ To get a direct connection (no http) in jRuby using DirectSolrConnection:
     :dist_dir=>'/path/to/solr/distribution'
   )
 
-For more information about DirecSolrConnection, see:
-  http://lucene.apache.org/solr/api/org/apache/solr/servlet/DirectSolrConnection.html
+For more information about DirecSolrConnection, see the {API} [http://lucene.apache.org/solr/api/org/apache/solr/servlet/DirectSolrConnection.html].
 
 
 == Querying
