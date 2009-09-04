@@ -6,12 +6,13 @@ A Ruby client for Apache Solr. RSolr has been developed to be simple and extenda
   gem sources -a http://gems.github.com
   sudo gem install mwmitchell-rsolr
 
-==Resources
-* {Community}[http://groups.google.com/group/rsolr]
-* {RSolr::Ext}[http://github.com/mwmitchell/rsolr-ext]
-* {solr-ruby}[http://wiki.apache.org/solr/solr-ruby]
-* {Sunspot}[http://github.com/outoftime/sunspot]
-* {Blacklight}[http://blacklightopac.org]
+==Resources and Related Projects
+* {Solr}[http://lucene.apache.org/solr/]
+* {RSolr Google Group}[http://groups.google.com/group/rsolr]
+* {RSolr::Ext}[http://github.com/mwmitchell/rsolr-ext] -- an extension kit for RSolr
+* {Sunspot}[http://github.com/outoftime/sunspot] -- an awesome Solr DSL, built with RSolr
+* {Blacklight}[http://blacklightopac.org] -- a next generation Library OPAC, built with RSolr
+* {solr-ruby}[http://wiki.apache.org/solr/solr-ruby] -- the original Solr Ruby Gem
 
 == Simple usage:
   require 'rubygems'
