@@ -11,7 +11,7 @@ A Ruby client for Apache Solr. RSolr has been developed to be simple and extenda
 * {RSolr::Ext} [http://github.com/mwmitchell/rsolr-ext]
 * {solr-ruby} [http://wiki.apache.org/solr/solr-ruby]
 * {Sunspot} [http://github.com/outoftime/sunspot]
-* {Blacklight} [http://blacklightopac.org]  
+* {Blacklight} [http://blacklightopac.org]
 
 == Simple usage:
   require 'rubygems'
