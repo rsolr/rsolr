@@ -23,7 +23,9 @@ class RSolr::Connection::Adapter::Direct
   #   :select_path => 'the/select/handler'
   #   :update_path => 'the/update/handler'
   def initialize(opts, &block)
-    if defined?(Java::OrgApacheSolrServlet::DirectSolrConnection) and opts.is_a?(Java::OrgApacheSolrServlet::DirectSolrConnection)
+    if defined?(Java::OrgApacheSolrCore::SolrCore) and opts.is_a?(Java::OrgApacheSolrCore::SolrCore)
+      @connection = org.apache.solr.servlet.DirectSolrConnection.new(opts)
+    elsif defined?(Java::OrgApacheSolrServlet::DirectSolrConnection) and opts.is_a?(Java::OrgApacheSolrServlet::DirectSolrConnection)
       @connection = opts
     else
       opts[:data_dir] ||= File.join(opts[:home_dir].to_s, 'data')

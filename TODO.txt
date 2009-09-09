@@ -1,3 +1,5 @@
+Tests for binary data - known issue with Builder encoding; too much encoding?
+
 RSolr::Message.builder -- should be adapter?
 
 Can the message adapter be sent per connection?
