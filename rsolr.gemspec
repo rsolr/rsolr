@@ -1,5 +1,4 @@
 Gem::Specification.new do |s|
-  
   s.name = "rsolr"
   s.version = "0.9.6"
   s.date = "2009-09-12"
