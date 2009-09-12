@@ -3,6 +3,8 @@
 #
 class RSolr::Connection::Adapter::HTTP
   
+  include RSolr::HTTPClient::Util
+  
   attr_reader :opts
   
   # opts can have:
@@ -18,22 +20,23 @@ class RSolr::Connection::Adapter::HTTP
   
   # send a request to the connection
   # request '/update', :wt=>:xml, '</commit>'
-  def request(path, params={}, data=nil)
-    data = data.to_xml if data.respond_to?(:to_xml)
-    if data
-      http_context = connection.post(path, data, params, post_headers)
+  def request(path, params={}, *extra)
+    opts = extra[-1].kind_of?(Hash) ? extra.pop : {}
+    data = extra[0]
+    # force a POST, use the query string as the POST body
+    if opts[:method] == :post and data.to_s.empty?
+      http_context = connection.post(path, hash_to_query(params), {}, {'Content-Type' => 'application/x-www-form-urlencoded'})
     else
-      http_context = connection.get(path, params)
+      if data
+        # standard POST, using "data" as the POST body
+        http_context = connection.post(path, data, params, {"Content-Type" => 'text/xml; charset=utf-8'})
+      else
+        # standard GET
+        http_context = connection.get(path, params)
+      end
     end
     raise RSolr::RequestError.new(http_context[:body]) unless http_context[:status_code] == 200
     http_context
-  end
-  
-  protected
-  
-  # The standard POST headers
-  def post_headers
-    {"Content-Type" => 'text/xml; charset=utf-8'}
   end
   
 end

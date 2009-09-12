@@ -18,17 +18,16 @@ module RSolr::Connection
     end
   
     # Send a request to a request handler using the method name.
-    # This does not handle data/POSTs, only GET requests.
-    def method_missing(method_name, params, &blk)
-      request("/#{method_name}", map_params(params))
+    def method_missing(method_name, *args, &blk)
+      request("/#{method_name}", *args, &blk)
     end
-  
+    
     # sends data to the update handler
     # data can be a string of xml, or an object that returns xml from its #to_xml method
     def update(data, params={})
-      request('/update', map_params(params), data)
+      request '/update', params, data
     end
-  
+    
     # send request solr
     # params is hash with valid solr request params (:q, :fl, :qf etc..)
     #   if params[:wt] is not set, the default is :ruby
@@ -37,11 +36,11 @@ module RSolr::Connection
     #   NOTE: to get raw ruby, use :wt=>'ruby' <- a string, not a symbol like :ruby  
     #
     #
-    def request(path, params={}, data=nil)
-      response = @adapter.request(path, map_params(params), data)
+    def request(path, params={}, *extra)
+      response = @adapter.request(path, map_params(params), *extra)
       adapt_response(response)
     end
-  
+    
     # 
     # single record:
     # solr.update(:id=>1, :name=>'one')

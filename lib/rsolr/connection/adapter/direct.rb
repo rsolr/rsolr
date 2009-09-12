@@ -56,7 +56,7 @@ class RSolr::Connection::Adapter::Direct
   # send a request to the connection
   # request '/select', :q=>'something'
   # request '/update', :wt=>:xml, '</commit>'
-  def request(path, params={}, data=nil)
+  def request(path, params={}, data=nil, opts={})
     data = data.to_xml if data.respond_to?(:to_xml)
     url = build_url(path, params)
     begin
