@@ -1,5 +1,7 @@
 0.9.6 - September 9, 2009
   Added ability to create direct connections from existing Java::OrgApacheSolrCore::SolrCore
+  Added ability to send queries using POST
+  - solr.request '/select', :q=>'*:*', :method=>:post
 
 0.9.5 - September 4, 2009
   Removed Array #extract_options!
