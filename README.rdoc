@@ -3,8 +3,8 @@
 A Ruby client for Apache Solr. RSolr has been developed to be simple and extendable. It features transparent JRuby DirectSolrConnection support and a simple Hash-in, Hash-out architecture.
 
 == Installation:
-  gem sources -a http://gems.github.com
-  sudo gem install mwmitchell-rsolr
+  gem sources -a http://gemcutter.org
+  sudo gem install rsolr
 
 ==Related Resources & Projects
 * {Solr}[http://lucene.apache.org/solr/]
