@@ -1,8 +1,5 @@
 require File.join(File.dirname(__FILE__), '..', 'lib', 'rsolr')
 
-# switch out the http adapter from net_http to curb
-solr = RSolr.connect :adapter=>:curb
-
 Dir['../apache-solr/example/exampledocs/*.xml'].each do |xml_file|
   puts "Updating with #{xml_file}"
   solr.update File.read(xml_file)
