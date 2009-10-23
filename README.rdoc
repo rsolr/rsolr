@@ -113,30 +113,10 @@ The default response format is Ruby. When the :wt param is set to :ruby, the res
 ===JSON:
   solr.select(:wt=>:json)
 
-You can access the original request context (path, params, url etc.) by calling the #adapter_response method:
+You can access the original request context (path, params, url etc.) by calling the #raw method:
   response = solr.select :q=>'*:*'
-  response.adapter_response[:status_code]
-  response.adapter_response[:body]
-  response.adapter_response[:url]
+  response.raw[:status_code]
+  response.raw[:body]
+  response.raw[:url]
 
-The adapter_response is a hash that contains the generated params, url, path, post data, headers etc., very useful for debugging and testing.
-
-
-== HTTP Client Adapter
-You can specify the http client adapter:
-  :net_http     uses the standard Net::HTTP library
-  :curb         uses the C based "curl" library
-
-NOTE: The Net::Http is the default adapter.
-
-Example:
-  
-  RSolr.connect(:adapter => :curb)
-  RSolr.connect(:adapter => :net_http)
-
-Intereseting read about Ruby's Net::HTTP library:
-http://apocryph.org/2008/11/09/more_indepth_analysis_ruby_http_client_performance
-
-NOTE: You can't use the :curb adapter under jRuby. To install curb:
-  
-  sudo gem install curb
+The raw is a hash that contains the generated params, url, path, post data, headers etc., very useful for debugging and testing.
