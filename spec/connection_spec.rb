@@ -11,7 +11,7 @@ describe RSolr::Connection::Base do
   end
   
   before(:each) do
-    @adapter = mock('RSolr::Connection::Adapter::HTTP')
+    @adapter = mock('RSolr::Connection::HTTP')
     @connection = RSolr::Connection::Base.new(@adapter)
   end
   
