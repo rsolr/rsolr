@@ -3,7 +3,7 @@ require 'helper'
 class HTTPUtilTest < RSolrBaseTest
   
   class DummyClass
-    include RSolr::HTTPClient::Util
+    include RSolr::Connection::Utils
   end
   
   def setup

@@ -12,7 +12,6 @@ module RSolr
   
   autoload :Message, 'rsolr/message'
   autoload :Connection, 'rsolr/connection'
-  autoload :HTTPClient, 'rsolr/http_client'
   
   # Factory for creating connections.
   # 2 modes of argument operations:
@@ -37,7 +36,7 @@ module RSolr
       else
         raise "Invalid connection type: #{type} - use :http, :direct or leave nil for :http/default"
       end
-    adapter_class = RSolr::Connection::Adapter.const_get(type_class)
+    adapter_class = RSolr::Connection.const_get(type_class)
     adapter = adapter_class.new(*opts)
     RSolr::Connection::Base.new(adapter)
   end

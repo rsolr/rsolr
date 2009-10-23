@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name = "rsolr"
-  s.version = "0.9.6"
-  s.date = "2009-09-12"
+  s.version = "0.9.7"
+  s.date = "2009-10-23"
   s.summary = "A Ruby client for Apache Solr"
   s.email = "goodieboy@gmail.com"
   s.homepage = "http://github.com/mwmitchell/rsolr"
@@ -13,14 +13,9 @@ Gem::Specification.new do |s|
     "examples/http.rb",
     "examples/direct.rb",
     "lib/rsolr.rb",
-    "lib/rsolr/connection/adapter/direct.rb",
-    "lib/rsolr/connection/adapter/http.rb",
+    "lib/rsolr/connection/direct.rb",
+    "lib/rsolr/connection/http.rb",
     "lib/rsolr/connection.rb",
-    "lib/rsolr/http_client/adapter/curb.rb",
-    "lib/rsolr/http_client/adapter/net_http.rb",
-    "lib/rsolr/http_client.rb",
-    "lib/rsolr/message/adapter/builder.rb",
-    "lib/rsolr/message/adapter/libxml.rb",
     "lib/rsolr/message.rb",
     "LICENSE",
     "Rakefile",
@@ -32,15 +27,11 @@ Gem::Specification.new do |s|
     "test/connection/direct_test.rb",
     "test/connection/http_test.rb",
     "test/connection/test_methods.rb",
+    "test/connection/utils_test.rb",
     "test/helper.rb",
-    "test/http_client/curb_test.rb",
-    "test/http_client/net_http_test.rb",
-    "test/http_client/test_methods.rb",
-    "test/http_client/util_test.rb",
     "test/message_test.rb",
     "test/rsolr_test.rb"
   ]
   #s.rdoc_options = ["--main", "README.rdoc"]
   s.extra_rdoc_files = %w(LICENSE Rakefile README.rdoc CHANGES.txt)
-  s.add_dependency("builder", [">= 2.1.2"])
 end

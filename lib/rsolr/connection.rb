@@ -1,9 +1,7 @@
 module RSolr::Connection
   
-  module Adapter
-    autoload :Direct, 'rsolr/connection/adapter/direct'
-    autoload :HTTP, 'rsolr/connection/adapter/http'
-  end
+  autoload :Direct, 'rsolr/connection/direct'
+  autoload :HTTP, 'rsolr/connection/http'
   
   class Base
     
@@ -112,11 +110,60 @@ module RSolr::Connection
         data = Kernel.eval(data)
       end
       # attach a method called #adapter_response that returns the original adapter response value
-      def data.adapter_response
-        @adapter_response
-      end
-      data.send(:instance_variable_set, '@adapter_response', adapter_response)
+      def data.raw; @raw end
+      data.send(:instance_variable_set, '@raw', adapter_response)
       data
+    end
+    
+  end
+  
+  # Helpful utility methods for building queries to a Solr server
+  module Utils
+    
+    # Performs URI escaping so that you can construct proper
+    # query strings faster.  Use this rather than the cgi.rb
+    # version since it's faster.  (Stolen from Rack).
+    def escape(s)
+      s.to_s.gsub(/([^ a-zA-Z0-9_.-]+)/n) {
+        '%'+$1.unpack('H2'*$1.size).join('%').upcase
+      }.tr(' ', '+')
+    end
+    
+    # creates and returns a url as a string
+    # "url" is the base url
+    # "params" is an optional hash of GET style query params
+    # "string_query" is an extra query string that will be appended to the 
+    # result of "url" and "params".
+    def build_url(url='', params={}, string_query='')
+      queries = [string_query, hash_to_query(params)]
+      queries.delete_if{|i| i.to_s.empty?}
+      url += "?#{queries.join('&')}" unless queries.empty?
+      url
+    end
+    
+    # converts a key value pair to an escaped string:
+    # Example:
+    # build_param(:id, 1) == "id=1"
+    def build_param(k,v)
+      "#{escape(k)}=#{escape(v)}"
+    end
+    
+    #
+    # converts hash into URL query string, keys get an alpha sort
+    # if a value is an array, the array values get mapped to the same key:
+    #   hash_to_query(:q=>'blah', :fq=>['blah', 'blah'], :facet=>{:field=>['location_facet', 'format_facet']})
+    # returns:
+    #   ?q=blah&fq=blah&fq=blah&facet.field=location_facet&facet.field=format.facet
+    #
+    # if a value is empty/nil etc., the key is not added
+    def hash_to_query(params)
+      params.map { |k, v|
+        if v.class == Array
+          hash_to_query(v.map { |x| [k, x] })
+        else
+          build_param k, v
+        end
+      }.join("&")
     end
     
   end

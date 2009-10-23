@@ -5,9 +5,9 @@ require 'java'
 #
 # Connection for JRuby + DirectSolrConnection
 #
-class RSolr::Connection::Adapter::Direct
+class RSolr::Connection::Direct
   
-  include RSolr::HTTPClient::Util
+  include RSolr::Connection::Utils
   
   attr_accessor :opts
   

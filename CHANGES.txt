@@ -1,3 +1,14 @@
+0.9.7 - October 23, 2009
+  Removed XML message builders - using pure Ruby generator instead
+    - benchmarks show generation speed is a little faster than libxml
+    - minimal xml escaping so binary posting to Solr should no longer be a problem.
+  Changed response.adapter_resonse to response.raw
+  Removed HTTP adapters - sticking with NetHTTP
+  Removed builder dependency in gemspec
+  Removed Adapter and HTTPClient modules
+  Moved HTTPCLient::Util to Connection::Utils
+  Updated all tests
+
 0.9.6 - September 9, 2009
   Added ability to create direct connections from existing Java::OrgApacheSolrCore::SolrCore
   Added ability to send queries using POST
