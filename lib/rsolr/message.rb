@@ -2,11 +2,6 @@
 
 module RSolr::Message
   
-  module Adapter
-    autoload :Builder, 'rsolr/message/adapter/builder'
-    autoload :Libxml, 'rsolr/message/adapter/libxml'
-  end
-  
   # A class that represents a "doc" xml element for a solr update
   class Document
     
@@ -25,7 +20,7 @@ module RSolr::Message
         values = [values] unless values.is_a?(Array)
         values.each do |v|
           next if v.to_s.empty?
-          @fields << Field.new({:name=>field}, v)
+          @fields << Field.new({:name=>field}, v.to_s)
         end
       end
       @attrs={}
@@ -79,15 +74,6 @@ module RSolr::Message
   
   class Builder
     
-    attr_writer :adapter
-    
-    # b = Builder.new
-    # b.adapter = RSolr::Message::Adapter::LibXML.new
-    # b.optimize == '<optimize/>'
-    def adapter
-      @adapter ||= RSolr::Message::Adapter::Builder.new
-    end
-    
     # generates "add" xml for updating solr
     # "data" can be a hash or an array of hashes.
     # - each hash should be a simple key=>value pair representing a solr doc.
@@ -115,39 +101,52 @@ module RSolr::Message
     #
     def add(data, add_attrs={})
       data = [data] unless data.is_a?(Array)
-      documents = data.map do |doc|
+      add = Xout.new :add, add_attrs
+      data.each do |doc|
         doc = Document.new(doc) if doc.respond_to?(:each_pair)
         yield doc if block_given?
-        doc
+        add.child :doc, doc.attrs do |doc_node|
+          doc.fields.each do |field_obj|
+            doc_node.child :field, field_obj.value, field_obj.attrs
+          end
+        end
       end
-      adapter.add(documents, add_attrs)
+      add.to_xml
     end
     
     # generates a <commit/> message
     def commit(opts={})
-      adapter.commit(opts)
+      Xout.new(:commit, opts).to_xml
     end
     
     # generates a <optimize/> message
     def optimize(opts={})
-      adapter.optimize(opts)
+      Xout.new(:optimize, opts).to_xml
     end
     
     # generates a <rollback/> message
     def rollback
-      adapter.rollback
+      Xout.new(:rollback).to_xml
     end
     
     # generates a <delete><id>ID</id></delete> message
     # "ids" can be a single value or array of values
     def delete_by_id(ids)
-      adapter.delete_by_id(ids)
+      ids = [ids] unless ids.is_a?(Array)
+      Xout.new(:delete) do |xml|
+        ids.each { |id| xml.child :id, id }
+      end.to_xml
     end
     
     # generates a <delete><query>ID</query></delete> message
     # "queries" can be a single value or an array of values
     def delete_by_query(queries)
-      adapter.delete_by_query(queries)
+      queries = [queries] unless queries.is_a?(Array)
+      Xout.new(:delete) do |xml|
+        queries.each { |query| xml.child :query, query }
+      end.to_xml
     end
+    
   end
+  
 end

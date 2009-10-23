@@ -1,7 +1,7 @@
 
 require 'helper'
 
-module MessageTestMethods
+class BuilderMessageTest < RSolrBaseTest
   
   def builder
     @builder ||= RSolr::Message::Builder.new
@@ -90,7 +90,7 @@ module MessageTestMethods
   
     message = self.builder.add(data)
     expected = '<add><doc><field name="id">1</field><field name="name">matt</field></doc><doc><field name="id">2</field><field name="name">sam</field></doc></add>'
-  
+    
     assert message.to_s=~/<field name="name">matt<\/field>/
     assert message.to_s=~/<field name="name">sam<\/field>/
   end
@@ -135,33 +135,6 @@ module MessageTestMethods
 
     assert result.to_s =~ /<field name="name">matt1<\/field>/
     assert result.to_s =~ /<field name="name">matt2<\/field>/
-  end
-  
-end
-
-#####
-
-unless defined?(JRUBY_VERSION)
-  class LibxmlMessageTest < RSolrBaseTest
-  
-    include MessageTestMethods
-  
-    def setup
-      self.builder.adapter = RSolr::Message::Adapter::Libxml.new
-    end
-  
-  end
-end
-
-
-#####
-
-class BuilderMessageTest < RSolrBaseTest
-  
-  include MessageTestMethods
-  
-  def setup
-    self.builder.adapter = RSolr::Message::Adapter::Builder.new
   end
   
 end

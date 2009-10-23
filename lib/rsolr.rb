@@ -4,6 +4,8 @@ require 'rubygems'
 
 $: << File.dirname(__FILE__) unless $:.include?(File.dirname(__FILE__))
 
+require 'xout'
+
 module RSolr
   
   VERSION = '0.9.5'
