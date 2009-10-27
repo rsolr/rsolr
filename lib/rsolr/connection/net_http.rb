@@ -14,7 +14,7 @@ class RSolr::Connection::NetHttp
   def initialize opts={}
     opts[:url] ||= 'http://127.0.0.1:8983/solr'
     @opts = opts
-    @uri = URI.parse(opts[:url])
+    @uri = URI.parse opts[:url]
   end
   
   # send a request to the connection

@@ -61,4 +61,9 @@ describe RSolr::Connection::Utils do
     
   end
   
+  context 'build_url method' do
+    url = utils.build_url '/solr/select', {:q=>'test'}, 'blah=blah'
+    url.should == '/solr/select?blah=blah&q=test'
+  end
+  
 end
