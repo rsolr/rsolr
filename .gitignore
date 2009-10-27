@@ -1,5 +1,6 @@
-apache-solr/*
-.DS_Store
+*.DS_Store
+
 pkg/*
-experiments/*
-examples/rss-app
+
+solr/example/work/*
+solr/example/logs/*
