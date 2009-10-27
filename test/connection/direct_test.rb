@@ -12,7 +12,7 @@ if defined?(JRUBY_VERSION)
     
     def setup
       base = File.expand_path( File.dirname(__FILE__) )
-      @dist = File.join(base, '..', '..', 'apache-solr')
+      @dist = File.join(base, '..', '..', 'solr')
       @home = File.join(dist, 'example', 'solr')
       @solr = RSolr.connect(:direct, :home_dir=>@home, :dist_dir=>@dist)
       @solr.delete_by_query('*:*')

@@ -1,0 +1,12 @@
+127.0.0.1 -  -  [25/08/2009:02:51:06 +0000] "GET /solr/select?fq=format_facet%3A%22Book%22&q=b%2A&sort=title_sort+desc&wt=ruby HTTP/1.1" 400 1422 
+127.0.0.1 -  -  [25/08/2009:02:51:06 +0000] "GET /solr/select?q=id%3A%221%22&rows=1&wt=ruby HTTP/1.1" 200 223 
+127.0.0.1 -  -  [25/08/2009:02:51:07 +0000] "GET /solr/select?q=%2A%3A%2A&wt=ruby HTTP/1.1" 200 208 
+127.0.0.1 -  -  [25/08/2009:02:51:13 +0000] "GET /solr/select?fq=format_facet%3A%22Book%22&q=b%2A&sort=title_sort+desc&wt=ruby HTTP/1.1" 400 1422 
+127.0.0.1 -  -  [25/08/2009:02:51:13 +0000] "GET /solr/select?q=id%3A%221%22&rows=1&wt=ruby HTTP/1.1" 200 223 
+127.0.0.1 -  -  [25/08/2009:02:51:13 +0000] "GET /solr/select?q=%2A%3A%2A&wt=ruby HTTP/1.1" 200 208 
+127.0.0.1 -  -  [25/08/2009:02:55:26 +0000] "GET /solr/select?fq=format_facet%3A%22Book%22&q=b%2A&wt=ruby HTTP/1.1" 400 1407 
+127.0.0.1 -  -  [25/08/2009:02:55:26 +0000] "GET /solr/select?q=id%3A%221%22&rows=1&wt=ruby HTTP/1.1" 200 223 
+127.0.0.1 -  -  [25/08/2009:02:55:26 +0000] "GET /solr/select?q=%2A%3A%2A&wt=ruby HTTP/1.1" 200 208 
+127.0.0.1 -  -  [25/08/2009:02:55:27 +0000] "GET /solr/select?fq=format_facet%3A%22Book%22&q=b%2A&wt=ruby HTTP/1.1" 400 1407 
+127.0.0.1 -  -  [25/08/2009:02:55:27 +0000] "GET /solr/select?q=id%3A%221%22&rows=1&wt=ruby HTTP/1.1" 200 223 
+127.0.0.1 -  -  [25/08/2009:02:55:27 +0000] "GET /solr/select?q=%2A%3A%2A&wt=ruby HTTP/1.1" 200 208 
