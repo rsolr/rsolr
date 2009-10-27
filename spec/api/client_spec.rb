@@ -11,4 +11,13 @@ describe RSolr do
     
   end
   
+  context 'update' do
+    it 'should forward /update to #request' do
+      client = RSolr::Client.new nil
+      client.should_receive(:request).
+        with('/update', {}, '</commit>')
+      client.update '<commit/>'
+    end
+  end
+  
 end
