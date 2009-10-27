@@ -11,6 +11,7 @@ module RSolr
   VERSION = '0.9.7'
   
   autoload :Message, 'rsolr/message'
+  autoload :Client, 'rsolr/client'
   autoload :Connection, 'rsolr/connection'
   
   # Factory for creating connections.
@@ -29,8 +30,8 @@ module RSolr
     type = args.first.is_a?(Symbol) ? args.shift : :http
     opts = args
     type_class = case type
-      when :http,nil
-        'HTTP'
+      when :net_http,:http,nil
+        'NetHttp'
       when :direct
         'Direct'
       else
@@ -38,7 +39,7 @@ module RSolr
       end
     adapter_class = RSolr::Connection.const_get(type_class)
     adapter = adapter_class.new(*opts)
-    RSolr::Connection::Base.new(adapter)
+    RSolr::Client.new(adapter)
   end
   
   # A module that contains string related methods
@@ -56,7 +57,7 @@ module RSolr
   # send the escape method into the Connection class ->
   # solr = RSolr.connect
   # solr.escape('asdf')
-  RSolr::Connection::Base.send(:include, Char)
+  RSolr::Client.send(:include, Char)
   
   # bring escape into this module (RSolr) -> RSolr.escape('asdf')
   extend Char

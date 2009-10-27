@@ -3,7 +3,7 @@ require 'net/http'
 #
 # Connection for standard HTTP Solr server
 #
-class RSolr::Connection::HTTP
+class RSolr::Connection::NetHttp
   
   include RSolr::Connection::Utils
   
