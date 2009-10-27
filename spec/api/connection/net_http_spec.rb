@@ -28,4 +28,13 @@ describe RSolr::Connection::NetHttp do
     
   end
   
+  context 'connection' do
+    
+    it 'will receive 2 args when created' do
+      http = RSolr::Connection::NetHttp.new
+      c = http.send :connection
+    end
+    
+  end
+  
 end
