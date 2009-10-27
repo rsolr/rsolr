@@ -33,6 +33,7 @@ describe RSolr::Connection::NetHttp do
     it 'will receive 2 args when created' do
       http = RSolr::Connection::NetHttp.new
       c = http.send :connection
+      c.should be_a(Net::HTTP)
     end
     
   end
