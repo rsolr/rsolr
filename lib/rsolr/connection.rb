@@ -44,12 +44,13 @@ module RSolr::Connection
     # if a value is empty/nil etc., it is not added
     def hash_to_query(params)
       params.map { |k, v|
+        next if v.to_s.empty?
         if v.class == Array
-          hash_to_query(v.compact.uniq.map { |x| [k, x] })
+          hash_to_query(v.map { |x| [k, x] })
         else
           build_param k, v
         end
-      }.join("&")
+      }.compact.join("&")
     end
 
   end
