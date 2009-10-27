@@ -1,0 +1,3 @@
+describe RSolr do
+  
+end
