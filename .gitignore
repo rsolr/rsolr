@@ -4,3 +4,4 @@ pkg/*
 
 solr/example/work/*
 solr/example/logs/*
+solr/example/solr/data/*
