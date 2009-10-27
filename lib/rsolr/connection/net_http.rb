@@ -11,14 +11,10 @@ class RSolr::Connection::NetHttp
   
   # opts can have:
   #   :url => 'http://localhost:8080/solr'
-  def initialize opts={}, &block
+  def initialize opts={}
     opts[:url] ||= 'http://127.0.0.1:8983/solr'
     @opts = opts
     @uri = URI.parse(opts[:url])
-  end
-  
-  def connection
-    @connection ||= Net::HTTP.new(@uri.host, @uri.port)
   end
   
   # send a request to the connection
@@ -43,6 +39,10 @@ class RSolr::Connection::NetHttp
   end
   
   protected
+  
+  def connection
+    @connection ||= Net::HTTP.new(@uri.host, @uri.port)
+  end
   
   def get path, params={}
     url = build_url path, params
