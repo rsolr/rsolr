@@ -101,6 +101,8 @@ describe RSolr::Connection::NetHttp do
     it 'should incude the base path to solr' do
       http = new_net_http
       result = http.send(:build_url, '/select', :q=>'*:*', :check=>'{!}')
+      # this is a non-ordered hash work around,
+      #   -- the order of the parameters in the resulting url will be different depending on the ruby distribution/platform
       begin
         result.should == '/solr/select?check=%7B%21%7D&q=%2A%3A%2A'
       rescue
