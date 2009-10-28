@@ -90,7 +90,11 @@ describe RSolr::Message do
     document.add_field('name', 'matt', :boost => 2.0)
     result = builder.add(document)
     result.should match(/<field name="id">1<\/field>/)
-    result.should == '<add><doc><field name="id">1</field><field boost="2.0" name="name">matt</field></doc></add>'
+    begin
+      result.should == '<add><doc><field name="id">1</field><field boost="2.0" name="name">matt</field></doc></add>'
+    rescue
+      result.should == '<add><doc><field name="id">1</field><field name="name" boost="2.0">matt</field></doc></add>'
+    end
   end
   
   it 'should create adds from multiple Message::Documents' do
