@@ -101,7 +101,11 @@ describe RSolr::Connection::NetHttp do
     it 'should incude the base path to solr' do
       http = new_net_http
       result = http.send(:build_url, '/select', :q=>'*:*', :check=>'{!}')
-      result.should == '/solr/select?check=%7B%21%7D&q=%2A%3A%2A'
+      begin
+        result.should == '/solr/select?check=%7B%21%7D&q=%2A%3A%2A'
+      rescue
+        result.should == '/solr/select?q=%2A%3A%2A&check=%7B%21%7D'
+      end
     end
     
   end
