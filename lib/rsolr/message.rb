@@ -133,18 +133,20 @@ module RSolr::Message
     # "ids" can be a single value or array of values
     def delete_by_id(ids)
       ids = [ids] unless ids.is_a?(Array)
-      Xout.new(:delete) do |xml|
+      delete_node = Xout.new(:delete) do |xml|
         ids.each { |id| xml.child :id, id }
-      end.to_xml
+      end
+      delete_node.to_xml
     end
     
     # generates a <delete><query>ID</query></delete> message
     # "queries" can be a single value or an array of values
     def delete_by_query(queries)
       queries = [queries] unless queries.is_a?(Array)
-      Xout.new(:delete) do |xml|
+      delete_node = Xout.new(:delete) do |xml|
         queries.each { |query| xml.child :query, query }
-      end.to_xml
+      end
+      delete_node.to_xml
     end
     
   end
