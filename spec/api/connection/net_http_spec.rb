@@ -51,12 +51,12 @@ describe RSolr::Connection::NetHttp do
       net_http_response.should_receive(:body).
         and_return('The Response')
       http = new_net_http
-      http.should_receive(:build_url).
-        with('/select', :q=>1).
-          and_return('/select?q=1')
+      #http.should_receive(:build_url).
+      #  with('/select', :q=>1).
+      #    and_return('/select?q=1')
       c = http.send(:connection)
       c.should_receive(:get).
-        with('/select?q=1').
+        with('/solr/select?q=1').
           and_return(net_http_response)
       context = http.send(:get, '/select', :q=>1)
       context.should be_a(Hash)
@@ -64,7 +64,7 @@ describe RSolr::Connection::NetHttp do
       context[:body].should == 'The Response'
       context[:status_code].should == 200
       context[:path].should == '/select'
-      context[:url].should == 'http://127.0.0.1:8983/select?q=1'
+      context[:url].should == 'http://127.0.0.1:8983/solr/select?q=1'
       context[:headers].should == {}
       context[:params].should == {:q=>1}
     end
@@ -76,12 +76,12 @@ describe RSolr::Connection::NetHttp do
       net_http_response.should_receive(:body).
         and_return('The Response')
       http = new_net_http
-      http.should_receive(:build_url).
-        with('/update', {}).
-          and_return('/update')
+      #http.should_receive(:build_url).
+      #  with('/update', {}).
+      #    and_return('/update')
       c = http.send(:connection)
       c.should_receive(:post).
-        with('/update', '<rollback/>', {}).
+        with('/solr/update', '<rollback/>', {}).
           and_return(net_http_response)
       context = http.send(:post, '/update', '<rollback/>')
       context.should be_a(Hash)
@@ -89,9 +89,19 @@ describe RSolr::Connection::NetHttp do
       context[:body].should == 'The Response'
       context[:status_code].should == 200
       context[:path].should == '/update'
-      context[:url].should == 'http://127.0.0.1:8983/update'
+      context[:url].should == 'http://127.0.0.1:8983/solr/update'
       context[:headers].should == {}
       context[:params].should == {}
+    end
+    
+  end
+  
+  context 'build_url' do
+    
+    it 'should incude the base path to solr' do
+      http = new_net_http
+      result = http.send(:build_url, '/select', :q=>'*:*', :check=>'{!}')
+      result.should == '/solr/select?check=%7B%21%7D&q=%2A%3A%2A'
     end
     
   end

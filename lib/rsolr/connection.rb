@@ -20,7 +20,7 @@ module RSolr::Connection
     # "params" is an optional hash of GET style query params
     # "string_query" is an extra query string that will be appended to the 
     # result of "url" and "params".
-    def build_url(url='', params={}, string_query='')
+    def build_url url='', params={}, string_query=''
       queries = [string_query, hash_to_query(params)]
       queries.delete_if{|i| i.to_s.empty?}
       url += "?#{queries.join('&')}" unless queries.empty?

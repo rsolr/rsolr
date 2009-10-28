@@ -45,13 +45,13 @@ class RSolr::Connection::NetHttp
   end
   
   def get path, params={}
-    url = build_url path, params
+    url = self.build_url path, params
     net_http_response = self.connection.get url
     create_http_context net_http_response, url, path, params
   end
   
   def post path, data, params={}, headers={}
-    url = build_url path, params
+    url = self.build_url path, params
     net_http_response = self.connection.post url, data, headers
     create_http_context net_http_response, url, path, params, data, headers
   end
@@ -72,7 +72,8 @@ class RSolr::Connection::NetHttp
   end
   
   def build_url path, params={}
-    super @uri.path + path, params, @uri.query
+    full_path = @uri.path + path
+    super full_path, params, @uri.query
   end
   
 end
