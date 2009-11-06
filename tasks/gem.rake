@@ -18,6 +18,7 @@ namespace :gem do
       "examples/direct.rb",
       "examples/http.rb",
       
+      "lib/rsolr/client.rb",
       "lib/rsolr/connection/direct.rb",
       "lib/rsolr/connection/net_http.rb",
       "lib/rsolr/connection.rb",

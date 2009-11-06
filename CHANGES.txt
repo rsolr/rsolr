@@ -1,3 +1,6 @@
+0.9.7.2 - November 6, 2009
+  fixed gem spec, added client.rb
+
 0.9.7.1 - November 5, 2009
   added support for multibyte url characters in RSolr::Connection::Utils
     - this is because Ruby 1.9's String size method is different than 1.8
