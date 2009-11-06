@@ -1,24 +1,8 @@
-Tests for binary data - known issue with Builder encoding; too much encoding?
-
-RSolr::Message.builder -- should be adapter?
-
-Can the message adapter be sent per connection?
-  solr.connect
-  solr.message_adapter = LibXML.new
-
-Message::Field class to Struct?
-
-dynamic proxy methods for adapter users?
-
 Convert all tests to rspec
-Remove live connection tests -- use mocks instead
 
-Problem with POST/xml encoding -- example, some binary MARC data has been garbled -- this is coming from the Builder xml escape method. What to do?
-<- is this working OK with LibXML?
-
-Add Nokogiri builder (can be used in jruby and mri)
-
-Push HTTPClient into separate gem?
+Tests for binary data
+	- known issue with Builder encoding; too much encoding? No longer using Builder.
+	Problem with POST/xml encoding -- example, some binary MARC data has been garbled -- TEST
 
 Look at http://lab.cisti-icist.nrc-cnrc.gc.ca/cistilabswiki/index.php/LuSql
 
@@ -34,28 +18,6 @@ http://wiki.apache.org/solr/solr-ruby/ToDo
 
 Connection pooling?
 
-raw ruby xml writer... this was 3 times faster than libxml and builder:
-
-def hash_to_attrs(h)
-	h.map{|k,v| "#{k}=\"#{v}\"" }.join(' ')
-end
-
-def add(data, add_attrs={})
-	t = Time.now
-	x = "<add #{hash_to_attrs(add_attrs)}>"
-	data = [data] unless data.is_a?(Array)
-	documents = data.map do |doc|
-	doc = Document.new(doc) if doc.respond_to?(:each_pair)
-	yield doc if block_given?
-	x << "<doc #{hash_to_attrs(doc.attrs)}>"
-	doc.fields.each do |f|
-	  x << "<field #{hash_to_attrs(f.attrs)}>#{f.value}</field>"
-	end
-	x << "</doc>"
-	doc
-	end
-	x << "</add>"
-	#builder.add(documents, add_attrs)
-	puts Time.now - t
-	exit
+solr.select(:q=>'*:*') do |response,http|
+	
 end
