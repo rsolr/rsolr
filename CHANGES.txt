@@ -1,3 +1,7 @@
+0.9.7.1 - November 5, 2009
+  added support for multibyte url characters in RSolr::Connection::Utils
+    - this is because Ruby 1.9's String size method is different than 1.8
+
 0.9.7 - October 23, 2009
   Removed XML message builders - using pure Ruby generator instead
     - benchmarks show generation speed is a little faster than libxml
