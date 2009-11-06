@@ -11,10 +11,23 @@ module RSolr::Connection
     # version since it's faster.  (Stolen from Rack).
     def escape(s)
       s.to_s.gsub(/([^ a-zA-Z0-9_.-]+)/n) {
-        '%'+$1.unpack('H2'*$1.size).join('%').upcase
+        #'%'+$1.unpack('H2'*$1.size).join('%').upcase
+        '%'+$1.unpack('H2'*bytesize($1)).join('%').upcase
       }.tr(' ', '+')
     end
-
+    
+    # Return the bytesize of String; uses String#length under Ruby 1.8 and
+    # String#bytesize under 1.9.
+    if ''.respond_to?(:bytesize)
+      def bytesize(string)
+        string.bytesize
+      end
+    else
+      def bytesize(string)
+        string.size
+      end
+    end
+    
     # creates and returns a url as a string
     # "url" is the base url
     # "params" is an optional hash of GET style query params
