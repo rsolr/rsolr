@@ -33,7 +33,7 @@ namespace :gem do
     ]
     s.test_files = [
       "test/connection/direct_test.rb",
-      "test/connection/http_test.rb",
+      "test/connection/net_http_test.rb",
       "test/connection/test_methods.rb",
       "test/connection/utils_test.rb",
       "test/helper.rb",
