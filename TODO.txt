@@ -24,3 +24,14 @@ solr.select(:q=>'*:*') do |response,http|
 end
 
 grab http response :message and add to context hash
+
+bring in pagination features from rsolr-ext?
+	
+	solr.paginate 1, 10, :q=>'whatever'
+	
+	solr.paginate 1, 10, '/music', :q=>'venetian snares'
+	
+	# dynamic handler path -- results in request to /music
+	solr.paginate_music 1, 10, :q=>'the tuss'
+	
+	
