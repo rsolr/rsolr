@@ -16,8 +16,11 @@ http://wiki.apache.org/solr-data/attachments/solr(2d)ruby(2f)BrainStorming/attac
 http://wiki.apache.org/solr/solr-ruby/BrainStorming
 http://wiki.apache.org/solr/solr-ruby/ToDo
 
-Connection pooling?
+Connection pooling? NO
 
+# instead of response.raw -> ?
 solr.select(:q=>'*:*') do |response,http|
 	
 end
+
+grab http response :message and add to context hash

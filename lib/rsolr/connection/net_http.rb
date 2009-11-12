@@ -63,7 +63,7 @@ class RSolr::Connection::NetHttp
     {
       :status_code=>net_http_response.code.to_i,
       :url=>full_url,
-      :body=>net_http_response.body,
+      :body=> encode_utf8(net_http_response.body),
       :path=>path,
       :params=>params,
       :data=>data,
@@ -71,6 +71,14 @@ class RSolr::Connection::NetHttp
     }
   end
   
+  # encodes the string as utf-8 in Ruby 1.9
+  # returns the unaltered string in Ruby 1.8
+  def encode_utf8 string
+    (string.respond_to?(:force_encoding) and string.respond_to?(:encoding)) ?
+      string.force_encoding(Encoding::UTF_8) : string
+  end
+  
+  # accepts a path/string and optional hash of query params
   def build_url path, params={}
     full_path = @uri.path + path
     super full_path, params, @uri.query
