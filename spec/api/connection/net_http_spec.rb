@@ -112,4 +112,21 @@ describe RSolr::Connection::NetHttp do
     
   end
   
+  context 'encode_utf8' do
+    
+    it 'should encode response body as utf-8' do
+      http = new_net_http
+      string = 'testing'
+      if RUBY_VERSION =~ /1\.9/
+        string.encoding.should == Encoding::US_ASCII
+        encoded_string = http.send(:encode_utf8, string)
+        string.encoding.should == Encoding::UTF_8
+      else
+        encoded_string = http.send(:encode_utf8, string)
+        encoded_string.should == string
+      end
+    end
+    
+  end
+  
 end
