@@ -42,7 +42,7 @@ To use a DirectSolrConnection (no http) in JRuby:
     solr.select :q=>'*:*'
   end
 
-For more information about DirecSolrConnection, see the {API}[http://lucene.apache.org/solr/api/org/apache/solr/servlet/DirectSolrConnection.html].
+For more information about DirectSolrConnection, see the {API}[http://lucene.apache.org/solr/api/org/apache/solr/servlet/DirectSolrConnection.html].
 
 
 == Querying
