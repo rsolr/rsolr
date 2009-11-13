@@ -46,7 +46,7 @@ To use a DirectSolrConnection (no http) in JRuby:
     solr.select :q=>'*:*'
   end
 
-In general, the direct connection is less than ideal in most applications. You'll be missing out on Http caching, and it'll be impossible to do distributed searching. Where the direct connection could possibly come in handy though, is indexing lots of documents quickly.
+In general, the direct connection is less than ideal in most applications. You'll be missing out on Http caching, and it'll be impossible to do distributed searches. The direct connection could possibly come in handy though, for quickly indexing lot lots of documents.
 
 For more information about DirectSolrConnection, see the {API}[http://lucene.apache.org/solr/api/org/apache/solr/servlet/DirectSolrConnection.html].
 
