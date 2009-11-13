@@ -8,38 +8,31 @@ require 'xout'
 
 module RSolr
   
-  VERSION = '0.9.7.2'
+  VERSION = '0.10.0'
   
   autoload :Message, 'rsolr/message'
   autoload :Client, 'rsolr/client'
   autoload :Connection, 'rsolr/connection'
   
-  # Factory for creating connections.
-  # 2 modes of argument operations:
-  #   1. first argument is solr-adapter type, second arg is options hash for solr-adapter instance.
-  #   2. options hash for solr-adapter only (no adapter type as first arg)
-  #
-  # Examples:
-  # # default http connection
-  # RSolr.connect
-  # # http connection with custom url
-  # RSolr.connect :url=>'http://solr.web100.org'
-  # # direct connection
-  # RSolr.connect :direct, :home_dir=>'solr', :dist_dir=>'solr-nightly'
-  def self.connect(*args)
-    type = args.first.is_a?(Symbol) ? args.shift : :http
-    opts = args
-    type_class = case type
-      when :net_http,:http,nil
-        'NetHttp'
-      when :direct
-        'Direct'
-      else
-        raise "Invalid connection type: #{type} - use :http, :direct or leave nil for :http/default"
-      end
-    adapter_class = RSolr::Connection.const_get(type_class)
-    adapter = adapter_class.new(*opts)
-    RSolr::Client.new(adapter)
+  # Http connection. Example:
+  #   RSolr.connect
+  #   RSolr.connect 'http://solr.web100.org'
+  def self.connect *args
+    Client.new(Connection::NetHttp.new(*args))
+  end
+  
+  # DirectSolrConnection (jruby only). Example:
+  #   RSolr.direct_connect 'path/to/solr/distribution'
+  #   RSolr.direct_connect :dist_dir=>'path/to/solr/distribution', :home_dir=>'/path/to/solrhome'
+  #   RSolr.direct_connect opts do |rsolr|
+  #     ###
+  #   end
+  # Note:
+  # if a block is used, the client is yielded and the solr core will be closed for you.
+  # if a block is NOT used, the the client is returned and the core is NOT closed.
+  def self.direct_connect *args, &blk
+    rsolr = Client.new(Connection::Direct.new(*args))
+    block_given? ? (yield rsolr and rsolr.connection.close) : rsolr
   end
   
   # A module that contains string related methods
