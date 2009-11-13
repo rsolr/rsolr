@@ -70,9 +70,9 @@ describe RSolr do
   
   context 'request' do
     
-    it 'should forward #request calls to the adapter' do
+    it 'should forward #request calls to the connection' do
       client = new_client
-      client.adapter.should_receive(:request).
+      client.connection.should_receive(:request).
         with('/music', :q=>'Coltrane', :wt=>:ruby).
           # empty params so that Client doesn't try to evalulate to Ruby;
           #   -- this happens if the :wt equal :ruby

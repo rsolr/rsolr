@@ -1,13 +1,13 @@
 class RSolr::Client
   
-  attr_reader :adapter
+  attr_reader :connection
   
-  # "adapter" is instance of:
+  # "connection" is instance of:
   #   RSolr::Adapter::HTTP
   #   RSolr::Adapter::Direct (jRuby only)
   # or any other class that uses the connection "interface"
-  def initialize(adapter)
-    @adapter = adapter
+  def initialize(connection)
+    @connection = connection
   end
 
   # Send a request to a request handler using the method name.
@@ -30,7 +30,7 @@ class RSolr::Client
   #
   #
   def request(path, params={}, *extra)
-    response = @adapter.request(path, map_params(params), *extra)
+    response = @connection.request(path, map_params(params), *extra)
     adapt_response(response)
   end
   
@@ -89,24 +89,24 @@ class RSolr::Client
     {:wt=>:ruby}.merge(params)
   end
 
-  # "adapter_response" must be a hash with the following keys:
+  # "connection_response" must be a hash with the following keys:
   #   :params - a sub hash of standard solr params
   #   : body - the raw response body from the solr server
   # This method will evaluate the :body value if the params[:wt] == :ruby
   # otherwise, the body is returned
-  # The return object has a special method attached called #adapter_response
-  # This method gives you access to the original response from the adapter,
+  # The return object has a special method attached called #connection_response
+  # This method gives you access to the original response from the connection,
   # so you can access things like the actual :url sent to solr,
   # the raw :body, original :params and original :data
-  def adapt_response(adapter_response)
-    data = adapter_response[:body]
+  def adapt_response(connection_response)
+    data = connection_response[:body]
     # if the wt is :ruby, evaluate the ruby string response
-    if adapter_response[:params][:wt] == :ruby
+    if connection_response[:params][:wt] == :ruby
       data = Kernel.eval(data)
     end
-    # attach a method called #adapter_response that returns the original adapter response value
+    # attach a method called #connection_response that returns the original connection response value
     def data.raw; @raw end
-    data.send(:instance_variable_set, '@raw', adapter_response)
+    data.send(:instance_variable_set, '@raw', connection_response)
     data
   end
   
