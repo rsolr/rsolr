@@ -18,6 +18,14 @@ def solr_data_dir
   File.expand_path(File.join(solr_dist_dir, 'example', 'solr', 'data'))
 end
 
+if jruby?
+  ['lib', 'dist'].each do |sub|
+    Dir[File.join(solr_dist_dir, sub, '*.jar')].each do |jar|
+      require jar
+    end
+  end
+end
+
 # creates a new SolrCore
 def new_solr_core solr_home_path, solr_data_path
   

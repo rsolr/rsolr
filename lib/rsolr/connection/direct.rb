@@ -25,16 +25,13 @@ class RSolr::Connection::Direct
       @connection = opts
     else
       opts[:data_dir] ||= File.join(opts[:home_dir].to_s, 'data')
-      opts[:autoload_jars] ||= true
       @opts = opts
     end
   end
   
-  # loads/imports the java dependencies
   # sets the @connection instance variable if it has not yet been set
   def connection
     @connection ||= (
-      load_default_jars if @opts[:autoload_jars]
       org.apache.solr.servlet.DirectSolrConnection.new(opts[:home_dir], @opts[:data_dir], nil)
     )
   end
@@ -67,16 +64,6 @@ class RSolr::Connection::Direct
       :headers => {},
       :message => ''
     }
-  end
-  
-  protected
-  
-  # load the default jar files RSolr provides.
-  def load_default_jars
-    path = File.expand_path( File.join(RSolr.dir, '..', 'java', '*.jar') )
-    Dir[path].each do |jar_file|
-      require jar_file
-    end
   end
   
 end

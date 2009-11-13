@@ -5,6 +5,12 @@ base = File.expand_path( File.dirname(__FILE__) )
 solr_base = File.join(base, '..', 'solr')
 home = File.join(solr_base, 'example', 'solr')
 
+['lib', 'dist'].each do |sub|
+  Dir[File.join(solr_base, sub, '*.jar')].each do |jar|
+    require jar
+  end
+end
+
 RSolr.direct_connect(:home_dir=>home) do |solr|
 
   Dir['../apache-solr/example/exampledocs/*.xml'].each do |xml_file|
