@@ -1,8 +1,10 @@
 **/.DS_Store
-**/*template
+solr/**/*template
 
 pkg/*
 
 solr/example/work/*
 solr/example/logs/*
 solr/example/solr/data/**/*
+
+coverage/
