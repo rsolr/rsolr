@@ -102,4 +102,100 @@ describe RSolr do
     
   end
   
+  context 'pagination' do
+    
+    it 'should respond to #paginate' do
+      client = new_client
+      client.should respond_to(:paginate)
+    end
+    
+    it 'should successfully paginate' do
+      client = new_client
+      client.should_receive(:request).
+        with({:rows=>10, :start=>0}).
+          and_return({
+            'response'=>{
+              'docs'=>[],
+              'start' => 0,
+              'numFound' => 100
+            },
+            'responseHeader' => {
+              'params' => {
+                'rows' => 10
+              }
+            }
+          })
+      response = client.paginate 1, 10
+      docs = response['response']['docs']
+      docs.current_page.should == 1
+      docs.total_pages.should == 100/10
+      docs.previous_page.should == 1
+      docs.next_page.should == 2
+      docs.has_next?.should == true
+      docs.has_previous?.should == false
+      docs.per_page.should == 10
+      docs.start.should == 0
+      docs.total.should == 100
+    end
+    
+    it 'should successfully paginate using a set handler path' do
+      client = new_client
+      client.should_receive(:request).
+        with('/music', {:rows=>10, :start=>0, :q=>"the tuss"}).
+          and_return({
+            'response'=>{
+              'docs'=>[],
+              'start' => 0,
+              'numFound' => 100
+            },
+            'responseHeader' => {
+              'params' => {
+                'rows' => 10
+              }
+            }
+          })
+      response = client.paginate 1, 10, '/music', :q=>'the tuss'
+      docs = response['response']['docs']
+      docs.current_page.should == 1
+      docs.total_pages.should == 100/10
+      docs.previous_page.should == 1
+      docs.next_page.should == 2
+      docs.has_next?.should == true
+      docs.has_previous?.should == false
+      docs.per_page.should == 10
+      docs.start.should == 0
+      docs.total.should == 100
+    end
+    
+    it 'should successfully paginate using a dynamic (method_missing) handler path' do
+      client = new_client
+      client.should_receive(:request).
+        with('/music', {:rows=>10, :start=>0}).
+          and_return({
+            'response'=>{
+              'docs'=>[],
+              'start' => 0,
+              'numFound' => 100
+            },
+            'responseHeader' => {
+              'params' => {
+                'rows' => 10
+              }
+            }
+          })
+      response = client.paginate_music 1, 10
+      docs = response['response']['docs']
+      docs.current_page.should == 1
+      docs.total_pages.should == 100/10
+      docs.previous_page.should == 1
+      docs.next_page.should == 2
+      docs.has_next?.should == true
+      docs.has_previous?.should == false
+      docs.per_page.should == 10
+      docs.start.should == 0
+      docs.total.should == 100
+    end
+    
+  end
+  
 end

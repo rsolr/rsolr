@@ -13,6 +13,7 @@ module RSolr
   autoload :Message, 'rsolr/message'
   autoload :Client, 'rsolr/client'
   autoload :Connection, 'rsolr/connection'
+  autoload :Pagination, 'rsolr/pagination'
   
   # Http connection. Example:
   #   RSolr.connect

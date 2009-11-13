@@ -12,7 +12,29 @@ class RSolr::Client
 
   # Send a request to a request handler using the method name.
   def method_missing(method_name, *args, &blk)
-    request("/#{method_name}", *args, &blk)
+    handler = method_name.to_s
+    if handler =~ /^paginate_/
+      handler = handler.sub(/^paginate_/, '')
+      page, per_page = args[0..1]
+      paginate(page, per_page, "/#{handler}", *args[2..-1], &blk)
+    else
+      request("/#{handler}", *args, &blk)
+    end
+  end
+  
+  # Accepts a page/per-page value for paginating docs
+  # Example:
+  #   solr.paginate 
+  def paginate page, per_page, *request_args
+    if request_args.size == 2
+      params = request_args.last
+    elsif request_args.last.is_a? Hash
+      params = request_args.last
+    else
+      params = request_args.push({}).last
+    end
+    params[:start], params[:rows] = RSolr::Pagination.page_and_per_page_to_start_and_rows page, per_page
+    self.request(*request_args).extend RSolr::Pagination
   end
   
   # sends data to the update handler

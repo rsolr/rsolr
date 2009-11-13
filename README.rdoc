@@ -68,6 +68,27 @@ A shortcut for the above example:
   response = solr.documents :q=>'test'
 
 
+===Doc Pagination
+RSolr is compatible with WillPaginate. To use pagination, call the "paginate" method:
+  response = solr.paginate current_page, per_page, :q=>'*:*'
+
+You can also set a handler path:
+  response = solr.paginate current_page, per_page, '/music', :q=>'*:*'
+
+Handler paths can also be set using a paginate_* method call like so:
+  response = solr.paginate_music current_page, per_page, :q=>'testing'
+
+====Pagination Responses
+The response['docs'] array from a paginate method has the following methods:
+  start, per_page, total, current_page, total_pages, previous_page, next_page, has_next?, has_previous?
+
+For example:
+  result = solr.paginate 1, 2, :q=>'*:*'
+  result['response']['docs'].has_next?
+
+To use with WillPaginate:
+  <%= will_paginate result['response']['docs'] %>
+
 == Updating Solr
 Updating can be done using native Ruby structures. Hashes are used for single documents and arrays are used for a collection of documents (hashes). These structures get turned into simple XML "messages". Raw XML strings can also be used.
 
