@@ -15,32 +15,18 @@ namespace :gem do
     s.authors = ["Matt Mitchell"]
     
     s.files = [
-      "examples/direct.rb",
-      "examples/http.rb",
-      
       "lib/rsolr/client.rb",
       "lib/rsolr/connection/direct.rb",
       "lib/rsolr/connection/net_http.rb",
       "lib/rsolr/connection.rb",
       "lib/rsolr/message.rb",
-      
       "lib/rsolr.rb",
       "lib/xout.rb",
-      
       "LICENSE",
-      "Rakefile",
       "README.rdoc",
       "CHANGES.txt"
     ]
-    s.test_files = [
-      "test/connection/direct_test.rb",
-      "test/connection/net_http_test.rb",
-      "test/connection/test_methods.rb",
-      "test/connection/utils_test.rb",
-      "test/helper.rb",
-      "test/message_test.rb",
-      "test/rsolr_test.rb"
-    ]
+    
     #s.rdoc_options = ["--main", "README.rdoc"]
     s.extra_rdoc_files = %w(LICENSE Rakefile README.rdoc CHANGES.txt)
   end
