@@ -34,7 +34,7 @@ class RSolr::Connection::NetHttp
         http_context = self.get(path, params)
       end
     end
-    raise RSolr::RequestError.new(http_context[:body]) unless http_context[:status_code] == 200
+    raise RSolr::RequestError.new("Solr Response: #{http_context[:message]}") unless http_context[:status_code] == 200
     http_context
   end
   
@@ -67,7 +67,8 @@ class RSolr::Connection::NetHttp
       :path=>path,
       :params=>params,
       :data=>data,
-      :headers=>headers
+      :headers=>headers,
+      :message => net_http_response.message
     }
   end
   

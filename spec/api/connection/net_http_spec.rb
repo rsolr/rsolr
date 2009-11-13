@@ -50,6 +50,8 @@ describe RSolr::Connection::NetHttp do
         and_return(200)
       net_http_response.should_receive(:body).
         and_return('The Response')
+      net_http_response.should_receive(:message).
+        and_return('OK')
       http = new_net_http
       #http.should_receive(:build_url).
       #  with('/select', :q=>1).
@@ -58,8 +60,14 @@ describe RSolr::Connection::NetHttp do
       c.should_receive(:get).
         with('/solr/select?q=1').
           and_return(net_http_response)
+      
       context = http.send(:get, '/select', :q=>1)
       context.should be_a(Hash)
+      
+      keys = [:data, :body, :status_code, :path, :url, :headers, :params, :message]
+      context.keys.size.should == keys.size
+      context.keys.all?{|key| keys.include?(key) }.should == true
+      
       context[:data].should == nil
       context[:body].should == 'The Response'
       context[:status_code].should == 200
@@ -67,6 +75,7 @@ describe RSolr::Connection::NetHttp do
       context[:url].should == 'http://127.0.0.1:8983/solr/select?q=1'
       context[:headers].should == {}
       context[:params].should == {:q=>1}
+      context[:message].should == 'OK'
     end
     
     it 'should make a POST request as expected' do
@@ -75,6 +84,8 @@ describe RSolr::Connection::NetHttp do
         and_return(200)
       net_http_response.should_receive(:body).
         and_return('The Response')
+      net_http_response.should_receive(:message).
+        and_return('OK')
       http = new_net_http
       #http.should_receive(:build_url).
       #  with('/update', {}).
@@ -85,6 +96,11 @@ describe RSolr::Connection::NetHttp do
           and_return(net_http_response)
       context = http.send(:post, '/update', '<rollback/>')
       context.should be_a(Hash)
+      
+      keys = [:data, :body, :status_code, :path, :url, :headers, :params, :message]
+      context.keys.size.should == keys.size
+      context.keys.all?{|key| keys.include?(key) }.should == true
+      
       context[:data].should == '<rollback/>'
       context[:body].should == 'The Response'
       context[:status_code].should == 200
@@ -92,6 +108,7 @@ describe RSolr::Connection::NetHttp do
       context[:url].should == 'http://127.0.0.1:8983/solr/update'
       context[:headers].should == {}
       context[:params].should == {}
+      context[:message].should == 'OK'
     end
     
   end

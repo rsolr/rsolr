@@ -16,22 +16,7 @@ http://wiki.apache.org/solr-data/attachments/solr(2d)ruby(2f)BrainStorming/attac
 http://wiki.apache.org/solr/solr-ruby/BrainStorming
 http://wiki.apache.org/solr/solr-ruby/ToDo
 
-Connection pooling? NO
-
 # instead of response.raw -> ?
-solr.select(:q=>'*:*') do |response,http|
+solr.select(:q=>'*:*') do |response,raw|
 	
 end
-
-grab http response :message and add to context hash
-
-bring in pagination features from rsolr-ext?
-	
-	solr.paginate 1, 10, :q=>'whatever'
-	
-	solr.paginate 1, 10, '/music', :q=>'venetian snares'
-	
-	# dynamic handler path -- results in request to /music
-	solr.paginate_music 1, 10, :q=>'the tuss'
-	
-	
