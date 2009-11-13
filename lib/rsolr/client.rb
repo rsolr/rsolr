@@ -9,8 +9,9 @@ class RSolr::Client
   def initialize(connection)
     @connection = connection
   end
-
+  
   # Send a request to a request handler using the method name.
+  # Also proxies to the #paginate method if the method starts with "paginate_"
   def method_missing(method_name, *args, &blk)
     handler = method_name.to_s
     if handler =~ /^paginate_/
@@ -24,7 +25,7 @@ class RSolr::Client
   
   # Accepts a page/per-page value for paginating docs
   # Example:
-  #   solr.paginate 
+  #   solr.paginate 1, 10, :q=>'blah'
   def paginate page, per_page, *request_args
     if request_args.size == 2
       params = request_args.last
