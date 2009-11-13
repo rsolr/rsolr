@@ -50,3 +50,11 @@ def new_solr_core solr_home_path, solr_data_path
   
   core
 end
+
+# helper for creating a direct connection
+# yields the rsolr client, then closes the core
+def direct_solr_connection *args, &blk
+  rsolr = RSolr::Connection::Direct.new(*args)
+  yield rsolr
+  rsolr.connection.close
+end
