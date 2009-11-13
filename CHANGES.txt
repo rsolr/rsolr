@@ -1,3 +1,16 @@
+0.9.10 - November 13, 2009
+  Changed RSolr.connect to return Http connection only:
+    RSolr.connect :url=>'xxx'
+  Added RSolr.direct_connect to handle the creation of SolrDirectConnections
+    rsolr = RSolr.direct_connect :dist_dir=>'xxx', :home_dir=>''
+    
+    # can also use a block so the connection will get closed automatically:
+    RSolr.direct_connect :dist_dir=>'xxx', :home_dir=>'' do |rsolr|
+      # query...
+    end
+  
+  Updated specs
+
 0.9.7.2 - November 6, 2009
   fixed gem spec, added client.rb
 
