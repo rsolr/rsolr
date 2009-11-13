@@ -30,10 +30,16 @@ A Ruby client for Apache Solr. RSolr has been developed to be simple and extenda
   
 To use a DirectSolrConnection (no http) in JRuby:
   
-  solr = RSolr.connect(:direct,
-    :home_dir=>'/path/to/solr/home',
-    :dist_dir=>'/path/to/solr/distribution'
-  )
+  opts = {:home_dir=>'/path/to/solr/home', :dist_dir=>'/path/to/solr/distribution'}
+
+  # note: you'll have to close the direct connection yourself unless using a block.
+  solr = RSolr.direct_connect(opts)
+  solr.select :q=>'*:*'
+  
+  # OR using a block for automatic connection closing:
+  RSolr.direct_connect opts do |solr|
+    solr.select :q=>'*:*'
+  end
 
 For more information about DirecSolrConnection, see the {API}[http://lucene.apache.org/solr/api/org/apache/solr/servlet/DirectSolrConnection.html].
 

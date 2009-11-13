@@ -2,28 +2,28 @@
 require File.join(File.dirname(__FILE__), '..', 'lib', 'rsolr')
 
 base = File.expand_path( File.dirname(__FILE__) )
-dist = File.join(base, '..', 'apache-solr')
+dist = File.join(base, '..', 'solr')
 home = File.join(dist, 'example', 'solr')
 
-solr = RSolr.connect(:direct, :home_dir=>home, :dist_dir=>dist)
+RSolr.direct_connect(:home_dir=>home, :dist_dir=>dist) do |solr|
 
-Dir['../apache-solr/example/exampledocs/*.xml'].each do |xml_file|
-  puts "Updating with #{xml_file}"
-  solr.update File.read(xml_file)
+  Dir['../apache-solr/example/exampledocs/*.xml'].each do |xml_file|
+    puts "Updating with #{xml_file}"
+    solr.update File.read(xml_file)
+  end
+  
+  solr.commit
+  
+  puts
+  
+  response = solr.select :q=>'ipod', :fq=>'price:[0 TO 50]', :rows=>2, :start=>0
+  
+  docs = response['response']['docs']
+  
+  docs.each do |doc|
+    puts doc['timestamp']
+  end
+  
+  solr.delete_by_query('*:*') and solr.commit
+  
 end
-
-solr.commit
-
-puts
-
-response = solr.select :q=>'ipod', :fq=>'price:[0 TO 50]', :rows=>2, :start=>0
-
-docs = response['response']['docs']
-
-docs.each do |doc|
-  puts doc['timestamp']
-end
-
-solr.delete_by_query('*:*') and solr.commit
-
-solr.adapter.close
