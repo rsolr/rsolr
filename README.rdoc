@@ -35,6 +35,7 @@ To use a DirectSolrConnection (no http) in JRuby:
   # note: you'll have to close the direct connection yourself unless using a block.
   solr = RSolr.direct_connect(opts)
   solr.select :q=>'*:*'
+  solr.connection.close
   
   # OR using a block for automatic connection closing:
   RSolr.direct_connect opts do |solr|
