@@ -1,4 +1,7 @@
-0.9.10 - November 13, 2009
+0.10.1 - November 13, 2009
+  Same changes as 0.10.0 -- but fixing version number problems
+
+0.10.0 - November 13, 2009
   Changed RSolr.connect to return Http connection only:
     RSolr.connect :url=>'xxx'
   Added RSolr.direct_connect to handle the creation of SolrDirectConnections

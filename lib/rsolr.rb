@@ -8,7 +8,7 @@ require 'xout'
 
 module RSolr
   
-  VERSION = '0.10.0'
+  VERSION = '0.10.1'
   
   autoload :Message, 'rsolr/message'
   autoload :Client, 'rsolr/client'
