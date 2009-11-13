@@ -65,11 +65,14 @@ class RSolr::Connection::Direct
       raise RSolr::RequestError.new($!.message)
     end
     {
-      :body=>body,
+      :status_code => 200,
       :url=>url,
+      :body=>body,
       :path=>path,
       :params=>params,
       :data=>data,
+      :headers => {},
+      :message => ''
     }
   end
   
