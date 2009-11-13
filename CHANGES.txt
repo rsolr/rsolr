@@ -10,9 +10,11 @@
     end
   Added paginate method to RSolr::Client
     - This method requires 2 new arguments: current page and per page:
-      solr.paginate 1, 10
-    - handler paths can be set by method names:
-      solr.paginate_music 1, 10
+        solr.paginate 1, 10, :q=>''
+    - handler paths can be set:
+        solr.paginate 1, 10, '/music', :q=>''
+    - handler paths can also be set by method names:
+        solr.paginate_music 1, 10
   
   Updated specs
 
