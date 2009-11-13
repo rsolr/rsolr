@@ -15,6 +15,11 @@ module RSolr
   autoload :Connection, 'rsolr/connection'
   autoload :Pagination, 'rsolr/pagination'
   
+  # returns path to this file directory
+  def self.dir
+    File.expand_path(File.dirname(__FILE__))
+  end
+  
   # Http connection. Example:
   #   RSolr.connect
   #   RSolr.connect 'http://solr.web100.org'

@@ -10,6 +10,7 @@ Gem::Specification.new do |s|
   s.authors = ["Matt Mitchell"]
   
   s.files = [
+    "java",
     "lib/rsolr/client.rb",
     "lib/rsolr/connection/direct.rb",
     "lib/rsolr/connection/net_http.rb",

@@ -2,10 +2,10 @@
 require File.join(File.dirname(__FILE__), '..', 'lib', 'rsolr')
 
 base = File.expand_path( File.dirname(__FILE__) )
-dist = File.join(base, '..', 'solr')
-home = File.join(dist, 'example', 'solr')
+solr_base = File.join(base, '..', 'solr')
+home = File.join(solr_base, 'example', 'solr')
 
-RSolr.direct_connect(:home_dir=>home, :dist_dir=>dist) do |solr|
+RSolr.direct_connect(:home_dir=>home) do |solr|
 
   Dir['../apache-solr/example/exampledocs/*.xml'].each do |xml_file|
     puts "Updating with #{xml_file}"

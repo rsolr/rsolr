@@ -15,13 +15,9 @@ class RSolr::Connection::Direct
   # if opts is NOT an instance of org.apache.solr.servlet.DirectSolrConnection
   # then...
   # required: opts[:home_dir] is absolute path to solr home (the directory with "data", "config" etc.)
-  # opts must also contain either
-  #   :dist_dir => 'absolute path to solr distribution root
-  # or
-  #   :jar_paths => ['array of directories containing the solr lib/jars']
-  # OTHER OPTS:
-  #   :select_path => 'the/select/handler'
-  #   :update_path => 'the/update/handler'
+  # 
+  # You can load your own solr java libs by setting :autoload_jars to false.
+  # When set to true (default), RSolr loads its own set of solr java libs.
   def initialize(opts, &block)
     if defined?(Java::OrgApacheSolrCore::SolrCore) and opts.is_a?(Java::OrgApacheSolrCore::SolrCore)
       @connection = org.apache.solr.servlet.DirectSolrConnection.new(opts)
@@ -29,10 +25,7 @@ class RSolr::Connection::Direct
       @connection = opts
     else
       opts[:data_dir] ||= File.join(opts[:home_dir].to_s, 'data')
-      if opts[:dist_dir] and ! opts[:jar_paths]
-        # add the standard lib and dist directories to the :jar_paths
-        opts[:jar_paths] = [File.join(opts[:dist_dir], 'lib'), File.join(opts[:dist_dir], 'dist')]
-      end
+      opts[:autoload_jars] ||= true
       @opts = opts
     end
   end
@@ -41,7 +34,7 @@ class RSolr::Connection::Direct
   # sets the @connection instance variable if it has not yet been set
   def connection
     @connection ||= (
-      require_jars(@opts[:jar_paths]) if @opts[:jar_paths]
+      load_default_jars if @opts[:autoload_jars]
       org.apache.solr.servlet.DirectSolrConnection.new(opts[:home_dir], @opts[:data_dir], nil)
     )
   end
@@ -78,13 +71,11 @@ class RSolr::Connection::Direct
   
   protected
   
-  # require the jar files
-  def require_jars(paths)
-    paths = [paths] unless paths.is_a?(Array)
-    paths.each do |path|
-      raise "Invalid jar path: #{path}" unless File.exists?(path)
-      jar_pattern = File.join(path,"**", "*.jar")
-      Dir[jar_pattern].each {|jar_file| require jar_file }
+  # load the default jar files RSolr provides.
+  def load_default_jars
+    path = File.expand_path( File.join(RSolr.dir, '..', 'java', '*.jar') )
+    Dir[path].each do |jar_file|
+      require jar_file
     end
   end
   

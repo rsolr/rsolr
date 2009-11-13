@@ -20,3 +20,7 @@ http://wiki.apache.org/solr/solr-ruby/ToDo
 solr.select(:q=>'*:*') do |response,raw|
 	
 end
+
+Move necessary Java files into "java" - add to gemspec so :dist option won't have to be set. Change to :autoload_java ?
+	
+	solr = RSolr.direct_connect '/path/to/solr/home', :autoload_java => true/false

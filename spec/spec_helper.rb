@@ -18,11 +18,6 @@ def solr_data_dir
   File.expand_path(File.join(solr_dist_dir, 'example', 'solr', 'data'))
 end
 
-# if jruby, load the solr lib jars
-if jruby?
-  Dir[File.join(solr_dist_dir, '*', '*.jar')].each { |jar| require jar }
-end
-
 # creates a new SolrCore
 def new_solr_core solr_home_path, solr_data_path
   
@@ -49,12 +44,4 @@ def new_solr_core solr_home_path, solr_data_path
   cores.register("", core, false)
   
   core
-end
-
-# helper for creating a direct connection
-# yields the rsolr client, then closes the core
-def direct_solr_connection *args, &blk
-  rsolr = RSolr::Connection::Direct.new(*args)
-  yield rsolr
-  rsolr.connection.close
 end
