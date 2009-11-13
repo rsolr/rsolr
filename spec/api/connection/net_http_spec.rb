@@ -36,8 +36,7 @@ describe RSolr::Connection::NetHttp do
     
     it 'will create an instance of Net::HTTP' do
       http = new_net_http
-      c = http.send :connection
-      c.should be_a(Net::HTTP)
+      http.send(:connection).should be_a Net::HTTP
     end
     
   end
