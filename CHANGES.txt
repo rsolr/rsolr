@@ -15,7 +15,11 @@
         solr.paginate 1, 10, '/music', :q=>''
     - handler paths can also be set by method names:
         solr.paginate_music 1, 10
-  
+  Added required java libs to RSolr gem
+  Removed :dist_dir option from Direct connection options
+  Added :autoload_jars to Direct connection options
+    - if true, RSolr's Solr java libs are loaded
+    - if false, you gotta load your own.
   Updated specs
 
 0.9.7.2 - November 6, 2009
