@@ -27,6 +27,7 @@ class RSolr::Client
   # Example:
   #   solr.paginate 1, 10, :q=>'blah'
   def paginate page, per_page, *request_args
+    raise "page and per-page arguments are required" unless [page,per_page].all?{|v|v.to_s=~/^[0-9]+$/}
     if request_args.size == 2
       params = request_args.last
     elsif request_args.last.is_a? Hash

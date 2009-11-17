@@ -2,9 +2,10 @@ require File.join(File.dirname(__FILE__), '..', 'lib', 'rsolr')
 
 solr = RSolr.connect
 
-Dir['../apache-solr/example/exampledocs/*.xml'].each do |xml_file|
+Dir['../solr/example/exampledocs/*.xml'].each do |xml_file|
   puts "Updating with #{xml_file}"
   solr.update File.read(xml_file)
+  puts 'ok!'
 end
 
 solr.commit

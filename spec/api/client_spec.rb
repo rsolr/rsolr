@@ -112,7 +112,7 @@ describe RSolr do
     it 'should successfully paginate' do
       client = new_client
       client.should_receive(:request).
-        with({:rows=>10, :start=>0}).
+        with({:rows=>10, :start=>0, :q=>'coltrane'}).
           and_return({
             'response'=>{
               'docs'=>[],
@@ -125,7 +125,7 @@ describe RSolr do
               }
             }
           })
-      response = client.paginate 1, 10
+      response = client.paginate 1, 10, :q=>'coltrane'
       docs = response['response']['docs']
       docs.current_page.should == 1
       docs.total_pages.should == 100/10

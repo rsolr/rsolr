@@ -1,5 +1,8 @@
 if jruby?
   
+  
+  puts "OKOKOKOKOKOKOKK"
+  
   describe RSolr::Connection::Direct do
     
     it 'should accept an options hash' do
