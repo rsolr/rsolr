@@ -20,6 +20,12 @@ describe RSolr do
   
   if jruby?
     
+    it 'should not fail when creating a direct connection' do
+      lambda{
+        RSolr.direct_connect({})
+      }.should_not raise_error
+    end
+    
     it 'should create an instance of RSolr::Connection::Direct when using #direct_connect' do
       rsolr = RSolr.direct_connect({})
       rsolr.should be_a RSolr::Client
@@ -32,6 +38,12 @@ describe RSolr do
         rsolr.should be_a RSolr::Client
         rsolr.connection.should be_a(RSolr::Connection::Direct)
       end
+    end
+    
+  else
+    
+    it 'should respond_to and attempt to create a direct connection, and fail!' do
+      lambda{ RSolr.direct_connect({}) }.should raise_error(RuntimeError, 'JRuby Required')
     end
     
   end
