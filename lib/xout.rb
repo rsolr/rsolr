@@ -1,5 +1,7 @@
 class Xout
   
+  VERSION = '0.1.0'
+  
   attr_reader :name, :text, :attrs, :children
   
   def initialize node_name, *args, &block
@@ -36,8 +38,6 @@ class Xout
     '<?xml version="1.0" encoding="UTF-8"?>' + to_xml
   end
   
-  protected
-  
   # builds an XML attribute string.
   # escapes each attribute value by running it through #escape_attr
   def create_attrs hash
@@ -45,21 +45,43 @@ class Xout
     " #{r}" unless r.empty?
   end
   
-  # minimal escaping for attribute values
-  def escape_attr input
-    escape input, '&'=>'&amp;', '<'=>'&lt;', '>'=>'&gt;', "'"=>'&apos;', '"'=>'&quote;'
+  module Escapable
+    
+    def text_mapping
+      @text_mapping ||= {'&'=>'&amp;', '<'=>'&lt;', '>'=>'&gt;'}
+    end
+
+    def text_regexp
+      @text_regexp ||= /[#{text_mapping.keys.join}]/
+    end
+
+    def attr_mapping
+      @attr_mapping ||= {'&'=>'&amp;', '<'=>'&lt;', '>'=>'&gt;', "'"=>'&apos;', '"'=>'&quote;'}
+    end
+
+    def attr_regexp
+      @attr_regexp ||= /[#{attr_mapping.keys.join}]/
+    end
+    
+    # minimal escaping for attribute values
+    def escape_attr input
+      escape input, attr_regexp, attr_mapping
+    end
+
+    # minimal escaping for text
+    def escape_text input
+      escape input, text_regexp, text_mapping
+    end
+
+    # accepts a string input and a hash mapping of characters => replacement values:
+    # Example:
+    #   escape 'My <string>cat</strong>', '<'=>'&gt;', '>'=>'&lt;'
+    def escape input, regexp, map
+      input.gsub(regexp) { | char | map[char] || char }
+    end
+    
   end
   
-  # minimal escaping for text
-  def escape_text input
-    escape input, '&'=>'&amp;', '<'=>'&lt;', '>'=>'&gt;'
-  end
-  
-  # accepts a string input and a hash mapping of characters => replacement values:
-  # Example:
-  #   escape 'My <string>cat</strong>', '<'=>'&gt;', '>'=>'&lt;'
-  def escape input, map
-    input.gsub(/[#{map.keys.join}]+/) { | char | map[char] || char }
-  end
+  include Escapable
   
 end
