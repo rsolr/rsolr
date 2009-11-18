@@ -1,3 +1,9 @@
+0.11.0 - November 17, 2009
+  Removed pagination feature yet again... keeping it in RSolr::Ext until a better API can be thought up.
+  Updated Xout with fixed version - thanks to Mat Brown
+    - bug in escaping consecutive special characters
+    - moved regexp patterns out of loop, into "static" variables instead
+
 0.10.1 - November 13, 2009
   Same changes as 0.10.0 -- but fixing version number problems
 
