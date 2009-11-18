@@ -8,12 +8,11 @@ require 'xout'
 
 module RSolr
   
-  VERSION = '0.10.1'
+  VERSION = '0.11.1'
   
   autoload :Message, 'rsolr/message'
   autoload :Client, 'rsolr/client'
   autoload :Connection, 'rsolr/connection'
-  autoload :Pagination, 'rsolr/pagination'
   
   # Http connection. Example:
   #   RSolr.connect
