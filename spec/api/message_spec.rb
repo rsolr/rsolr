@@ -9,7 +9,7 @@ describe RSolr::Message do
   it 'should create xml when calling these simple methods' do
     [:optimize, :rollback, :commit].each do |meth|
       result = builder.send(meth)
-      result.should == "<#{meth}/>"
+      result.should == "<?xml version=\"1.0\" encoding=\"UTF-8\"?><#{meth}/>"
     end
   end
   
@@ -29,19 +29,19 @@ describe RSolr::Message do
   end
   
   it 'should create a doc id delete' do
-    builder.delete_by_id(10).should == '<delete><id>10</id></delete>'
+    builder.delete_by_id(10).should == "<?xml version=\"1.0\" encoding=\"UTF-8\"?><delete><id>10</id></delete>"
   end
   
   it 'should create many doc id deletes' do
-    builder.delete_by_id([1, 2, 3]).should == '<delete><id>1</id><id>2</id><id>3</id></delete>'
+    builder.delete_by_id([1, 2, 3]).should == "<?xml version=\"1.0\" encoding=\"UTF-8\"?><delete><id>1</id><id>2</id><id>3</id></delete>"
   end
   
   it 'should create a query delete' do
-    builder.delete_by_query('status:"LOST"').should == '<delete><query>status:"LOST"</query></delete>'
+    builder.delete_by_query('status:"LOST"').should == "<?xml version=\"1.0\" encoding=\"UTF-8\"?><delete><query>status:\"LOST\"</query></delete>"
   end
   
   it 'should create many query deletes' do
-    builder.delete_by_query(['status:"LOST"', 'quantity:0']).should == '<delete><query>status:"LOST"</query><query>quantity:0</query></delete>'
+    builder.delete_by_query(['status:"LOST"', 'quantity:0']).should == "<?xml version=\"1.0\" encoding=\"UTF-8\"?><delete><query>status:\"LOST\"</query><query>quantity:0</query></delete>"
   end
   
   # add a single hash ("doc")
@@ -68,7 +68,7 @@ describe RSolr::Message do
       }
     ]
     message = builder.add(data)
-    expected = '<add><doc><field name="id">1</field><field name="name">matt</field></doc><doc><field name="id">2</field><field name="name">sam</field></doc></add>'
+    expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><add><doc><field name=\"id\">1</field><field name=\"name\">matt</field></doc><doc><field name=\"id\">2</field><field name=\"name\">sam</field></doc></add>"
     message.should match(/<field name="name">matt<\/field>/)
     message.should match(/<field name="name">sam<\/field>/)
   end
@@ -93,9 +93,9 @@ describe RSolr::Message do
     # this is a non-ordered hash work around,
     #   -- the order of the attributes in the resulting xml will be different depending on the ruby distribution/platform
     begin
-      result.should == '<add><doc><field name="id">1</field><field boost="2.0" name="name">matt</field></doc></add>'
+      result.should == "<?xml version=\"1.0\" encoding=\"UTF-8\"?><add><doc><field name=\"id\">1</field><field boost=\"2.0\" name=\"name\">matt</field></doc></add>"
     rescue
-      result.should == '<add><doc><field name="id">1</field><field name="name" boost="2.0">matt</field></doc></add>'
+      result.should == "<add><doc><field name=\"id\">1</field><field name=\"name\" boost=\"2.0\">matt</field></doc></add>"
     end
   end
   
@@ -110,5 +110,17 @@ describe RSolr::Message do
     result.should match(/<field name="name">matt1<\/field>/)
     result.should match(/<field name="name">matt2<\/field>/)
   end
+  
+  # b = RSolr::Message::Builder.new
+  # b.backend = :nokogiri
+  # 
+  # x = b.delete_by_id 1
+  # puts x
+  # 
+  # r = b.add :id => 1 do |doc|
+  #   doc.attrs[:boost] = 10
+  # end
+  # 
+  # puts r
   
 end

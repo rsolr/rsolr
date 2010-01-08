@@ -1,7 +1,9 @@
 describe RSolr do
   
   def new_client
-    RSolr::Client.new Object.new
+    c = RSolr::Client.new Object.new
+    #c.message.backend = :nokogiri
+    c
   end
   
   context "method_missing" do
@@ -20,49 +22,49 @@ describe RSolr do
     it 'should forward /update to #request("/update")' do
       client = new_client
       client.should_receive(:request).
-        with('/update', {}, '<commit/>')
-      client.update '<commit/>'
+        with('/update', {}, "<?xml version=\"1.0\" encoding=\"UTF-8\"?><commit/>")
+      client.update "<?xml version=\"1.0\" encoding=\"UTF-8\"?><commit/>"
     end
     
     it 'should forward #add calls to #update' do
       client = new_client
       client.should_receive(:update).
-        with('<add><doc><field name="id">1</field></doc></add>')
+        with("<?xml version=\"1.0\" encoding=\"UTF-8\"?><add><doc><field name=\"id\">1</field></doc></add>")
       client.add :id=>1
     end
     
     it 'should forward #commit calls to #update' do
       client = new_client
       client.should_receive(:update).
-        with('<commit/>')
+        with("<?xml version=\"1.0\" encoding=\"UTF-8\"?><commit/>")
       client.commit
     end
     
     it 'should forward #optimize calls to #update' do
       client = new_client
       client.should_receive(:update).
-        with('<optimize/>')
+        with("<?xml version=\"1.0\" encoding=\"UTF-8\"?><optimize/>")
       client.optimize
     end
     
     it 'should forward #rollback calls to #update' do
       client = new_client
       client.should_receive(:update).
-        with('<rollback/>')
+        with("<?xml version=\"1.0\" encoding=\"UTF-8\"?><rollback/>")
       client.rollback
     end
     
     it 'should forward #delete_by_id calls to #update' do
       client = new_client
       client.should_receive(:update).
-        with('<delete><id>1</id></delete>')
+        with("<?xml version=\"1.0\" encoding=\"UTF-8\"?><delete><id>1</id></delete>")
       client.delete_by_id 1
     end
     
     it 'should forward #delete_by_query calls to #update' do
       client = new_client
       client.should_receive(:update).
-        with('<delete><query>blah</query></delete>')
+        with("<?xml version=\"1.0\" encoding=\"UTF-8\"?><delete><query>blah</query></delete>")
       client.delete_by_query 'blah'
     end
     
