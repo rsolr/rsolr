@@ -411,7 +411,7 @@
   <requestHandler name="standard" class="solr.SearchHandler" default="true">
     <!-- default values for query parameters -->
      <lst name="defaults">
-       <str name="echoParams">explicit</str>
+       <str name="echoParams">none</str>
        <!--
        <int name="rows">10</int>
        <str name="fl">*</str>

@@ -95,7 +95,7 @@ class RSolr::Client
   #   : body - the raw response body from the solr server
   # This method will evaluate the :body value if the params[:wt] == :ruby
   # otherwise, the body is returned
-  # The return object has a special method attached called #connection_response
+  # The return object has a special method attached called #raw
   # This method gives you access to the original response from the connection,
   # so you can access things like the actual :url sent to solr,
   # the raw :body, original :params and original :data
@@ -105,7 +105,7 @@ class RSolr::Client
     if connection_response[:params][:wt] == :ruby
       data = Kernel.eval(data)
     end
-    # attach a method called #connection_response that returns the original connection response value
+    # attach a method called #raw that returns the original connection response value
     def data.raw; @raw end
     data.send(:instance_variable_set, '@raw', connection_response)
     data

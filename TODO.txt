@@ -16,7 +16,14 @@ http://wiki.apache.org/solr-data/attachments/solr(2d)ruby(2f)BrainStorming/attac
 http://wiki.apache.org/solr/solr-ruby/BrainStorming
 http://wiki.apache.org/solr/solr-ruby/ToDo
 
-# instead of response.raw -> ?
-solr.select(:q=>'*:*') do |response,raw|
+RSolr v 1.0 to-do's
+	RequestError
+		parse http body for more meaning error messages
+		include http context within exception object
+		initialize accepts http/direct context and optional message
+			direct probably has clean errors
+			http would need to be parsed
 	
-end
+	Re-name connection/net_http to http
+	
+	Think about re-adding curb adapter
