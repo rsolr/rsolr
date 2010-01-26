@@ -74,10 +74,10 @@ module RSolr::Message
   
   class Builder
     
+    # valid options are :nokogiri and :builder (default)
     attr_accessor :backend
     
     def build &block
-      
       result = case backend
       when :nokogiri
         require 'nokogiri'
@@ -92,9 +92,7 @@ module RSolr::Message
       else
         raise "Invalid backend type for RSolr::Message; try :builder or :nokogiri"
       end
-      
       result.gsub "\n", ""
-      
     end
     
     # generates "add" xml for updating solr

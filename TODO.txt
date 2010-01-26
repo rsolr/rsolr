@@ -26,4 +26,8 @@ RSolr v 1.0 to-do's
 	
 	Re-name connection/net_http to http
 	
-	Think about re-adding curb adapter
+	Think about re-adding http adapters
+		solr = RSolr.connect
+		solr.backend = :net_http
+		solr.backend = :curb
+	

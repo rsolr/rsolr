@@ -77,6 +77,11 @@ A shortcut for the above example:
 == Updating Solr
 Updating can be done using native Ruby structures. Hashes are used for single documents and arrays are used for a collection of documents (hashes). These structures get turned into simple XML "messages". Raw XML strings can also be used.
 
+The XML generation can be performed by Nokogiri or Builder (default). To set the backend:
+  solr = RSolr.connect
+  solr.message.backend = :nokogiri# or :builder
+
+
 Raw XML via  #update
   solr.update '</commit>'
   solr.update '</optimize>'

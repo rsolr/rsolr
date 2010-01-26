@@ -1,3 +1,10 @@
+0.11.2 - January 25, 2010
+  Added support for Nokogiri/Builder XML generation (yeah, back again)
+    - solr = RSolr.connect
+      solr.message.backend = :nokogiri # or :builder
+  Removed Xout (due to char encoding problems)
+  
+
 0.11.0 - November 17, 2009
   Removed pagination feature yet again... keeping it in RSolr::Ext until a better API can be thought up.
   Updated Xout with fixed version - thanks to Mat Brown
