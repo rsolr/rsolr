@@ -28,14 +28,14 @@ describe RSolr do
     
     it 'should create an instance of RSolr::Connection::Direct when using #direct_connect' do
       rsolr = RSolr.direct_connect({})
-      rsolr.should be_a RSolr::Client
+      rsolr.should be_a(RSolr::Client)
       rsolr.connection.should be_a(RSolr::Connection::Direct)
       rsolr.connection.close
     end
     
     it 'should create an instance of RSolr::Connection::Direct when using #direct_connect and close when using a block' do
       RSolr.direct_connect({}) do |rsolr|
-        rsolr.should be_a RSolr::Client
+        rsolr.should be_a(RSolr::Client)
         rsolr.connection.should be_a(RSolr::Connection::Direct)
       end
     end
