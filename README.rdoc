@@ -13,6 +13,7 @@ A Ruby client for Apache Solr. RSolr has been developed to be simple and extenda
 * {Sunspot}[http://github.com/outoftime/sunspot] -- an awesome Solr DSL, built with RSolr
 * {Blacklight}[http://blacklightopac.org] -- a next generation Library OPAC, built with RSolr
 * {solr-ruby}[http://wiki.apache.org/solr/solr-ruby] -- the original Solr Ruby Gem
+* {java_bin}[http://github.com/kennyj/java_bin] -- Provides javabin/binary parsing for Ruby
 
 == Simple usage:
   require 'rubygems'
