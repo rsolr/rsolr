@@ -12,13 +12,9 @@ namespace :spec do
     t.spec_files += FileList[File.join('spec', 'api', '**', '*_spec.rb')]
     t.spec_files += FileList[File.join('spec', 'integration', '**', '*_spec.rb')]
     
-    if defined? JRUBY_VERSION
-      t.spec_files += FileList[File.join('spec', 'api', '**', '*_spec_jruby.rb')]
-      t.spec_files += FileList[File.join('spec', 'integration', '**', '*_spec_jruby.rb')]
-    else
-      #t.spec_files = FileList['examples/**/*.rb']
+    unless defined? JRUBY_VERSION
       t.rcov = true
-      t.rcov_opts = ['--exclude', 'spec', '--exclude', 'lib/xout.rb', '--exclude', 'lib/rsolr/connection/direct']
+      t.rcov_opts = ['--exclude', 'spec', '--exclude', 'lib/rsolr/connection/direct']
     end
     
     t.verbose = true

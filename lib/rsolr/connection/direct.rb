@@ -15,9 +15,6 @@ class RSolr::Connection::Direct
   # if opts is NOT an instance of org.apache.solr.servlet.DirectSolrConnection
   # then...
   # required: opts[:home_dir] is absolute path to solr home (the directory with "data", "config" etc.)
-  # 
-  # You can load your own solr java libs by setting :autoload_jars to false.
-  # When set to true (default), RSolr loads its own set of solr java libs.
   def initialize(opts, &block)
     if defined?(Java::OrgApacheSolrCore::SolrCore) and opts.is_a?(Java::OrgApacheSolrCore::SolrCore)
       @connection = org.apache.solr.servlet.DirectSolrConnection.new(opts)

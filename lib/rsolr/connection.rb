@@ -3,6 +3,7 @@ module RSolr::Connection
   autoload :Direct, 'rsolr/connection/direct'
   autoload :NetHttp, 'rsolr/connection/net_http'
   autoload :Curb, 'rsolr/connection/curb'
+  
   autoload :Httpable, 'rsolr/connection/httpable'
   
   # Helpful utility methods for building queries to a Solr server

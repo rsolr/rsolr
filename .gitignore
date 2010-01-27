@@ -7,4 +7,11 @@ solr/example/work/*
 solr/example/logs/*
 solr/example/solr/data/**/*
 
+solr/client
+solr/contrib
+solr/docs
+solr/src
+solr/common-build.xml
+solr/build.xml
+
 coverage/
