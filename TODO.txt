@@ -31,32 +31,10 @@ RSolr::Connection.drivers[:direct] = lambda{|opts|
 	RSolr::Connection::Direct.new opts
 }
 
-RSolr::Connection.drivers[:http] = lambda{|opts|
-	RSolr::Connection::Http.new opts
-}
-
-RSolr::Connection.drivers[:curb] = lambda{|opts|
-	RSolr::Connection::Curb.new opts
-}
-
-RSolr::Connection.drivers[:async] = lambda{|opts|
-	RSolr::Connection::Async.new opts
-}
-
-RSolr::Connection.default_driver = :http
-
-RSolr::Message.drivers[:builder] = lambda {|opts|
-
-}
-
 RSolr::Message.drivers[:nokogiri] = lambda{|opts|
 
 }
 
 RSolr::Client.serializers[:javabin] = lambda{|opts|
-
-}
-
-RSolr::Client.serializers[:ruby] = lambda{|opts|
 
 }
