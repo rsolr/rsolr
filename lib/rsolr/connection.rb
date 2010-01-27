@@ -2,8 +2,11 @@ module RSolr::Connection
   
   autoload :Direct, 'rsolr/connection/direct'
   autoload :NetHttp, 'rsolr/connection/net_http'
+  autoload :Curb, 'rsolr/connection/curb'
+  autoload :Httpable, 'rsolr/connection/httpable'
   
   # Helpful utility methods for building queries to a Solr server
+  # This includes helpers that the Direct connection can use.
   module Utils
 
     # Performs URI escaping so that you can construct proper
@@ -14,6 +17,13 @@ module RSolr::Connection
         #'%'+$1.unpack('H2'*$1.size).join('%').upcase
         '%'+$1.unpack('H2'*bytesize($1)).join('%').upcase
       }.tr(' ', '+')
+    end
+    
+    # encodes the string as utf-8 in Ruby 1.9
+    # returns the unaltered string in Ruby 1.8
+    def encode_utf8 string
+      (string.respond_to?(:force_encoding) and string.respond_to?(:encoding)) ?
+        string.force_encoding(Encoding::UTF_8) : string
     end
     
     # Return the bytesize of String; uses String#length under Ruby 1.8 and
