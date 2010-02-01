@@ -42,8 +42,8 @@ class RSolr::Client
   # update using an array
   # solr.update([{:id=>1, :name=>'one'}, {:id=>2, :name=>'two'}])
   #
-  def add(doc, &block)
-    update message.add(doc, &block)
+  def add(doc, params={}, &block)
+    update message.add(doc, params, &block)
   end
 
   # send </commit>
