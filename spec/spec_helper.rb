@@ -1,7 +1,7 @@
 require File.join(File.dirname(__FILE__), '..', 'lib', 'rsolr')
 
 # wanna find out of runcoderun will give me nokogiri...
-require "nokogiri"
+#require "nokogiri"
 #Nokogiri::XML("<test/>")
 
 # returns true/false depending on whether or not JRuby is running
