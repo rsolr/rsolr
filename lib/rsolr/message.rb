@@ -92,7 +92,11 @@ module RSolr::Message
       else
         raise "Invalid backend type for RSolr::Message; try :builder or :nokogiri"
       end
+      
+      # TODO this is only here to make tests pass
+      # either make this optional or use builder/nokogiri in tests to inspect the DOM
       result.gsub "\n", ""
+      
     end
     
     # generates "add" xml for updating solr

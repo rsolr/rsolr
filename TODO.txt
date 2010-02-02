@@ -18,7 +18,7 @@ http://wiki.apache.org/solr/solr-ruby/ToDo
 
 RSolr v 1.0 to-do's
 	RequestError
-		parse http body for more meaning error messages
+		parse non-200 http body for more meaningful error messages
 		include http context within exception object
 		initialize accepts http/direct context and optional message
 			direct probably has clean errors
