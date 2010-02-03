@@ -72,7 +72,11 @@ module RSolr::Message
     
   end
   
-  class Builder
+  def self.create
+    Generator.new
+  end
+  
+  class Generator
     
     # valid options are :nokogiri and :builder (default)
     attr_accessor :backend

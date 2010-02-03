@@ -78,7 +78,7 @@ class RSolr::Client
   
   # shortcut to RSolr::Message::Builder
   def message
-    @message ||= RSolr::Message::Builder.new
+    @message ||= RSolr::Message.create
   end
   
   protected
