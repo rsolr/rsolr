@@ -7,8 +7,6 @@ class RSolr::Connection::NetHttp
   
   include RSolr::Connection::Requestable
   
-  protected
-  
   def connection
     @connection ||= Net::HTTP.new(@uri.host, @uri.port)
   end
