@@ -1,9 +1,9 @@
-0.11.2 - January 26, 2010
-  Added support for Nokogiri/Builder XML generation (yeah, back again)
-    - solr = RSolr.connect
-      solr.message.backend = :nokogiri # or :builder
-  Removed Xout (due to char encoding problems)
-  
+0.12.0 - February 3, 2010
+  Removed adapters for xml and connections (these will be provided via separate gems)
+    - default xml generator is Builder
+    - default http connection is Net::Http
+  Removed JRuby/Direct connection stuff (this will be in a new library)
+  Updated specs
 
 0.11.0 - November 17, 2009
   Removed pagination feature yet again... keeping it in RSolr::Ext until a better API can be thought up.

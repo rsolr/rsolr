@@ -28,29 +28,6 @@ A Ruby client for Apache Solr. RSolr has been developed to be simple and extenda
   
   # alternative to above:
   response = rsolr.catalog :q=>'*:*'
-  
-To use a DirectSolrConnection (no http) in JRuby:
-  
-  # "apache-solr" should be a path to a solr build.
-  Dir['apache-solr/dist/*.jar'].each{|jar|require jar}
-  Dir['apache-solr/lib/*.jar'].each{|jar|require jar}
-  
-  opts = {:home_dir=>'/path/to/solr/home'}
-  
-  # note: you'll have to close the direct connection yourself unless using a block.
-  solr = RSolr.direct_connect(opts)
-  solr.select :q=>'*:*'
-  solr.connection.close
-  
-  # OR using a block for automatic connection closing:
-  RSolr.direct_connect opts do |solr|
-    solr.select :q=>'*:*'
-  end
-
-In general, the direct connection is less than ideal in most applications. You'll be missing out on Http caching, and it'll be impossible to do distributed searches. The direct connection could possibly come in handy though, for quickly indexing large numbers of documents.
-
-For more information about DirectSolrConnection, see the {API}[http://lucene.apache.org/solr/api/org/apache/solr/servlet/DirectSolrConnection.html].
-
 
 == Querying
 Use the #select method to send requests to the /select handler:
@@ -77,11 +54,6 @@ A shortcut for the above example:
 
 == Updating Solr
 Updating can be done using native Ruby structures. Hashes are used for single documents and arrays are used for a collection of documents (hashes). These structures get turned into simple XML "messages". Raw XML strings can also be used.
-
-The XML generation can be performed by Nokogiri or Builder (default). To set the backend:
-  solr = RSolr.connect
-  solr.message.backend = :nokogiri# or :builder
-
 
 Raw XML via  #update
   solr.update '</commit>'

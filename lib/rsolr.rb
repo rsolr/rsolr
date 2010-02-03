@@ -4,7 +4,7 @@ $:.unshift File.dirname(__FILE__) unless $:.include?(File.dirname(__FILE__))
 
 module RSolr
   
-  VERSION = '0.11.2'
+  VERSION = '0.12.0'
   
   autoload :Message, 'rsolr/message'
   autoload :Client, 'rsolr/client'

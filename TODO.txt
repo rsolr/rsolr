@@ -1,24 +1,5 @@
 tag all previous releases
 
-include connection drivers?
-	RSolr.connect {} # default
-	
-	RSolr.connect :direct, {} do |c|
-	
-	end
-	
-	RSolr.connect :curb, {}
-	
-	RSolr.drivers[:direct] = lambda{|opts, &blk|
-		
-	}
-	
-include message drivers?
-
-Convert all tests to rspec
-
-change constant to Rsolr? -- emit warnings via stderr -- alias?
-
 Tests for binary data
 	- known issue with Builder encoding; too much encoding?
 	Problem with POST/xml encoding -- example, some binary MARC data has been garbled -- TEST
@@ -42,18 +23,3 @@ RSolr v 1.0 to-do's
 		initialize accepts http/direct context and optional message
 			direct probably has clean errors
 			http would need to be parsed
-	
-	Re-name connection/net_http to http
-	
-
-RSolr::Connection.drivers[:direct] = lambda{|opts|
-	RSolr::Connection::Direct.new opts
-}
-
-RSolr::Message.drivers[:nokogiri] = lambda{|opts|
-
-}
-
-RSolr::Client.serializers[:javabin] = lambda{|opts|
-
-}

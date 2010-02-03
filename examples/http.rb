@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), '..', 'lib', 'rsolr')
 
-solr = RSolr::Client.new(RSolr::Connection::NetHttp.new)
+solr = RSolr.connect
 
 Dir['../solr/example/exampledocs/*.xml'].each do |xml_file|
   puts "Updating with #{xml_file}"
