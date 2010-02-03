@@ -1,8 +1,15 @@
 describe RSolr::Connection::Utils do
   
-  utils = Object.new.instance_eval {extend RSolr::Connection::Utils; self}
+  # calls #let to set "utils" as a method accessor
+  module UtilsHelper
+    def self.included base
+      base.let(:utils){ nil.extend RSolr::Connection::Utils }
+    end
+  end
   
   context 'hash_to_query method' do
+    
+    include UtilsHelper
     
     it "should build a query string from a hash, converting arrays to multi-params and removing nils/emptys" do
       test_params = {
@@ -42,6 +49,8 @@ describe RSolr::Connection::Utils do
   
   context 'escape method' do
     
+    include UtilsHelper
+    
     it 'should escape properly' do
       utils.escape('+').should == '%2B'
       utils.escape('This is a test').should == 'This+is+a+test'
@@ -62,8 +71,14 @@ describe RSolr::Connection::Utils do
   end
   
   context 'build_url method' do
-    url = utils.build_url '/solr/select', {:q=>'test'}, 'blah=blah'
-    url.should == '/solr/select?blah=blah&q=test'
+    
+    include UtilsHelper
+    
+    it 'should build correctly' do
+      url = utils.build_url '/solr/select', {:q=>'test'}, 'blah=blah'
+      url.should == '/solr/select?blah=blah&q=test'
+    end
+    
   end
   
 end

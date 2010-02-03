@@ -5,7 +5,6 @@ require 'net/http'
 #
 class RSolr::Connection::NetHttp
   
-  include RSolr::Connection::Utils
   include RSolr::Connection::Requestable
   
   protected

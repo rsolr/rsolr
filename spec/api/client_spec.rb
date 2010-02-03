@@ -1,11 +1,10 @@
 describe RSolr::Client do
   
-  let(:new_client){ RSolr::Client.new('') }
+  let(:client){ RSolr::Client.new('') }
   
-  context "method_missing" do
+  context :method_missing do
     
     it 'a non-existent method should be forwarded to #method_missing and then to #request' do
-      client = new_client
       client.should_receive(:request).
         with('/music', :q=>'Coltrane')
       client.music :q=>'Coltrane'
@@ -13,17 +12,15 @@ describe RSolr::Client do
     
   end
   
-  context 'update' do
+  context :update do
     
     it 'should forward /update to #request("/update")' do
-      client = new_client
       client.should_receive(:request)#.
       #  with('/update', {:wt=>:ruby}, "my xml message")
       client.update "my xml message"
     end
     
     it 'should forward #add calls to #update' do
-      client = new_client
       client.should_receive(:update) {|value,params|
         value.should == "<?xml version=\"1.0\" encoding=\"UTF-8\"?><add><doc><field name=\"id\">1</field></doc></add>"
       }
@@ -31,35 +28,30 @@ describe RSolr::Client do
     end
     
     it 'should forward #commit calls to #update' do
-      client = new_client
       client.should_receive(:update).
         with("<?xml version=\"1.0\" encoding=\"UTF-8\"?><commit/>")
       client.commit
     end
     
     it 'should forward #optimize calls to #update' do
-      client = new_client
       client.should_receive(:update).
         with("<?xml version=\"1.0\" encoding=\"UTF-8\"?><optimize/>")
       client.optimize
     end
     
     it 'should forward #rollback calls to #update' do
-      client = new_client
       client.should_receive(:update).
         with("<?xml version=\"1.0\" encoding=\"UTF-8\"?><rollback/>")
       client.rollback
     end
     
     it 'should forward #delete_by_id calls to #update' do
-      client = new_client
       client.should_receive(:update).
         with("<?xml version=\"1.0\" encoding=\"UTF-8\"?><delete><id>1</id></delete>")
       client.delete_by_id 1
     end
     
     it 'should forward #delete_by_query calls to #update' do
-      client = new_client
       client.should_receive(:update).
         with("<?xml version=\"1.0\" encoding=\"UTF-8\"?><delete><query>blah</query></delete>")
       client.delete_by_query 'blah'
@@ -67,10 +59,9 @@ describe RSolr::Client do
     
   end
   
-  context 'request' do
+  context :request do
     
     it 'should forward #request calls to the connection' do
-      client = new_client
       client.connection.should_receive(:request).
         with('/music', :q=>'Coltrane', :wt=>:ruby).
           # empty params so that Client doesn't try to evalulate to Ruby;
@@ -81,10 +72,9 @@ describe RSolr::Client do
     
   end
   
-  context 'adapt_response' do
+  context :adapt_response do
     
     it 'should not try to evaluate ruby when the :qt is not :ruby' do
-      client = new_client
       body = '{:time=>"NOW"}'
       result = client.send(:adapt_response, {:body=>body, :params=>{}})
       result.should be_a(String)
@@ -92,7 +82,6 @@ describe RSolr::Client do
     end
     
     it 'should evaluate ruby responses when the :wt is :ruby' do
-      client = new_client
       body = '{:time=>"NOW"}'
       result = client.send(:adapt_response, {:body=>body, :params=>{:wt=>:ruby}})
       result.should be_a(Hash)
