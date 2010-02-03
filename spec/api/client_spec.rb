@@ -1,8 +1,6 @@
 describe RSolr::Client do
   
-  def new_client
-    c = RSolr::Client.new(Object.new)
-  end
+  let(:new_client){ RSolr::Client.new('') }
   
   context "method_missing" do
     
@@ -19,9 +17,9 @@ describe RSolr::Client do
     
     it 'should forward /update to #request("/update")' do
       client = new_client
-      client.should_receive(:request).
-        with('/update', {}, "<?xml version=\"1.0\" encoding=\"UTF-8\"?><commit/>")
-      client.update "<?xml version=\"1.0\" encoding=\"UTF-8\"?><commit/>"
+      client.should_receive(:request)#.
+      #  with('/update', {:wt=>:ruby}, "my xml message")
+      client.update "my xml message"
     end
     
     it 'should forward #add calls to #update' do

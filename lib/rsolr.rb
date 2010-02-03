@@ -35,7 +35,6 @@ module RSolr
   
   # factory for net_http
   self.adapters[:net_http] = lambda{|opts, blk|
-    puts Connection::Adapters
     opts ||= {}
     Client.new Connection::Adapters::NetHttp.new(opts)
   }
