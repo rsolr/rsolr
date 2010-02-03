@@ -1,5 +1,11 @@
 require File.join(File.dirname(__FILE__), '..', 'lib', 'rsolr')
 
+# wanna find out of runcoderun will give me nokogiri...
+# require "rexml/document"
+# def parse_xml xml
+#   REXML::Document.new xml.to_s
+# end
+
 # returns true/false depending on whether or not JRuby is running
 def jruby?; defined?(JRUBY_VERSION) end
 

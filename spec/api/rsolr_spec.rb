@@ -22,7 +22,7 @@ describe RSolr do
     
     it 'should not fail when creating a direct connection' do
       lambda{
-        RSolr.direct_connect({})
+        RSolr.connect(:direct, {})
       }.should_not raise_error
     end
     
@@ -34,7 +34,7 @@ describe RSolr do
     end
     
     it 'should create an instance of RSolr::Connection::Direct when using #direct_connect and close when using a block' do
-      RSolr.direct_connect({}) do |rsolr|
+      RSolr.connect(:direct, {}) do |rsolr|
         rsolr.should be_a(RSolr::Client)
         rsolr.connection.should be_a(RSolr::Connection::Direct)
       end
@@ -43,7 +43,7 @@ describe RSolr do
   else
     
     it 'should respond_to and attempt to create a direct connection, and fail!' do
-      lambda{ RSolr.direct_connect({}) }.should raise_error(RuntimeError, 'JRuby Required')
+      lambda{ RSolr.connect(:direct, {}) }.should raise_error(RuntimeError, 'JRuby Required')
     end
     
   end

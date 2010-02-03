@@ -9,26 +9,47 @@ module RSolr
   autoload :Message, 'rsolr/message'
   autoload :Client, 'rsolr/client'
   autoload :Connection, 'rsolr/connection'
+  autoload :Adaptable, 'rsolr/adaptable'
+  
+  extend Adaptable
+  
+  # default is net_http
+  self.default_adapter = :net_http
+  
+  # factory for direct connection.
+  # if a block is given when calling connect,
+  # yield the direct connection, close and return nil
+  # else return the connection and assume the
+  # client code will close the conenction.
+  self.adapters[:direct] = lambda{|opts,&blk|
+    opts ||= {}
+    c = Connection::Direct.new(opts)
+    if blk
+      blk.call c
+      c.close
+      return
+    end
+  }
+  
+  # factory for net_http
+  self.adapters[:net_http] = lambda{|opts,&blk|
+    opts ||= {}
+    Connection::NetHttp.new opts
+  }
+  
+  # factory for curb
+  self.adapters[:curb] = lambda{|opts,&blk|
+    opts ||= {}
+    Connection::Curb.new opts
+  }
   
   # Http connection. Example:
   #   RSolr.connect
   #   RSolr.connect 'http://solr.web100.org'
-  def self.connect *args
-    Client.new(Connection::NetHttp.new(*args))
-  end
-  
-  # DirectSolrConnection (jruby only). Example:
-  #   RSolr.direct_connect 'path/to/solr/distribution'
-  #   RSolr.direct_connect :dist_dir=>'path/to/solr/distribution', :home_dir=>'/path/to/solrhome'
-  #   RSolr.direct_connect opts do |rsolr|
-  #     ###
-  #   end
-  # Note:
-  # if a block is used, the client is yielded and the solr core will be closed for you.
-  # if a block is NOT used, the the client is returned and the core is NOT closed.
-  def self.direct_connect *args, &blk
-    rsolr = Client.new(Connection::Direct.new(*args))
-    block_given? ? (yield rsolr and rsolr.connection.close) : rsolr
+  #   RSolr.connect :direct, :solr_home => ''
+  #   RSolr.connect :async
+  def self.connect *args, &blk
+    Client.new self.adapter(*args, &blk)
   end
   
   # A module that contains string related methods
