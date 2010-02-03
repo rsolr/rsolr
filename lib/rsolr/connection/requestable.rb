@@ -1,5 +1,5 @@
 # A module that defines the interface and top-level logic for http based connection classes.
-module RSolr::Connection::Httpable
+module RSolr::Connection::Requestable
   
   attr_reader :opts, :uri
   
