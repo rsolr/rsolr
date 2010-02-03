@@ -12,40 +12,10 @@ describe RSolr do
   #   lambda{RSolr.connect :blah}.should raise_error(RSolr::Adaptable::Invalid)
   # end
   
-  it 'should create an instance of RSolr::Connection::Adapters::NetHttp as the #connection' do
-    expected_class = RSolr::Connection::Adapters::NetHttp
+  it 'should create an instance of RSolr::Connection::NetHttp as the #connection' do
+    expected_class = RSolr::Connection::NetHttp
     RSolr.connect.connection.should be_a(expected_class)
     RSolr.connect(:url=>'blah').connection.should be_a(expected_class)
-  end
-  
-  if jruby?
-    
-    it 'should not fail when creating a direct connection' do
-      lambda{
-        RSolr.connect :direct
-      }.should_not raise_error
-    end
-    
-    it 'should create an instance of RSolr::Connection::Direct when using #direct_connect' do
-      rsolr = RSolr.connect(:direct)
-      rsolr.should be_a(RSolr::Client)
-      rsolr.connection.should be_a(RSolr::Connection::Adapters::Direct)
-      rsolr.connection.close
-    end
-    
-    it 'should create an instance of RSolr::Connection::Direct when using #direct_connect and close when using a block' do
-      RSolr.connect(:direct, {}) do |rsolr|
-        rsolr.should be_a(RSolr::Client)
-        rsolr.connection.should be_a(RSolr::Connection::Adapters::Direct)
-      end
-    end
-    
-  else
-    
-    it 'should respond_to and attempt to create a direct connection, and fail!' do
-      lambda{ RSolr.connect(:direct, {}) }.should raise_error(LoadError, 'no such file to load -- java')
-    end
-    
   end
   
   it 'should have an escape method' do

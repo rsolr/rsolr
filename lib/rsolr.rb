@@ -9,49 +9,9 @@ module RSolr
   autoload :Message, 'rsolr/message'
   autoload :Client, 'rsolr/client'
   autoload :Connection, 'rsolr/connection'
-  autoload :Adaptable, 'rsolr/adaptable'
   
-  extend Adaptable
-  
-  # default is net_http
-  self.default_adapter = :net_http
-  
-  # factory for direct connection.
-  # if a block is given when calling connect,
-  # yield the direct connection, close and return nil
-  # else return the connection and assume the
-  # client code will close the conenction.
-  self.adapters[:direct] = lambda{|opts, blk|
-    opts ||= {}
-    direct = Connection::Adapters::Direct.new(opts)
-    client = Client.new direct
-    if blk
-      blk.call client
-      direct.close
-    else
-      client
-    end
-  }
-  
-  # factory for net_http
-  self.adapters[:net_http] = lambda{|opts, blk|
-    opts ||= {}
-    Client.new Connection::Adapters::NetHttp.new(opts)
-  }
-  
-  # factory for curb
-  self.adapters[:curb] = lambda{|opts, blk|
-    opts ||= {}
-    Client.new Connection::Adapters::Curb.new(opts)
-  }
-  
-  # Http connection. Example:
-  #   RSolr.connect
-  #   RSolr.connect 'http://solr.web100.org'
-  #   RSolr.connect :direct, :solr_home => ''
-  #   RSolr.connect :async
-  def self.connect *args, &blk
-    self.adapter(*args, &blk)
+  def self.connect opts={}
+    Client.new Connection::NetHttp.new(opts)
   end
   
   # A module that contains string related methods
