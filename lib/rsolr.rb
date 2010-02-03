@@ -1,6 +1,6 @@
 
 require 'rubygems'
-$: << File.dirname(__FILE__) unless $:.include?(File.dirname(__FILE__))
+$:.unshift File.dirname(__FILE__) unless $:.include?(File.dirname(__FILE__))
 
 module RSolr
   
@@ -21,26 +21,29 @@ module RSolr
   # yield the direct connection, close and return nil
   # else return the connection and assume the
   # client code will close the conenction.
-  self.adapters[:direct] = lambda{|opts,&blk|
+  self.adapters[:direct] = lambda{|opts, blk|
     opts ||= {}
-    c = Connection::Adapters::Direct.new(opts)
+    direct = Connection::Adapters::Direct.new(opts)
+    client = Client.new direct
     if blk
-      blk.call c
-      c.close
-      return
+      blk.call client
+      direct.close
+    else
+      client
     end
   }
   
   # factory for net_http
-  self.adapters[:net_http] = lambda{|opts,&blk|
+  self.adapters[:net_http] = lambda{|opts, blk|
+    puts Connection::Adapters
     opts ||= {}
-    Connection::Adapters::NetHttp.new opts
+    Client.new Connection::Adapters::NetHttp.new(opts)
   }
   
   # factory for curb
-  self.adapters[:curb] = lambda{|opts,&blk|
+  self.adapters[:curb] = lambda{|opts, blk|
     opts ||= {}
-    Connection::Adapters::Curb.new opts
+    Client.new Connection::Adapters::Curb.new(opts)
   }
   
   # Http connection. Example:
@@ -49,7 +52,7 @@ module RSolr
   #   RSolr.connect :direct, :solr_home => ''
   #   RSolr.connect :async
   def self.connect *args, &blk
-    Client.new self.adapter(*args, &blk)
+    self.adapter(*args, &blk)
   end
   
   # A module that contains string related methods

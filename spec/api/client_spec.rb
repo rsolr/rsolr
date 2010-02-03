@@ -1,9 +1,7 @@
-describe RSolr do
+describe RSolr::Client do
   
   def new_client
-    c = RSolr::Client.new Object.new
-    #c.message.backend = :nokogiri
-    c
+    c = RSolr::Client.new(Object.new)
   end
   
   context "method_missing" do
@@ -28,9 +26,10 @@ describe RSolr do
     
     it 'should forward #add calls to #update' do
       client = new_client
-      client.should_receive(:update).
-        with("<?xml version=\"1.0\" encoding=\"UTF-8\"?><add><doc><field name=\"id\">1</field></doc></add>")
-      client.add :id=>1
+      client.should_receive(:update) {|value,params|
+        value.should == "<?xml version=\"1.0\" encoding=\"UTF-8\"?><add><doc><field name=\"id\">1</field></doc></add>"
+      }
+      client.add(:id=>1)
     end
     
     it 'should forward #commit calls to #update' do

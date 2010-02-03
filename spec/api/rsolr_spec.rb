@@ -7,12 +7,12 @@ describe RSolr do
   it 'can accept options without connection type' do
     lambda{RSolr.connect :url=>'http://localhost:8983/solr'}.should_not raise_error
   end
-
-  it 'can only accept an options hash for a the #connect method' do
-    lambda{RSolr.connect :blah}.should raise_error
-  end
   
-  it 'should create an instance of RSolr::Connection::HTTP as the #connection' do
+  # it 'will throw an Adaptable::Invalid if the connection type is not valid' do
+  #   lambda{RSolr.connect :blah}.should raise_error(RSolr::Adaptable::Invalid)
+  # end
+  
+  it 'should create an instance of RSolr::Connection::Adapters::NetHttp as the #connection' do
     expected_class = RSolr::Connection::Adapters::NetHttp
     RSolr.connect.connection.should be_a(expected_class)
     RSolr.connect(:url=>'blah').connection.should be_a(expected_class)
@@ -22,12 +22,12 @@ describe RSolr do
     
     it 'should not fail when creating a direct connection' do
       lambda{
-        RSolr.connect(:direct, {})
+        RSolr.connect :direct
       }.should_not raise_error
     end
     
     it 'should create an instance of RSolr::Connection::Direct when using #direct_connect' do
-      rsolr = RSolr.direct_connect({})
+      rsolr = RSolr.connect(:direct)
       rsolr.should be_a(RSolr::Client)
       rsolr.connection.should be_a(RSolr::Connection::Adapters::Direct)
       rsolr.connection.close
@@ -36,7 +36,7 @@ describe RSolr do
     it 'should create an instance of RSolr::Connection::Direct when using #direct_connect and close when using a block' do
       RSolr.connect(:direct, {}) do |rsolr|
         rsolr.should be_a(RSolr::Client)
-        rsolr.connection.should be_a(RSolr::Connection::Direct)
+        rsolr.connection.should be_a(RSolr::Connection::Adapters::Direct)
       end
     end
     

@@ -1,5 +1,5 @@
 module RSolr::Adaptable
-    
+  
   attr_accessor :adapters, :default_adapter
   
   def adapters
@@ -7,10 +7,10 @@ module RSolr::Adaptable
   end
   
   def adapter *args, &block
-    opts = args.pop if args.last.is_a?(Hash)
-    adapter_type = args.first || default_adapter
+    adapter_type = adapters.include?(args.first) ? args.shift : default_adapter
+    opts = args.first
     adapter_factory = adapters[adapter_type]
-    adapter_factory.call opts, &block
+    adapter_factory.call(opts, block)
   end
   
 end

@@ -21,10 +21,11 @@ end
 
 # returns absolute path to solr data dir
 def solr_data_dir
-  File.expand_path(File.join(solr_dist_dir, 'example', 'solr', 'data'))
+  File.expand_path(File.join(solr_home_dir, 'data'))
 end
 
 if jruby?
+  $stderr.puts "Loading jar files from #{solr_dist_dir}..."
   ['lib', 'dist'].each do |sub|
     Dir[File.join(solr_dist_dir, sub, '*.jar')].each do |jar|
       require jar

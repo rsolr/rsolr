@@ -10,8 +10,8 @@ module RSolr::Message
   extend RSolr::Adaptable
   
   self.default_adapter = :builder
-  self.adapters[:builder] = lambda{RSolr::Message::Adapters::Builder.new}
-  self.adapters[:nokogiri] = lambda{RSolr::Message::Adapters::Nokogiri.new}
+  self.adapters[:builder] = lambda{|opts,block| RSolr::Message::Adapters::Builder.new }
+  self.adapters[:nokogiri] = lambda{|opts,block| RSolr::Message::Adapters::Nokogiri.new }
   
   def self.create *args
     Generator.new self.adapter(*args)

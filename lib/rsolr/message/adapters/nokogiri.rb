@@ -51,22 +51,22 @@ class RSolr::Message::Adapters::Nokogiri
           end
         end
       end
-    end
+    end.to_xml
   end
   
   # generates a <commit/> message
   def commit(opts={})
-    build {|xml| xml.commit opts}
+    build {|xml| xml.commit opts}.to_xml
   end
   
   # generates a <optimize/> message
   def optimize(opts={})
-    build {|xml| xml.optimize opts}
+    build {|xml| xml.optimize opts}.to_xml
   end
   
   # generates a <rollback/> message
   def rollback opts={}
-    build {|xml| xml.rollback opts}
+    build {|xml| xml.rollback opts}.to_xml
   end
   
   # generates a <delete><id>ID</id></delete> message
@@ -78,10 +78,8 @@ class RSolr::Message::Adapters::Nokogiri
       xml.delete do |delete_node|
         ids.each { |id| delete_node.__send__(id_method, id) }
       end
-    end
+    end.to_xml
   end
-  
-  alias_method :delete_by_ids, :delete_by_id
   
   # generates a <delete><query>ID</query></delete> message
   # "queries" can be a single value or an array of values
@@ -91,7 +89,7 @@ class RSolr::Message::Adapters::Nokogiri
       xml.delete do |delete_node|
         queries.each { |query| delete_node.query query }
       end
-    end
+    end.to_xml
   end
   
 end

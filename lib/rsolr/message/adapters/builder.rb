@@ -1,14 +1,11 @@
+require 'builder'
+
 class RSolr::Message::Adapters::Builder
-  
-  def initialize
-    require 'builder'
-  end
   
   def build &block
     b = ::Builder::XmlMarkup.new(:indent=>0, :margin=>0, :encoding => 'UTF-8')
     b.instruct!
-    yield b if block_given?
-    b
+    block_given? ? yield(b) : b
   end
   
   # generates "add" xml for updating solr
@@ -80,8 +77,6 @@ class RSolr::Message::Adapters::Builder
       end
     end
   end
-  
-  alias_method :delete_by_ids, :delete_by_id
   
   # generates a <delete><query>ID</query></delete> message
   # "queries" can be a single value or an array of values
