@@ -76,9 +76,9 @@ class RSolr::Client
     update message.delete_by_query(query)
   end
   
-  # shortcut to RSolr::Message::Builder
-  def message
-    @message ||= RSolr::Message::Builder.new
+  # shortcut to RSolr::Message::Generator
+  def message *opts
+    @message ||= RSolr::Message::Generator.new
   end
   
   protected

@@ -5,10 +5,7 @@ require 'net/http'
 #
 class RSolr::Connection::NetHttp
   
-  include RSolr::Connection::Utils
-  include RSolr::Connection::Httpable
-  
-  protected
+  include RSolr::Connection::Requestable
   
   def connection
     @connection ||= Net::HTTP.new(@uri.host, @uri.port)

@@ -1,6 +1,6 @@
 
 require 'rubygems'
-$: << File.dirname(__FILE__) unless $:.include?(File.dirname(__FILE__))
+$:.unshift File.dirname(__FILE__) unless $:.include?(File.dirname(__FILE__))
 
 module RSolr
   
@@ -10,25 +10,8 @@ module RSolr
   autoload :Client, 'rsolr/client'
   autoload :Connection, 'rsolr/connection'
   
-  # Http connection. Example:
-  #   RSolr.connect
-  #   RSolr.connect 'http://solr.web100.org'
-  def self.connect *args
-    Client.new(Connection::NetHttp.new(*args))
-  end
-  
-  # DirectSolrConnection (jruby only). Example:
-  #   RSolr.direct_connect 'path/to/solr/distribution'
-  #   RSolr.direct_connect :dist_dir=>'path/to/solr/distribution', :home_dir=>'/path/to/solrhome'
-  #   RSolr.direct_connect opts do |rsolr|
-  #     ###
-  #   end
-  # Note:
-  # if a block is used, the client is yielded and the solr core will be closed for you.
-  # if a block is NOT used, the the client is returned and the core is NOT closed.
-  def self.direct_connect *args, &blk
-    rsolr = Client.new(Connection::Direct.new(*args))
-    block_given? ? (yield rsolr and rsolr.connection.close) : rsolr
+  def self.connect opts={}
+    Client.new Connection::NetHttp.new(opts)
   end
   
   # A module that contains string related methods

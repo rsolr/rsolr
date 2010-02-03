@@ -1,47 +1,52 @@
 describe RSolr::Connection::NetHttp do
   
-  def new_net_http
-    RSolr::Connection::NetHttp.new
+  # calls #let to set "net_http" as method accessor
+  module NetHttpHelper
+    def self.included base
+      base.let(:net_http){ RSolr::Connection::NetHttp.new }
+    end
   end
   
   context '#request' do
     
+    include NetHttpHelper
+    
     it 'should forward simple, non-data calls to #get' do
-      http = new_net_http
-      http.should_receive(:get).
+      net_http.should_receive(:get).
         with('/select', :q=>'a').
           and_return({:status_code=>200})
-      http.request('/select', :q=>'a') 
+      net_http.request('/select', :q=>'a') 
     end
     
     it 'should forward :method=>:post calls to #post with a special header' do
-      http = new_net_http
-      http.should_receive(:post).
+      net_http.should_receive(:post).
         with('/select', 'q=a', {}, {"Content-Type"=>"application/x-www-form-urlencoded"}).
           and_return({:status_code=>200})
-      http.request('/select', {:q=>'a'}, :method=>:post)
+      net_http.request('/select', {:q=>'a'}, :method=>:post)
     end
     
     it 'should forward data calls to #post' do
-      http = new_net_http
-      http.should_receive(:post).
+      net_http.should_receive(:post).
         with("/update", "<optimize/>", {}, {"Content-Type"=>"text/xml; charset=utf-8"}).
           and_return({:status_code=>200})
-      http.request('/update', {}, '<optimize/>')
+      net_http.request('/update', {}, '<optimize/>')
     end
     
   end
   
   context 'connection' do
     
+    include NetHttpHelper
+    
     it 'will create an instance of Net::HTTP' do
-      http = new_net_http
-      http.send(:connection).should be_a(Net::HTTP)
+      net_http.send(:connection).should be_a(Net::HTTP)
     end
     
   end
   
   context 'get/post' do
+    
+    include NetHttpHelper
     
     it 'should make a GET request as expected' do
       net_http_response = mock('net_http_response')
@@ -51,16 +56,12 @@ describe RSolr::Connection::NetHttp do
         and_return('The Response')
       net_http_response.should_receive(:message).
         and_return('OK')
-      http = new_net_http
-      #http.should_receive(:build_url).
-      #  with('/select', :q=>1).
-      #    and_return('/select?q=1')
-      c = http.send(:connection)
+      c = net_http.send(:connection)
       c.should_receive(:get).
         with('/solr/select?q=1').
           and_return(net_http_response)
       
-      context = http.send(:get, '/select', :q=>1)
+      context = net_http.send(:get, '/select', :q=>1)
       context.should be_a(Hash)
       
       keys = [:data, :body, :status_code, :path, :url, :headers, :params, :message]
@@ -85,15 +86,11 @@ describe RSolr::Connection::NetHttp do
         and_return('The Response')
       net_http_response.should_receive(:message).
         and_return('OK')
-      http = new_net_http
-      #http.should_receive(:build_url).
-      #  with('/update', {}).
-      #    and_return('/update')
-      c = http.send(:connection)
+      c = net_http.send(:connection)
       c.should_receive(:post).
         with('/solr/update', '<rollback/>', {}).
           and_return(net_http_response)
-      context = http.send(:post, '/update', '<rollback/>')
+      context = net_http.send(:post, '/update', '<rollback/>')
       context.should be_a(Hash)
       
       keys = [:data, :body, :status_code, :path, :url, :headers, :params, :message]
@@ -114,11 +111,13 @@ describe RSolr::Connection::NetHttp do
   
   context 'build_url' do
     
+    include NetHttpHelper
+    
     it 'should incude the base path to solr' do
-      http = new_net_http
-      result = http.send(:build_url, '/select', :q=>'*:*', :check=>'{!}')
+      result = net_http.send(:build_url, '/select', :q=>'*:*', :check=>'{!}')
       # this is a non-ordered hash work around,
       #   -- the order of the parameters in the resulting url will be different depending on the ruby distribution/platform
+      # yuk.
       begin
         result.should == '/solr/select?check=%7B%21%7D&q=%2A%3A%2A'
       rescue
@@ -130,15 +129,16 @@ describe RSolr::Connection::NetHttp do
   
   context 'encode_utf8' do
     
+    include NetHttpHelper
+    
     it 'should encode response body as utf-8' do
-      http = new_net_http
       string = 'testing'
       if RUBY_VERSION =~ /1\.9/
         string.encoding.should == Encoding::US_ASCII
-        encoded_string = http.send(:encode_utf8, string)
+        encoded_string = net_http.send(:encode_utf8, string)
         string.encoding.should == Encoding::UTF_8
       else
-        encoded_string = http.send(:encode_utf8, string)
+        encoded_string = net_http.send(:encode_utf8, string)
         encoded_string.should == string
       end
     end

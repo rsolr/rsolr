@@ -1,7 +1,26 @@
+tag all previous releases
+
+include connection drivers?
+	RSolr.connect {} # default
+	
+	RSolr.connect :direct, {} do |c|
+	
+	end
+	
+	RSolr.connect :curb, {}
+	
+	RSolr.drivers[:direct] = lambda{|opts, &blk|
+		
+	}
+	
+include message drivers?
+
 Convert all tests to rspec
 
+change constant to Rsolr? -- emit warnings via stderr -- alias?
+
 Tests for binary data
-	- known issue with Builder encoding; too much encoding? No longer using Builder.
+	- known issue with Builder encoding; too much encoding?
 	Problem with POST/xml encoding -- example, some binary MARC data has been garbled -- TEST
 
 Look at http://lab.cisti-icist.nrc-cnrc.gc.ca/cistilabswiki/index.php/LuSql

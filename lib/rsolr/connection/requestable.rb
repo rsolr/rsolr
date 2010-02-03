@@ -1,5 +1,7 @@
 # A module that defines the interface and top-level logic for http based connection classes.
-module RSolr::Connection::Httpable
+module RSolr::Connection::Requestable
+  
+  include RSolr::Connection::Utils
   
   attr_reader :opts, :uri
   
@@ -12,7 +14,13 @@ module RSolr::Connection::Httpable
   end
   
   # send a request to the connection
-  # request '/update', :wt=>:xml, '</commit>'
+  # request '/select', :q=>'*:*'
+  #
+  # request '/update', {:wt=>:xml}, '</commit>'
+  # 
+  # force a post where the post body is the param query
+  # request '/update', "<optimize/>", :method=>:post
+  #
   def request path, params={}, *extra
     opts = extra[-1].kind_of?(Hash) ? extra.pop : {}
     data = extra[0]
