@@ -1,11 +1,9 @@
-raise "JRuby Required" unless defined?(JRUBY_VERSION)
-
 require 'java'
 
 #
 # Connection for JRuby + DirectSolrConnection
 #
-class RSolr::Connection::Direct
+class RSolr::Connection::Adapters::Direct
   
   include RSolr::Connection::Utils
   

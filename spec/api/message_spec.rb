@@ -1,7 +1,6 @@
 describe RSolr::Message do
   
-  
-  generator = RSolr::Message::Generator.new
+  let(:generator){ RSolr::Message.create }
   
   # call all of the simple methods...
   # make sure the xml string is valid

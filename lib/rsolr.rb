@@ -23,7 +23,7 @@ module RSolr
   # client code will close the conenction.
   self.adapters[:direct] = lambda{|opts,&blk|
     opts ||= {}
-    c = Connection::Direct.new(opts)
+    c = Connection::Adapters::Direct.new(opts)
     if blk
       blk.call c
       c.close
@@ -34,13 +34,13 @@ module RSolr
   # factory for net_http
   self.adapters[:net_http] = lambda{|opts,&blk|
     opts ||= {}
-    Connection::NetHttp.new opts
+    Connection::Adapters::NetHttp.new opts
   }
   
   # factory for curb
   self.adapters[:curb] = lambda{|opts,&blk|
     opts ||= {}
-    Connection::Curb.new opts
+    Connection::Adapters::Curb.new opts
   }
   
   # Http connection. Example:

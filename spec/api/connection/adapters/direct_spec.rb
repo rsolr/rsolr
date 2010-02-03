@@ -1,6 +1,6 @@
 if jruby?
   
-  describe RSolr::Connection::Direct do
+  describe RSolr::Connection::Adapters::Direct do
     
     it 'should accept an options hash' do
       opts = {:home_dir=>solr_home_dir}

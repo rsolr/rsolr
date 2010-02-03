@@ -1,4 +1,4 @@
-describe RSolr::Connection::Curb do
+describe RSolr::Connection::Adapters::Curb do
     # 
     # def new_curb
     #   RSolr::Connection::Curb.new

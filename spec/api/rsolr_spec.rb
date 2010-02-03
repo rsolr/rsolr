@@ -13,7 +13,7 @@ describe RSolr do
   end
   
   it 'should create an instance of RSolr::Connection::HTTP as the #connection' do
-    expected_class = RSolr::Connection::NetHttp
+    expected_class = RSolr::Connection::Adapters::NetHttp
     RSolr.connect.connection.should be_a(expected_class)
     RSolr.connect(:url=>'blah').connection.should be_a(expected_class)
   end
@@ -29,7 +29,7 @@ describe RSolr do
     it 'should create an instance of RSolr::Connection::Direct when using #direct_connect' do
       rsolr = RSolr.direct_connect({})
       rsolr.should be_a(RSolr::Client)
-      rsolr.connection.should be_a(RSolr::Connection::Direct)
+      rsolr.connection.should be_a(RSolr::Connection::Adapters::Direct)
       rsolr.connection.close
     end
     
@@ -43,7 +43,7 @@ describe RSolr do
   else
     
     it 'should respond_to and attempt to create a direct connection, and fail!' do
-      lambda{ RSolr.connect(:direct, {}) }.should raise_error(RuntimeError, 'JRuby Required')
+      lambda{ RSolr.connect(:direct, {}) }.should raise_error(LoadError, 'no such file to load -- java')
     end
     
   end

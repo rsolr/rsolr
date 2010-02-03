@@ -1,7 +1,7 @@
-describe RSolr::Connection::NetHttp do
+describe RSolr::Connection::Adapters::NetHttp do
   
   def new_net_http
-    RSolr::Connection::NetHttp.new
+    RSolr::Connection::Adapters::NetHttp.new
   end
   
   context '#request' do

@@ -3,7 +3,7 @@ require 'curb'
 #
 # Connection for standard HTTP Solr server
 #
-class RSolr::Connection::Curb
+class RSolr::Connection::Adapters::Curb
   
   include RSolr::Connection::Utils
   include RSolr::Connection::Httpable
