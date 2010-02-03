@@ -89,6 +89,11 @@ describe RSolr::Message do
     document.add_field('id', 1)
     document.add_field('name', 'matt', :boost => 2.0)
     result = builder.add(document)
+    
+    parse_xml(result).elements.each("//add/doc/field[@name=id]"){ |add_doc|
+      add_doc.attributes['name'].should == 'name'
+    }
+    
     result.should match(/<field name="id">1<\/field>/)
     result.should match(Regexp.escape('<?xml version="1.0" encoding="UTF-8"?>'))
     

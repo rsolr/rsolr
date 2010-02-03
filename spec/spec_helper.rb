@@ -6,8 +6,6 @@ def parse_xml xml
   REXML::Document.new xml.to_s
 end
 
-parse_xml "<commit/>"
-
 # returns true/false depending on whether or not JRuby is running
 def jruby?; defined?(JRUBY_VERSION) end
 
