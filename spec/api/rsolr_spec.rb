@@ -8,10 +8,6 @@ describe RSolr do
     lambda{RSolr.connect :url=>'http://localhost:8983/solr'}.should_not raise_error
   end
   
-  # it 'will throw an Adaptable::Invalid if the connection type is not valid' do
-  #   lambda{RSolr.connect :blah}.should raise_error(RSolr::Adaptable::Invalid)
-  # end
-  
   it 'should create an instance of RSolr::Connection::NetHttp as the #connection' do
     expected_class = RSolr::Connection::NetHttp
     RSolr.connect.connection.should be_a(expected_class)
