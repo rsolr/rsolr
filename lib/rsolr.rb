@@ -14,9 +14,15 @@ module RSolr
   autoload :Client, 'rsolr/client'
   autoload :Connection, 'rsolr/connection'
   
-  def self.connect opts={}
-    Client.new Connection::NetHttp.new(opts)
+  module Connectable
+    
+    def connect opts={}
+      Client.new Connection::NetHttp.new(opts)
+    end
+    
   end
+  
+  extend Connectable
   
   # A module that contains string related methods
   module Char
