@@ -1,5 +1,7 @@
 gem 'rspec', '~>1.1'
 
+$stderr.puts `gem list`
+
 require 'spec'
 require 'spec/rake/spectask'
 
