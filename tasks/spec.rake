@@ -1,4 +1,4 @@
-gem 'rspec', '~>1.1'
+gem 'rspec'#, '~>1.1'
 
 $stderr.puts `gem list`
 
