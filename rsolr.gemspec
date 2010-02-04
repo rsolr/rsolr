@@ -45,10 +45,8 @@ Gem::Specification.new do |s|
      "spec/api/rsolr_spec.rb",
      "spec/spec_helper.rb",
      "Rakefile",
-     "tasks/jeweler.rake",
-     "tasks/rdoc.rake",
-     "tasks/rsolr.rake",
-     "tasks/spec.rake"
+     "tasks/spec.rake",
+     "tasks/rdoc.rake"
   ]
 
   if s.respond_to? :specification_version then

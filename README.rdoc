@@ -104,18 +104,18 @@ You can access the original request context (path, params, url etc.) by calling 
 The raw is a hash that contains the generated params, url, path, post data, headers etc., very useful for debugging and testing.
 
 ==Related Resources & Projects
-* {RSolr Google Group}[http://groups.google.com/group/rsolr]
-* {rsolr-direct}[http://github.com/mwmitchell/rsolr-direct] -- jruby direct connection for RSolr
-* {rsolr-ext}[http://github.com/mwmitchell/rsolr-ext] -- an extension kit for RSolr
-* {Solr}[http://lucene.apache.org/solr/]
-* {Sunspot}[http://github.com/outoftime/sunspot] -- an awesome Solr DSL, built with RSolr
-* {Blacklight}[http://blacklightopac.org] -- a next generation Library OPAC, built with RSolr
-* {solr-ruby}[http://wiki.apache.org/solr/solr-ruby] -- the original Solr Ruby Gem
+* {RSolr Google Group}[http://groups.google.com/group/rsolr] -- The RSolr discussion group
+* {rsolr-ext}[http://github.com/mwmitchell/rsolr-ext] -- An extension kit for RSolr
+* {rsolr-direct}[http://github.com/mwmitchell/rsolr-direct] -- JRuby direct connection for RSolr
+* {SunSpot}[http://github.com/outoftime/sunspot] -- An awesome Solr DSL, built with RSolr
+* {Blacklight}[http://blacklightopac.org] -- A "next generation" Library OPAC, built with RSolr
 * {java_bin}[http://github.com/kennyj/java_bin] -- Provides javabin/binary parsing for RSolr
+* {Solr}[http://lucene.apache.org/solr/] -- The Apache Solr project
+* {solr-ruby}[http://wiki.apache.org/solr/solr-ruby] -- The original Solr Ruby Gem!
 
 ==Contributors
 mperham
 Mat Brown
-Shairon Toledo
+shairontoledo
 Matthew Rudy
 Fouad Mardini
