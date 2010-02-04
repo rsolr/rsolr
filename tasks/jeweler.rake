@@ -10,7 +10,7 @@ begin
     
     gemspec.files = FileList['lib/**/*.rb', 'LICENSE', 'README.rdoc', 'CHANGES', 'VERSION']
     
-    gemspec.test_files = ['spec/**/*.rb', 'Rakefile', 'tasks/**/*.rake']
+    gemspec.test_files = ['spec/**/*.rb', 'Rakefile', 'tasks/spec.rake', 'tasks/rdoc.rake']
     
     gemspec.add_dependency('builder', '>= 2.1.2')
     

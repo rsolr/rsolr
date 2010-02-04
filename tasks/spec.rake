@@ -1,4 +1,4 @@
-gem 'rspec', '~>1.2.8'
+gem 'rspec', '~>1.3.0'
 
 require 'spec'
 require 'spec/rake/spectask'
@@ -23,14 +23,6 @@ namespace :spec do
     t.spec_files = [File.join('spec', 'spec_helper.rb')]
     t.spec_files += FileList[File.join('spec', 'api', '**', '*_spec.rb')]
     
-    # keeping this out so runcoderun is happy
-    t.spec_files -= ['spec/api/connection/curb_spec.rb']
-    
-    unless defined? JRUBY_VERSION
-      t.rcov = true
-      t.rcov_opts = ['--exclude', 'spec', '--exclude', 'lib/rsolr/connection/direct']
-    end
-    
     t.verbose = true
     t.spec_opts = ['--color']
   end
@@ -40,11 +32,6 @@ namespace :spec do
     
     t.spec_files = [File.join('spec', 'spec_helper.rb')]
     t.spec_files += FileList[File.join('spec', 'integration', '**', '*_spec.rb')]
-    
-    unless defined? JRUBY_VERSION
-      t.rcov = true
-      t.rcov_opts = ['--exclude', 'spec', '--exclude', 'lib/rsolr/connection/direct']
-    end
     
     t.verbose = true
     t.spec_opts = ['--color']
