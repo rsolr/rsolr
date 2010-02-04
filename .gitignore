@@ -15,3 +15,5 @@ solr/common-build.xml
 solr/build.xml
 
 coverage/
+
+doc/
