@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Matt Mitchell"]
-  s.date = %q{2010-02-03}
+  s.date = %q{2010-02-04}
   s.description = %q{RSolr aims to provide a simple and extensible library for working with Solr}
   s.email = %q{goodieboy@gmail.com}
   s.extra_rdoc_files = [
