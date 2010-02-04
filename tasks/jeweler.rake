@@ -14,8 +14,8 @@ begin
     
     gemspec.add_dependency('builder', '>= 2.1.2')
     
-    require File.dirname(__FILE__) + '/../lib/rsolr'
-    gemspec.version = RSolr.version
+    #require File.dirname(__FILE__) + '/../lib/rsolr'
+    #gemspec.version = RSolr.version
     
     now = Time.now
     gemspec.date = "#{now.year}-#{now.month}-#{now.day}"

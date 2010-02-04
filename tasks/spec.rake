@@ -1,6 +1,6 @@
-gem 'rspec'#, '~>1.1'
+gem 'rspec'
 
-$stderr.puts `gem list`
+# $stderr.puts `gem list`
 
 require 'spec'
 require 'spec/rake/spectask'
