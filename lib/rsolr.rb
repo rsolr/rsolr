@@ -4,7 +4,11 @@ $:.unshift File.dirname(__FILE__) unless $:.include?(File.dirname(__FILE__))
 
 module RSolr
   
-  VERSION = '0.12.0'
+  def self.version
+    @version ||= File.read(File.join(File.dirname(__FILE__), '..', 'VERSION'))
+  end
+  
+  VERSION = self.version
   
   autoload :Message, 'rsolr/message'
   autoload :Client, 'rsolr/client'

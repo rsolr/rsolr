@@ -8,14 +8,14 @@ begin
     gemspec.homepage = "http://github.com/mwmitchell/rsolr"
     gemspec.authors = ["Matt Mitchell"]
     
-    gemspec.files = FileList['lib/**/*.rb', 'LICENSE', 'README.rdoc', 'CHANGES']
+    gemspec.files = FileList['lib/**/*.rb', 'LICENSE', 'README.rdoc', 'CHANGES', 'VERSION']
     
     gemspec.test_files = ['spec/**/*.rb', 'Rakefile', 'tasks/**/*.rake']
     
     gemspec.add_dependency('builder', '>= 2.1.2')
     
     require File.dirname(__FILE__) + '/../lib/rsolr'
-    gemspec.version = RSolr::VERSION
+    gemspec.version = RSolr.version
     
     now = Time.now
     gemspec.date = "#{now.year}-#{now.month}-#{now.day}"

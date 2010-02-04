@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Class: RSolr::Message::Document</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Class</strong></td>
+          <td class="class-name-in-header">RSolr::Message::Document</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+                <a href="../../../files/lib/rsolr/message/document_rb.html">
+                lib/rsolr/message/document.rb
+                </a>
+        <br />
+            </td>
+        </tr>
+
+        <tr class="top-aligned-row">
+            <td><strong>Parent:</strong></td>
+            <td>
+                Object
+            </td>
+        </tr>
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <p>
+A class that represents a &quot;doc&quot; xml element for a solr update
+</p>
+
+    </div>
+
+
+   </div>
+
+    <div id="method-list">
+      <h3 class="section-bar">Methods</h3>
+
+      <div class="name-list">
+      <a href="#M000014">add_field</a>&nbsp;&nbsp;
+      <a href="#M000013">field_by_name</a>&nbsp;&nbsp;
+      <a href="#M000012">fields_by_name</a>&nbsp;&nbsp;
+      <a href="#M000011">new</a>&nbsp;&nbsp;
+      </div>
+    </div>
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+    <div id="attribute-list">
+      <h3 class="section-bar">Attributes</h3>
+
+      <div class="name-list">
+        <table>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">attrs</td>
+          <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
+          <td class="context-item-desc">
+&quot;attrs&quot; is a hash for setting the &quot;doc&quot; xml attributes
+&quot;fields&quot; is an array of <a href="Field.html">Field</a> objects
+
+</td>
+        </tr>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">fields</td>
+          <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
+          <td class="context-item-desc">
+&quot;attrs&quot; is a hash for setting the &quot;doc&quot; xml attributes
+&quot;fields&quot; is an array of <a href="Field.html">Field</a> objects
+
+</td>
+        </tr>
+        </table>
+      </div>
+    </div>
+      
+
+
+    <!-- if method_list -->
+    <div id="methods">
+      <h3 class="section-bar">Public Class methods</h3>
+
+      <div id="method-M000011" class="method-detail">
+        <a name="M000011"></a>
+
+        <div class="method-heading">
+          <a href="#M000011" class="method-signature">
+          <span class="method-name">new</span><span class="method-args">(doc_hash = {})</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+&quot;doc_hash&quot; must be a Hash/Mash object If a value in the
+&quot;doc_hash&quot; is an array, a field object is created for each
+value&#8230;
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000011-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000011-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/rsolr/message/document.rb, line 11</span>
+11:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">doc_hash</span> = {})
+12:     <span class="ruby-ivar">@fields</span> = []
+13:     <span class="ruby-identifier">doc_hash</span>.<span class="ruby-identifier">each_pair</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">field</span>,<span class="ruby-identifier">values</span><span class="ruby-operator">|</span>
+14:       <span class="ruby-comment cmt"># create a new field for each value (multi-valued)</span>
+15:       <span class="ruby-comment cmt"># put non-array values into an array</span>
+16:       <span class="ruby-identifier">values</span> = [<span class="ruby-identifier">values</span>] <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">values</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Array</span>)
+17:       <span class="ruby-identifier">values</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">v</span><span class="ruby-operator">|</span>
+18:         <span class="ruby-keyword kw">next</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">v</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">empty?</span>
+19:         <span class="ruby-ivar">@fields</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-constant">RSolr</span><span class="ruby-operator">::</span><span class="ruby-constant">Message</span><span class="ruby-operator">::</span><span class="ruby-constant">Field</span>.<span class="ruby-identifier">new</span>({<span class="ruby-identifier">:name=</span><span class="ruby-operator">&gt;</span><span class="ruby-identifier">field</span>}, <span class="ruby-identifier">v</span>.<span class="ruby-identifier">to_s</span>)
+20:       <span class="ruby-keyword kw">end</span>
+21:     <span class="ruby-keyword kw">end</span>
+22:     <span class="ruby-ivar">@attrs</span>={}
+23:   <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="section-bar">Public Instance methods</h3>
+
+      <div id="method-M000014" class="method-detail">
+        <a name="M000014"></a>
+
+        <div class="method-heading">
+          <a href="#M000014" class="method-signature">
+          <span class="method-name">add_field</span><span class="method-args">(name, value, options = {})</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Add a field value to the document. Options map directly to XML attributes
+in the Solr &lt;field&gt; node. See <a
+href="http://wiki.apache.org/solr/UpdateXmlMessages#head-8315b8028923d028950ff750a57ee22cbf7977c6">wiki.apache.org/solr/UpdateXmlMessages#head-8315b8028923d028950ff750a57ee22cbf7977c6</a>
+</p>
+<h3>Example:</h3>
+<pre>
+  document.add_field('title', 'A Title', :boost =&gt; 2.0)
+</pre>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000014-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000014-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/rsolr/message/document.rb, line 44</span>
+44:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">add_field</span>(<span class="ruby-identifier">name</span>, <span class="ruby-identifier">value</span>, <span class="ruby-identifier">options</span> = {})
+45:     <span class="ruby-ivar">@fields</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-constant">RSolr</span><span class="ruby-operator">::</span><span class="ruby-constant">Message</span><span class="ruby-operator">::</span><span class="ruby-constant">Field</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">options</span>.<span class="ruby-identifier">merge</span>({<span class="ruby-identifier">:name=</span><span class="ruby-operator">&gt;</span><span class="ruby-identifier">name</span>}), <span class="ruby-identifier">value</span>)
+46:   <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000013" class="method-detail">
+        <a name="M000013"></a>
+
+        <div class="method-heading">
+          <a href="#M000013" class="method-signature">
+          <span class="method-name">field_by_name</span><span class="method-args">(name)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+returns the <b>first</b> field that matches the &quot;name&quot; arg
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000013-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000013-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/rsolr/message/document.rb, line 31</span>
+31:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">field_by_name</span>(<span class="ruby-identifier">name</span>)
+32:     <span class="ruby-ivar">@fields</span>.<span class="ruby-identifier">detect</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span><span class="ruby-identifier">f</span>.<span class="ruby-identifier">name</span><span class="ruby-operator">==</span><span class="ruby-identifier">name</span>}
+33:   <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000012" class="method-detail">
+        <a name="M000012"></a>
+
+        <div class="method-heading">
+          <a href="#M000012" class="method-signature">
+          <span class="method-name">fields_by_name</span><span class="method-args">(name)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+returns an array of fields that match the &quot;name&quot; arg
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000012-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000012-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/rsolr/message/document.rb, line 26</span>
+26:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">fields_by_name</span>(<span class="ruby-identifier">name</span>)
+27:     <span class="ruby-ivar">@fields</span>.<span class="ruby-identifier">select</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span><span class="ruby-identifier">f</span>.<span class="ruby-identifier">name</span><span class="ruby-operator">==</span><span class="ruby-identifier">name</span>}
+28:   <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>
