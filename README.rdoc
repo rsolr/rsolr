@@ -6,7 +6,7 @@ A simple, extensible Ruby client for Apache Solr.
   gem sources -a http://gemcutter.org
   sudo gem install rsolr
 
-== Simple usage:
+== Example:
   require 'rubygems'
   require 'rsolr'
   solr = RSolr.connect :url=>'http://solrserver.com'
@@ -28,7 +28,7 @@ Use the #select method to send requests to the /select handler:
     :rows=>10
   })
 
-The params sent into the method are sent to Solr as-is. The one exception is if a value is an array. When an array is used, multiple parameters are generated for the Solr query. Example:
+The params sent into the method are sent to Solr as-is. The one exception is if a value is an array. When an array is used, multiple parameters *with the same name* are generated for the Solr query. Example:
   
   solr.select :q=>'roses', :fq=>['red', 'violet']
 
@@ -39,12 +39,12 @@ The above statement generates this Solr query:
 Use the #request method for a custom request handler path:
   response = solr.request '/documents', :q=>'test'
 
-A shortcut for the above example:
+A shortcut for the above example use a method call instead:
   response = solr.documents :q=>'test'
 
 
 == Updating Solr
-Updating can be done using native Ruby structures. Hashes are used for single documents and arrays are used for a collection of documents (hashes). These structures get turned into simple XML "messages". Raw XML strings can also be used.
+Updating uses native Ruby structures. Hashes are used for single documents and arrays are used for a collection of documents (hashes). These structures get turned into simple XML "messages". Raw XML strings can also be used.
 
 Raw XML via  #update
   solr.update '</commit>'
