@@ -1,4 +1,4 @@
-gem 'rspec', '~>0.5.0'
+gem 'rspec', '~>1.1'
 
 require 'spec'
 require 'spec/rake/spectask'
