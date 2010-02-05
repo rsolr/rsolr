@@ -1,3 +1,6 @@
+0.12.1 - February 4, 2010
+  Moved connect method into module so #connect method could be extended
+
 0.12.0 - February 3, 2010
   Removed adapters for xml and connections (these will be provided via separate gems)
     - default xml generator is Builder
