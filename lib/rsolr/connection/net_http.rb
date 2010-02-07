@@ -8,7 +8,12 @@ class RSolr::Connection::NetHttp
   include RSolr::Connection::Requestable
   
   def connection
-    @connection ||= Net::HTTP.new(@uri.host, @uri.port)
+    if @proxy
+      proxy_user, proxy_pass = @proxy.userinfo.split(/:/) if @proxy.userinfo
+      @connection ||= Net::HTTP.Proxy(@proxy.host, @proxy.port, proxy_user, proxy_pass).new(@uri.host, @uri.port)
+    else
+      @connection ||= Net::HTTP.new(@uri.host, @uri.port)
+    end
   end
   
   def get path, params={}

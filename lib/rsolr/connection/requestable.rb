@@ -3,7 +3,7 @@ module RSolr::Connection::Requestable
   
   include RSolr::Connection::Utils
   
-  attr_reader :opts, :uri
+  attr_reader :opts, :uri, :proxy
   
   # opts can have:
   #   :url => 'http://localhost:8080/solr'
@@ -11,6 +11,7 @@ module RSolr::Connection::Requestable
     opts[:url] ||= 'http://127.0.0.1:8983/solr'
     @opts = opts
     @uri = URI.parse opts[:url]
+    @proxy = URI.parse opts[:proxy] if opts[:proxy]
   end
   
   # send a request to the connection
