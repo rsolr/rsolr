@@ -9,16 +9,21 @@ A simple, extensible Ruby client for Apache Solr.
 == Example:
   require 'rubygems'
   require 'rsolr'
+  
+  # Direct connection
   solr = RSolr.connect :url=>'http://solrserver.com'
   
+  # Connecting over a proxy server
+  solr = RSolr.connect :url=>'http://solrserver.com', :proxy=>'http://user:pass@proxy.example.com:8080'
+  
   # send a request to /select
-  response = rsolr.select :q=>'*:*'
+  response = solr.select :q=>'*:*'
   
   # send a request to a custom request handler; /catalog
-  response = rsolr.request '/catalog', :q=>'*:*'
+  response = solr.request '/catalog', :q=>'*:*'
   
   # alternative to above:
-  response = rsolr.catalog :q=>'*:*'
+  response = solr.catalog :q=>'*:*'
 
 == Querying
 Use the #select method to send requests to the /select handler:
