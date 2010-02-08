@@ -128,6 +128,7 @@ The raw is a hash that contains the generated params, url, path, post data, head
 * Send me a pull request. Bonus points for topic branches.
 
 ==Contributors
+* Lorenzo Riccucci
 * Mike Perham
 * Mat Brown
 * Shairon Toledo
