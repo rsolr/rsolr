@@ -1,3 +1,5 @@
+find a way to re-use connection drivers for executing core-admin commands
+
 tag all previous releases
 
 Tests for binary data
