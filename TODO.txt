@@ -1,4 +1,9 @@
 find a way to re-use connection drivers for executing core-admin commands
+	solr = RSolr.connect :url => 'http://localhost:8983/solr', :core => 'production'
+	solr = RSolr.connect :url => 'http://localhost:8983/solr', :default_core => 'production' <- default?
+	solr.select, :q => 'blah' <- goes to select handler in production core
+	solr.request 'test/select', :q= > 'blicker' <- goes select handler in test core
+	solr.request 'admin/cores', :action => "STATUS"
 
 tag all previous releases
 
