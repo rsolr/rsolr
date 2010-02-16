@@ -46,14 +46,34 @@ class RSolr::Client
     update message.add(doc, &block)
   end
 
-  # send </commit>
-  def commit
-    update message.commit
+  # send "commit" message with options
+  #
+  # Options recognized by solr
+  #
+  #   :maxSegments    => N - optimizes down to at most N number of segments
+  #   :waitFlush      => true|false - do not return until changes are flushed to disk
+  #   :waitSearcher   => true|false - do not return until a new searcher is opened and registered
+  #   :expungeDeletes => true|false - merge segments with deletes into other segments #NOT
+  #
+  # *NOTE* :expungeDeletes is Solr 1.4 only
+  #
+  def commit( options = {} )
+    update message.commit( options )
   end
 
-  # send </optimize>
-  def optimize
-    update message.optimize
+  # send "optimize" message with options.
+  #
+  # Options recognized by solr
+  #
+  #   :maxSegments    => N - optimizes down to at most N number of segments
+  #   :waitFlush      => true|false - do not return until changes are flushed to disk
+  #   :waitSearcher   => true|false - do not return until a new searcher is opened and registered
+  #   :expungeDeletes => true|false - merge segments with deletes into other segments
+  #
+  # *NOTE* :expungeDeletes is Solr 1.4 only
+  #
+  def optimize( options = {} )
+    update message.optimize( options )
   end
 
   # send </rollback>

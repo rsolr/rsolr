@@ -26,17 +26,29 @@ describe RSolr::Client do
       }
       client.add(:id=>1)
     end
-    
+
     it 'should forward #commit calls to #update' do
       client.should_receive(:update).
         with("<?xml version=\"1.0\" encoding=\"UTF-8\"?><commit/>")
       client.commit
     end
-    
+
+    it 'should forward #commit calls with options to #update' do
+      client.should_receive(:update).
+        with("<?xml version=\"1.0\" encoding=\"UTF-8\"?><commit waitSearcher=\"false\" expungeDeletes=\"true\" waitFlush=\"false\"/>")
+      client.commit( :waitFlush => false, :waitSearcher => false, :expungeDeletes => true )
+    end
+
     it 'should forward #optimize calls to #update' do
       client.should_receive(:update).
         with("<?xml version=\"1.0\" encoding=\"UTF-8\"?><optimize/>")
       client.optimize
+    end
+
+    it 'should forward #optimize calls with options to #update' do
+      client.should_receive(:update).
+        with("<?xml version=\"1.0\" encoding=\"UTF-8\"?><optimize maxSegments=\"5\" waitFlush=\"false\"/>")
+      client.optimize( :maxSegments => 5, :waitFlush => false )
     end
     
     it 'should forward #rollback calls to #update' do
