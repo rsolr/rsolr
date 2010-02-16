@@ -34,11 +34,16 @@ describe RSolr::Client do
     end
 
     it 'should forward #commit calls with options to #update' do
-      client.should_receive(:update).
-        with("<?xml version=\"1.0\" encoding=\"UTF-8\"?><commit waitSearcher=\"false\" expungeDeletes=\"true\" waitFlush=\"false\"/>")
-      client.commit( :waitFlush => false, :waitSearcher => false, :expungeDeletes => true )
+      opts = {:waitFlush => false, :waitSearcher => false, :expungeDeletes => true}
+      # when client.commit is called, it eventually calls update
+      client.should_receive (:update).
+        with(opts)
+      # client.message is calls to create the xml
+      client.message.should_receive(:commit).
+        and_return(opts)
+      client.commit(opts)
     end
-
+    
     it 'should forward #optimize calls to #update' do
       client.should_receive(:update).
         with("<?xml version=\"1.0\" encoding=\"UTF-8\"?><optimize/>")
@@ -46,9 +51,14 @@ describe RSolr::Client do
     end
 
     it 'should forward #optimize calls with options to #update' do
-      client.should_receive(:update).
-        with("<?xml version=\"1.0\" encoding=\"UTF-8\"?><optimize maxSegments=\"5\" waitFlush=\"false\"/>")
-      client.optimize( :maxSegments => 5, :waitFlush => false )
+      opts = {:maxSegments => 5, :waitFlush => false}
+      # when client.commit is called, it eventually calls update
+      client.should_receive (:update).
+        with(opts)
+      # client.message is calls to create the xml
+      client.message.should_receive(:optimize).
+        and_return(opts)
+      client.optimize(opts)
     end
     
     it 'should forward #rollback calls to #update' do
