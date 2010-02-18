@@ -95,6 +95,24 @@ class RSolr::Client
   def delete_by_query(query)
     update message.delete_by_query(query)
   end
+
+  # Ping the server and make sure it is alright
+  #   solr.ping?
+  #
+  # It returns true if the server pings and the status is OK
+  # It returns false otherwise -- which probably cannot happen
+  # Or raises an exception if there is a failure to connect or
+  # the ping service is not activated in the solr server
+  #
+  # The default configuration point of the PingRequestHandler
+  # in the solr server of '/admin/ping' is assumed.  If it is
+  # some other location, pass that in as the path
+  #
+  def ping?( path = '/admin/ping', params = {} )
+    response = request( path, params )
+    return response['status'] == "OK"
+  end
+
   
   # shortcut to RSolr::Message::Generator
   def message *opts
