@@ -23,20 +23,33 @@ module RSolr::Connection::Requestable
   # request '/update', "<optimize/>", :method=>:post
   #
   def request path, params={}, *extra
+    # be nice
+    extra = extra.dup
     opts = extra[-1].kind_of?(Hash) ? extra.pop : {}
     data = extra[0]
-    
     context = create_request_context path, params, data
     
-    if opts[:method] == :post and data.to_s.empty?
+    if opts[:method] == :post
+      raise "Don't send POST data when using :method => :post" unless data.to_s.empty?
       # force a POST, use the query string as the POST body
       context.merge! :data => hash_to_query(params), :headers => {'Content-Type' => 'application/x-www-form-urlencoded'}
     elsif data
       # standard POST, using "data" as the POST body
       context.merge! :headers => {'Content-Type' => 'text/xml; charset=utf-8'}
     end
-    response = context[:data] ? self.post(context[:url], context[:data], context[:headers]) : self.get(context[:url])
-    raise RSolr::RequestError.new("Solr Response: #{response[:message]}") unless response[:status_code] == 200
+    
+    error = nil
+    response = {}
+    begin
+      response = context[:data] ? self.post(context[:url], context[:data], context[:headers]) : self.get(context[:url])
+    rescue
+      error = $!.to_s
+    end
+    
+    error = (response[:message].inspect || "Solr Error") unless response[:status_code] == 200
+    
+    raise RSolr::RequestError.new("#{error} -> #{context.inspect}") if error
+    
     context.merge response
   end
   
