@@ -28,22 +28,16 @@ module RSolr::Connection::Requestable
     
     context = create_request_context path, params, data
     
-    # force a POST, use the query string as the POST body
     if opts[:method] == :post and data.to_s.empty?
-      context.merge! :headers => {'Content-Type' => 'application/x-www-form-urlencoded'}, :data => hash_to_query(params)
-      http_context = self.post context[:url], context[:data], context[:headers]
-    else
-      if data
-        context.merge! :headers => {'Content-Type' => 'text/xml; charset=utf-8'}
-        # standard POST, using "data" as the POST body
-        http_context = self.post context[:url], context[:data], context[:headers]
-      else
-        # standard GET
-        http_context = self.get context[:url]
-      end
+      # force a POST, use the query string as the POST body
+      context.merge! :data => hash_to_query(params), :headers => {'Content-Type' => 'application/x-www-form-urlencoded'}
+    elsif data
+      # standard POST, using "data" as the POST body
+      context.merge! :headers => {'Content-Type' => 'text/xml; charset=utf-8'}
     end
-    raise RSolr::RequestError.new("Solr Response: #{http_context[:message]}") unless http_context[:status_code] == 200
-    context.merge http_context
+    response = context[:data] ? self.post(context[:url], context[:data], context[:headers]) : self.get(context[:url])
+    raise RSolr::RequestError.new("Solr Response: #{response[:message]}") unless response[:status_code] == 200
+    context.merge response
   end
   
   def create_request_context path, params, data
