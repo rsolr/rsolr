@@ -13,21 +13,21 @@ describe RSolr::Connection::NetHttp do
     
     it 'should forward simple, non-data calls to #get' do
       net_http.should_receive(:get).
-        with('/select', :q=>'a').
+        with("http://127.0.0.1:8983/solr/select?q=a").
           and_return({:status_code=>200})
       net_http.request('/select', :q=>'a') 
     end
     
     it 'should forward :method=>:post calls to #post with a special header' do
       net_http.should_receive(:post).
-        with('/select', 'q=a', {}, {"Content-Type"=>"application/x-www-form-urlencoded"}).
+        with("http://127.0.0.1:8983/solr/select?q=a", "q=a", {"Content-Type"=>"application/x-www-form-urlencoded"}).
           and_return({:status_code=>200})
       net_http.request('/select', {:q=>'a'}, :method=>:post)
     end
     
     it 'should forward data calls to #post' do
       net_http.should_receive(:post).
-        with("/update", "<optimize/>", {}, {"Content-Type"=>"text/xml; charset=utf-8"}).
+        with("http://127.0.0.1:8983/solr/update", "<optimize/>", {"Content-Type"=>"text/xml; charset=utf-8"}).
           and_return({:status_code=>200})
       net_http.request('/update', {}, '<optimize/>')
     end
@@ -61,20 +61,15 @@ describe RSolr::Connection::NetHttp do
         with('/solr/select?q=1').
           and_return(net_http_response)
       
-      context = net_http.send(:get, '/select', :q=>1)
+      context = net_http.send(:get, '/solr/select?q=1')
       context.should be_a(Hash)
       
-      keys = [:data, :body, :status_code, :path, :url, :headers, :params, :message]
+      keys = [:body, :status_code, :message]
       context.keys.size.should == keys.size
       context.keys.all?{|key| keys.include?(key) }.should == true
       
-      context[:data].should == nil
       context[:body].should == 'The Response'
       context[:status_code].should == 200
-      context[:path].should == '/select'
-      context[:url].should == 'http://127.0.0.1:8983/solr/select?q=1'
-      context[:headers].should == {}
-      context[:params].should == {:q=>1}
       context[:message].should == 'OK'
     end
     
@@ -90,20 +85,15 @@ describe RSolr::Connection::NetHttp do
       c.should_receive(:post).
         with('/solr/update', '<rollback/>', {}).
           and_return(net_http_response)
-      context = net_http.send(:post, '/update', '<rollback/>')
+      context = net_http.send(:post, '/solr/update', '<rollback/>')
       context.should be_a(Hash)
       
-      keys = [:data, :body, :status_code, :path, :url, :headers, :params, :message]
+      keys = [:body, :status_code, :message]
       context.keys.size.should == keys.size
       context.keys.all?{|key| keys.include?(key) }.should == true
       
-      context[:data].should == '<rollback/>'
       context[:body].should == 'The Response'
       context[:status_code].should == 200
-      context[:path].should == '/update'
-      context[:url].should == 'http://127.0.0.1:8983/solr/update'
-      context[:headers].should == {}
-      context[:params].should == {}
       context[:message].should == 'OK'
     end
     

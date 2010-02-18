@@ -51,9 +51,9 @@ describe RSolr::Connection::Requestable do
     include RequestableHelper
     
     it 'should send a get to itself' do
-      expected_response = {:status_code => 200}
+      expected_response = {:path=>"/blah", :params=>{:id=>1}, :query=>"id=1", :data=>nil, :url=>"http://127.0.0.1:8983/solr/blah?id=1", :status_code=>200}
       requestable.should_receive(:get).
-        with('/blah', {:id=>1}).
+        with("http://127.0.0.1:8983/solr/blah?id=1").
         and_return(expected_response)
       requestable.request('/blah', :id=>1).should == expected_response
     end
@@ -61,7 +61,7 @@ describe RSolr::Connection::Requestable do
     it 'should raise an error if the status_code is not 200' do
       expected_response = {:status_code => 503}
       requestable.should_receive(:get).
-        with('/blah', {:id=>1}).
+        with("http://127.0.0.1:8983/solr/blah?id=1").
         and_return(expected_response)
       lambda{
         requestable.request('/blah', :id=>1)
@@ -69,20 +69,20 @@ describe RSolr::Connection::Requestable do
     end
     
     it 'should send a post to itself if data is supplied' do
-      expected_response = {:status_code => 200}
+      expected_response = {:path=>"/blah", :params=>{:id=>1}, :query=>"id=1", :data=>"<commit/>", :headers=>{"Content-Type"=>"text/xml; charset=utf-8"}, :url=>"http://127.0.0.1:8983/solr/blah?id=1", :status_code=>200}
       my_data = "<commit/>"
       post_headers = {"Content-Type"=>"text/xml; charset=utf-8"}
       requestable.should_receive(:post).
-        with('/blah', my_data, {:id=>1}, post_headers).
+        with("http://127.0.0.1:8983/solr/blah?id=1", "<commit/>", {"Content-Type"=>"text/xml; charset=utf-8"}).
         and_return(expected_response)
       requestable.request('/blah', {:id=>1}, my_data).should == expected_response
     end
     
     it 'should send a post to itself when :method=>:post is set even if no POST data is supplied' do
-      expected_response = {:status_code => 200}
+      expected_response = {:path=>"/blah", :params=>{}, :query=>"", :data=>"", :headers=>{"Content-Type"=>"application/x-www-form-urlencoded"}, :url=>"http://127.0.0.1:8983/solr/blah", :status_code=>200}
       post_headers = {"Content-Type"=>"application/x-www-form-urlencoded"}
       requestable.should_receive(:post).
-        with('/blah', "", {}, post_headers).
+        with("http://127.0.0.1:8983/solr/blah", "", {"Content-Type"=>"application/x-www-form-urlencoded"}).
         and_return(expected_response)
       requestable.request('/blah', {}, :method => :post).should == expected_response
     end

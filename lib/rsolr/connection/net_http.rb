@@ -16,23 +16,13 @@ class RSolr::Connection::NetHttp
     end
   end
   
-  def get context
-    begin
-      net_http_response = self.connection.get context[:url]
-    rescue
-      raise "#{$!} -> #{context.inspect}"
-    end
+  def get url
+    net_http_response = self.connection.get url
     {:body => net_http_response.body, :status_code => net_http_response.code.to_i, :message => net_http_response.message}
   end
   
-  def post context
-    #url = self.build_url path, params
-    #context = create_request_context url, path, params, data, headers
-    begin
-      net_http_response = self.connection.post context[:url], context[:data], context[:headers]
-    rescue
-      raise "#{$!} -> #{context.inspect}"
-    end
+  def post url, data, headers={}
+    net_http_response = self.connection.post url, data, headers
     {:body => net_http_response.body, :status_code => net_http_response.code.to_i, :message => net_http_response.message}
   end
   
