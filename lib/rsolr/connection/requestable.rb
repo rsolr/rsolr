@@ -25,20 +25,39 @@ module RSolr::Connection::Requestable
   def request path, params={}, *extra
     opts = extra[-1].kind_of?(Hash) ? extra.pop : {}
     data = extra[0]
+    context = create_request_context path, params, data
     # force a POST, use the query string as the POST body
     if opts[:method] == :post and data.to_s.empty?
-      http_context = self.post(path, hash_to_query(params), {}, {'Content-Type' => 'application/x-www-form-urlencoded'})
+      http_context = self.post context.merge!(:headers => {'Content-Type' => 'application/x-www-form-urlencoded'})
     else
       if data
         # standard POST, using "data" as the POST body
-        http_context = self.post(path, data, params, {"Content-Type" => 'text/xml; charset=utf-8'})
+        http_context = self.post context.merge!(:headers => {'Content-Type' => 'text/xml; charset=utf-8'})
       else
         # standard GET
-        http_context = self.get(path, params)
+        http_context = self.get context
       end
     end
     raise RSolr::RequestError.new("Solr Response: #{http_context[:message]}") unless http_context[:status_code] == 200
-    http_context
+    context.merge http_context
+  end
+  
+  def create_request_context path, params, data
+    url = build_url path, params
+    full_url = prepend_base url
+    context = {:url => full_url, :params => params, :query => hash_to_query(params), :data => data}
+  end
+  
+  # accepts a path/string and optional hash of query params
+  def build_url path, params={}
+    full_path = @uri.path + path
+    super full_path, params, @uri.query
+  end
+  
+  def prepend_base url
+    full_url = "#{@uri.scheme}://#{@uri.host}"
+    full_url += @uri.port ? ":#{@uri.port}" : ''
+    full_url += url
   end
   
 end

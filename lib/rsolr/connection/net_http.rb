@@ -16,38 +16,24 @@ class RSolr::Connection::NetHttp
     end
   end
   
-  def get path, params={}
-    url = self.build_url path, params
-    net_http_response = self.connection.get url
-    create_http_context net_http_response, url, path, params
+  def get context
+    begin
+      net_http_response = self.connection.get context[:url]
+    rescue
+      raise "#{$!} -> #{context.inspect}"
+    end
+    {:body => net_http_response.body, :status_code => net_http_response.code.to_i, :message => net_http_response.message}
   end
   
-  def post path, data, params={}, headers={}
-    url = self.build_url path, params
-    net_http_response = self.connection.post url, data, headers
-    create_http_context net_http_response, url, path, params, data, headers
-  end
-  
-  def create_http_context net_http_response, url, path, params, data=nil, headers={}
-    full_url = "#{@uri.scheme}://#{@uri.host}"
-    full_url += @uri.port ? ":#{@uri.port}" : ''
-    full_url += url
-    {
-      :status_code=>net_http_response.code.to_i,
-      :url=>full_url,
-      :body=> encode_utf8(net_http_response.body),
-      :path=>path,
-      :params=>params,
-      :data=>data,
-      :headers=>headers,
-      :message => net_http_response.message
-    }
-  end
-  
-  # accepts a path/string and optional hash of query params
-  def build_url path, params={}
-    full_path = @uri.path + path
-    super full_path, params, @uri.query
+  def post context
+    #url = self.build_url path, params
+    #context = create_request_context url, path, params, data, headers
+    begin
+      net_http_response = self.connection.post context[:url], context[:data], context[:headers]
+    rescue
+      raise "#{$!} -> #{context.inspect}"
+    end
+    {:body => net_http_response.body, :status_code => net_http_response.code.to_i, :message => net_http_response.message}
   end
   
 end
