@@ -2,6 +2,12 @@ require File.join(File.dirname(__FILE__), '..', 'lib', 'rsolr')
 
 solr = RSolr.connect
 
+response = solr.select(:q => 'asd')
+
+puts response.raw.inspect
+
+exit
+
 # r = solr.request "/admin/cores", :action => "STATUS"
 # puts r.inspect
 

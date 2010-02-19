@@ -18,12 +18,12 @@ class RSolr::Connection::NetHttp
   
   def get url
     net_http_response = self.connection.get url
-    {:body => net_http_response.body, :status_code => net_http_response.code.to_i, :message => net_http_response.message}
+    [net_http_response.body, net_http_response.code.to_i, net_http_response.message]
   end
   
   def post url, data, headers={}
     net_http_response = self.connection.post url, data, headers
-    {:body => net_http_response.body, :status_code => net_http_response.code.to_i, :message => net_http_response.message}
+    [net_http_response.body, net_http_response.code.to_i, net_http_response.message]
   end
   
 end

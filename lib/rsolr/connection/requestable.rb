@@ -1,4 +1,8 @@
 # A module that defines the interface and top-level logic for http based connection classes.
+# Requestable provides URL parsing and handles proxy logic.
+
+# It should probably be re-named to HttpRequest or something?
+
 module RSolr::Connection::Requestable
   
   include RSolr::Connection::Utils
@@ -27,8 +31,44 @@ module RSolr::Connection::Requestable
     extra = extra.dup
     opts = extra[-1].kind_of?(Hash) ? extra.pop : {}
     data = extra[0]
-    context = create_request_context path, params, data
     
+    context = create_request_context path, params, data, opts
+    
+    error = nil
+    
+    begin
+      
+      if context[:data]
+        response = self.post context[:url], context[:data], context[:headers]
+      else
+        response = self.get context[:url]
+      end
+      
+      body, status_code, message = response
+      
+      # merge the response into the http context
+      context.merge!(:body => body, :status_code => status_code, :message => message)
+      
+    rescue
+      # throw RequestError?
+      context[:message] = $!.to_s
+    end
+    
+    # if no :message but a non-200, throw a "SolrRequestError" ?
+    
+    error = (context[:message] || "Non-200 Response Status Code") unless context[:status_code] == 200
+    
+    raise RSolr::RequestError.new("#{error} -> #{context.inspect}") if error
+    
+    context
+  end
+  
+  # -> should this stuff be in a "ReqResContext" class? ->
+  
+  def create_request_context path, params, data=nil, opts={}
+    url = build_url path, params
+    full_url = prepend_base url
+    context = {:path => path, :url => full_url, :params => params, :query => hash_to_query(params), :data => data}
     if opts[:method] == :post
       raise "Don't send POST data when using :method => :post" unless data.to_s.empty?
       # force a POST, use the query string as the POST body
@@ -37,26 +77,7 @@ module RSolr::Connection::Requestable
       # standard POST, using "data" as the POST body
       context.merge! :headers => {'Content-Type' => 'text/xml; charset=utf-8'}
     end
-    
-    error = nil
-    response = {}
-    begin
-      response = context[:data] ? self.post(context[:url], context[:data], context[:headers]) : self.get(context[:url])
-    rescue
-      error = $!.to_s
-    end
-    
-    error = (response[:message].inspect || "Solr Error") unless response[:status_code] == 200
-    
-    raise RSolr::RequestError.new("#{error} -> #{context.inspect}") if error
-    
-    context.merge response
-  end
-  
-  def create_request_context path, params, data
-    url = build_url path, params
-    full_url = prepend_base url
-    context = {:path => path, :url => full_url, :params => params, :query => hash_to_query(params), :data => data}
+    context
   end
   
   # accepts a path/string and optional hash of query params

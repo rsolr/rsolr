@@ -97,7 +97,7 @@ class RSolr::Client
   end
   
   # shortcut to RSolr::Message::Generator
-  def message *opts
+  def message
     @message ||= RSolr::Message::Generator.new
   end
   
