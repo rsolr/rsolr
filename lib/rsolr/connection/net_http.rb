@@ -16,6 +16,7 @@ class RSolr::Connection::NetHttp
     end
   end
   
+  # maybe follow Rack and do [status, headers, body]
   def get url
     net_http_response = self.connection.get url
     [net_http_response.body, net_http_response.code.to_i, net_http_response.message]
