@@ -11,10 +11,6 @@ describe RSolr::Connection::NetHttp do
     
     include NetHttpHelper
     
-    it 'should' do
-      hash_including(:id => 1)
-    end
-    
     it 'should forward simple, non-data calls to #get' do
       net_http.should_receive(:create_request_context).
         with("/select", {:q=>"a"}, nil, {}).
