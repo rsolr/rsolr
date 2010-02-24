@@ -28,6 +28,7 @@ module RSolr::Connection::Requestable
     # force a POST, use the query string as the POST body
     if opts[:method] == :post and data.to_s.empty?
       http_context = self.post(path, hash_to_query(params), {}, {'Content-Type' => 'application/x-www-form-urlencoded'})
+      http_context[:params] = params # preserve the parameters
     else
       if data
         # standard POST, using "data" as the POST body

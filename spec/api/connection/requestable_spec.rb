@@ -86,6 +86,16 @@ describe RSolr::Connection::Requestable do
         and_return(expected_response)
       requestable.request('/blah', {}, :method => :post).should == expected_response
     end
+
+    it 'should preserve params and send a post to itself when :method=>:post is set and no POST data is specified' do
+      post_response = {:status_code => 200}
+      expected_response = {:status_code => 200, :params => {:q => "query"}}
+      post_headers = {"Content-Type"=>"application/x-www-form-urlencoded"}
+      requestable.should_receive(:post).
+        with('/blah', "q=query", {}, post_headers).
+        and_return(post_response)
+      requestable.request('/blah', {:q => "query"}, :method => :post).should == expected_response
+    end
     
   end
   
