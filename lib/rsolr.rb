@@ -47,4 +47,7 @@ module RSolr
   # RequestError is a common/generic exception class used by the adapters
   class RequestError < RuntimeError; end
   
+  # TODO: The connection drivers need to start raising this...
+  class ConnectionError < RuntimeError; end
+  
 end
