@@ -148,11 +148,20 @@ describe RSolr::Connection::Requestable do
     
     it 'should send a post to itself when :method=>:post is set even if no POST data is supplied' do
       requestable.should_receive(:post).
-        with("http://127.0.0.1:8983/solr/blah", "", {"Content-Type"=>"application/x-www-form-urlencoded"}).
+        with("http://127.0.0.1:8983/solr/blah?q=testing", "q=testing", {"Content-Type"=>"application/x-www-form-urlencoded"}).
           and_return(["", 200, "OK"])
-      requestable.request('/blah', {}, :method => :post)#.should == expected_response
+      response = requestable.request('/blah', {:q => "testing"}, :method => :post)#.should == expected_response
+      response[:body].should == ""
+      response[:path].should == "/blah"
+      response[:message].should == "OK"
+      response[:status_code].should == 200
+      response[:params].should == {:q=>"testing"}
+      response[:headers].should == {"Content-Type"=>"application/x-www-form-urlencoded"}
+      response[:data].should == "q=testing"
+      response[:query].should == "q=testing"
+      response[:url].should == "http://127.0.0.1:8983/solr/blah?q=testing"
     end
-    
+        
   end
   
 end
