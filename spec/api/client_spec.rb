@@ -94,26 +94,6 @@ describe RSolr::Client do
 
   end
 
-  context :ping do
-    it 'should forwad #ping? calls to the connection' do
-      client.connection.should_receive(:request).
-        with('/admin/ping', :wt => :ruby ).
-        and_return( :params => { :wt => :ruby },
-                    :status_code => 200,
-                    :body => "{'responseHeader'=>{'status'=>0,'QTime'=>44,'params'=>{'echoParams'=>'all','echoParams'=>'all','q'=>'solrpingquery','qt'=>'standard','wt'=>'ruby'}},'status'=>'OK'}" )
-      client.ping?
-    end
-
-    it 'should raise an error if the ping service is not available' do
-      client.connection.should_receive(:request).
-        with('/admin/ping', :wt => :ruby ).
-        # the first part of the what the message would really be
-        and_raise( RSolr::RequestError.new("Solr Response: pingQuery_not_configured_consider_registering_PingRequestHandler_with_the_name_adminping_instead__") )
-        lambda { client.ping? }.should raise_error( RSolr::RequestError )
-    end
-    
-  end
-  
   context :adapt_response do
     
     it 'should not try to evaluate ruby when the :qt is not :ruby' do

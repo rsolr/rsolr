@@ -161,7 +161,7 @@ describe RSolr::Connection::Requestable do
       response[:query].should == "q=testing"
       response[:url].should == "http://127.0.0.1:8983/solr/blah?q=testing"
     end
-        
+    
   end
   
 end
