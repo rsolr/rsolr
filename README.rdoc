@@ -135,3 +135,5 @@ The raw is a hash that contains the generated params, url, path, post data, head
 * Matthew Rudy
 * Fouad Mardini
 * Jeremy Hinegardner
+* Nathan Witmer
+* Craig Smith
