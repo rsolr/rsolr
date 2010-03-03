@@ -58,13 +58,22 @@ module RSolr::Connection::Utils
   #   ?q=blah&fq=blah&fq=blah&facet.field=location_facet&facet.field=format.facet
   #
   # if a value is empty/nil etc., it is not added
-  def hash_to_query(params)
-    mapped = params.map do |k, v|
-      next if v.to_s.empty?
-      if v.class == Array
-        hash_to_query(v.map { |x| [k, x] })
+  def hash_to_query(params, parent_key = nil)
+    mapped = params.map do |key, value|
+      parent_and_key = [parent_key, key.to_s].compact.join(".")
+      next if value.to_s.empty?
+      case value
+      when Array
+        # solr does not accept multiple instances of the fl parameter
+        if key.to_s == "fl"
+          build_param key, value.flatten.join(",")
+        else
+          hash_to_query(value.map { |v| [key, v] }, parent_key)
+        end
+      when Hash
+        hash_to_query(value, parent_and_key)
       else
-        build_param k, v
+        build_param parent_and_key, value
       end
     end
     mapped.compact.join("&")

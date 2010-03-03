@@ -39,10 +39,28 @@ describe RSolr::Connection::Utils do
       utils.hash_to_query(my_params).should == expected
     end
     
-    it 'should escape comlex queries, part 2' do
+    it 'should escape complex queries, part 2' do
       my_params = {'q' => '+popularity:[10 TO *] +section:0'}
       expected = 'q=%2Bpopularity%3A%5B10+TO+%2A%5D+%2Bsection%3A0'
       utils.hash_to_query(my_params).should == expected
+    end
+
+    it 'should convert an fl array parameter as a single string' do
+      params = {'fl' => %w(foo bar)}
+      expected = 'fl=foo%2Cbar'
+      utils.hash_to_query(params).should == expected
+    end
+
+    it 'should not touch string values for the fl parameter' do
+      params = {'fl' => "foo, bar"}
+      expected = 'fl=foo%2C+bar'
+      utils.hash_to_query(params).should == expected
+    end
+
+    it 'converts nested fields' do
+      params = {:facet => {:field => ['location_facet', 'format_facet']}}
+      expected = "facet.field=location_facet&facet.field=format_facet"
+      utils.hash_to_query(params).should == expected
     end
     
   end
