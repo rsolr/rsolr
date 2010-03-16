@@ -39,9 +39,11 @@ module RSolr::Connection::Requestable
     begin
       
       if context[:data]
-        response = self.post context[:url], context[:data], context[:headers]
+        response = self.post context[:path], context[:data], context[:headers]
+      elsif opts[:method] == :post
+        response = self.post context[:path], context[:query], context[:headers]
       else
-        response = self.get context[:url]
+        response = self.get context[:path]
       end
       
       body, status_code, message = response
@@ -66,9 +68,7 @@ module RSolr::Connection::Requestable
   # -> should this stuff be in a "ReqResContext" class? ->
   
   def create_request_context path, params, data=nil, opts={}
-    url = build_url path, params
-    full_url = prepend_base url
-    context = {:path => path, :url => full_url, :params => params, :query => hash_to_query(params), :data => data}
+    context = {:host => base_url, :path => build_url(path), :params => params, :query => hash_to_query(params), :data => data}
     if opts[:method] == :post
       raise "Don't send POST data when using :method => :post" unless data.to_s.empty?
       # force a POST, use the query string as the POST body
@@ -76,6 +76,8 @@ module RSolr::Connection::Requestable
     elsif data
       # standard POST, using "data" as the POST body
       context.merge! :headers => {'Content-Type' => 'text/xml; charset=utf-8'}
+    else
+      context.merge! :path => build_url(path, params)
     end
     context
   end
@@ -86,10 +88,8 @@ module RSolr::Connection::Requestable
     super full_path, params, @uri.query
   end
   
-  def prepend_base url
-    full_url = "#{@uri.scheme}://#{@uri.host}"
-    full_url += @uri.port ? ":#{@uri.port}" : ''
-    full_url += url
+  def base_url
+    "#{@uri.scheme}://#{@uri.host}" + (@uri.port ? ":#{@uri.port}" : "")
   end
-  
+
 end

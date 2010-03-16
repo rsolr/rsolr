@@ -14,23 +14,23 @@ describe RSolr::Connection::NetHttp do
     it 'should forward simple, non-data calls to #get' do
       net_http.should_receive(:create_request_context).
         with("/select", {:q=>"a"}, nil, {}).
-          and_return(:path=>"/select", :params=>{:q=>"a"}, :data=>nil, :query=>"q=a", :url=>"http://127.0.0.1:8983/solr/select?q=a")
+          and_return(:path=>"/solr/select?q=a", :params=>{:q=>"a"}, :data=>nil, :query=>"q=a", :host=>"http://127.0.0.1:8983")
       net_http.should_receive(:get).
-        with("http://127.0.0.1:8983/solr/select?q=a").
+        with("/solr/select?q=a").
           and_return(['', 200, 'OK'])
       net_http.request('/select', :q=>'a')
     end
     
     it 'should forward :method=>:post calls to #post with a special header' do
       net_http.should_receive(:post).
-        with("http://127.0.0.1:8983/solr/select?q=a", "q=a", {"Content-Type"=>"application/x-www-form-urlencoded"}).
+        with("/solr/select", "q=a", {"Content-Type"=>"application/x-www-form-urlencoded"}).
           and_return(["", 200, "OK"])
       net_http.request('/select', {:q=>'a'}, :method=>:post)
     end
     
     it 'should forward data calls to #post' do
       net_http.should_receive(:post).
-        with("http://127.0.0.1:8983/solr/update", "<optimize/>", {"Content-Type"=>"text/xml; charset=utf-8"}).
+        with("/solr/update", "<optimize/>", {"Content-Type"=>"text/xml; charset=utf-8"}).
           and_return(["", 200, "OK"])
       net_http.request('/update', {}, '<optimize/>')
     end
