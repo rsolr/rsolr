@@ -69,9 +69,9 @@ describe RSolr::Connection::NetHttp do
       
       context.size.should == 3
       
-      context[0].should == 'The Response'
-      context[1].should == 200
-      context[2].should == 'OK'
+      context[0].should == 200
+      context[1].should == 'OK'
+      context[2].should == 'The Response'
     end
     
     it 'should make a POST request as expected' do
@@ -91,9 +91,9 @@ describe RSolr::Connection::NetHttp do
       
       context.size.should == 3
       
-      context[0].should == 'The Response'
-      context[1].should == 200
-      context[2].should == 'OK'
+      context[0].should == 200
+      context[1].should == 'OK'
+      context[2].should == 'The Response'
     end
     
   end
