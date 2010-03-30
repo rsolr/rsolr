@@ -1,5 +1,5 @@
 # Helpful utility methods for building queries to a Solr server
-# This includes helpers that the Direct connection can use.
+# This includes helpers that the Direct connection can use --  not specific to http, for example
 module RSolr::Connection::Utils
   
   # Performs URI escaping so that you can construct proper
@@ -19,7 +19,7 @@ module RSolr::Connection::Utils
       string.force_encoding(Encoding::UTF_8) : string
   end
   
-  # Return the bytesize of String; uses String#length under Ruby 1.8 and
+  # Return the bytesize of String; uses String#size under Ruby 1.8 and
   # String#bytesize under 1.9.
   if ''.respond_to?(:bytesize)
     def bytesize(string)
@@ -53,11 +53,11 @@ module RSolr::Connection::Utils
   #
   # converts hash into URL query string, keys get an alpha sort
   # if a value is an array, the array values get mapped to the same key:
-  #   hash_to_query(:q=>'blah', :fq=>['blah', 'blah'], :facet=>{:field=>['location_facet', 'format_facet']})
+  #   hash_to_query(:q=>'blah-query', :fq=>['f1', 'f1'], :facet=>true, 'facet.field'=>['location_facet', 'format_facet'])
   # returns:
-  #   ?q=blah&fq=blah&fq=blah&facet.field=location_facet&facet.field=format.facet
+  #   ?q=blah-query&fq=f1&fq=f2&facet=true&facet.field=location_facet&facet.field=format.facet
   #
-  # if a value is empty/nil etc., it is not added
+  # if a value is empty/nil etc., it is tossed out
   #
   def hash_to_query(params)
     mapped = params.map do |k, v|
