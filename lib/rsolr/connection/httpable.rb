@@ -47,7 +47,7 @@ module RSolr::Connection::Httpable
       end
       
       # spray out our response into variables...
-      body, status_code, message = response
+      status_code, message, body = response
       
       # merge the response into the http context
       context.merge!(:body => body, :status_code => status_code, :message => message)
@@ -60,7 +60,7 @@ module RSolr::Connection::Httpable
     # if no :message but a non-200, throw a "SolrRequestError" ?
     unless context[:status_code] == 200
       error = context[:message] || "Non-200 Response Status Code" 
-      raise RSolr::RequestError.new("#{error} -> #{context.inspect}")
+      raise RSolr::RequestError.new(context)
     end
     
     context

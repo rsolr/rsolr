@@ -107,7 +107,7 @@ describe RSolr::Connection::Httpable do
           and_return({:path => '/solr/admin/ping'})
       httpable.should_receive(:get).
         with('/solr/admin/ping').
-          and_return(["asdfasdf", 200, "OK"])
+          and_return([200, "OK", "asdfasdf"])
       response = httpable.request '/admin/ping'
       response.should == {:status_code=>200, :message=>"OK", :path=>"/solr/admin/ping", :body=>"asdfasdf"}
     end
@@ -115,7 +115,7 @@ describe RSolr::Connection::Httpable do
     it 'should send a get to itself with params' do
       httpable.should_receive(:get).
         with("/solr/blahasdf?id=1").
-          and_return(["", 200, "OK"])
+          and_return([200, "OK", ""])
       r = httpable.request('/blahasdf', :id=>1)
       r.should == {:status_code=>200, :path=>"/solr/blahasdf?id=1", :params=>{:id=>1}, :message=>"OK", :data=>nil, :query=>"id=1", :host=>"http://127.0.0.1:8983", :body=>""}
     end
@@ -132,14 +132,14 @@ describe RSolr::Connection::Httpable do
     it 'should send a post to itself if data is supplied' do
       httpable.should_receive(:post).
         with("/solr/blah", "<commit/>", {"Content-Type"=>"text/xml; charset=utf-8"}).
-          and_return(["", 200, "OK"])
+          and_return([200, "OK", ""])
       httpable.request('/blah', {:id=>1}, "<commit/>")#.should == expected_response
     end
     
     it 'should send a post to itself when :method=>:post is set even if no POST data is supplied' do
       httpable.should_receive(:post).
         with("/solr/blah", "q=testing", {"Content-Type"=>"application/x-www-form-urlencoded"}).
-          and_return(["", 200, "OK"])
+          and_return([200, "OK", ""])
       response = httpable.request('/blah', {:q => "testing"}, :method => :post)#.should == expected_response
       response[:body].should == ""
       response[:path].should == "/solr/blah"

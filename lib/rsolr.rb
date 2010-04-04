@@ -45,9 +45,24 @@ module RSolr
   extend Char
   
   # RequestError is a common/generic exception class used by the adapters
-  class RequestError < RuntimeError; end
+  class RequestError < RuntimeError
+    attr_reader :context
+    def initialize context
+      @context = context
+      super
+    end
+    def to_s
+      "#{context[:error]} -> #{context.inspect}"
+    end
+  end
   
   # TODO: The connection drivers need to start raising this...
   class ConnectionError < RuntimeError; end
   
+end
+
+begin 
+  RSolr.connect.select
+rescue 
+  puts $!.context[:status_code]
 end

@@ -17,21 +17,21 @@ describe RSolr::Connection::NetHttp do
           and_return(:path=>"/solr/select?q=a", :params=>{:q=>"a"}, :data=>nil, :query=>"q=a", :host=>"http://127.0.0.1:8983")
       net_http.should_receive(:get).
         with("/solr/select?q=a").
-          and_return(['', 200, 'OK'])
+          and_return([200, 'OK', ''])
       net_http.request('/select', :q=>'a')
     end
     
     it 'should forward :method=>:post calls to #post with a special header' do
       net_http.should_receive(:post).
         with("/solr/select", "q=a", {"Content-Type"=>"application/x-www-form-urlencoded"}).
-          and_return(["", 200, "OK"])
+          and_return([200, "OK", ""])
       net_http.request('/select', {:q=>'a'}, :method=>:post)
     end
     
     it 'should forward data calls to #post' do
       net_http.should_receive(:post).
         with("/solr/update", "<optimize/>", {"Content-Type"=>"text/xml; charset=utf-8"}).
-          and_return(["", 200, "OK"])
+          and_return([200, "OK", ""])
       net_http.request('/update', {}, '<optimize/>')
     end
     
