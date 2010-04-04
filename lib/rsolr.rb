@@ -52,17 +52,11 @@ module RSolr
       super
     end
     def to_s
-      "#{context[:error]} -> #{context.inspect}"
+      context.inspect
     end
   end
   
   # TODO: The connection drivers need to start raising this...
   class ConnectionError < RuntimeError; end
   
-end
-
-begin 
-  RSolr.connect.select
-rescue 
-  puts $!.context[:status_code]
 end

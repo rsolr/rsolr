@@ -1,3 +1,20 @@
+Add check when initializing to see if host/path is valid and returns 200:
+	require 'open-uri'
+	require 'net/http'
+	def remote_file_exists?(url)
+	  begin
+	    url = URI.parse(url)
+	    Net::HTTP.start(url.host, url.port) do |http|
+	      return http.head(url.request_uri).code == "200"
+	    end
+	  rescue
+	    return false
+	  end
+	end
+	puts remote_file_exists?("http://localhost:7676")
+
+################################################################################
+
 find a way to re-use connection drivers for executing core-admin commands
 	solr = RSolr.connect :url => 'http://localhost:8983/solr', :core => 'production'
 	solr = RSolr.connect :url => 'http://localhost:8983/solr', :default_core => 'production' <- default?
