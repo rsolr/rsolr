@@ -1,9 +1,9 @@
-0.13.0 - April 4, 2010
+0.13.0 - April 5, 2010
   Added support for proxy connections
   optimize, commit and add now can accept an "opts" hash
-  reworked error handling, http exceptions now carry complete http request/response context where possible
-    - errors messages dump out more information where possible
-  params are preserved when using :method => true
+  reworked error handling, http exceptions now carry complete http request/response #context where possible
+    - errors messages dump out all information where possible
+  params are preserved when using :method => :post
   updated contributors list!
 
 0.12.1 - February 4, 2010

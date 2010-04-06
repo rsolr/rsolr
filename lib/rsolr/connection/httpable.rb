@@ -28,41 +28,19 @@ module RSolr::Connection::Httpable
     extra = extra.dup
     opts = extra[-1].kind_of?(Hash) ? extra.pop : {}
     data = extra[0]
-    
     context = create_http_context path, params, data, opts
-    
-    error = nil
-    
     begin
-      
-      # if data is being sent, this is a POST
-      if context[:data]
-        response = self.post context[:path], context[:data], context[:headers]
-      # use POST if :method => :post
-      elsif opts[:method] == :post
-        response = self.post context[:path], context[:query], context[:headers]
-      # GET
-      else
-        response = self.get context[:path]
-      end
-      
       # spray out our response into variables...
-      status_code, message, body = response
-      
+      status_code, message, body = send_request context
       # merge the response into the http context
       context.merge!(:body => body, :status_code => status_code, :message => message)
-      
     rescue
       # throw RequestError?
-      context[:message] = $!.to_s
+      context[:message] ||= $!.to_s
     end
-    
-    # if no :message but a non-200, throw a "SolrRequestError" ?
     unless context[:status_code] == 200
-      error = context[:message] || "Non-200 Response Status Code" 
       raise RSolr::RequestError.new(context)
     end
-    
     context
   end
   
@@ -97,5 +75,19 @@ module RSolr::Connection::Httpable
   def base_url
     "#{@uri.scheme}://#{@uri.host}" + (@uri.port ? ":#{@uri.port}" : "")
   end
-
+  
+  protected
+  
+  # inspects the context hash and executes the request
+  def send_request context
+    # if data is being sent OR if :method => :post, this is a POST
+    post_body = opts[:method] == :post ? context[:query] : context[:data]
+    if post_body
+      post context[:path], post_body, context[:headers]
+    # GET
+    else
+      get context[:path]
+    end
+  end
+  
 end
