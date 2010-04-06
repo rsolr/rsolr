@@ -55,7 +55,7 @@ module RSolr::Connection::Httpable
     if opts[:method] == :post
       raise "Don't send POST data when using :method => :post" unless data.to_s.empty?
       # force a POST, use the query string as the POST body
-      context.merge! :data => hash_to_query(params), :headers => {'Content-Type' => 'application/x-www-form-urlencoded'}
+      context.merge! :data => context[:query], :headers => {'Content-Type' => 'application/x-www-form-urlencoded'}
     elsif data
       # standard POST, using "data" as the POST body
       context.merge! :headers => {'Content-Type' => 'text/xml; charset=utf-8'}
