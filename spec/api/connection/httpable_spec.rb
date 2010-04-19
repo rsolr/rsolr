@@ -77,15 +77,15 @@ describe RSolr::Connection::Httpable do
     
     it "should build a POST context" do
       r = httpable
-      result = r.create_http_context('/select', {:wt => :xml}, '<commit/>')
-      expected = {:path=>"/solr/select", :params=>{:wt=>:xml}, :headers=>{"Content-Type"=>"text/xml; charset=utf-8"}, :data=>"<commit/>", :query=>"wt=xml", :host=>"http://127.0.0.1:8983"}
+      result = r.create_http_context('/update', {:wt => :xml}, '<commit/>')
+      expected = {:path=>"/solr/update?wt=xml", :params=>{:wt=>:xml}, :headers=>{"Content-Type"=>"text/xml; charset=utf-8"}, :data=>"<commit/>", :query=>"wt=xml", :host=>"http://127.0.0.1:8983"}
       result.should == expected
     end
     
     it "should raise an exception when trying to use POST data AND :method => :post" do
       r = httpable
       lambda{
-        r.create_http_context('/select', {:wt => :xml}, '<commit/>', :method => :post)
+        r.create_http_context('/update', {:wt => :xml}, '<commit/>', :method => :post)
       }.should raise_error("Don't send POST data when using :method => :post")
     end
     
@@ -131,7 +131,7 @@ describe RSolr::Connection::Httpable do
     
     it 'should send a post to itself if data is supplied' do
       httpable.should_receive(:post).
-        with("/solr/blah", "<commit/>", {"Content-Type"=>"text/xml; charset=utf-8"}).
+        with("/solr/blah?id=1", "<commit/>", {"Content-Type"=>"text/xml; charset=utf-8"}).
           and_return([200, "OK", ""])
       httpable.request('/blah', {:id=>1}, "<commit/>")#.should == expected_response
     end

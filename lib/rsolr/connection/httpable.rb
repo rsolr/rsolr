@@ -45,22 +45,20 @@ module RSolr::Connection::Httpable
   end
   
   # -> should this stuff be in a "ReqResContext" class? ->
-  
+    
   # creates a Hash based "context"
   # that contains all of the information sent to Solr
   # The keys are:
   #   :host, :path, :params, :query, :data, :headers
   def create_http_context path, params, data=nil, opts={}
-    context = {:host => base_url, :path => build_url(path), :params => params, :query => hash_to_query(params), :data => data}
+    context = {:host => base_url, :params => params, :query => hash_to_query(params), :data => data}
     if opts[:method] == :post
       raise "Don't send POST data when using :method => :post" unless data.to_s.empty?
       # force a POST, use the query string as the POST body
-      context.merge! :data => context[:query], :headers => {'Content-Type' => 'application/x-www-form-urlencoded'}
-    elsif data
-      # standard POST, using "data" as the POST body
-      context.merge! :headers => {'Content-Type' => 'text/xml; charset=utf-8'}
+      context.merge! :path => build_url(path), :data => context[:query], :headers => {'Content-Type' => 'application/x-www-form-urlencoded'}
     else
       context.merge! :path => build_url(path, params)
+      context.merge!(:headers => {'Content-Type' => 'text/xml; charset=utf-8'}) if data
     end
     context
   end
