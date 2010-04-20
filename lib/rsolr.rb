@@ -13,6 +13,7 @@ module RSolr
   autoload :Message, 'rsolr/message'
   autoload :Client, 'rsolr/client'
   autoload :Connection, 'rsolr/connection'
+  autoload :Uri, 'rsolr/uri'
   
   module Connectable
     
@@ -60,3 +61,8 @@ module RSolr
   class ConnectionError < RuntimeError; end
   
 end
+
+s = RSolr.connect
+r = s.select :q => '*:*'
+
+puts r.raw[:uri].scheme.inspect

@@ -13,7 +13,7 @@ class RSolr::Client
   # Send a request to a request handler using the method name.
   # Also proxies to the #paginate method if the method starts with "paginate_"
   def method_missing(method_name, *args, &blk)
-    request("/#{method_name}", *args, &blk)
+    request("#{method_name}", *args, &blk)
   end
   
   # sends data to the update handler
@@ -122,7 +122,7 @@ class RSolr::Client
   def adapt_response(connection_response)
     data = connection_response[:body]
     # if the wt is :ruby, evaluate the ruby string response
-    if connection_response[:params][:wt] == :ruby
+    if connection_response[:uri].params[:wt] == :ruby
       data = Kernel.eval(data)
     end
     # attach a method called #raw that returns the original connection response value

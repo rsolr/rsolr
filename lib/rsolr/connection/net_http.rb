@@ -17,13 +17,13 @@ class RSolr::Connection::NetHttp
   end
   
   # maybe follow Rack and do [status, headers, body]
-  def get url
-    net_http_response = self.connection.get url
+  def get uri
+    net_http_response = self.connection.get uri.to_s
     [net_http_response.code.to_i, net_http_response.message, net_http_response.body]
   end
   
-  def post url, data, headers={}
-    net_http_response = self.connection.post url, data, headers
+  def post uri, data, headers={}
+    net_http_response = self.connection.post uri.to_s, data, headers
     [net_http_response.code.to_i, net_http_response.message, net_http_response.body]
   end
   
