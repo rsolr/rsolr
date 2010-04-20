@@ -105,6 +105,7 @@ class RSolr::Client
   
   # sets default params etc.. - could be used as a mapping hook
   # type of request should be passed in here? -> map_params(:query, {})
+  # TODO: This should go into Httpable
   def map_params(params)
     params||={}
     {:wt=>:ruby}.merge(params)

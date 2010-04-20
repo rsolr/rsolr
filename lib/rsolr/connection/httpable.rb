@@ -1,6 +1,10 @@
 # A module that defines the interface and top-level logic for http based connection classes.
 # Httpable provides URL parsing and handles proxy logic.
 
+# TODO: Now that the URI stuff has been pushed out into RSolr::Uri,
+# Consider renaming to Requestable, so the direct handler can re-use
+# some of this.
+
 module RSolr::Connection::Httpable
   
   attr_reader :opts, :uri, :proxy
