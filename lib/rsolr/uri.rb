@@ -2,8 +2,9 @@ module RSolr::Uri
   
   attr_accessor :params
   
+  # TODO: Shouldn't have to do a weird array join here...
   def merge_with_params base, params = {}
-    n = merge base
+    n = merge([self.path,base].join('/'))
     n.extend RSolr::Uri
     n.params = params
     n.query = hash_to_query params

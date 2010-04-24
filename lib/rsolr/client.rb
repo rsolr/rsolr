@@ -2,6 +2,8 @@ class RSolr::Client
   
   attr_reader :connection
   
+  include RSolr::ContextApplicable
+  
   # "connection" is instance of:
   #   RSolr::Adapter::HTTP
   #   RSolr::Adapter::Direct (jRuby only)
@@ -105,30 +107,40 @@ class RSolr::Client
   
   # sets default params etc.. - could be used as a mapping hook
   # type of request should be passed in here? -> map_params(:query, {})
-  # TODO: This should go into Httpable
   def map_params(params)
     params||={}
     {:wt=>:ruby}.merge(params)
   end
-
-  # "connection_response" must be a hash with the following keys:
-  #   :params - a sub hash of standard solr params
-  #   : body - the raw response body from the solr server
-  # This method will evaluate the :body value if the params[:wt] == :ruby
-  # otherwise, the body is returned
-  # The return object has a special method attached called #raw
-  # This method gives you access to the original response from the connection,
-  # so you can access things like the actual :url sent to solr,
-  # the raw :body, original :params and original :data
-  def adapt_response(connection_response)
-    data = connection_response[:body]
-    # if the wt is :ruby, evaluate the ruby string response
-    if connection_response[:uri].params[:wt] == :ruby
-      data = Kernel.eval(data)
+  
+  # Thrown if the :wt is :ruby
+  # but the body wasn't succesfully parsed.
+  class InvalidRubyResponse < RuntimeError
+    include RSolr::Contextable
+    def initialize c
+      self.context = c
     end
-    # attach a method called #raw that returns the original connection response value
-    def data.raw; @raw end
-    data.send(:instance_variable_set, '@raw', connection_response)
+  end
+  
+  # This method will evaluate the :body value
+  # if the params[:uri].params[:wt] == :ruby
+  # ... otherwise, the body is returned as is.
+  # The return object has a special method attached called #context.
+  # This method gives you access to the original
+  # request and response from the connection.
+  # This method will raise an InvalidRubyResponse
+  # if the :wt => :ruby and the body
+  # couldn't be evaluated.
+  def adapt_response context
+    data = context[:response][:body]
+    if context[:request][:uri].params[:wt] == :ruby
+      begin
+        data = Kernel.eval data
+      rescue SyntaxError
+        raise InvalidRubyResponse.new(context)
+      end
+    end
+    data.extend RSolr::Contextable
+    data.context = context
     data
   end
   

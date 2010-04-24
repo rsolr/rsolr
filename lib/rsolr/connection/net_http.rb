@@ -8,23 +8,38 @@ class RSolr::Connection::NetHttp
   include RSolr::Connection::Httpable
   
   def connection
-    if @proxy
-      proxy_user, proxy_pass = @proxy.userinfo.split(/:/) if @proxy.userinfo
-      @connection ||= Net::HTTP.Proxy(@proxy.host, @proxy.port, proxy_user, proxy_pass).new(@uri.host, @uri.port)
-    else
-      @connection ||= Net::HTTP.new(@uri.host, @uri.port)
-    end
+    @connection ||= (
+      if @proxy
+        proxy_user, proxy_pass = @proxy.userinfo.split(/:/) if @proxy.userinfo
+        Net::HTTP.Proxy(@proxy.host, @proxy.port, proxy_user, proxy_pass).new(@uri.host, @uri.port)
+      else
+        Net::HTTP.new(@uri.host, @uri.port)
+      end
+    )
   end
   
-  # maybe follow Rack and do [status, headers, body]
+  # returns [status, headers, body]
   def get uri
-    net_http_response = self.connection.get uri.to_s
-    [net_http_response.code.to_i, net_http_response.message, net_http_response.body]
+    execute :get, uri
   end
   
+  # returns [status, headers, body]
   def post uri, data, headers={}
-    net_http_response = self.connection.post uri.to_s, data, headers
-    [net_http_response.code.to_i, net_http_response.message, net_http_response.body]
+    execute :post, uri, data, headers
+  end
+  
+  protected
+  
+  # making up for http://redmine.ruby-lang.org/issues/show/2708
+  def execute method, uri, data = nil, headers = {}
+    begin
+      net_http_response = method == :post ? self.connection.request_post(uri.to_s, data, headers) : self.connection.request_get(uri.to_s)
+    rescue NoMethodError
+      $!.message == "undefined method `closed?' for nil:NilClass" ?
+        raise(Errno::ECONNREFUSED.new) :
+        raise($!)
+    end
+    [net_http_response.code.to_i, net_http_response.to_hash, net_http_response.body]
   end
   
 end

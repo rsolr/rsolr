@@ -1,8 +1,16 @@
-
 require 'rubygems'
+
 $:.unshift File.dirname(__FILE__) unless $:.include?(File.dirname(__FILE__))
 
 module RSolr
+  
+  module Contextable
+    attr_reader :context
+    def context= c
+      raise "Can't set RSolr context, already set." if @context
+      @context = c
+    end
+  end
   
   def self.version
     @version ||= File.read(File.join(File.dirname(__FILE__), '..', 'VERSION'))
@@ -47,22 +55,27 @@ module RSolr
   
   # RequestError is a common/generic exception class used by the adapters
   class RequestError < RuntimeError
-    attr_reader :context
+    include Contextable
     def initialize context
-      @context = context
-      super
+      self.context = context
     end
     def to_s
-      context.inspect
+      "#{URI.decode(context[:request][:uri].to_s)} - #{context[:response][:status_code]}"
     end
   end
   
-  # TODO: The connection drivers need to start raising this...
-  class ConnectionError < RuntimeError; end
-  
 end
-
-s = RSolr.connect
-r = s.select :q => '*:*'
-
-puts r.raw[:uri].scheme.inspect
+# 
+# s = RSolr.connect :url => 'http://localhost:8983/solr/development'
+# begin
+#   r = s.select(:q => '*:*')
+# rescue
+#   puts "ERROR~"
+#   puts $!
+#   exit
+#   puts $!#.context.inspect
+# end
+# 
+# puts r.context[:response][:headers].inspect
+# 
+# exit
