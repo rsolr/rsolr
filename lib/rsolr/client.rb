@@ -32,6 +32,7 @@ class RSolr::Client
   #
   def request(path, params={}, *extra)
     response = @connection.request(path.to_s, map_params(params), *extra)
+    puts response.inspect
     adapt_response(response)
   end
   

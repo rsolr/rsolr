@@ -6,7 +6,7 @@ describe RSolr::Client do
     
     it 'a non-existent method should be forwarded to #method_missing and then to #request' do
       client.should_receive(:request).
-        with('/music', :q=>'Coltrane')
+        with('music', :q=>'Coltrane')
       client.music :q=>'Coltrane'
     end
     
@@ -16,7 +16,7 @@ describe RSolr::Client do
     
     it 'should forward /update to #request("/update")' do
       client.should_receive(:request)#.
-      #  with('/update', {:wt=>:ruby}, "my xml message")
+      #  with('update', {:wt=>:ruby}, "my xml message")
       client.update "my xml message"
     end
     
@@ -84,14 +84,19 @@ describe RSolr::Client do
   context :request do
     
     it 'should forward #request calls to the connection' do
+      base_uri = URI.parse('http://localhost:8983/solr/').extend(RSolr::Uri)
+      uri = base_uri.merge_with_params 'music', :q => 'Coltrane'
+      context = {:request => {:uri => uri}, :response => {:body => '{}'}}
       client.connection.should_receive(:request).
-        with('/music', :q=>'Coltrane', :wt=>:ruby).
+        with('music', :q=>'Coltrane', :wt=>:ruby).
           # empty params so that Client doesn't try to evalulate to Ruby;
           #   -- this happens if the :wt equal :ruby
-          and_return(:params=>{})
-      client.request '/music', :q=>'Coltrane'
+          and_return(context)
+      client.should_receive(:adapt_response).
+        with(context)
+      client.request 'music', :q=>'Coltrane'
     end
-
+    
   end
 
   context :adapt_response do
