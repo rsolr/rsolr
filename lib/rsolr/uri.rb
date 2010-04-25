@@ -24,7 +24,7 @@ module RSolr::Uri
   # Returns a query string param pair as a string.
   # Both key and value are escaped.
   def build_param(k,v)
-    "#{escape(k)}=#{escape(v)}"
+    "#{escape_query_value(k)}=#{escape_query_value(v)}"
   end
   
   # Return the bytesize of String; uses String#size under Ruby 1.8 and
@@ -60,7 +60,7 @@ module RSolr::Uri
   # query strings faster.  Use this rather than the cgi.rb
   # version since it's faster.
   # (Stolen from Rack).
-  def escape(s)
+  def escape_query_value(s)
     s.to_s.gsub(/([^ a-zA-Z0-9_.-]+)/n) {
       #'%'+$1.unpack('H2'*$1.size).join('%').upcase
       '%'+$1.unpack('H2'*bytesize($1)).join('%').upcase
