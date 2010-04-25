@@ -6,6 +6,9 @@ module RSolr
   
   module Contextable
     attr_reader :context
+    def initialize c
+      self.context = c
+    end
     def context= c
       raise "Can't set RSolr context, already set." if @context
       @context = c
@@ -56,26 +59,9 @@ module RSolr
   # RequestError is a common/generic exception class used by the adapters
   class RequestError < RuntimeError
     include Contextable
-    def initialize context
-      self.context = context
-    end
     def to_s
       "#{URI.decode(context[:request][:uri].to_s)} - #{context[:response][:status_code]}"
     end
   end
   
 end
-# 
-# s = RSolr.connect :url => 'http://localhost:8983/solr/development'
-# begin
-#   r = s.select(:q => '*:*')
-# rescue
-#   puts "ERROR~"
-#   puts $!
-#   exit
-#   puts $!#.context.inspect
-# end
-# 
-# puts r.context[:response][:headers].inspect
-# 
-# exit

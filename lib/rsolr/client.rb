@@ -2,8 +2,6 @@ class RSolr::Client
   
   attr_reader :connection
   
-  include RSolr::ContextApplicable
-  
   # "connection" is instance of:
   #   RSolr::Adapter::HTTP
   #   RSolr::Adapter::Direct (jRuby only)
@@ -21,7 +19,7 @@ class RSolr::Client
   # sends data to the update handler
   # data can be a string of xml, or an object that returns xml from its #to_xml method
   def update(data, params={})
-    request '/update', params, data
+    request 'update', params, data
   end
   
   # send request solr
@@ -33,7 +31,7 @@ class RSolr::Client
   #
   #
   def request(path, params={}, *extra)
-    response = @connection.request(path, map_params(params), *extra)
+    response = @connection.request(path.to_s, map_params(params), *extra)
     adapt_response(response)
   end
   
@@ -116,9 +114,6 @@ class RSolr::Client
   # but the body wasn't succesfully parsed.
   class InvalidRubyResponse < RuntimeError
     include RSolr::Contextable
-    def initialize c
-      self.context = c
-    end
   end
   
   # This method will evaluate the :body value

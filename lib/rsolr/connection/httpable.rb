@@ -5,11 +5,9 @@ module RSolr::Connection::Httpable
   
   attr_reader :opts, :uri, :proxy
   
-  include RSolr::ContextApplicable
-  
   # opts can have:
-  #   :url => 'http://localhost:8080/solr'
-  # TODO: Implement a ping here and throw an error if it fails.
+  #   :url => 'http://localhost:8080/solr/'
+  # TODO: Implement a ping here and throw an error if it fails?
   def initialize opts={}
     opts[:url] ||= 'http://127.0.0.1:8983/solr/'
     @opts = opts
@@ -18,12 +16,12 @@ module RSolr::Connection::Httpable
   end
   
   # send a request to the connection
-  # request '/select', :q=>'*:*'
+  # request 'select', :q=>'*:*'
   #
-  # request '/update', {:wt=>:xml}, '</commit>'
+  # request 'update', {:wt=>:xml}, '</commit>'
   # 
   # force a post where the post body is the param query
-  # request '/update', "<optimize/>", {:debugQuery => true}, {:method=>:post}
+  # request 'update', "<optimize/>", {:debugQuery => true}, {:method=>:post}
   #
   def request path, params={}, *extra
     extra = extra.dup
@@ -32,6 +30,12 @@ module RSolr::Connection::Httpable
     send_and_receive path, params, data, opts
   end
   
+  # Sends the request, returns a context hash with :request and :response keys
+  # or raises and error.
+  # If an error is raised, a "context" is attached
+  # which exposes the original request info:
+  #   $!.context[:request][:uri]
+  # * RSolr::RequestError is raised if the response code is NOT 200
   def send_and_receive path, params, data, opts
     context = {:request => create_request_context(path, params, data, opts)}
     begin
@@ -46,7 +50,7 @@ module RSolr::Connection::Httpable
     context
   end
   
-  # creates a Hash based "context"
+  # Creates a Hash based "context"
   # which contains all of the information sent to Solr
   # The keys are:
   #   :uri, :data, :headers
@@ -65,9 +69,9 @@ module RSolr::Connection::Httpable
   
   protected
   
-  # inspects the context hash and executes the request
-  # if data is being sent OR if :method => :post, this is a POST
-  # merge the response into the http context
+  # Inspects the context hash and executes the request.
+  # If data is being sent OR if :method => :post, this is a POST.
+  # Merges the :response into the "context".
   def execute_request request_context
     status_code, headers, body = request_context[:data] ? 
       post(request_context[:uri], request_context[:data], request_context[:headers]) : 
@@ -75,8 +79,11 @@ module RSolr::Connection::Httpable
     {:status_code => status_code, :headers => headers, :body => body}
   end
   
-  # creates a new (modified) URI object
+  # Creates a new (rsolr::uri modified) URI object.
+  # "url" is a url string.
+  # If the url doesn't end with a slash, one is appended.
   def new_uri url
+    url << '/' unless url[-1] == ?/
     URI.parse(url).extend RSolr::Uri
   end
   
