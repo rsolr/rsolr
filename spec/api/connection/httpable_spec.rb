@@ -74,14 +74,17 @@ describe RSolr::Connection::Httpable do
     it "should raise an exception when trying to use POST data AND :method => :post" do
       r = httpable
       lambda{
-        r.create_http_context('/update', {:wt => :xml}, '<commit/>', :method => :post)
+        r.create_request_context('/update', {:wt => :xml}, '<commit/>', :method => :post)
       }.should raise_error("Don't send POST data when using :method => :post")
     end
     
     it "should form-encoded POST context" do
       r = httpable
-      result = r.create_http_context('/select', {:q => 'some gigantic query string that is too big for GET (for example)'}, nil, :method => :post)
-      result.should == {:path=>"/solr/select", :params=>{:q=>"some gigantic query string that is too big for GET (for example)"}, :headers=>{"Content-Type"=>"application/x-www-form-urlencoded"}, :data=>"q=some+gigantic+query+string+that+is+too+big+for+GET+%28for+example%29", :query=>"q=some+gigantic+query+string+that+is+too+big+for+GET+%28for+example%29", :host=>"http://127.0.0.1:8983"}
+      result = r.create_request_context('select', {:q => 'some gigantic query string that is too big for GET (for example)'}, nil, :method => :post)
+      result[:uri].path.should == "/solr/select"
+      result[:uri].params.should == {:q=>"some gigantic query string that is too big for GET (for example)"}
+      result[:headers].should == {"Content-Type"=>"application/x-www-form-urlencoded"}
+      result[:data].should == "q=some+gigantic+query+string+that+is+too+big+for+GET+%28for+example%29"
     end
     
   end
@@ -90,15 +93,20 @@ describe RSolr::Connection::Httpable do
     
     include HttpableHelper
     
-    it "should be able to build a request context, pass the url to #get and return a full context" do
-      httpable.should_receive(:create_http_context).
-        with("/admin/ping", {}, nil, {}).
-          and_return({:path => '/solr/admin/ping'})
-      httpable.should_receive(:get).
-        with('/solr/admin/ping').
-          and_return([200, "OK", "asdfasdf"])
+    it "should be able to build a request context" do
+      httpable.should_receive(:execute_request).
+        with(hash_including({:data => nil, :uri => an_instance_of(URI::HTTP)})).
+          and_return({:status_code => 200})
       response = httpable.request '/admin/ping'
-      response.should == {:status_code=>200, :message=>"OK", :path=>"/solr/admin/ping", :body=>"asdfasdf"}
+    end
+    
+    it "should fail with a non-200 status code" do
+      httpable.should_receive(:execute_request).
+        with(hash_including({:data => nil, :uri => an_instance_of(URI::HTTP)})).
+          and_return({:status_code => 503})
+      lambda{
+        response = httpable.request '/admin/ping'
+      }.should raise_error(RSolr::RequestError)
     end
     
     it 'should send a get to itself with params' do
