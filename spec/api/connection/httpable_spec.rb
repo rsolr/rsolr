@@ -46,29 +46,13 @@ describe RSolr::Connection::Httpable do
     
   end
   
-  context :build_url do
-    
-    include HttpableHelper
-    
-    it 'should build a full path and create a query string' do
-      r = httpable
-      r.build_url("/select", :q=>1).should == '/solr/select?q=1'
-    end
-    
-    it 'should build a full path without a query string' do
-      r = httpable
-      r.build_url("/select").should == '/solr/select'
-    end
-    
-  end
-  
   context :create_http_context do
     
     include HttpableHelper
     
     it "should build a simple GET context" do
       r = httpable
-      result = r.create_http_context('/select', :q=>'a', :fq=>'b')
+      result = r.create_request_context('/select', :q=>'a', :fq=>'b')
       expected = {:path=>"/solr/select?q=a&fq=b", :params=>{:q=>"a", :fq=>"b"}, :data=>nil, :query=>"q=a&fq=b", :host=>"http://127.0.0.1:8983"}
       
       result.keys.all? {|v| expected.keys.include?(v) }
@@ -77,9 +61,14 @@ describe RSolr::Connection::Httpable do
     
     it "should build a POST context" do
       r = httpable
-      result = r.create_http_context('/update', {:wt => :xml}, '<commit/>')
-      expected = {:path=>"/solr/update?wt=xml", :params=>{:wt=>:xml}, :headers=>{"Content-Type"=>"text/xml; charset=utf-8"}, :data=>"<commit/>", :query=>"wt=xml", :host=>"http://127.0.0.1:8983"}
-      result.should == expected
+      result = r.create_request_context('update', {:wt => :xml}, '<commit/>')
+      expected_keys = [:uri, :headers, :data]
+      result.keys == expected_keys
+      result[:uri].path.should == "/solr/update"
+      result[:uri].query.should == 'wt=xml'
+      result[:uri].params.should == {:wt=>:xml}
+      result[:headers].should == {"Content-Type"=>"text/xml; charset=utf-8"}
+      result[:data].should == "<commit/>"
     end
     
     it "should raise an exception when trying to use POST data AND :method => :post" do
