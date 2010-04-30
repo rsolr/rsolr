@@ -102,15 +102,19 @@ describe RSolr::Client do
   context :adapt_response do
     
     it 'should not try to evaluate ruby when the :qt is not :ruby' do
+      u = URI.parse('http://localhost:8983/solr').extend(RSolr::Uri)
+      uri = u.merge_with_params 'select', {}
       body = '{:time=>"NOW"}'
-      result = client.send(:adapt_response, {:body=>body, :params=>{}})
+      result = client.send(:adapt_response, {:request => {:uri => uri}, :response => {:body=>body}})
       result.should be_a(String)
       result.should == body
     end
     
     it 'should evaluate ruby responses when the :wt is :ruby' do
+      u = URI.parse('http://localhost:8983/solr').extend(RSolr::Uri)
+      uri = u.merge_with_params 'select', {:wt => :ruby}
       body = '{:time=>"NOW"}'
-      result = client.send(:adapt_response, {:body=>body, :params=>{:wt=>:ruby}})
+      result = client.send(:adapt_response, {:request => {:uri => uri}, :response => {:body=>body}})
       result.should be_a(Hash)
       result.should == {:time=>"NOW"}
     end

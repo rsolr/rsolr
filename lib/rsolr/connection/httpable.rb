@@ -11,8 +11,8 @@ module RSolr::Connection::Httpable
   def initialize opts={}
     opts[:url] ||= 'http://127.0.0.1:8983/solr/'
     @opts = opts
-    @uri = new_uri opts[:url]
-    @proxy = new_uri opts[:proxy] if opts[:proxy]
+    @uri = RSolr::Uri.parse opts[:url]
+    @proxy = RSolr::Uri.parse opts[:proxy] if opts[:proxy]
   end
   
   # send a request to the connection
@@ -77,14 +77,6 @@ module RSolr::Connection::Httpable
       post(request_context[:uri], request_context[:data], request_context[:headers]) : 
       get(request_context[:uri])
     {:status_code => status_code, :headers => headers, :body => body}
-  end
-  
-  # Creates a new (rsolr::uri modified) URI object.
-  # "url" is a url string.
-  # If the url doesn't end with a slash, one is appended.
-  def new_uri url
-    url << '/' unless url[-1] == ?/
-    URI.parse(url).extend RSolr::Uri
   end
   
 end

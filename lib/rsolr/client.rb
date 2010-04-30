@@ -1,5 +1,7 @@
 class RSolr::Client
   
+  include RSolr::Char
+  
   attr_reader :connection
   
   # "connection" is instance of:

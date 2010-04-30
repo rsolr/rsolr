@@ -8,7 +8,7 @@ solr = RSolr.connect
 
 Dir['../solr/example/exampledocs/*.xml'].each do |xml_file|
   puts "Updating with #{xml_file}"
-  solr.update File.read(xml_file)
+  r = solr.update File.read(xml_file)
   puts 'ok!'
 end
 

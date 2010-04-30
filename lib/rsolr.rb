@@ -48,11 +48,6 @@ module RSolr
     
   end
   
-  # send the escape method into the Connection class ->
-  # solr = RSolr.connect
-  # solr.escape('asdf')
-  RSolr::Client.send(:include, Char)
-  
   # bring escape into this module (RSolr) -> RSolr.escape('asdf')
   extend Char
   
