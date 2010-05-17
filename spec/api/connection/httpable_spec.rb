@@ -111,42 +111,41 @@ describe RSolr::Connection::Httpable do
     
     it 'should send a get to itself with params' do
       httpable.should_receive(:get).
-        with("/solr/blahasdf?id=1").
-          and_return([200, "OK", ""])
+        with(an_instance_of(URI::HTTP)).
+          and_return([200, {}, ""])
       r = httpable.request('/blahasdf', :id=>1)
-      r.should == {:status_code=>200, :path=>"/solr/blahasdf?id=1", :params=>{:id=>1}, :message=>"OK", :data=>nil, :query=>"id=1", :host=>"http://127.0.0.1:8983", :body=>""}
     end
     
     it 'should raise an error if the status_code is not 200' do
       httpable.should_receive(:get).
-        with("/solr/blah?id=1").
-          and_return( ["", 404, "Not Found"] )
+        with(an_instance_of(URI::HTTP)).
+          and_return( [404, {}, "Not Found"] )
       lambda{
         httpable.request('/blah', :id=>1).should == true
-      }.should raise_error(/Not Found/)
+      }.should raise_error(/404/)
     end
     
     it 'should send a post to itself if data is supplied' do
       httpable.should_receive(:post).
-        with("/solr/blah?id=1", "<commit/>", {"Content-Type"=>"text/xml; charset=utf-8"}).
-          and_return([200, "OK", ""])
-      httpable.request('/blah', {:id=>1}, "<commit/>")#.should == expected_response
+        with(an_instance_of(URI::HTTP), "<commit/>", {"Content-Type"=>"text/xml; charset=utf-8"}).
+          and_return([200, {}, ""])
+      r = httpable.request('/blah', {:id=>1}, "<commit/>")#.should == expected_response
+      r[:request][:data].should == "<commit/>"
+      r[:request][:headers].should == {"Content-Type"=>"text/xml; charset=utf-8"}
+      r[:request][:uri].should be_a(URI::HTTP)
     end
     
     it 'should send a post to itself when :method=>:post is set even if no POST data is supplied' do
       httpable.should_receive(:post).
-        with("/solr/blah", "q=testing", {"Content-Type"=>"application/x-www-form-urlencoded"}).
-          and_return([200, "OK", ""])
-      response = httpable.request('/blah', {:q => "testing"}, :method => :post)#.should == expected_response
+        with(an_instance_of(URI::HTTP), "q=testing", {"Content-Type"=>"application/x-www-form-urlencoded"}).
+          and_return([200, {}, ""])
+      context = httpable.request('/blah', {:q => "testing"}, :method => :post)#.should == expected_response
+      response = context[:response]
       response[:body].should == ""
-      response[:path].should == "/solr/blah"
-      response[:message].should == "OK"
       response[:status_code].should == 200
-      response[:params].should == {:q=>"testing"}
-      response[:headers].should == {"Content-Type"=>"application/x-www-form-urlencoded"}
-      response[:data].should == "q=testing"
-      response[:query].should == "q=testing"
-      response[:host].should == "http://127.0.0.1:8983"
+      response[:headers].should == {}
+      # 
+      context[:request][:headers].should == {"Content-Type"=>"application/x-www-form-urlencoded"}
     end
     
   end

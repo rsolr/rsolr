@@ -12,11 +12,13 @@ describe RSolr::Connection::NetHttp do
     include NetHttpHelper
     
     it 'should forward simple, non-data calls to #get' do
-      net_http.should_receive(:create_http_context).
-        with("/select", {:q=>"a"}, nil, {}).
-          and_return(:path=>"/solr/select?q=a", :params=>{:q=>"a"}, :data=>nil, :query=>"q=a", :host=>"http://127.0.0.1:8983")
+      # net_http.should_receive(:create_http_context).
+      #   with(an_instance_of(URI::HTTP), "", {}).
+      #     and_return(:path=>"/solr/select?q=a", :params=>{:q=>"a"}, :data=>nil, :query=>"q=a", :host=>"http://127.0.0.1:8983")
+      net_http.should_receive(:send_and_receive).
+        with("/solr/select?q=a", {:q=>"a"}, "", {})
       net_http.should_receive(:get).
-        with("/solr/select?q=a").
+        with(an_instance_of(URI::HTTP)).
           and_return([200, 'OK', ''])
       net_http.request('/select', :q=>'a')
     end

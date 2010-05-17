@@ -55,7 +55,7 @@ module RSolr
   class RequestError < RuntimeError
     include Contextable
     def to_s
-      "#{URI.decode(context[:request][:uri].to_s)} - #{context[:response][:status_code]}"
+      "#{context[:response][:status_code]} - #{URI.decode(context[:request][:uri].to_s)}"
     end
   end
   
