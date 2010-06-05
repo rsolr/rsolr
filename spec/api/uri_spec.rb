@@ -3,7 +3,7 @@ describe RSolr::Uri do
   # calls #let to set "uri" as a method accessor
   module UriHelper
     def self.included base
-      base.let(:uri){ URI.new("http://localhost:8983/solr").extend(RSolr::Connection::Uri) }
+      base.let(:uri){ RSolr::Uri.parse("http://localhost:8983/solr") }
     end
   end
   
