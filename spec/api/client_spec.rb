@@ -12,11 +12,17 @@ describe RSolr::Client do
     
   end
   
+  context 'result object' do
+    it 'should have a #context method which is a hash' do
+      
+    end
+  end
+  
   context :update do
     
     it 'should forward /update to #request("/update")' do
-      client.should_receive(:request)#.
-      #  with('update', {:wt=>:ruby}, "my xml message")
+      client.should_receive(:request).
+        with('update', {:wt=>:ruby}, "my xml message")
       client.update "my xml message"
     end
     
@@ -35,10 +41,8 @@ describe RSolr::Client do
 
     it 'should forward #commit calls with options to #update' do
       opts = {:waitFlush => false, :waitSearcher => false, :expungeDeletes => true}
-      # when client.commit is called, it eventually calls update
       client.should_receive(:update).
         with(opts)
-      # client.message is calls to create the xml
       client.message.should_receive(:commit).
         and_return(opts)
       client.commit(opts)
@@ -55,7 +59,6 @@ describe RSolr::Client do
       # when client.commit is called, it eventually calls update
       client.should_receive(:update).
         with(opts)
-      # client.message is calls to create the xml
       client.message.should_receive(:optimize).
         and_return(opts)
       client.optimize(opts)

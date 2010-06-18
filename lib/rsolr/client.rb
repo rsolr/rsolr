@@ -21,7 +21,7 @@ class RSolr::Client
   # sends data to the update handler
   # data can be a string of xml, or an object that returns xml from its #to_xml method
   def update(data, params={})
-    request 'update', params, data
+    request 'update', map_params(params), data
   end
   
   # send request solr
@@ -34,7 +34,6 @@ class RSolr::Client
   #
   def request(path, params={}, *extra)
     response = @connection.request(path.to_s, map_params(params), *extra)
-    puts response.inspect
     adapt_response(response)
   end
   

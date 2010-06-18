@@ -7,6 +7,26 @@ describe RSolr::Connection::NetHttp do
     end
   end
   
+  context 'the connection method' do
+    include NetHttpHelper
+    it 'will create an instance of Net::HTTP' do
+      net_http.send(:connection).should be_a(Net::HTTP)
+    end
+    it 'should be a singleton' do
+      net_http.connection.object_id.should == net_http.connection.object_id
+    end
+  end
+  
+  context 'proxy connection' do
+    let(:proxy_connection){
+      RSolr::Connection::NetHttp.new :url=>'http://localhost:8983/solr', :proxy => 'http://qwerty.com/'
+    }
+    it 'should have a :proxy AND :url attribute set' do
+      proxy_connection.proxy.to_s.should == 'http://qwerty.com/'
+      proxy_connection.uri.to_s.should == 'http://localhost:8983/solr/'
+    end
+  end
+  
   context '#request' do
     
     include NetHttpHelper
@@ -18,8 +38,7 @@ describe RSolr::Connection::NetHttp do
       net_http.request('/select', :q=>'a')
     end
     
-    it 'should forward :method=>:post calls to #post with a special header' do
-      #"/solr/select", "q=a", {"Content-Type"=>"application/x-www-form-urlencoded"}
+    it 'should forward :method=>:post calls to #post with a form-urlencoded header' do
       net_http.should_receive(:post).
         with(an_instance_of(URI::HTTP), 'q=a', {"Content-Type"=>"application/x-www-form-urlencoded"}).
           and_return([200, "OK", ""])
@@ -31,16 +50,6 @@ describe RSolr::Connection::NetHttp do
         with(an_instance_of(URI::HTTP), "<optimize/>", {"Content-Type"=>"text/xml; charset=utf-8"}).
           and_return([200, "OK", ""])
       net_http.request('/update', {}, '<optimize/>')
-    end
-    
-  end
-  
-  context 'connection' do
-    
-    include NetHttpHelper
-    
-    it 'will create an instance of Net::HTTP' do
-      net_http.send(:connection).should be_a(Net::HTTP)
     end
     
   end
