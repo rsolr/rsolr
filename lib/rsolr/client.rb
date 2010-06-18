@@ -2,37 +2,28 @@ class RSolr::Client
   
   attr_reader :connection
   
-  # "connection" is instance of:
-  #   RSolr::Adapter::HTTP
-  #   RSolr::Adapter::Direct (jRuby only)
-  # or any other class that uses the connection "interface"
-  def initialize(connection)
+  def initialize connection
     @connection = connection
   end
   
-  # Send a request to a request handler using the method name.
-  # Also proxies to the #paginate method if the method starts with "paginate_"
-  def method_missing(method_name, *args, &blk)
-    request("/#{method_name}", *args, &blk)
+  # GET request
+  def get path, params = nil, headers = nil
+    send_request :get, path, params, nil, headers
   end
   
-  # sends data to the update handler
-  # data can be a string of xml, or an object that returns xml from its #to_xml method
-  def update(data, params={})
-    request '/update', params, data
+  # essentially a GET, but no response body
+  def head path, params = nil, headers = nil
+    send_request :head, path, params, nil, headers
   end
   
-  # send request solr
-  # params is hash with valid solr request params (:q, :fl, :qf etc..)
-  #   if params[:wt] is not set, the default is :ruby
-  #   if :wt is something other than :ruby, the raw response body is used
-  #   otherwise, a simple Hash is returned
-  #   NOTE: to get raw ruby, use :wt=>'ruby' <- a string, not a symbol like :ruby  
-  #
-  #
-  def request(path, params={}, *extra)
-    response = @connection.request(path, map_params(params), *extra)
-    adapt_response(response)
+  # post, solr doesn't do headers on POST
+  def post path, data, params = nil
+    send_request :post, path, params, data, nil
+  end
+  
+  # POST to /update with optional params
+  def update data, params = nil
+    post 'update', data, params
   end
   
   # 
@@ -43,10 +34,10 @@ class RSolr::Client
   # solr.update([{:id=>1, :name=>'one'}, {:id=>2, :name=>'two'}])
   #
   def add(doc, params={}, &block)
-    update message.add(doc, params, &block)
+    update xml.add(doc, params, &block)
   end
 
-  # send "commit" message with options
+  # send "commit" xml with options
   #
   # Options recognized by solr
   #
@@ -58,10 +49,10 @@ class RSolr::Client
   # *NOTE* :expungeDeletes is Solr 1.4 only
   #
   def commit( options = {} )
-    update message.commit( options )
+    update xml.commit( options )
   end
 
-  # send "optimize" message with options.
+  # send "optimize" xml with options.
   #
   # Options recognized by solr
   #
@@ -73,62 +64,66 @@ class RSolr::Client
   # *NOTE* :expungeDeletes is Solr 1.4 only
   #
   def optimize( options = {} )
-    update message.optimize( options )
+    update xml.optimize( options )
   end
 
   # send </rollback>
   # NOTE: solr 1.4 only
   def rollback
-    update message.rollback
+    update xml.rollback
   end
 
   # Delete one or many documents by id
   #   solr.delete_by_id 10
   #   solr.delete_by_id([12, 41, 199])
   def delete_by_id(id)
-    update message.delete_by_id(id)
+    update xml.delete_by_id(id)
   end
 
   # delete one or many documents by query
   #   solr.delete_by_query 'available:0'
   #   solr.delete_by_query ['quantity:0', 'manu:"FQ"']
   def delete_by_query(query)
-    update message.delete_by_query(query)
+    update xml.delete_by_query(query)
   end
   
   # shortcut to RSolr::Message::Generator
-  def message
-    @message ||= RSolr::Message::Generator.new
+  def xml
+    @xml ||= RSolr::Xml::Generator.new
   end
   
-  protected
-  
-  # sets default params etc.. - could be used as a mapping hook
-  # type of request should be passed in here? -> map_params(:query, {})
-  def map_params(params)
-    params||={}
-    {:wt=>:ruby}.merge(params)
-  end
-
-  # "connection_response" must be a hash with the following keys:
-  #   :params - a sub hash of standard solr params
-  #   : body - the raw response body from the solr server
-  # This method will evaluate the :body value if the params[:wt] == :ruby
-  # otherwise, the body is returned
-  # The return object has a special method attached called #raw
-  # This method gives you access to the original response from the connection,
-  # so you can access things like the actual :url sent to solr,
-  # the raw :body, original :params and original :data
-  def adapt_response(connection_response)
-    data = connection_response[:body]
-    # if the wt is :ruby, evaluate the ruby string response
-    if connection_response[:params][:wt] == :ruby
-      data = Kernel.eval(data)
+  def send_request method, path, params, data, headers
+    uri, data, headers = build_request path, params, data, headers
+    begin
+      response = data ? connection.send(method, uri, data, headers) : connection.send(method, uri, headers)
+      raise "Error: #{response[0]}" if response[0] != 200
+      response
+    rescue
+      $!.extend(Module.new{ attr_accessor :solr_context }).solr_context = {
+        :connection => connection,
+        :method => method,
+        :uri => uri,
+        :data => data,
+        :params => params,
+        :headers => headers
+      }
+      raise $!
     end
-    # attach a method called #raw that returns the original connection response value
-    def data.raw; @raw end
-    data.send(:instance_variable_set, '@raw', connection_response)
-    data
+  end
+  
+  def build_request path, params, data, headers
+    params ||= {}
+    headers ||= {}
+    request_uri = "#{path}?#{RSolr::Uri.params_to_solr params}"
+    if data
+      if data.is_a?(Hash)
+        data = RSolr::Uri.params_to_solr data
+        headers['Content-Type'] ||= 'application/x-www-form-urlencoded'
+      else
+        headers['Content-Type'] ||= 'text/xml'
+      end
+    end
+    [request_uri, data, headers]
   end
   
 end

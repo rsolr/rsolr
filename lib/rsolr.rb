@@ -1,62 +1,32 @@
-
+require 'net/http'
 require 'rubygems'
-$:.unshift File.dirname(__FILE__) unless $:.include?(File.dirname(__FILE__))
+require 'builder'
+require 'uri'
+require 'net/http'
+require 'net/https'
+
+$: << "#{File.dirname(__FILE__)}"
 
 module RSolr
   
-  def self.version
-    @version ||= File.read(File.join(File.dirname(__FILE__), '..', 'VERSION'))
-  end
-  
-  VERSION = self.version
-  
-  autoload :Message, 'rsolr/message'
+  autoload :Http, 'rsolr/http'
+  autoload :Uri, 'rsolr/uri'
   autoload :Client, 'rsolr/client'
-  autoload :Connection, 'rsolr/connection'
+  autoload :Xml, 'rsolr/xml'
+  autoload :Char, 'rsolr/char'
   
-  module Connectable
-    
-    def connect opts={}
-      Client.new Connection::NetHttp.new(opts)
-    end
-    
+  def self.parse_options *args
+    opts = args[-1].kind_of?(Hash) ? args.pop : {}
+    url = args.empty? ? 'http://127.0.0.1:8983/solr/' : args[0]
+    url << "#{opts.delete :core}/" if opts[:core]
+    proxy = opts[:proxy] ? URI.parse(opts[:proxy]) : nil
+    uri = URI.parse url
+    [uri, {:proxy => proxy}]
   end
   
-  extend Connectable
-  
-  # A module that contains string related methods
-  module Char
-    
-    # escape - from the solr-ruby library
-    # RSolr.escape('asdf')
-    # backslash everything that isn't a word character
-    def escape(value)
-      value.gsub(/(\W)/, '\\\\\1')
-    end
-    
+  def self.connect *args
+    opts = parse_options *args
+    Client.new Http.new(opts[0], opts[1])
   end
-  
-  # send the escape method into the Connection class ->
-  # solr = RSolr.connect
-  # solr.escape('asdf')
-  RSolr::Client.send(:include, Char)
-  
-  # bring escape into this module (RSolr) -> RSolr.escape('asdf')
-  extend Char
-  
-  # RequestError is a common/generic exception class used by the adapters
-  class RequestError < RuntimeError
-    attr_reader :context
-    def initialize context
-      @context = context
-      super
-    end
-    def to_s
-      context.inspect
-    end
-  end
-  
-  # TODO: The connection drivers need to start raising this...
-  class ConnectionError < RuntimeError; end
   
 end
