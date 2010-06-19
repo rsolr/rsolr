@@ -1,18 +1,8 @@
 .DS_Store
-solr/**/*template
 
 pkg/*
 
-solr/example/work/*
-solr/example/logs/*
-solr/example/solr/data/**/*
-
-solr/client
-solr/contrib
-solr/docs
-solr/src
-solr/common-build.xml
-solr/build.xml
+jetty/solr/data/**/*
 
 coverage/
 

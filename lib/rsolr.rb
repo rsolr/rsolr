@@ -10,6 +10,12 @@ module RSolr
   
   %W(Http Uri Client Xml Char).each{|n|autoload n.to_sym, "rsolr/#{n.downcase}"}
   
+  def self.version
+    @version ||= File.read(File.join(File.dirname(__FILE__), '..', 'VERSION'))
+  end
+  
+  VERSION = self.version
+  
   def self.connect *args
     opts = parse_options *args
     Client.new Http.new(opts[0], opts[1])
