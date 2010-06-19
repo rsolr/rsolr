@@ -2,7 +2,7 @@
 
 pkg/*
 
-jetty/solr/data/**/*
+jetty/solr/jetty/solr/rsolr_test_data/**/*
 
 coverage/
 

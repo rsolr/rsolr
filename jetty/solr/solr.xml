@@ -2,18 +2,7 @@
 	<cores adminPath="/admin/cores">
 		
 		<!-- The following are for peach and should be named accordingly -->
-		<core name="test" instanceDir="." dataDir="/prod/data/solr/test" />
-		<core name="development" instanceDir="." dataDir="/prod/data/solr/development" />
-		<core name="legacy" instanceDir="." dataDir="/prod/data/solr/legacy" />
-		<core name="cho_legacy" instanceDir="." dataDir="/prod/data/solr/cho_legacy" />
-		<core name="production" instanceDir="." dataDir="/prod/data/solr/production" />
-		
-		<core name="hoteliersuite_development" instanceDir="." dataDir="/prod/data/solr/hoteliersuite_development" />
-		<core name="hoteliersuite_production" instanceDir="." dataDir="/prod/data/solr/hoteliersuite_prod" />
-		
-		<core name="pubsuite_development" instanceDir="." dataDir="/prod/data/solr/pubsuite_development" />
-		<core name="pubsuite_test" instanceDir="." dataDir="/prod/data/solr/pubsuite_test" />
-		<core name="pubsuite_production" instanceDir="." dataDir="/prod/data/solr/pubsuite_production" />
+		<core name="rsolr_test" instanceDir="." dataDir="rsolr_test_data" />
 		
 	</cores>
 </solr>
