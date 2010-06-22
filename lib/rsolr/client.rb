@@ -7,18 +7,20 @@ class RSolr::Client
   end
   
   # GET request
-  def get path, params = nil, headers = nil
+  def get path = '', params = nil, headers = nil
     send_request :get, path, params, nil, headers
   end
   
   # essentially a GET, but no response body
-  def head path, params = nil, headers = nil
+  def head path = '', params = nil, headers = nil
     send_request :head, path, params, nil, headers
   end
   
-  # post, solr doesn't do headers on POST
-  def post path, data, params = nil
-    send_request :post, path, params, data, nil
+  # A path is required for a POST since, well...
+  # the / resource doesn't do anything with a POST.
+  # Also, Solr doesn't do headers with a POST
+  def post path, data, params = nil, headers = nil
+    send_request :post, path, params, data, headers
   end
   
   # POST to /update with optional params
@@ -94,21 +96,18 @@ class RSolr::Client
   
   def send_request method, path, params, data, headers
     uri, data, headers = build_request path, params, data, headers
+    request_context = {:connection=>connection, :method => method, :uri => uri, :data => data, :headers => headers, :params => params}
     begin
       response = data ? connection.send(method, uri, data, headers) : connection.send(method, uri, headers)
-      raise "Error: #{response[0]}" if response[0] != 200
-      response
     rescue
-      $!.extend(Module.new{ attr_accessor :solr_context }).solr_context = {
-        :connection => connection,
-        :method => method,
-        :uri => uri,
-        :data => data,
-        :params => params,
-        :headers => headers
-      }
+      $!.extend(RSolr::Error::Printable).request_context = request_context
       raise $!
     end
+    if response[0] != 200
+      e = RSolr::Error::Http.new request_context, response
+      raise e
+    end
+    response
   end
   
   def build_request path, params, data, headers
@@ -116,7 +115,7 @@ class RSolr::Client
     headers ||= {}
     request_uri = "#{path}?#{RSolr::Uri.params_to_solr params}"
     if data
-      if data.is_a?(Hash)
+      if data.is_a? Hash
         data = RSolr::Uri.params_to_solr data
         headers['Content-Type'] ||= 'application/x-www-form-urlencoded'
       else

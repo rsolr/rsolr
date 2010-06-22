@@ -1,20 +1,13 @@
 require 'lib/rsolr'
 
-solr = RSolr.connect :core => 'development'
-
-solr.post 'catalog', :q=>'coltrane', :fq => "type:Book"
-
-# solr.add :id => "dummy", :name => "blah"
-# solr.commit
+solr = RSolr.connect "http://localhost:9999/solr/"
 
 begin
-  response = solr.get('select', :q => '*:*', :wt => :ruby)
+  response = solr.get('select', {:q => '*:*', :wt => :ruby, :fq=>[1, 2]}, {"Content-Type"=>"xml/text"})
   puts response.inspect
 rescue
-  puts $!.to_s
-  puts $!.solr_context[:uri].to_s
+  puts $!.to_s#solr_context.inspect
 end
 
-# solr.delete_by_id "dummy"
 # solr.commit
 # solr.optimize

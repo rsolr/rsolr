@@ -1,8 +1,0 @@
-<solr persistent="false" sharedLib="lib">
-	<cores adminPath="/admin/cores">
-		
-		<!-- The following are for peach and should be named accordingly -->
-		<core name="rsolr_test" instanceDir="." dataDir="rsolr_test_data" />
-		
-	</cores>
-</solr>
