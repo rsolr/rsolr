@@ -11,10 +11,10 @@ end
 begin
   result = solr.get 'select', :q => '*:*'
   puts "Data sent to Solr:"
-  puts result.original_request.inspect
+  puts result.request.inspect
   puts
   puts "Data returned from Solr:"
-  puts result.original_response.inspect
+  puts result.response.inspect
   puts
   puts "response['docs']:"
   result['response']['docs'].each do |doc|

@@ -101,10 +101,10 @@ class RSolr::Client
     begin
       response = data ? connection.send(method, uri, data, headers) : connection.send(method, uri, headers)
     rescue
-     $!.extend(RSolr::Error::SolrContext).request_context = request_context
+     $!.extend(RSolr::Error::SolrContext).request = request_context
      raise $!
     end
-    raise RSolr::Error::Http.new request_context, response if response[:status] != 200
+    raise RSolr::Error::Http.new request_context, response unless [200,302].include?(response[:status])
     adapt_response request_context, response
   end
   
@@ -142,14 +142,14 @@ class RSolr::Client
     data = response[:body]
     if request[:params][:wt] == :ruby
       begin
-        data = Kernel.eval data
+        data = Kernel.eval data.to_s
       rescue SyntaxError
         raise RSolr::Error::InvalidRubyResponse.new request, response
       end
     end
-    data.extend Module.new.instance_eval{attr_accessor :original_request, :original_response; self}
-    data.original_request = request
-    data.original_response = response
+    data.extend Module.new.instance_eval{attr_accessor :request, :response; self}
+    data.request = request
+    data.response = response
     data
   end
   
