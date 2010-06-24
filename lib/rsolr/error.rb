@@ -1,12 +1,17 @@
 module RSolr::Error
   
-  module Printable
+  module SolrContext
     
     attr_accessor :request_context, :response_context
     
     def to_s
-      m = "\n#{super.to_s}:"
-      m << "\n" + self.backtrace[0..5].join("\n")
+      m = ""
+      if response_context
+        details = parse_solr_error_response response_context[:body]
+        m << "Error: #{details}\n" if details
+      end
+      m << "\n#{super.to_s}:"
+      m << "\n" + self.backtrace[0..10].join("\n")
       m << "\n\nSolr Request:"
       m << "\n  Method: #{request_context[:method].to_s.upcase}"
       m << "\n  Base URL: #{request_context[:connection].uri.to_s}"
@@ -16,10 +21,8 @@ module RSolr::Error
       m << "\n  Headers: #{request_context[:headers].inspect}"
       if response_context
         m << "\n\nSolr Response:"
-        m << "\n  Code: #{response_context[0]}"
-        m << "\n  Headers: #{response_context[1].inspect}"
-        details = parse_solr_error_response response_context[2]
-        m << "\n  Details:\n#{details}" if details
+        m << "\n  Code: #{response_context[:status]}"
+        m << "\n  Headers: #{response_context[:headers].inspect}"
       end
       m
     end
@@ -40,11 +43,17 @@ module RSolr::Error
   
   class Http < RuntimeError
     
-    include Printable
+    include SolrContext
     
     def initialize request, response
       @request_context, @response_context = request, response
     end
+    
+  end
+  
+  # Thrown if the :wt is :ruby
+  # but the body wasn't succesfully parsed/evaluated
+  class InvalidRubyResponse < Http
     
   end
   

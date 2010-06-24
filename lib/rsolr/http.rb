@@ -68,7 +68,7 @@ module RSolr
     def perform_request http, request
       begin
         response = http.request request
-        [response.code.to_i, response.to_hash, response.body]
+        {:status => response.code.to_i, :headers => response.to_hash, :body => response.body}
       rescue NoMethodError
         $!.message == "undefined method `closed?' for nil:NilClass" ?
           raise(Errno::ECONNREFUSED.new) :

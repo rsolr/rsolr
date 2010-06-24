@@ -1,12 +1,15 @@
 require 'lib/rsolr'
 
-solr = RSolr.connect "http://localhost:9999/solr/"
+solr = RSolr.connect "http://localhost:8983/solr/production"
 
 begin
-  response = solr.get('select', {:q => '*:*', :wt => :ruby, :fq=>[1, 2]}, {"Content-Type"=>"xml/text"})
-  puts response.inspect
+  result = solr.get 'select', :q => '*:*'
+  puts result.original_request.inspect
+  result['response']['docs'].each do |doc|
+    puts doc.inspect
+  end
 rescue
-  puts $!.to_s#solr_context.inspect
+  puts $!.to_s
 end
 
 # solr.commit

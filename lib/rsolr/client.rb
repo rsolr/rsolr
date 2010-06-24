@@ -95,19 +95,23 @@ class RSolr::Client
   end
   
   def send_request method, path, params, data, headers
+    params = map_params params
     uri, data, headers = build_request path, params, data, headers
     request_context = {:connection=>connection, :method => method, :uri => uri, :data => data, :headers => headers, :params => params}
     begin
       response = data ? connection.send(method, uri, data, headers) : connection.send(method, uri, headers)
     rescue
-      $!.extend(RSolr::Error::Printable).request_context = request_context
-      raise $!
+     $!.extend(RSolr::Error::SolrContext).request_context = request_context
+     raise $!
     end
-    if response[0] != 200
-      e = RSolr::Error::Http.new request_context, response
-      raise e
-    end
-    response
+    raise RSolr::Error::Http.new request_context, response if response[:status] != 200
+    adapt_response request_context, response
+  end
+  
+  def map_params params
+    params = params.dup
+    params[:wt] ||= :ruby
+    params
   end
   
   def build_request path, params, data, headers
@@ -123,6 +127,30 @@ class RSolr::Client
       end
     end
     [request_uri, data, headers]
+  end
+  
+  # This method will evaluate the :body value
+  # if the params[:uri].params[:wt] == :ruby
+  # ... otherwise, the body is returned as is.
+  # The return object has a special method attached called #context.
+  # This method gives you access to the original
+  # request and response from the connection.
+  # This method will raise an InvalidRubyResponse
+  # if the :wt => :ruby and the body
+  # couldn't be evaluated.
+  def adapt_response request, response
+    data = response[:body]
+    if request[:params][:wt] == :ruby
+      begin
+        data = Kernel.eval data
+      rescue SyntaxError
+        raise RSolr::Error::InvalidRubyResponse.new request, response
+      end
+    end
+    data.extend Module.new.instance_eval{attr_accessor :original_request, :original_response; self}
+    data.original_request = request
+    data.original_response = response
+    data
   end
   
 end
