@@ -104,7 +104,7 @@ You can access the original request context (path, params, url etc.) by calling 
   result.request[:params]
   etc..
 
-Similarly, the object returned has an response object. This contains any headers that Solr returned, along with the raw response body:
+Similarly, the object returned has a response object. This contains any headers that Solr returned, along with the raw response body:
   result = solr.get 'select', :q=>'*:*'
   result.response[:headers]
   result.response[:status]
