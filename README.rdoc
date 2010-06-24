@@ -41,6 +41,10 @@ The above statement generates this Solr query:
 Use the #request method for a custom request handler path:
   response = solr.get 'documents', :q=>'test'
 
+There may be cases where the query string is too long for a GET request. RSolr solves this issue by providing a simple way to POST a query to Solr:
+  response = solr.post "select", nil, enormous_params_hash
+
+nil is passed in as the query string data. The enormous_params_hash variable ends up serialized into a form-encoded query string, and the correct content-type headers are sent along to Solr.
 
 == Updating Solr
 Updating us done using native Ruby objects. Hashes are used for single documents and arrays are used for a collection of documents (hashes). These objects get turned into simple XML "messages". Raw XML strings can also be used.
