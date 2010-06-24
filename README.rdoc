@@ -38,9 +38,6 @@ The above statement generates this Solr query:
   
   select?q=roses&fq=red&fq=violet
 
-Use the #request method for a custom request handler path:
-  response = solr.get 'documents', :q=>'test'
-
 There may be cases where the query string is too long for a GET request. RSolr solves this issue by providing a simple way to POST a query to Solr:
   response = solr.post "select", nil, enormous_params_hash
 
