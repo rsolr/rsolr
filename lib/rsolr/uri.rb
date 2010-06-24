@@ -1,5 +1,9 @@
 module RSolr::Uri
   
+  def self.create url
+    ::URI.parse url[-1] == ?/ ? url : "#{url}/"
+  end
+  
   # Returns a query string param pair as a string.
   # Both key and value are escaped.
   def build_param(k,v)

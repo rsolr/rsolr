@@ -24,8 +24,8 @@ module RSolr
   def self.parse_options *args
     opts = args[-1].kind_of?(Hash) ? args.pop : {}
     url = args.empty? ? 'http://127.0.0.1:8983/solr/' : args[0]
-    proxy = URI.parse( opts[:proxy][-1] == ?/ ? opts[:proxy] : "#{opts[:proxy]}/" ) if opts[:proxy]
-    uri = URI.parse url[-1] == ?/ ? url : "#{url}/"
+    uri = Uri.create url
+    proxy = Uri.create opts[:proxy] if opts[:proxy]
     [uri, {:proxy => proxy}]
   end
   

@@ -1,10 +1,16 @@
 require 'lib/rsolr'
 
-solr = RSolr.connect "http://localhost:8983/solr/production"
+solr = RSolr.connect "http://localhost:9999/solr"
 
 begin
   result = solr.get 'select', :q => '*:*'
+  puts "Data sent to Solr:"
   puts result.original_request.inspect
+  puts
+  puts "Data returned from Solr:"
+  puts result.original_response.inspect
+  puts
+  puts "response['docs']:"
   result['response']['docs'].each do |doc|
     puts doc.inspect
   end
