@@ -109,7 +109,7 @@ class RSolr::Client
   end
   
   def map_params params
-    params = params.dup
+    params = params.nil? ? {} : params.dup
     params[:wt] ||= :ruby
     params
   end

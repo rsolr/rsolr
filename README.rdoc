@@ -43,11 +43,11 @@ Use the #request method for a custom request handler path:
 
 
 == Updating Solr
-Updating uses native Ruby structures. Hashes are used for single documents and arrays are used for a collection of documents (hashes). These structures get turned into simple XML "messages". Raw XML strings can also be used.
+Updating us done using native Ruby objects. Hashes are used for single documents and arrays are used for a collection of documents (hashes). These objects get turned into simple XML "messages". Raw XML strings can also be used.
 
 Raw XML via  #update
-  solr.update '</commit>'
-  solr.update '</optimize>'
+  solr.update '<commit/>'
+  solr.update '<optimize/>'
 
 Single document via #add
   solr.add :id=>1, :price=>1.00
@@ -94,13 +94,11 @@ The default response format is Ruby. When the :wt param is set to :ruby, the res
 ===JSON:
   solr.get 'select', :wt=>:json
 
-You can access the original request context (path, params, url etc.) by calling the #raw method:
+You can access the original request context (path, params, url etc.) by calling the #original_request method:
   response = solr.get 'select', :q=>'*:*'
-  response.raw[:status_code]
-  response.raw[:body]
-  response.raw[:url]
+  response.original_request
 
-The raw is a hash that contains the generated params, url, path, post data, headers etc., very useful for debugging and testing.
+Similarly, the object returned has an original_response object. This contains any headers that Solr returned, along with the raw response body.
 
 ==Related Resources & Projects
 * {RSolr Google Group}[http://groups.google.com/group/rsolr] -- The RSolr discussion group

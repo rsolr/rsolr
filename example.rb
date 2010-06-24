@@ -3,6 +3,12 @@ require 'lib/rsolr'
 solr = RSolr.connect "http://localhost:9999/solr"
 
 begin
+  r = solr.optimize
+rescue
+  puts $!
+end
+
+begin
   result = solr.get 'select', :q => '*:*'
   puts "Data sent to Solr:"
   puts result.original_request.inspect
@@ -17,6 +23,3 @@ begin
 rescue
   puts $!.to_s
 end
-
-# solr.commit
-# solr.optimize
