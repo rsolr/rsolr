@@ -1,5 +1,7 @@
 =RSolr
 
+Notice: This document is only for the the 1.0 (pre-release) in the master branch. The last stable gem release documentation can be found here: http://github.com/mwmitchell/rsolr/tree/v0.12.1
+
 A simple, extensible Ruby client for Apache Solr.
 
 == Installation:
