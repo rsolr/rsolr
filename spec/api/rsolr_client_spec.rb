@@ -67,4 +67,42 @@ describe "RSolr::Client" do
     end
   end
   
+  context "map_params" do
+    include ClientHelper
+    it "should return a hash if nil is passed in" do
+      client.map_params(nil).should == {:wt => :ruby}
+    end
+    it "should set the :wt to ruby if blank" do
+      r = client.map_params({:q=>"q"})
+      r[:q].should == "q"
+      r[:wt].should == :ruby
+    end
+    it "should not override the :wt to ruby if set" do
+      r = client.map_params({:q=>"q", :wt => :json})
+      r[:q].should == "q"
+      r[:wt].should == :json
+    end
+  end
+  
+  context "send_request" do
+    include ClientHelper
+    it "should forward method calls the #connection object" do
+      [:get, :post, :head].each do |meth|
+        client.connection.should_receive(meth).
+            and_return({:status => 200})
+        client.send_request meth, '', {}, nil, {}
+      end
+    end
+    it "should extend any exception raised by the #connection object with a RSolr::Error::SolrContext" do
+      client.connection.should_receive(:get).
+          and_raise(RuntimeError)
+      lambda {
+        client.send_request :get, '', {}, nil, {}
+      }.should raise_error(RuntimeError){|error|
+        error.should be_a(RSolr::Error::SolrContext)
+        error.should respond_to(:request)
+      }
+    end
+  end
+  
 end
