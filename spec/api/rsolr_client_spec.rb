@@ -101,8 +101,60 @@ describe "RSolr::Client" do
       }.should raise_error(RuntimeError){|error|
         error.should be_a(RSolr::Error::SolrContext)
         error.should respond_to(:request)
+        error.request.keys.should include(:connection, :method, :uri, :data, :headers, :params)
       }
     end
+    it "should raise an Http error if the response status code aint right" do
+      client.connection.should_receive(:get).
+        and_return({:status_code => 404})
+      lambda{
+        client.send_request :get, '', {}, nil, {}
+      }.should raise_error(RSolr::Error::Http) {|error|
+        error.should be_a(RSolr::Error::Http)
+        error.should respond_to(:request)
+        error.should respond_to(:response)
+      }
+    end
+  end
+  
+  context "post" do
+    
+  end
+  
+  context "head" do
+    
+  end
+  
+  context "xml" do
+    
+  end
+  
+  context "add" do
+    
+  end
+  
+  context "update" do
+    
+  end
+  
+  context "commit" do
+    
+  end
+  
+  context "optimize" do
+    
+  end
+  
+  context "rollback" do
+    
+  end
+  
+  context "delete_by_id" do
+    
+  end
+  
+  context "delete_by_query" do
+    
   end
   
 end
