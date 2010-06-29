@@ -43,7 +43,28 @@ describe "RSolr::Client" do
       end
     end
     
+    it "ought raise a RSolr::Error::InvalidRubyResponse when the ruby is indeed frugged" do
+      lambda {
+        client.send(:adapt_response, {:params=>{:wt => :ruby}}, {:body => "<woops/>"})
+      }.should raise_error RSolr::Error::InvalidRubyResponse
+    end
+    
   end
   
+  context "build_request" do
+    include ClientHelper
+    it 'should build a request context array' do
+      result = client.build_request 'select', {:q=>'test', :fq=>[0,1]}, "data", headers = {}
+      result[0].to_s.should == "select?q=test&fq=0&fq=1"
+      result[1].should == "data"
+      result[2].should == headers
+    end
+    it 'should convert a data Hash to a solr query string and set the form-urlencoded headers' do
+      result = client.build_request 'select', nil, {:q=>'test', :fq=>[0,1]}, headers = {}
+      result[0].to_s.should == "select"
+      result[1].should == "q=test&fq=0&fq=1"
+      result[2].should == headers
+    end
+  end
   
 end

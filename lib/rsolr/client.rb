@@ -117,7 +117,7 @@ class RSolr::Client
   def build_request path, params, data, headers
     params ||= {}
     headers ||= {}
-    request_uri = "#{path}?#{RSolr::Uri.params_to_solr params}"
+    request_uri = params.any? ? "#{path}?#{RSolr::Uri.params_to_solr params}" : path
     if data
       if data.is_a? Hash
         data = RSolr::Uri.params_to_solr data
