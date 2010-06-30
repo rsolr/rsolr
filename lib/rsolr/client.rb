@@ -105,6 +105,7 @@ class RSolr::Client
      $!.extend(RSolr::Error::SolrContext).request = request_context
      raise $!
     end
+    raise "The connection adapter returned an unexpected object" unless response.is_a?(Hash)
     raise RSolr::Error::Http.new request_context, response unless [200,302].include?(response[:status])
     adapt_response request_context, response
   end

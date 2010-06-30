@@ -150,27 +150,45 @@ describe "RSolr::Client" do
   end
   
   context "update" do
-    
+    include ClientHelper
+    it "should send data to the connection's #post method" do
+      client.connection.should_receive(:post).
+        with("update?wt=xml", instance_of(String), {"Content-Type"=>"text/xml"}).
+          and_return(:status => 200)
+      client.update("<optimize/>", {:wt=>:xml})
+    end
   end
   
-  context "commit" do
-    
-  end
-  
-  context "optimize" do
-    
-  end
-  
-  context "rollback" do
-    
+  context "post based helper methods:" do
+    include ClientHelper
+    [:commit, :optimize, :rollback].each do |meth|
+      it "should send a #{meth} message to the connection's #post method" do
+        client.connection.should_receive(:post).
+          with("update?wt=ruby", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><#{meth}/>", {"Content-Type"=>"text/xml"}).
+            and_return(:status => 200)
+        client.send meth
+      end
+    end
   end
   
   context "delete_by_id" do
-    
+    include ClientHelper
+    it "should send data to the connection's #post method" do
+      client.connection.should_receive(:post).
+        with("update?wt=ruby", instance_of(String), {"Content-Type"=>"text/xml"}).
+          and_return(:status => 200)
+      client.delete_by_id 1
+    end
   end
   
   context "delete_by_query" do
-    
+    include ClientHelper
+    it "should send data to the connection's #post method" do
+      client.connection.should_receive(:post).
+        with("update?wt=ruby", instance_of(String), {"Content-Type"=>"text/xml"}).
+          and_return(:status => 200)
+      client.delete_by_query :fq => "category:\"trash\""
+    end
   end
   
 end
