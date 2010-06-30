@@ -11,7 +11,7 @@ module RSolr
   %W(Char Client Error Http Uri Xml).each{|n|autoload n.to_sym, "rsolr/#{n.downcase}"}
   
   def self.version
-    @version ||= File.read(File.join(File.dirname(__FILE__), '..', 'VERSION'))
+    @version ||= File.read(File.join(File.dirname(__FILE__), '..', 'VERSION')).chomp
   end
   
   VERSION = self.version

@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Matt Mitchell"]
-  s.date = %q{2010-06-23}
+  s.date = %q{2010-06-29}
   s.description = %q{RSolr aims to provide a simple and extensible library for working with Solr}
   s.email = %q{goodieboy@gmail.com}
   s.extra_rdoc_files = [
@@ -34,13 +34,12 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.6}
   s.summary = %q{A Ruby client for Apache Solr}
   s.test_files = [
-    "spec/api/client_spec.rb",
-     "spec/api/connection/httpable_spec.rb",
-     "spec/api/connection/net_http_spec.rb",
-     "spec/api/message_spec.rb",
+    "spec/api/rsolr_client_spec.rb",
+     "spec/api/rsolr_error_spec.rb",
+     "spec/api/rsolr_http_spec.rb",
      "spec/api/rsolr_spec.rb",
-     "spec/api/uri_spec.rb",
-     "spec/integration/request_spec.rb",
+     "spec/api/rsolr_uri_spec.rb",
+     "spec/api/rsolr_xml_spec.rb",
      "spec/spec_helper.rb",
      "Rakefile",
      "tasks/spec.rake",
