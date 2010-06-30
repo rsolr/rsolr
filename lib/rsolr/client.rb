@@ -19,13 +19,14 @@ class RSolr::Client
   # A path is required for a POST since, well...
   # the / resource doesn't do anything with a POST.
   # Also, Solr doesn't do headers with a POST
-  def post path, data, params = nil, headers = nil
+  def post path, data = nil, params = nil, headers = nil
     send_request :post, path, params, data, headers
   end
   
-  # POST to /update with optional params
-  def update data, params = nil
-    post 'update', data, params
+  # POST XML messages to /update with optional params
+  def update data, params = {}, headers = {}
+    headers['Content-Type'] ||= 'text/xml'
+    post 'update', data, params, headers
   end
   
   # 
@@ -122,8 +123,6 @@ class RSolr::Client
       if data.is_a? Hash
         data = RSolr::Uri.params_to_solr data
         headers['Content-Type'] ||= 'application/x-www-form-urlencoded'
-      else
-        headers['Content-Type'] ||= 'text/xml'
       end
     end
     [request_uri, data, headers]

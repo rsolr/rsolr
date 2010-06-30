@@ -53,13 +53,13 @@ describe "RSolr::Client" do
   
   context "build_request" do
     include ClientHelper
-    it 'should build a request context array' do
+    it 'should return a request context array' do
       result = client.build_request 'select', {:q=>'test', :fq=>[0,1]}, "data", headers = {}
       result[0].to_s.should == "select?q=test&fq=0&fq=1"
       result[1].should == "data"
       result[2].should == headers
     end
-    it 'should convert a data Hash to a solr query string and set the form-urlencoded headers' do
+    it "should set the Content-Type header to application/x-www-form-urlencoded if a hash is passed in to the data arg" do
       result = client.build_request 'select', nil, {:q=>'test', :fq=>[0,1]}, headers = {}
       result[0].to_s.should == "select"
       result[1].should == "q=test&fq=0&fq=1"
@@ -86,7 +86,7 @@ describe "RSolr::Client" do
   
   context "send_request" do
     include ClientHelper
-    it "should forward method calls the #connection object" do
+    it "should forward these method calls the #connection object" do
       [:get, :post, :head].each do |meth|
         client.connection.should_receive(meth).
             and_return({:status => 200})
@@ -118,19 +118,35 @@ describe "RSolr::Client" do
   end
   
   context "post" do
-    
-  end
-  
-  context "head" do
-    
+    include ClientHelper
+    it "should pass the expected params to the connection's #post method" do
+      client.connection.should_receive(:post).
+        with("update?wt=ruby", "the data", {"Content-Type" => "text/plain"}).
+          and_return(:status => 200)
+      client.post "update", "the data", nil, {"Content-Type" => "text/plain"}
+    end
   end
   
   context "xml" do
-    
+    include ClientHelper
+    it "should return an instance of RSolr::Xml::Generator" do
+      client.xml.should be_a RSolr::Xml::Generator
+    end
   end
   
   context "add" do
-    
+    include ClientHelper
+    it "should send xml to the connection's #post method" do
+      client.connection.should_receive(:post).
+        with("update?wt=ruby", "<xml/>", {"Content-Type"=>"text/xml"}).
+          and_return(:status => 200)
+      # the :xml attr is lazy loaded... so load it up first
+      client.xml
+      client.xml.should_receive(:add).
+        with({:id=>1}, :commitWith=>1.0).
+          and_return("<xml/>")
+      client.add({:id=>1}, {:commitWith=>1.0})
+    end
   end
   
   context "update" do
