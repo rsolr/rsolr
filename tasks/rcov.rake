@@ -22,12 +22,4 @@ namespace :rcov do
     t.rcov_opts.concat(['--exclude', 'spec', '--sort', 'coverage'])
   end
   
-  desc 'run integration specs with rcov'
-  Spec::Rake::SpecTask.new('integration') do |t|
-    t.spec_files = FileList['spec/spec_helper.rb', 'spec/integration/**/*_spec.rb']
-    t.rcov = true
-    t.rcov_dir = File.join('coverage', 'integration')
-    # --only-uncovered
-    t.rcov_opts.concat(['--exclude', 'spec', '--sort', 'coverage'])
-  end
 end

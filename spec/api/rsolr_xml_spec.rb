@@ -1,3 +1,4 @@
+require 'spec_helper'
 describe "RSolr::Xml" do
   
   let(:generator){ RSolr::Xml::Generator.new }

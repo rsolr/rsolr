@@ -1,3 +1,4 @@
+require 'spec_helper'
 describe "RSolr::Client" do
   
   module ClientHelper
@@ -55,14 +56,14 @@ describe "RSolr::Client" do
     include ClientHelper
     it 'should return a request context array' do
       result = client.build_request 'select', {:q=>'test', :fq=>[0,1]}, "data", headers = {}
-      result[0].to_s.should == "select?q=test&fq=0&fq=1"
+      ["select?fq=0&fq=1&q=test", "select?q=test&fq=0&fq=1"].should include(result[0].to_s)
       result[1].should == "data"
       result[2].should == headers
     end
     it "should set the Content-Type header to application/x-www-form-urlencoded if a hash is passed in to the data arg" do
       result = client.build_request 'select', nil, {:q=>'test', :fq=>[0,1]}, headers = {}
       result[0].to_s.should == "select"
-      result[1].should == "q=test&fq=0&fq=1"
+      ["fq=0&fq=1&q=test", "q=test&fq=0&fq=1"].should include(result[1])
       result[2].should == headers
     end
   end

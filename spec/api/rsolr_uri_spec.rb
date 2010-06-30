@@ -1,3 +1,4 @@
+require 'spec_helper'
 describe "RSolr::Uri" do
   
   context "class-level methods" do

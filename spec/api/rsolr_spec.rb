@@ -1,3 +1,4 @@
+require 'spec_helper'
 describe "RSolr class methods" do
   
   it "should parse these here options" do
