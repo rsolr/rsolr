@@ -148,11 +148,13 @@ class RSolr::Client
     begin
       response = connection.send opts[:method], request_context
       return if response.nil?
+      return adapt_response request_context, response
     rescue
-      $!.extend(RSolr::Error::SolrContext).request = request_context
+      unless $!.respond_to? :request
+        $!.extend(RSolr::Error::SolrContext).request = request_context
+      end
       raise $!
     end
-    adapt_response request_context, response
   end
   
   # merges {:wt => :ruby} if :wt does not exist.
