@@ -26,7 +26,7 @@ A simple, extensible Ruby client for Apache Solr.
   
 == Querying
 Use the #select method to send requests to the /select handler:
-  response = solr.get('select', {
+  response = solr.get('select', :params => {
     :q=>'washington',
     :start=>0,
     :rows=>10
@@ -34,19 +34,27 @@ Use the #select method to send requests to the /select handler:
 
 The params sent into the method are sent to Solr as-is. The one exception is if a value is an array. When an array is used, multiple parameters *with the same name* are generated for the Solr query. Example:
   
-  solr.get 'select', :q=>'roses', :fq=>['red', 'violet']
+  solr.get 'select', :params => {:q=>'roses', :fq=>['red', 'violet']}
 
 The above statement generates this Solr query:
   
   select?q=roses&fq=red&fq=violet
 
 There may be cases where the query string is too long for a GET request. RSolr solves this issue by providing a simple way to POST a query to Solr:
-  response = solr.post "select", nil, enormous_params_hash
+  response = solr.post "select", :data => enormous_params_hash
 
 nil is passed in as the query string data. The enormous_params_hash variable ends up serialized as a form-encoded query string, and the correct content-type headers are sent along to Solr.
 
+===Method Missing
+The RSolr::Client class also uses method_missing for setting the request handler/path:
+  
+  solr.paintings :params => {:q=>'roses', :fq=>['red', 'violet']}
+  
+This is sent to Solr as:
+  paintings?q=roses&fq=red&fq=violet
+
 == Updating Solr
-Updating us done using native Ruby objects. Hashes are used for single documents and arrays are used for a collection of documents (hashes). These objects get turned into simple XML "messages". Raw XML strings can also be used.
+Updating is done using native Ruby objects. Hashes are used for single documents and arrays are used for a collection of documents (hashes). These objects get turned into simple XML "messages". Raw XML strings can also be used.
 
 Raw XML via  #update
   solr.update '<commit/>'
@@ -62,8 +70,8 @@ Multiple documents via #add
 When adding, you can also supply "add" xml element attributes and/or a block for manipulating other "add" related elements (docs and fields) when using the #add method:
   
   doc = {:id=>1, :price=>1.00}
-  add_attributes = {:allowDups=>false, :commitWithin=>10.0}
-  solr.add(doc, add_attributes) do |doc|
+  add_attributes = {:allowDups=>false, :commitWithin=>10}
+  solr.add(doc, :add_attrs => add_attributes) do |doc|
     # boost each document
     doc.attrs[:boost] = 1.5
     # boost the price field:
@@ -88,23 +96,23 @@ Commit & optimize shortcuts
 The default response format is Ruby. When the :wt param is set to :ruby, the response is eval'd resulting in a Hash. You can get a raw response by setting the :wt to "ruby" - notice, the string -- not a symbol. RSolr will eval the Ruby string ONLY if the :wt value is :ruby. All other response formats are available as expected, :wt=>'xml' etc..
 
 ===Evaluated Ruby (default)
-  solr.get 'select', :wt=>:ruby # notice :ruby is a Symbol
+  solr.get 'select', :params => {:wt => :ruby} # notice :ruby is a Symbol
 ===Raw Ruby
-  solr.get 'select', :wt=>'ruby' # notice 'ruby' is a String
+  solr.get 'select', :params => {:wt => 'ruby'} # notice 'ruby' is a String
 
 ===XML:
-  solr.get 'select', :wt=>:xml
+  solr.get 'select', :params => {:wt => :xml}
 ===JSON:
-  solr.get 'select', :wt=>:json
+  solr.get 'select', :params => {:wt => :json}
 
 You can access the original request context (path, params, url etc.) by calling the #request method:
-  result = solr.get 'select', :q=>'*:*'
+  result = solr.get 'select', :params => {:q => '*:*'}
   result.request[:uri]
   result.request[:params]
   etc..
 
 Similarly, the object returned has a response object. This contains any headers that Solr returned, along with the raw response body:
-  result = solr.get 'select', :q=>'*:*'
+  result = solr.get 'select', :params => {:q => '*:*'}
   result.response[:headers]
   result.response[:status]
   result.response[:body]
@@ -139,6 +147,7 @@ Similarly, the object returned has a response object. This contains any headers 
 * Send me a pull request. Bonus points for topic branches.
 
 ==Contributors
+* Colin Steele
 * Lorenzo Riccucci
 * Mike Perham
 * Mat Brown
