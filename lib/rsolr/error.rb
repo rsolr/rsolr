@@ -16,7 +16,7 @@ module RSolr::Error
       m << "\n" + self.backtrace[0..10].join("\n")
       m << "\n\nSolr Request:"
       m << "\n  Method: #{request[:method].to_s.upcase}"
-      m << "\n  Base URL: #{request[:connection].uri.to_s}"
+      m << "\n  Base URL: #{request[:client].connection.uri.to_s}"
       m << "\n  URL: #{request[:uri]}"
       m << "\n  Params: #{request[:params].inspect}"
       m << "\n  Data: #{request[:data].inspect}" if request[:data]

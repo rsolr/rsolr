@@ -102,7 +102,8 @@ module RSolr::Xml
     # The "nickname" field would have a boost="20.0"
     # if the doc had a "nickname" field with the value of "Tim".
     #
-    def add data, add_attrs={}, &block
+    def add data, add_attrs = nil, &block
+      add_attrs ||= {}
       data = [data] unless data.is_a?(Array)
       build do |xml|
         xml.add(add_attrs) do |add_node|

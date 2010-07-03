@@ -1,25 +1,39 @@
 require 'lib/rsolr'
 
-solr = RSolr.connect "http://localhost:9999/solr"
+solr = RSolr.connect "http://localhost:9999/solr/"
+
+r = solr.select(
+  :params => {:q => '*:*'},
+  :headers => {"Cache-Control" => "max-age=0, no-cache, no-store, must-revalidate"}
+)
+
+puts "basic select using RSolr::Client #method_missing"
+puts r.inspect
+puts
 
 # "asdf" doesn't exists, so a http error is raised...
 begin
-  solr.head("asdf")
+  solr.head "blah blah blah"
 rescue
+  puts $!
   # the error will have #request and #response attributes
-  $!.response[:status] == 404
+  puts "blah blah blah HEAD response: " + $!.response.inspect
 end
 
+puts
+
 # "admin" exists so we can check the return value's original response status code
-solr.head("admin").response[:status] == 200
+puts "admin HEAD response: " + solr.head("admin/").response.inspect
+puts
 
 # add some shiz
-solr.add :name_s => "blah blah", :id => Time.now.to_s
+add_response = solr.add({:name_s => "blah blah", :id => Time.now.to_s}, :xml_add_attrs => {:boost=>5.0, :commitWithin=>1})
+puts add_response.request[:data]
 solr.commit
 solr.optimize
 
 begin
-  result = solr.get 'select', :q => '*:*'
+  result = solr.get 'select', :params => {:q => '*:*'}
   puts "Data sent to Solr:"
   puts result.request.inspect
   puts

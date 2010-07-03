@@ -47,25 +47,32 @@ module RSolr
     end
   
     # send in path w/query
-    def get request_uri, headers = {}
+    def get options
+      request_uri = options[:uri]
+      headers = options[:headers] || {}
       req = setup_raw_request Net::HTTP::Get, request_uri, headers
-      perform_request http, req
+      perform_request http, req, options
     end
   
     # send in path w/query
-    def head request_uri, headers = {}
+    def head options
+      request_uri = options[:uri]
+      headers = options[:headers] || {}
       req = setup_raw_request Net::HTTP::Head, request_uri, headers
-      perform_request http, req
+      perform_request http, req, options
     end
   
     # send in path w/query
-    def post request_uri, data, headers = {}
+    def post options
+      request_uri = options[:uri]
+      data = options[:data]
+      headers = options[:headers] || {}
       req = setup_raw_request Net::HTTP::Post, request_uri, headers
       req.body = data if data
-      perform_request http, req
+      perform_request http, req, options
     end
     
-    def perform_request http, request
+    def perform_request http, request, options
       begin
         response = http.request request
         {:status => response.code.to_i, :headers => response.to_hash, :body => response.body}
