@@ -83,6 +83,7 @@ When adding, you can also supply "add" xml element attributes and/or a block for
     doc.field_by_name(:price).attrs[:boost] = 2.0
   end
 
+===Deleting
 Delete by id
   solr.delete_by_id 1
 or an array of ids
@@ -93,7 +94,7 @@ Delete by query:
 Delete by array of queries
   solr.delete_by_query ['price:1.00', 'price:10.00']
 
-Commit & optimize shortcuts
+===Commit / Optimize
   solr.commit
   solr.optimize
 
