@@ -144,6 +144,7 @@ class RSolr::Client
     raise ValidationError.new("Validation Error: The :method option is required") if opts[:method].nil?
     raise ValidationError.new("Validation Error: The :data option can only be used if :method => :post") if opts[:method] != :post and opts[:data]
     request_context = build_request path, opts
+    return request_context if opts[:noop]
     begin
       response = connection.send opts[:method], request_context
       return response unless response.is_a? Hash
