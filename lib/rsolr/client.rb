@@ -144,10 +144,9 @@ class RSolr::Client
     raise ValidationError.new("Validation Error: The :method option is required") if opts[:method].nil?
     raise ValidationError.new("Validation Error: The :data option can only be used if :method => :post") if opts[:method] != :post and opts[:data]
     request_context = build_request path, opts
-    return request_context if opts[:noop]
     begin
       response = connection.send opts[:method], request_context
-      return if response.nil?
+      return response unless response.is_a? Hash
       return adapt_response request_context, response
     rescue
       unless $!.respond_to? :request
@@ -198,7 +197,7 @@ class RSolr::Client
   # if the :wt => :ruby and the body
   # couldn't be evaluated.
   def adapt_response request, response
-    raise ValidationError.new("Validation Error: The response is an unexpected object") if not response.is_a?(Hash) || %W(body headers status) == response.keys.map{|k|k.to_s}.sort
+    raise ValidationError.new("The response does not have the correct keys => :body, :headers, :status") unless %W(body headers status) == response.keys.map{|k|k.to_s}.sort
     raise RSolr::Error::Http.new(request, response) unless [200,302].include?(response[:status])
     data = response[:body]
     if request[:params][:wt] == :ruby

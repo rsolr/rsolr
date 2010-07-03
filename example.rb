@@ -2,8 +2,9 @@ require 'lib/rsolr'
 
 solr = RSolr.connect "http://localhost:9999/solr/"
 
-r = solr.select :params => {:q => '*:*'}, :noop => true
-puts r.inspect
+puts "the build_request method returns the data sent to the connection request methods:"
+r = solr.build_request 'select', :params => {:q => '*:*', :fw => ["one", "two"]}
+puts r[:uri].inspect
 puts
 
 r = solr.select(
