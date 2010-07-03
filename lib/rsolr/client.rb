@@ -132,6 +132,7 @@ class RSolr::Client
   # 
   # +send_request+ raises an error if the response from the connection is NOT a hash,
   # or the connection returned a hash that does not have the keys, :status, :body and :headers.
+  # NOTE: If the connection request method returns nil, nothing is returned.
   # 
   # +send_request+ raises an RSolr::Error::Http if the :status != 200 or 302
   # 
@@ -139,39 +140,34 @@ class RSolr::Client
   # and if a response was returned, a :response method attached. These methods
   # contain the original request/response information.
   # 
-  # NOTE: "Validation Error" exceptions will not contain the :request/:response methods.
   def send_request path, opts = {}
     raise ValidationError.new("Validation Error: The :method option is required") if opts[:method].nil?
     raise ValidationError.new("Validation Error: The :data option can only be used if :method => :post") if opts[:method] != :post and opts[:data]
-    opts[:params] = map_params opts[:params]
-    uri, data, headers, query_string = build_request path, opts[:params], opts[:data], opts[:headers]
-    request_context = opts.merge(
-      :uri => uri,
-      :data => data,
-      :headers => headers,
-      :client => self,
-      :query_string => query_string
-    )
+    request_context = build_request path, opts
+    return request_context if opts[:noop]
     begin
       response = connection.send opts[:method], request_context
+      return if response.nil?
     rescue
-     $!.extend(RSolr::Error::SolrContext).request = request_context
-     raise $!
+      $!.extend(RSolr::Error::SolrContext).request = request_context
+      raise $!
     end
-    raise ValidationError.new("Validation Error: The connection adapter returned an unexpected object") if not response.is_a?(Hash) || %W(body headers status) == response.keys.map{|k|k.to_s}.sort
-    raise RSolr::Error::Http.new(request_context, response) unless [200,302].include?(response[:status])
     adapt_response request_context, response
   end
   
+  # merges {:wt => :ruby} if :wt does not exist.
   def map_params params
     params = params.nil? ? {} : params.dup
     params[:wt] ||= :ruby
     params
   end
   
-  # build_request 
-  def build_request path, params, data, headers
-    params ||= {}
+  # build_request sets up the uri/query string
+  # and converts the +data+ arg to form-urlencoded
+  # if the +data+ arg is a hash.
+  def build_request path, opts
+    opts[:params] = map_params opts[:params]
+    params, data, headers = opts[:params], opts[:data], opts[:headers]
     headers ||= {}
     query_string = RSolr::Uri.params_to_solr params if params
     request_uri = query_string.nil? ? path : "#{path}?#{query_string}"
@@ -181,7 +177,13 @@ class RSolr::Client
         headers['Content-Type'] ||= 'application/x-www-form-urlencoded'
       end
     end
-    [request_uri, data, headers, query_string]
+    opts.merge({
+      :uri => request_uri,
+      :data => data,
+      :headers => headers,
+      :query_string => query_string,
+      :client => self
+    })
   end
   
   # This method will evaluate the :body value
@@ -194,6 +196,8 @@ class RSolr::Client
   # if the :wt => :ruby and the body
   # couldn't be evaluated.
   def adapt_response request, response
+    raise ValidationError.new("Validation Error: The response is an unexpected object") if not response.is_a?(Hash) || %W(body headers status) == response.keys.map{|k|k.to_s}.sort
+    raise RSolr::Error::Http.new(request, response) unless [200,302].include?(response[:status])
     data = response[:body]
     if request[:params][:wt] == :ruby
       begin

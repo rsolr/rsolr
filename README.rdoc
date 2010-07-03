@@ -123,6 +123,10 @@ Similarly, the object returned has a response object. This contains any headers 
   result.response[:status]
   result.response[:body]
 
+==NOOP
+You can get the request context that's sent to Solr without sending it if you set :noop => true.
+  request_context = solr.delete_by_id [1, 2, 3, 4], :noop => true
+
 ==Related Resources & Projects
 * {RSolr Google Group}[http://groups.google.com/group/rsolr] -- The RSolr discussion group
 * {rsolr-ext}[http://github.com/mwmitchell/rsolr-ext] -- An extension kit for RSolr

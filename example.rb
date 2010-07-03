@@ -2,6 +2,10 @@ require 'lib/rsolr'
 
 solr = RSolr.connect "http://localhost:9999/solr/"
 
+r = solr.select :params => {:q => '*:*'}, :noop => true
+puts r.inspect
+puts
+
 r = solr.select(
   :params => {:q => '*:*'},
   :headers => {"Cache-Control" => "max-age=0, no-cache, no-store, must-revalidate"}
