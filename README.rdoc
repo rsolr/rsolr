@@ -19,13 +19,13 @@ A simple, extensible Ruby client for Apache Solr.
   solr = RSolr.connect 'http://solrserver.com', :proxy=>'http://user:pass@proxy.example.com:8080'
   
   # send a request to /select
-  response = solr.get 'select', :q=>'*:*'
+  response = solr.get 'select', :params => {:q => '*:*'}
   
-  # send a request to a custom request handler; /catalog
-  response = solr.get 'catalog', :q=>'*:*'
+  # send a request to /catalog
+  response = solr.get 'catalog', :params => {:q => '*:*'}
   
 == Querying
-Use the #select method to send requests to the /select handler:
+Use the #get, #post method to send requests to the /select handler:
   response = solr.get('select', :params => {
     :q=>'washington',
     :start=>0,
@@ -52,6 +52,11 @@ The RSolr::Client class also uses method_missing for setting the request handler
   
 This is sent to Solr as:
   paintings?q=roses&fq=red&fq=violet
+
+
+==GET, POST, HEAD
+RSolr can send GET, POST and HEAD requests to Solr:
+  response = solr.head "admin/"
 
 == Updating Solr
 Updating is done using native Ruby objects. Hashes are used for single documents and arrays are used for a collection of documents (hashes). These objects get turned into simple XML "messages". Raw XML strings can also be used.
