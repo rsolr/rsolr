@@ -43,7 +43,7 @@ The above statement generates this Solr query:
 There may be cases where the query string is too long for a GET request. RSolr solves this issue by providing a simple way to POST a query to Solr:
   response = solr.post "select", :data => enormous_params_hash
 
-nil is passed in as the query string data. The enormous_params_hash variable ends up serialized as a form-encoded query string, and the correct content-type headers are sent along to Solr.
+nil is passed in as the query string data. The ":data => enormous_params_hash" ends up serialized as a form-encoded query string, and the correct content-type headers are sent along to Solr.
 
 ===Method Missing
 The RSolr::Client class also uses method_missing for setting the request handler/path:
