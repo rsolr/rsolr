@@ -1,3 +1,4 @@
+
 class RSolr::Client
   
   attr_reader :connection
@@ -14,21 +15,20 @@ class RSolr::Client
     RUBY
   end
   
-  # solr.paginate "select", 1, 10, :params => {:q=>"*:*"}
+  # solr.paginate 1, 10, "select", :params => {:q=>"*:*"}
   def paginate page, per_page, path, opts = {}
     page = page.to_s.to_i
     per_page = per_page.to_s.to_i
-    opts[:method] ||= :get
-    opts[:params] ||= {}
-    opts[:params][:rows] = per_page
+    source = opts[:method] == :post ? (opts[:data] ||= {}) : (opts[:params] ||= {})
+    source[:rows] = per_page
     page = page - 1
     page = page < 1 ? 0 : page
-    opts[:params][:start] = page * opts[:params][:rows]
+    source[:start] = page * source[:rows]
     result = send_request path, opts
     docs = result["response"]["docs"]
     docs.extend RSolr::Response::DocSetPagination
     docs.per_page = per_page
-    docs.start = opts[:params][:start]
+    docs.start = source[:start]
     docs.total = result["response"]["numFound"].to_s.to_i
     result
   end
@@ -153,8 +153,7 @@ class RSolr::Client
   # contain the original request/response information.
   # 
   def send_request path, opts = {}
-    raise ValidationError.new "Validation Error: The :method option is required" if
-      opts[:method].nil?
+    opts[:method] ||= :get
     raise ValidationError.new "Validation Error: The :data option can only be used if :method => :post" if
       opts[:method] != :post and opts[:data]
     request_context = build_request path, opts

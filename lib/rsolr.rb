@@ -29,4 +29,7 @@ module RSolr
     [uri, {:proxy => proxy}]
   end
   
+  # RSolr.escape
+  extend Char
+  
 end
