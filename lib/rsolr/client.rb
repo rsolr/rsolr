@@ -14,8 +14,8 @@ class RSolr::Client
     RUBY
   end
   
-  # method_missing -- method name is converted to the "path"
-  # value and the http :method opt is :get by default.
+  # method_missing -- method name is converted to the "path" value.
+  # The http :method option is :get by default.
   def method_missing name, opts = {}
     opts[:method] ||= :get
     send_request name.to_s, opts
@@ -141,8 +141,10 @@ class RSolr::Client
   # contain the original request/response information.
   # 
   def send_request path, opts = {}
-    raise ValidationError.new("Validation Error: The :method option is required") if opts[:method].nil?
-    raise ValidationError.new("Validation Error: The :data option can only be used if :method => :post") if opts[:method] != :post and opts[:data]
+    raise ValidationError.new "Validation Error: The :method option is required" if
+      opts[:method].nil?
+    raise ValidationError.new "Validation Error: The :data option can only be used if :method => :post" if
+      opts[:method] != :post and opts[:data]
     request_context = build_request path, opts
     return request_context if opts[:noop]
     begin
@@ -199,14 +201,16 @@ class RSolr::Client
   # if :wt == :ruby and the body
   # couldn't be evaluated.
   def adapt_response request, response
-    raise ValidationError.new("The response does not have the correct keys => :body, :headers, :status") unless %W(body headers status) == response.keys.map{|k|k.to_s}.sort
-    raise RSolr::Error::Http.new(request, response) unless [200,302].include?(response[:status])
+    raise ValidationError.new "The response does not have the correct keys => :body, :headers, :status" unless
+      %W(body headers status) == response.keys.map{|k|k.to_s}.sort
+    raise RSolr::Error::Http.new request, response unless
+      [200,302].include? response[:status]
     data = response[:body]
     if request[:params][:wt] == :ruby
       begin
         data = Kernel.eval data.to_s
       rescue SyntaxError
-        raise RSolr::Error::InvalidRubyResponse.new(request, response)
+        raise RSolr::Error::InvalidRubyResponse.new request, response
       end
     end
     data.extend Module.new.instance_eval{attr_accessor :request, :response; self}
