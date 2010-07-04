@@ -1,6 +1,13 @@
 require 'lib/rsolr'
 
-solr = RSolr.connect "http://localhost:9999/solr/"
+solr = RSolr.connect "http://localhost:8983/solr/production"
+
+result = solr.paginate "2", "10", :select, :params => {:q => "*:*"}
+puts result["response"]["docs"].inspect
+
+puts result["response"]["docs"].current_page
+
+exit
 
 puts "the build_request method returns the data sent to the connection request methods:"
 r = solr.build_request 'select', :params => {:q => '*:*', :fw => ["one", "two"]}

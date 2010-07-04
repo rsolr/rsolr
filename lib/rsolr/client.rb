@@ -21,6 +21,63 @@ class RSolr::Client
     send_request name.to_s, opts
   end
   
+  module DocSetPagination
+    attr_accessor :start, :per_page, :total
+    
+    # Returns the current page calculated from 'rows' and 'start'
+    # WillPaginate hook
+    def current_page
+      return 1 if start < 1
+      per_page_normalized = per_page < 1 ? 1 : per_page
+      @current_page ||= (start / per_page_normalized).ceil + 1
+    end
+    
+    # Calcuates the total pages from 'numFound' and 'rows'
+    # WillPaginate hook
+    def total_pages
+      @total_pages ||= per_page > 0 ? (total / per_page.to_f).ceil : 1
+    end
+    
+    # returns the previous page number or 1
+    # WillPaginate hook
+    def previous_page
+      @previous_page ||= (current_page > 1) ? current_page - 1 : 1
+    end
+    
+    # returns the next page number or the last
+    # WillPaginate hook
+    def next_page
+      @next_page ||= (current_page == total_pages) ? total_pages : current_page+1
+    end
+    
+    def has_next?
+      current_page < total_pages
+    end
+    
+    def has_previous?
+      current_page > 1
+    end
+  end
+  
+  # solr.paginate "select", 1, 10, :params => {:q=>"*:*"}
+  def paginate page, per_page, path, opts = {}
+    page = page.to_s.to_i
+    per_page = per_page.to_s.to_i
+    opts[:method] ||= :get
+    opts[:params] ||= {}
+    opts[:params][:rows] = per_page
+    page = page - 1
+    page = page < 1 ? 0 : page
+    opts[:params][:start] = page * opts[:params][:rows]
+    result = send_request path, opts
+    docs = result["response"]["docs"]
+    docs.extend DocSetPagination
+    docs.per_page = per_page
+    docs.start = opts[:params][:start]
+    docs.total = result["response"]["numFound"].to_s.to_i
+    result
+  end
+  
   # POST XML messages to /update with optional params
   #
   # If not set, opts[:headers] will be set to a hash with the key
@@ -181,7 +238,7 @@ class RSolr::Client
       end
     end
     opts.merge({
-      :path => path,
+      :path => path.to_s,
       :data => data,
       :headers => headers,
       :query => query,
