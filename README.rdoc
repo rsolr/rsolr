@@ -45,14 +45,6 @@ There may be cases where the query string is too long for a GET request. RSolr s
 
 The :data hash is serialized as a form-encoded query string, and the correct content-type headers are sent along to Solr.
 
-===Method Missing
-The RSolr::Client class also uses method_missing for setting the request handler/path:
-  
-  solr.paintings :params => {:q=>'roses', :fq=>['red', 'violet']}
-  
-This is sent to Solr as:
-  paintings?q=roses&fq=red&fq=violet
-
 == Updating Solr
 Updating is done using native Ruby objects. Hashes are used for single documents and arrays are used for a collection of documents (hashes). These objects get turned into simple XML "messages". Raw XML strings can also be used.
 
