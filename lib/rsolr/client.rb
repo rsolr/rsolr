@@ -149,7 +149,7 @@ class RSolr::Client
     return request_context if opts[:noop]
     begin
       response = connection.send opts[:method], request_context
-      return response unless response.is_a? Hash
+      return response if response.nil?
       return adapt_response request_context, response
     rescue
       unless $!.respond_to? :request
