@@ -194,7 +194,15 @@ describe "RSolr::Client" do
     [:commit, :optimize, :rollback].each do |meth|
       it "should send a #{meth} message to the connection's #post method" do
         client.connection.should_receive(:post).
-          with("update?wt=ruby", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><#{meth}/>", {"Content-Type"=>"text/xml"}).
+          with(
+            :client => client,
+            :uri => "update?wt=ruby",
+            :data => "<?xml version=\"1.0\" encoding=\"UTF-8\"?><#{meth}/>",
+            :headers => {"Content-Type"=>"text/xml"},
+            :method => :post,
+            :query_string => "wt=ruby",
+            :params => {:wt=>:ruby}
+          ).
             and_return({:status => 200, :body => "", :headers => {}})
         client.send meth
       end
@@ -205,7 +213,15 @@ describe "RSolr::Client" do
     include ClientHelper
     it "should send data to the connection's #post method" do
       client.connection.should_receive(:post).
-        with("update?wt=ruby", instance_of(String), {"Content-Type"=>"text/xml"}).
+        with(
+          :client => client,
+          :uri => "update?wt=ruby",
+          :data => "<?xml version=\"1.0\" encoding=\"UTF-8\"?><delete><id>1</id></delete>",
+          :headers => {"Content-Type"=>"text/xml"},
+          :method => :post,
+          :query_string => "wt=ruby",
+          :params => {:wt=>:ruby}
+        ).
           and_return({:status => 200, :body => "", :headers => {}})
       client.delete_by_id 1
     end
@@ -215,7 +231,15 @@ describe "RSolr::Client" do
     include ClientHelper
     it "should send data to the connection's #post method" do
       client.connection.should_receive(:post).
-        with("update?wt=ruby", instance_of(String), {"Content-Type"=>"text/xml"}).
+        with(
+          :client => client,
+          :uri => "update?wt=ruby",
+          :data => "<?xml version=\"1.0\" encoding=\"UTF-8\"?><delete><query fq=\"category:&quot;trash&quot;\"/></delete>",
+          :headers => {"Content-Type"=>"text/xml"},
+          :method => :post,
+          :query_string => "wt=ruby",
+          :params => {:wt=>:ruby}
+        ).
           and_return({:status => 200, :body => "", :headers => {}})
       client.delete_by_query :fq => "category:\"trash\""
     end

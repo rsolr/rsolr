@@ -9,7 +9,7 @@ describe "RSolr::Xml" do
   [:optimize, :rollback, :commit].each do |meth|
     it "#{meth} should generator xml" do
       result = generator.send(meth)
-      result.should match(Regexp.escape("<#{meth}/>"))
+      result.should == "<?xml version=\"1.0\" encoding=\"UTF-8\"?><#{meth}/>"
     end
   end
   

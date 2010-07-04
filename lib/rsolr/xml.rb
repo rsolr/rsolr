@@ -119,25 +119,27 @@ module RSolr::Xml
         end
       end
     end
-
+    
     # generates a <commit/> message
-    def commit(opts={})
-      build {|xml| xml.commit opts}
+    def commit opts = nil
+      opts ||= {}
+      build {|xml| xml.commit(opts) }
     end
-
+    
     # generates a <optimize/> message
-    def optimize(opts={})
-      build {|xml| xml.optimize opts}
+    def optimize opts = nil
+      opts ||= {}
+      build {|xml| xml.optimize(opts) }
     end
-
+    
     # generates a <rollback/> message
-    def rollback opts={}
-      build {|xml| xml.rollback opts}
+    def rollback
+      build {|xml| xml.rollback({}) }
     end
 
     # generates a <delete><id>ID</id></delete> message
     # "ids" can be a single value or array of values
-    def delete_by_id(ids)
+    def delete_by_id ids
       ids = [ids] unless ids.is_a?(Array)
       build do |xml|
         xml.delete do |delete_node|
@@ -152,7 +154,7 @@ module RSolr::Xml
       queries = [queries] unless queries.is_a?(Array)
       build do |xml|
         xml.delete do |delete_node|
-          queries.each { |query| delete_node.query query }
+          queries.each { |query| delete_node.query(query) }
         end
       end
     end
