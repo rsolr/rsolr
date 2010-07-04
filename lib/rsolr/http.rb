@@ -48,31 +48,24 @@ module RSolr
   
     # send in path w/query
     def get options
-      request_uri = options[:uri]
-      headers = options[:headers] || {}
-      req = setup_raw_request Net::HTTP::Get, request_uri, headers
-      perform_request http, req, options
+      req = setup_raw_request :get, options
+      perform_request http, req
     end
   
     # send in path w/query
     def head options
-      request_uri = options[:uri]
-      headers = options[:headers] || {}
-      req = setup_raw_request Net::HTTP::Head, request_uri, headers
-      perform_request http, req, options
-    end
-  
-    # send in path w/query
-    def post options
-      request_uri = options[:uri]
-      data = options[:data]
-      headers = options[:headers] || {}
-      req = setup_raw_request Net::HTTP::Post, request_uri, headers
-      req.body = data if data
-      perform_request http, req, options
+      req = setup_raw_request :get, options
+      perform_request http, req
     end
     
-    def perform_request http, request, options
+    # send in path w/query
+    def post options
+      req = setup_raw_request :post, options
+      req.body = options[:data] if options[:data]
+      perform_request http, req
+    end
+    
+    def perform_request http, request
       begin
         response = http.request request
         {:status => response.code.to_i, :headers => response.to_hash, :body => response.body}
@@ -83,7 +76,19 @@ module RSolr
       end
     end
     
-    def setup_raw_request http_method, request_uri, headers = {}
+    def setup_raw_request http_method_name, request_context
+      http_method = case http_method_name
+      when :get
+        Net::HTTP::Get
+      when :post
+        Net::HTTP::Post
+      when :head
+        Net::HTTP::Head
+      else
+        raise "Only :get, :post and :head http method types are allowed."
+      end
+      request_uri = request_context[:path] + (request_context[:query] ? "?#{request_context[:query]}" : "")
+      headers = request_context[:headers] || {}
       raw_request = http_method.new "#{base_uri}#{request_uri}"
       raw_request.initialize_http_header headers
       raw_request.basic_auth username, password if options[:basic_auth]

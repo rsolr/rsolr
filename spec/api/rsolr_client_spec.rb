@@ -57,14 +57,14 @@ describe "RSolr::Client" do
     it 'should return a request context array' do
       result = client.build_request 'select', :params => {:q=>'test', :fq=>[0,1]}, :data => "data", :headers => {}
       [/fq=0/, /fq=1/, /q=test/, /wt=ruby/].each do |pattern|
-        result[:uri].should match pattern
+        result[:query].should match pattern
       end
       result[:data].should == "data"
       result[:headers].should == {}
     end
     it "should set the Content-Type header to application/x-www-form-urlencoded if a hash is passed in to the data arg" do
       result = client.build_request 'select', :data => {:q=>'test', :fq=>[0,1]}, :headers => {}
-      result[:uri].should == "select?wt=ruby"
+      result[:query].should == "wt=ruby"
       [/fq=0/, /fq=1/, /q=test/].each do |pattern|
         result[:data].should match pattern
       end
@@ -107,7 +107,7 @@ describe "RSolr::Client" do
       }.should raise_error(RuntimeError){|error|
         error.should be_a(RSolr::Error::SolrContext)
         error.should respond_to(:request)
-        error.request.keys.should include(:client, :method, :uri, :data, :headers, :params)
+        error.request.keys.should include(:path, :client, :method, :query, :data, :headers, :params)
       }
     end
     it "should raise an Http error if the response status code aint right" do
@@ -129,10 +129,10 @@ describe "RSolr::Client" do
       client.connection.should_receive(:post).
         with(
           :params=>{:wt=>:ruby},
-          :uri=>"update?wt=ruby",
+          :query=>"wt=ruby",
+          :path => "update",
           :data=>"the data",
           :method=>:post,
-          :query_string=>"wt=ruby",
           :headers=>{"Content-Type"=>"text/plain"},
           :client=>client
         ).
@@ -154,11 +154,11 @@ describe "RSolr::Client" do
       client.connection.should_receive(:post).
         with(
           :client => client,
-          :uri => "update?wt=ruby",
+          :path => "update",
           :data => "<xml/>",
           :headers => {"Content-Type"=>"text/xml"},
           :method => :post,
-          :query_string => "wt=ruby",
+          :query => "wt=ruby",
           :params => {:wt=>:ruby}
         ).
           and_return({:status => 200, :body => "", :headers => {}})
@@ -177,11 +177,11 @@ describe "RSolr::Client" do
       client.connection.should_receive(:post).
         with(
           :client => client,
-          :uri => "update?wt=ruby",
+          :path => "update",
           :data => "<optimize/>",
           :headers => {"Content-Type"=>"text/xml"},
           :method => :post,
-          :query_string => "wt=ruby",
+          :query => "wt=ruby",
           :params => {:wt=>:ruby}
         ).
           and_return({:status => 200, :body => "", :headers => {}})
@@ -196,11 +196,11 @@ describe "RSolr::Client" do
         client.connection.should_receive(:post).
           with(
             :client => client,
-            :uri => "update?wt=ruby",
+            :path => "update",
             :data => "<?xml version=\"1.0\" encoding=\"UTF-8\"?><#{meth}/>",
             :headers => {"Content-Type"=>"text/xml"},
             :method => :post,
-            :query_string => "wt=ruby",
+            :query => "wt=ruby",
             :params => {:wt=>:ruby}
           ).
             and_return({:status => 200, :body => "", :headers => {}})
@@ -215,11 +215,11 @@ describe "RSolr::Client" do
       client.connection.should_receive(:post).
         with(
           :client => client,
-          :uri => "update?wt=ruby",
+          :path => "update",
           :data => "<?xml version=\"1.0\" encoding=\"UTF-8\"?><delete><id>1</id></delete>",
           :headers => {"Content-Type"=>"text/xml"},
           :method => :post,
-          :query_string => "wt=ruby",
+          :query => "wt=ruby",
           :params => {:wt=>:ruby}
         ).
           and_return({:status => 200, :body => "", :headers => {}})
@@ -233,11 +233,11 @@ describe "RSolr::Client" do
       client.connection.should_receive(:post).
         with(
           :client => client,
-          :uri => "update?wt=ruby",
+          :path => "update",
           :data => "<?xml version=\"1.0\" encoding=\"UTF-8\"?><delete><query fq=\"category:&quot;trash&quot;\"/></delete>",
           :headers => {"Content-Type"=>"text/xml"},
           :method => :post,
-          :query_string => "wt=ruby",
+          :query => "wt=ruby",
           :params => {:wt=>:ruby}
         ).
           and_return({:status => 200, :body => "", :headers => {}})

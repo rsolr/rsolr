@@ -4,7 +4,7 @@ solr = RSolr.connect "http://localhost:9999/solr/"
 
 puts "the build_request method returns the data sent to the connection request methods:"
 r = solr.build_request 'select', :params => {:q => '*:*', :fw => ["one", "two"]}
-puts r[:uri].inspect
+puts r[:query_string].inspect
 puts
 
 r = solr.select(
@@ -20,15 +20,15 @@ puts
 begin
   solr.head "blah blah blah"
 rescue
-  puts $!
+  # puts $!
   # the error will have #request and #response attributes
-  puts "blah blah blah HEAD response: " + $!.response.inspect
+  # puts "blah blah blah HEAD response: " + $!.response.inspect
 end
 
 puts
 
 # "admin" exists so we can check the return value's original response status code
-puts "admin HEAD response: " + solr.head("admin/").response.inspect
+puts "admin HEAD response: " + solr.head("admin").response.inspect
 puts
 
 # add some shiz

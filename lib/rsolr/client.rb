@@ -125,8 +125,8 @@ class RSolr::Client
   #   :headers : optional - hash of request headers
   # All other options are passed right along to the connection request method (:get, :post, or :head)
   #
-  # +send_request+ returns either a string or hash with a successful request.
-  # When the :params[:wt] => :ruby, the response will be a hash, other wise a string.
+  # +send_request+ returns either a string or hash on a successful request.
+  # When the :params[:wt] => :ruby, the response will be a hash, else a string.
   # In both cases, the +adapt_response+ method adds a :response and :request method to the return object,
   # which contains the original request and response info.
   # 
@@ -173,8 +173,7 @@ class RSolr::Client
     opts[:params] = map_params opts[:params]
     params, data, headers = opts[:params], opts[:data], opts[:headers]
     headers ||= {}
-    query_string = RSolr::Uri.params_to_solr params if params
-    request_uri = query_string.nil? ? path : "#{path}?#{query_string}"
+    query = RSolr::Uri.params_to_solr(params)
     if data
       if data.is_a? Hash
         data = RSolr::Uri.params_to_solr data
@@ -182,10 +181,10 @@ class RSolr::Client
       end
     end
     opts.merge({
-      :uri => request_uri,
+      :path => path,
       :data => data,
       :headers => headers,
-      :query_string => query_string,
+      :query => query,
       :client => self
     })
   end
