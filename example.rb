@@ -2,10 +2,22 @@ require 'lib/rsolr'
 
 solr = RSolr.connect "http://localhost:8983/solr/production"
 
+begin
+  r = solr.select :params => {:q => '*:*!', :fw => ["one", "two"]} do |req, res|
+    #puts req[:query]
+    #puts res.inspect
+  end
+rescue
+  puts $!
+end
+
 puts "the build_request method returns the data sent to the connection request methods:"
 r = solr.build_request 'select', :params => {:q => '*:*', :fw => ["one", "two"]}
-puts r[:query_string].inspect
+puts r[:query].inspect
 puts
+
+response = solr.get "select", :params => {:q => "*:*"}
+puts response["response"]["docs"].size
 
 r = solr.select(
   :params => {:q => '*:*'},
@@ -28,23 +40,27 @@ end
 puts
 
 # "admin" exists so we can check the return value's original response status code
-puts "admin HEAD response: " + solr.head("admin").response.inspect
-puts
+#puts "admin HEAD response: " + solr.head("admin").inspect
+#puts
 
-# add some shiz
-add_response = solr.add({:name_s => "blah blah", :id => Time.now.to_s}, :xml_add_attrs => {:boost=>5.0, :commitWithin=>1})
-puts add_response.request[:data]
+# add some shiz via solr.xml
+add_xml = solr.xml.add({:name_s => "blah blah", :id => Time.now.to_s}, {:boost=>5.0, :commitWithin=>1}) do |xml|
+  # can setup individual doc add attributes here...
+end
+
+solr.update :data => add_xml
 solr.commit
 solr.optimize
 
 begin
-  result = solr.get 'select', :params => {:q => '*:*'}
-  puts "Data sent to Solr:"
-  puts result.request.inspect
-  puts
-  puts "Data returned from Solr:"
-  puts result.response.inspect
-  puts
+  result = solr.get 'select', :params => {:q => '*:*'} do |req,res|
+    puts "Data sent to Solr:"
+    puts req.inspect
+    puts
+    puts "Data returned from Solr:"
+    puts res.inspect
+    puts
+  end
   puts "response['docs']:"
   result['response']['docs'].each do |doc|
     puts doc.inspect
@@ -53,5 +69,20 @@ rescue
   puts $!.to_s
 end
 
-solr.delete_by_query "*:*"
+puts
+
+# using :noop => true to inspect the request built by rsolr:
+solr.delete_by_query "*:*", :noop => true do |req, res|
+  puts "NOOP request:"
+  puts req[:query]
+  puts req[:headers].inspect
+  puts req[:data]
+end
+
+puts 
+
+puts "Deleting all!"
+solr.delete_by_query "*:*" do |req, res|
+  puts req[:data]
+end
 solr.commit

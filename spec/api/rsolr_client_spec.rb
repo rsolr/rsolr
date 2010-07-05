@@ -34,16 +34,6 @@ describe "RSolr::Client" do
       result.should == {:time=>"NOW"}
     end
     
-    ["nil", :ruby].each do |wt|
-      it "should return an object that responds to :request and :response when :wt == #{wt}" do
-        req = {:params=>{:wt=>wt}}
-        res = {:status => 200, :body => "", :headers => {}}
-        result = client.send(:adapt_response, req, res)
-        result.request.should == req
-        result.response.should == res
-      end
-    end
-    
     it "ought raise a RSolr::Error::InvalidRubyResponse when the ruby is indeed frugged" do
       lambda {
         client.send(:adapt_response, {:params=>{:wt => :ruby}}, {:status => 200, :body => "<woops/>", :headers => {}})
@@ -104,11 +94,7 @@ describe "RSolr::Client" do
           and_raise(RuntimeError)
       lambda {
         client.send_request '', :method => :get
-      }.should raise_error(RuntimeError){|error|
-        error.should be_a(RSolr::Error::SolrContext)
-        error.should respond_to(:request)
-        error.request.keys.should include(:path, :client, :method, :query, :data, :headers, :params)
-      }
+      }.should raise_error(RuntimeError)
     end
     it "should raise an Http error if the response status code aint right" do
       client.connection.should_receive(:get).
@@ -165,9 +151,9 @@ describe "RSolr::Client" do
       # the :xml attr is lazy loaded... so load it up first
       client.xml
       client.xml.should_receive(:add).
-        with({:id=>1}, :commitWith=>10).
+        with({:id=>1}, {:commitWith=>10}).
           and_return("<xml/>")
-      client.add({:id=>1}, :add_attrs => {:commitWith=>10})
+      client.add({:id=>1}, :add_attributes => {:commitWith=>10})
     end
   end
   

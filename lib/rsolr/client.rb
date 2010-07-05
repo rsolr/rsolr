@@ -8,8 +8,8 @@ class RSolr::Client
   
   %W(get post head).each do |meth|
     class_eval <<-RUBY
-    def #{meth} path, opts = {}
-      send_request path, opts.merge(:method => :#{meth})
+    def #{meth} path, opts = {}, &block
+      send_request path, opts.merge(:method => :#{meth}), &block
     end
     RUBY
   end
@@ -30,10 +30,10 @@ class RSolr::Client
   #  :headers - http headers
   #  :params - query parameter hash
   #
-  def update opts = {}
+  def update opts = {}, &block
     opts[:headers] ||= {}
     opts[:headers]['Content-Type'] ||= 'text/xml'
-    post 'update', opts
+    post 'update', opts, &block
   end
   
   # 
@@ -49,8 +49,8 @@ class RSolr::Client
   # )
   # 
   def add doc, opts = {}, &block
-    add_attrs = opts.delete :add_attrs
-    update opts.merge(:data => xml.add(doc, add_attrs, &block))
+    add_attributes = opts.delete :add_attributes
+    update opts.merge(:data => xml.add(doc, add_attributes), &block)
   end
 
   # send "commit" xml with opts
@@ -65,8 +65,8 @@ class RSolr::Client
   # *NOTE* :expungeDeletes is Solr 1.4 only
   #
   def commit opts = {}, &block
-    commit_attrs = opts.delete :commit_attrs
-    update opts.merge(:data => xml.commit( opts[:commit_attrs], &block ))
+    commit_attrs = opts.delete :commit_attributes
+    update opts.merge(:data => xml.commit( commit_attrs, &block ))
   end
 
   # send "optimize" xml with opts.
@@ -80,38 +80,35 @@ class RSolr::Client
   #
   # *NOTE* :expungeDeletes is Solr 1.4 only
   #
-  def optimize opts = {}
-    optimize_attrs = opts.delete :optimize_attrs
-    update opts.merge(:data => xml.optimize(opts[:optimize_attrs]))
+  def optimize opts = {}, &block
+    optimize_attributes = opts.delete :optimize_attributes
+    update opts.merge(:data => xml.optimize(opts[:optimize_attributes])), &block
   end
   
   # send </rollback>
   # NOTE: solr 1.4 only
-  def rollback
-    update :data => xml.rollback
+  def rollback opts = {}, &block
+    update opts.merge(:data => xml.rollback), &block
   end
 
   # Delete one or many documents by id
   #   solr.delete_by_id 10
   #   solr.delete_by_id([12, 41, 199])
-  def delete_by_id id
-    update :data => xml.delete_by_id(id)
+  def delete_by_id id, opts = {}, &block
+    update opts.merge(:data => xml.delete_by_id(id)), &block
   end
 
   # delete one or many documents by query
   #   solr.delete_by_query 'available:0'
   #   solr.delete_by_query ['quantity:0', 'manu:"FQ"']
-  def delete_by_query query
-    update :data => xml.delete_by_query(query)
+  def delete_by_query query, opts = {}, &block
+    update opts.merge(:data => xml.delete_by_query(query)), &block
   end
   
   # shortcut to RSolr::Message::Generator
   def xml
     @xml ||= RSolr::Xml::Generator.new
   end
-  
-  # raised if the request/response is not valid.
-  class ValidationError < RuntimeError; end
   
   # +send_request+ is the main request method.
   # 
@@ -141,20 +138,34 @@ class RSolr::Client
   # If the connection request method returns nil, +send_request+ returns immediately.
   # This feature is mainly for event based connection drivers.  
   # 
-  def send_request path, opts = {}
+  def send_request path, opts = {}, &block
     opts[:method] ||= :get
-    raise ValidationError.new "Validation Error: The :data option can only be used if :method => :post" if
+    raise "The :data option can only be used if :method => :post" if
       opts[:method] != :post and opts[:data]
     request_context = build_request path, opts
-    return request_context if opts[:noop]
+    if opts[:noop]
+      if block_given?
+        yield request_context, nil
+        return
+      end
+    end
+    response = nil
     begin
       response = connection.send opts[:method], request_context
-      return response if response.nil?
-      return adapt_response request_context, response
-    rescue
-      unless $!.respond_to? :request
-        $!.extend(RSolr::Error::SolrContext).request = request_context
+      # if this connection driver doesn't return a hash, don't send it thru adapt_response
+      # instead, yield the request_context along with the response object.
+      unless response.is_a? Hash
+        yield request_context, response
+        return
       end
+      res = adapt_response request_context, response
+      # here, adapt_response was successful, so yield
+      yield request_context, response if block_given?
+      # and return the final result
+      return res
+    rescue
+      # either the connection.send failed or the adapt_response failed...
+      yield request_context, response if block_given?
       raise $!
     end
   end
@@ -198,7 +209,7 @@ class RSolr::Client
   # if :wt == :ruby and the body
   # couldn't be evaluated.
   def adapt_response request, response
-    raise ValidationError.new "The response does not have the correct keys => :body, :headers, :status" unless
+    raise "The response does not have the correct keys => :body, :headers, :status" unless
       %W(body headers status) == response.keys.map{|k|k.to_s}.sort
     raise RSolr::Error::Http.new request, response unless
       [200,302].include? response[:status]
@@ -210,9 +221,6 @@ class RSolr::Client
         raise RSolr::Error::InvalidRubyResponse.new request, response
       end
     end
-    data.extend Module.new.instance_eval{attr_accessor :request, :response; self}
-    data.request = request
-    data.response = response
     data
   end
   

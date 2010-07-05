@@ -6,25 +6,12 @@ module RSolr::Error
     
     def to_s
       m = "#{super.to_s}"
-      
+      m << "\nSolr Request: #{request[:path]}?#{request[:query]}"
+      m << "\nBacktrace: " + self.backtrace[0..10].join("\n")
       if response
-        m << " - #{response[:status]} #{Http::STATUS_CODES[response[:status].to_i]}"
+        m << "#{response[:status]} #{Http::STATUS_CODES[response[:status].to_i]}"
         details = parse_solr_error_response response[:body]
         m << "Error: #{details}\n" if details
-      end
-      
-      m << "\n" + self.backtrace[0..10].join("\n")
-      m << "\n\nSolr Request:"
-      m << "\n  Method: #{request[:method].to_s.upcase}"
-      m << "\n  Base URL: #{request[:client].connection.uri.to_s}"
-      m << "\n  URL: #{request[:uri]}"
-      m << "\n  Params: #{request[:params].inspect}"
-      m << "\n  Data: #{request[:data].inspect}" if request[:data]
-      m << "\n  Headers: #{request[:headers].inspect}"
-      if response
-        m << "\n\nSolr Response:"
-        m << "\n  Code: #{response[:status]}"
-        m << "\n  Headers: #{response[:headers].inspect}"
       end
       m
     end
