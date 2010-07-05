@@ -68,8 +68,8 @@ The optional :add_attributes hash can also be used to set Solr "add" document at
   solr.add documents, :add_attributes => {:commitWithin => 10}
 
 Raw XML via  #update
-  solr.update '<commit/>'
-  solr.update '<optimize/>'
+  solr.update :data => '<commit/>'
+  solr.update :data => '<optimize/>'
 
 When adding, you can also supply "add" xml element attributes and/or a block for manipulating other "add" related elements (docs and fields) by calling the +xml+ method directly:
   
