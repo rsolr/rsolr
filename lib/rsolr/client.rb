@@ -14,6 +14,11 @@ class RSolr::Client
     RUBY
   end
   
+  def method_missing name, *args, &block
+    path = name.to_s
+    send_request path, *args, &block
+  end
+  
   # POST XML messages to /update with optional params
   #
   # If not set, opts[:headers] will be set to a hash with the key
