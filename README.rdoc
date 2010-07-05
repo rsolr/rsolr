@@ -64,21 +64,27 @@ Multiple documents via #add
   documents = [{:id=>1, :price=>1.00}, {:id=>2, :price=>10.50}]
   solr.add documents
 
+The optional :add_attributes hash can also be used to set Solr "add" document attributes:
+  solr.add documents, :add_attributes => {:commitWithin => 10}
+
 Raw XML via  #update
   solr.update '<commit/>'
   solr.update '<optimize/>'
 
-When adding, you can also supply "add" xml element attributes and/or a block for manipulating other "add" related elements (docs and fields) when using the #add method:
+When adding, you can also supply "add" xml element attributes and/or a block for manipulating other "add" related elements (docs and fields) by calling the +xml+ method directly:
   
   doc = {:id=>1, :price=>1.00}
   add_attributes = {:allowDups=>false, :commitWithin=>10}
-  solr.add(doc, :add_attrs => add_attributes) do |doc|
+  add_xml = solr.xml.add(doc, add_attributes) do |doc|
     # boost each document
     doc.attrs[:boost] = 1.5
     # boost the price field:
     doc.field_by_name(:price).attrs[:boost] = 2.0
   end
 
+Now the "add_xml" object can be sent to Solr like:
+  solr.update :data => add_xml
+  
 ===Deleting
 Delete by id
   solr.delete_by_id 1
@@ -91,8 +97,8 @@ Delete by array of queries
   solr.delete_by_query ['price:1.00', 'price:10.00']
 
 ===Commit / Optimize
-  solr.commit
-  solr.optimize
+  solr.commit, :commit_attributes => {}
+  solr.optimize, :optimize_attributes => {}
 
 == Response Formats
 The default response format is Ruby. When the :wt param is set to :ruby, the response is eval'd resulting in a Hash. You can get a raw response by setting the :wt to "ruby" - notice, the string -- not a symbol. RSolr will eval the Ruby string ONLY if the :wt value is :ruby. All other response formats are available as expected, :wt=>'xml' etc..
@@ -109,23 +115,21 @@ The default response format is Ruby. When the :wt param is set to :ruby, the res
 
 ==Original Request and Response Data
 
-You can access the original request context (path, params, url etc.) by calling the #request method on the response object:
-  result = solr.get 'select', :params => {:q => '*:*'}
-  result.request[:uri]
-  result.request[:params]
-  etc..
-
-Similarly, the object returned has a :response method. This contains any headers that Solr returned, along with the raw response body and status code:
-  result = solr.get 'select', :params => {:q => '*:*'}
-  result.response[:headers]
-  result.response[:status]
-  result.response[:body]
+You can access the original request (path, params, query etc.) and response by providing a block to ANY of the request methods:
+  result = solr.get 'select', :params => {:q => '*:*'} do |req, res|
+    req[:query]
+    req[:params]
+    res[:headers]
+	res[:status]
+    res[:body]
+  end  
+  # etc..
 
 ==NOOP
-You can get the request context sent to Solr without actually sending it... if you set :noop => true:
+You can get the request context sent to Solr without actually sending it... if you set :noop => true to any of the request methods:
   request_context = solr.delete_by_id [1, 2, 3, 4], :noop => true
 
-==GET, POST, HEAD
+==Http Request Methods: +get+, +post+, and +head+ 
 RSolr can send GET, POST and HEAD requests to Solr:
   response = solr.head "admin/"
 
