@@ -1,4 +1,3 @@
-
 class RSolr::Client
   
   attr_reader :connection
@@ -13,24 +12,6 @@ class RSolr::Client
       send_request path, opts.merge(:method => :#{meth})
     end
     RUBY
-  end
-  
-  # solr.paginate 1, 10, "select", :params => {:q=>"*:*"}
-  def paginate page, per_page, path, opts = {}
-    page = page.to_s.to_i
-    per_page = per_page.to_s.to_i
-    source = opts[:method] == :post ? (opts[:data] ||= {}) : (opts[:params] ||= {})
-    source[:rows] = per_page
-    page = page - 1
-    page = page < 1 ? 0 : page
-    source[:start] = page * source[:rows]
-    result = send_request path, opts
-    docs = result["response"]["docs"]
-    docs.extend RSolr::Response::DocSetPagination
-    docs.per_page = per_page
-    docs.start = source[:start]
-    docs.total = result["response"]["numFound"].to_s.to_i
-    result
   end
   
   # POST XML messages to /update with optional params
@@ -151,6 +132,9 @@ class RSolr::Client
   # In all cases, the exception instance will have a :request method attached,
   # and if a response was returned, a :response method attached. These methods
   # contain the original request/response information.
+  #
+  # If the connection request method returns nil, +send_request+ returns immediately.
+  # This feature is mainly for event based connection drivers.  
   # 
   def send_request path, opts = {}
     opts[:method] ||= :get
@@ -185,11 +169,9 @@ class RSolr::Client
     params, data, headers = opts[:params], opts[:data], opts[:headers]
     headers ||= {}
     query = RSolr::Uri.params_to_solr(params)
-    if data
-      if data.is_a? Hash
-        data = RSolr::Uri.params_to_solr data
-        headers['Content-Type'] ||= 'application/x-www-form-urlencoded'
-      end
+    if data.is_a? Hash
+      data = RSolr::Uri.params_to_solr data
+      headers['Content-Type'] ||= 'application/x-www-form-urlencoded'
     end
     opts.merge({
       :path => path.to_s,
