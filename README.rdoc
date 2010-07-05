@@ -39,13 +39,20 @@ The above statement generates this Solr query:
   
   select?q=roses&fq=red&fq=violet
 
+===Method Missing
+The RSolr::Client class also uses method_missing for setting the request handler/path:
+  
+  solr.paintings :params => {:q=>'roses', :fq=>['red', 'violet']}
+  
+This is sent to Solr as:
+  paintings?q=roses&fq=red&fq=violet
+
+
 ===Using POST for Search Queries
 There may be cases where the query string is too long for a GET request. RSolr solves this issue by converting hash objects into form-encoded strings:
   response = solr.post "select", :data => enormous_params_hash
 
 The :data hash is serialized as a form-encoded query string, and the correct content-type headers are sent along to Solr.
-
-When using :data and POST, pagination params and the default :wt => :ruby param are still sent via the query string.
 
 == Updating Solr
 Updating is done using native Ruby objects. Hashes are used for single documents and arrays are used for a collection of documents (hashes). These objects get turned into simple XML "messages". Raw XML strings can also be used.
