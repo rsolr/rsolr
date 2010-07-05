@@ -131,7 +131,7 @@ You can get the request context sent to Solr without actually sending it... if y
 
 ==Http Request Methods: +get+, +post+, and +head+ 
 RSolr can send GET, POST and HEAD requests to Solr:
-  response = solr.head "admin/"
+  response = solr.head "admin"
 
 ==Related Resources & Projects
 * {RSolr Google Group}[http://groups.google.com/group/rsolr] -- The RSolr discussion group
