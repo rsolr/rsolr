@@ -70,14 +70,7 @@ solr.commit
 solr.optimize
 
 begin
-  result = solr.get 'select', :params => {:q => '*:*'} do |req,res|
-    puts "Data sent to Solr:"
-    puts req.inspect
-    puts
-    puts "Data returned from Solr:"
-    puts res.inspect
-    puts
-  end
+  result = solr.get 'select', :params => {:q => '*:*'}
   puts "response['docs']:"
   result['response']['docs'].each do |doc|
     puts doc.inspect
@@ -88,18 +81,10 @@ end
 
 puts
 
-# using :noop => true to inspect the request built by rsolr:
-solr.delete_by_query "*:*", :noop => true do |req, res|
-  puts "NOOP request:"
-  puts req[:query]
-  puts req[:headers].inspect
-  puts req[:data]
-end
+solr.delete_by_query "*:*"
 
 puts 
 
 puts "Deleting all!"
-solr.delete_by_query "*:*" do |req, res|
-  puts req[:data]
-end
+solr.delete_by_query "*:*"
 solr.commit
