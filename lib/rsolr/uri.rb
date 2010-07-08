@@ -1,3 +1,5 @@
+require 'uri'
+
 module RSolr::Uri
   
   def self.create url

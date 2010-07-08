@@ -1,19 +1,36 @@
 require 'lib/rsolr'
 
-solr = RSolr.connect "http://localhost:8983/solr/production"
+solr = RSolr.connect :url => "http://localhost:8983/solr/production"
+r = solr.connection.build_request "select", :params => {:q => "hello", :fq => ["one:1", "two:2"]}
+puts r.inspect
+
+r = solr.select :params => {:q => "*:*"}
+puts r.inspect
 
 begin
-  r = solr.select :params => {:q => '*:*!', :fw => ["one", "two"]} do |req, res|
-    #puts req[:query]
-    #puts res.inspect
+  r = solr.select :params => {:q => "*:*", :facet => true, "facet.field" => "amenities_sms"}
+  r["facet_counts"]["facet_fields"].each_pair do |field, hits|
+    hits.each_slice 2 do |k,v|
+      puts "#{k} : #{v}"
+    end
+    puts
   end
 rescue
-  puts $!
+  raise $!
 end
 
-puts "the build_request method returns the data sent to the connection request methods:"
+begin
+  r = solr.select :params => {:q => '*:*!', :fw => ["one", "two"]}
+rescue
+  puts $!
+  puts $!.backtrace.join("\n")
+end
+
+puts
+
 r = solr.build_request 'select', :params => {:q => '*:*', :fw => ["one", "two"]}
-puts r[:query].inspect
+puts r[:uri].inspect
+
 puts
 
 response = solr.get "select", :params => {:q => "*:*"}
