@@ -12,10 +12,10 @@ Notice: This document is only for the the 1.0 (pre-release) in the master branch
   require 'rsolr'
   
   # Direct connection
-  solr = RSolr.connect 'http://solrserver.com'
+  solr = RSolr.connect :url => 'http://solrserver.com'
   
   # Connecting over a proxy server
-  solr = RSolr.connect 'http://solrserver.com', :proxy=>'http://user:pass@proxy.example.com:8080'
+  solr = RSolr.connect :url => 'http://solrserver.com', :proxy=>'http://user:pass@proxy.example.com:8080'
   
   # send a request to /select
   response = solr.get 'select', :params => {:q => '*:*'}
@@ -112,22 +112,6 @@ The default response format is Ruby. When the :wt param is set to :ruby, the res
   solr.get 'select', :params => {:wt => :xml}
 ===JSON:
   solr.get 'select', :params => {:wt => :json}
-
-==Original Request and Response Data
-
-You can access the original request (path, params, query etc.) and response by providing a block to ANY of the request methods:
-  result = solr.get 'select', :params => {:q => '*:*'} do |req, res|
-    req[:query]
-    req[:params]
-    res[:headers]
-	res[:status]
-    res[:body]
-  end  
-  # etc..
-
-==NOOP
-You can get the request context sent to Solr without actually sending it... if you set :noop => true to any of the request methods:
-  request_context = solr.delete_by_id [1, 2, 3, 4], :noop => true
 
 ==Http Request Methods: +get+, +post+, and +head+ 
 RSolr can send GET, POST and HEAD requests to Solr:
