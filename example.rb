@@ -1,10 +1,18 @@
 require 'lib/rsolr'
 
 solr = RSolr.connect :url => "http://localhost:8983/solr/production"
-r = solr.connection.build_request "select", :params => {:q => "hello", :fq => ["one:1", "two:2"]}
-puts r.inspect
 
-r = solr.select :params => {:q => "*:*"}
+begin
+  r = solr.get 'select', :params => {:q => '*:*', :wt => :ruby}
+rescue
+  puts $!
+  exit
+end
+
+puts r.inspect
+exit
+
+r = solr.connection.build_request "select", :params => {:q => "hello", :fq => ["one:1", "two:2"]}
 puts r.inspect
 
 begin

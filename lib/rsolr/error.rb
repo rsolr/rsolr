@@ -11,7 +11,10 @@ module RSolr::Error
         details = parse_solr_error_response response[:body]
         m << "\nError: #{details}\n" if details
       end
-      p = "\nSolr Request: #{request[:path]}?#{request[:query]}"
+      p = "\nQuery: #{request[:path]}?#{request[:query]}"
+      p = "\nRequest Headers: #{request[:headers].inspect}" if request[:headers]
+      p = "\nRequest Data: #{request[:data].inspect}" if request[:data]
+      p << "\n"
       p << "\nBacktrace: " + self.backtrace[0..10].join("\n")
       m << p
       m
