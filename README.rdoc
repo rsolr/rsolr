@@ -22,7 +22,10 @@ Notice: This document is only for the the 1.0 (pre-release) in the master branch
   
   # send a request to /catalog
   response = solr.get 'catalog', :params => {:q => '*:*'}
-  
+
+==Documentation
+Docs are hosted here: http://rdoc.info/projects/mwmitchell/rsolr
+
 == Querying
 Use the #get / #post method to send search requests to the /select handler:
   response = solr.get 'select', :params => {
