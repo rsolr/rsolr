@@ -10,7 +10,6 @@ rescue
 end
 
 puts r.inspect
-exit
 
 r = solr.connection.build_request "select", :params => {:q => "hello", :fq => ["one:1", "two:2"]}
 puts r.inspect
@@ -89,10 +88,6 @@ end
 
 puts
 
-solr.delete_by_query "*:*"
-
-puts 
-
-puts "Deleting all!"
-solr.delete_by_query "*:*"
-solr.commit
+# puts "Deleting all!"
+# solr.delete_by_query "*:*"
+# solr.commit
