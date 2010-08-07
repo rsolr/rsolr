@@ -8,16 +8,15 @@
 #   }
 # }
 # 
-# module LowercaseFilter
-#   def map_field doc, index, field, value
-#     mapped_value = super
-#     mapped_value.respond_to?(:downcase) ? mapped_value.downcase : mapped_value
-#   end
-# end
-# 
-# mapper.extend LowercaseFilter
 # 
 # mapper = Mapper.new mapping
+# 
+# mapped.after do |doc,index|
+#   doc.each_pair {|k,v|
+#     doc[k] = v.respond_to?(:downcase) ? v.downcase : v
+#     doc["#{k}_text"] = v
+#   }
+# end
 # 
 # require 'ostruct'
 # 
@@ -46,10 +45,23 @@ class RSolr::Mapper
     end
   end
   
+  # #map_document yields the current incoming doc to this block.
+  def before &block
+    @before_map_block = block
+  end
+  
+  # #map_document yields the mapped doc to this block.
+  def after &block
+    @after_map_block = block
+  end
+  
   def map_document doc, index
+    @before_map_block.call(doc, index) if @before_map_block
     mapping.inject({}) do |mapped_doc, (field, value)|
       mapped_doc.merge field => map_field(doc, index, field, value)
     end
+    @after_map_block.call(mapping, index) if @after_map_block
+    mapping
   end
   
   def map_field doc, index, field, value

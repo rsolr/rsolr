@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{rsolr}
-  s.version = "1.0.0.beta2"
+  s.version = "1.0.0.beta3"
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Matt Mitchell"]
-  s.date = %q{2010-07-12}
+  s.date = %q{2010-07-31}
   s.description = %q{RSolr aims to provide a simple and extensible library for working with Solr}
   s.email = %q{goodieboy@gmail.com}
   s.extra_rdoc_files = [
@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
      "lib/rsolr/connectable.rb",
      "lib/rsolr/error.rb",
      "lib/rsolr/http.rb",
+     "lib/rsolr/mapper.rb",
      "lib/rsolr/uri.rb",
      "lib/rsolr/xml.rb"
   ]
@@ -39,6 +40,7 @@ Gem::Specification.new do |s|
      "spec/api/client_spec.rb",
      "spec/api/connectable_spec.rb",
      "spec/api/http_spec.rb",
+     "spec/api/mapper_spec.rb",
      "spec/api/uri_spec.rb",
      "spec/api/xml_spec.rb",
      "spec/spec_helper.rb",
