@@ -33,11 +33,14 @@ class RSolr::Mapper
   
   attr :mapping
   
+  #
   def initialize mapping
     @mapping = mapping
   end
   
+  #
   def map docs, &block
+    docs = [docs] unless docs.is_a?(Array)
     index = 0
     docs.each do |doc|
       yield map_document(doc, index), index
@@ -55,6 +58,7 @@ class RSolr::Mapper
     @after_map_block = block
   end
   
+  #
   def map_document doc, index
     @before_map_block.call(doc, index) if @before_map_block
     mapping.inject({}) do |mapped_doc, (field, value)|
@@ -64,6 +68,7 @@ class RSolr::Mapper
     mapping
   end
   
+  #
   def map_field doc, index, field, value
     case value
     when Proc

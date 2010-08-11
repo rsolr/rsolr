@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Matt Mitchell"]
-  s.date = %q{2010-07-31}
+  s.date = %q{2010-08-07}
   s.description = %q{RSolr aims to provide a simple and extensible library for working with Solr}
   s.email = %q{goodieboy@gmail.com}
   s.extra_rdoc_files = [
@@ -33,7 +33,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/mwmitchell/rsolr}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.6}
+  s.rubygems_version = %q{1.3.7}
   s.summary = %q{A Ruby client for Apache Solr}
   s.test_files = [
     "spec/api/char_spec.rb",
@@ -53,7 +53,7 @@ Gem::Specification.new do |s|
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
-    if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
+    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<builder>, [">= 2.1.2"])
     else
       s.add_dependency(%q<builder>, [">= 2.1.2"])
