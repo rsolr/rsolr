@@ -51,6 +51,8 @@ module RSolr::Connectable
   #   :path
   #   :query
   def build_request path, opts
+    raise "path must be a string or symbol, not #{path.inspect}" unless [String,Symbol].include?(path.class)
+    path = path.to_s
     opts[:method] ||= :get
     raise "The :data option can only be used if :method => :post" if opts[:method] != :post and opts[:data]
     opts[:params] = opts[:params].nil? ? {:wt => :ruby} : {:wt => :ruby}.merge(opts[:params])

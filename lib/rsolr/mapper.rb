@@ -1,3 +1,16 @@
+# mapper = RSolr::Mapper.new do
+#   field :id
+#   field [:name_ss,:name_text], :name
+#   field [:address_ss,:address_text], :addres1
+#   field :address, :addres1
+#   field :state do
+#     current.state.to_s.strip.downcase
+#   end
+#   after do |record|
+#     
+#   end
+# end
+# 
 # =Example
 #
 # mapping = {
@@ -61,11 +74,11 @@ class RSolr::Mapper
   #
   def map_document doc, index
     @before_map_block.call(doc, index) if @before_map_block
-    mapping.inject({}) do |mapped_doc, (field, value)|
+    mapped_doc = mapping.inject({}) do |mapped_doc, (field, value)|
       mapped_doc.merge field => map_field(doc, index, field, value)
     end
-    @after_map_block.call(mapping, index) if @after_map_block
-    mapping
+    @after_map_block.call(mapped_doc, index) if @after_map_block
+    mapped_doc
   end
   
   #
