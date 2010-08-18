@@ -4,7 +4,7 @@ require 'rubygems'
 
 module RSolr
   
-  %W(Char Client Connectable Error Http Mapper Uri Xml).each{|n|autoload n.to_sym, "rsolr/#{n.downcase}"}
+  %W(Char Client Connectable Error Http Uri Xml).each{|n|autoload n.to_sym, "rsolr/#{n.downcase}"}
   
   def self.version
     @version ||= File.read(File.join(File.dirname(__FILE__), '..', 'VERSION')).chomp

@@ -1,5 +1,20 @@
 require 'spec_helper'
 describe "RSolr::Http" do
+  it "Should be an RSolr::Connectable and implement an execute method" do
+    http = RSolr::Http.new
+    http.should be_a(RSolr::Connectable)
+    http.should respond_to(:execute)
+  end
+  
+  context "execute" do
+    it "should require a request_context hash" do
+      http = RSolr::Http.new
+      lambda {
+        http.execute
+      }.should raise_error(ArgumentError)
+    end
+  end
+  
   # it "should raise an Http error if the response status code aint right" do
   #   client.connection.should_receive(:get).
   #     and_return({:status => 400, :body => "", :headers => {}})
