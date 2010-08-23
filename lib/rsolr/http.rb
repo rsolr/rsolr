@@ -3,10 +3,11 @@ require 'net/https'
 
 class RSolr::Http
   
-  include RSolr::Connectable
+  include RSolr::Requestable
+  include RSolr::Responsable
   
   def initialize *args, &block
-    # call the initialize method from RSolr::Connectable
+    # call the initialize method from RSolr::Requestable
     super
   end
   

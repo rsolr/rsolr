@@ -5,14 +5,14 @@ require 'builder'
 solr = RSolr.connect :url => "http://localhost:8983/solr/development"
 
 begin
-  r = solr.get 'select', :page => 1, :per_page => 0, :params => {:q => '*:*', :wt => :ruby}
+  r = solr.get 'select', :page => 1, :per_page => 1, :params => {:q => '*:*', :wt => :ruby}
 rescue
   puts $!
   puts $!.backtrace
   exit
 end
 
-puts r["response"]["docs"].total
+puts r["response"]["docs"].inspect
 exit
 
 r = solr.connection.build_request "select", :params => {:q => "hello", :fq => ["one:1", "two:2"]}

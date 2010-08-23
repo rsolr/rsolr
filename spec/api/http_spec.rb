@@ -1,8 +1,8 @@
 require 'spec_helper'
 describe "RSolr::Http" do
-  it "Should be an RSolr::Connectable and implement an execute method" do
+  it "Should be an RSolr::Requestable) and implement an execute method" do
     http = RSolr::Http.new
-    http.should be_a(RSolr::Connectable)
+    http.should be_a(RSolr::Requestable)
     http.should respond_to(:execute)
   end
   
