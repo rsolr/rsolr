@@ -1,6 +1,6 @@
 # Connectable is designed to be shared across solr driver implementations.
-# If the driver uses an http url/proxy and returns the standard http respon
-# data (status, body, headers) then this module could be used. 
+# If the driver uses an http url/proxy and returns the standard http response
+# data (status, body, headers) then this module can be used. 
 module RSolr::Connectable
   
   attr_reader :uri, :proxy, :options
@@ -40,7 +40,7 @@ module RSolr::Connectable
   end
   
   # build_request sets up the uri/query string
-  # and converts the +data+ arg to form-urlencoded
+  # and converts the +data+ arg to form-urlencoded,
   # if the +data+ arg is a hash.
   # returns a hash with the following keys:
   #   :method
@@ -55,6 +55,7 @@ module RSolr::Connectable
     path = path.to_s
     opts[:method] ||= :get
     raise "The :data option can only be used if :method => :post" if opts[:method] != :post and opts[:data]
+    calculate_start_and_rows opts
     opts[:params] = opts[:params].nil? ? {:wt => :ruby} : {:wt => :ruby}.merge(opts[:params])
     query = RSolr::Uri.params_to_solr(opts[:params]) unless opts[:params].empty?
     opts[:query] = query
@@ -67,6 +68,11 @@ module RSolr::Connectable
     opts[:uri] = base_uri.merge(path.to_s + (query ? "?#{query}" : "")) if base_uri
     opts
   end
+  
+  #
+  # TODO: The code below, related to responses,
+  # should be moved to a response module/class!
+  #
   
   # This method will evaluate the :body value
   # if the params[:uri].params[:wt] == :ruby
@@ -87,11 +93,89 @@ module RSolr::Connectable
     if request[:params][:wt] == :ruby
       begin
         data = Kernel.eval data.to_s
+        decorate_ruby_response request, data
       rescue SyntaxError
         raise RSolr::Error::InvalidRubyResponse.new request, response
       end
     end
     data
+  end
+  
+  # TODO: Might want to move the logic from 
+  # PaginatedResponse.extended to this method,
+  # since we have access to the original 
+  # reuqest and wouldn't require that
+  # omitHeader != false.
+  def decorate_ruby_response request, data
+    if request[:page] and request[:per_page] and data["response"]["docs"]
+      data.extend PaginatedResponse
+    end
+  end
+  
+  # figures out the "start" and "rows" Solr params
+  # by inspecting the :per_page and :page params.
+  def calculate_start_and_rows request
+    page, per_page = request[:page], request[:per_page]
+    per_page ||= 10
+    page = page.to_s.to_i-1
+    page = page < 1 ? 0 : page
+    start = page * per_page
+    request[:params].merge! :start => start, :rows => per_page
+  end
+  
+  module PaginatedDocSet
+
+    attr_accessor :start, :per_page, :total
+
+    # Returns the current page calculated from 'rows' and 'start'
+    # WillPaginate hook
+    def current_page
+      return 1 if start < 1
+      per_page_normalized = per_page < 1 ? 1 : per_page
+      @current_page ||= (start / per_page_normalized).ceil + 1
+    end
+
+    # Calcuates the total pages from 'numFound' and 'rows'
+    # WillPaginate hook
+    def total_pages
+      @total_pages ||= per_page > 0 ? (total / per_page.to_f).ceil : 1
+    end
+
+    # returns the previous page number or 1
+    # WillPaginate hook
+    def previous_page
+      @previous_page ||= (current_page > 1) ? current_page - 1 : 1
+    end
+
+    # returns the next page number or the last
+    # WillPaginate hook
+    def next_page
+      @next_page ||= (current_page == total_pages) ? total_pages : current_page+1
+    end
+
+    def has_next?
+      current_page < total_pages
+    end
+
+    def has_previous?
+      current_page > 1
+    end
+
+  end
+  
+  module PaginatedResponse
+    
+    # TODO: self["responseHeader"]["params"]["rows"]
+    # will not be available if omitHeader is false...
+    # so, a simple "extend" probably isn't going to cut it.
+    def self.extended base
+      d = base['response']['docs']
+      d.extend PaginatedDocSet
+      d.per_page = self["responseHeader"]["params"]["rows"].to_s.to_i rescue 10
+      d.start = base["response"]["start"].to_s.to_i
+      d.total = base["response"]["numFound"].to_s.to_i
+    end
+  
   end
   
 end

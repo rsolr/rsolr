@@ -1,15 +1,19 @@
-require 'lib/rsolr'
+require "#{File.dirname(__FILE__)}/lib/rsolr"
+require 'rubygems'
+require 'builder'
 
-solr = RSolr.connect :url => "http://localhost:8983/solr/production"
+solr = RSolr.connect :url => "http://localhost:8983/solr/development"
 
 begin
-  r = solr.get 'select', :params => {:q => '*:*', :wt => :ruby}
+  r = solr.get 'select', :page => 1, :per_page => 0, :params => {:q => '*:*', :wt => :ruby}
 rescue
   puts $!
+  puts $!.backtrace
   exit
 end
 
-puts r.inspect
+puts r["response"]["docs"].total
+exit
 
 r = solr.connection.build_request "select", :params => {:q => "hello", :fq => ["one:1", "two:2"]}
 puts r.inspect
