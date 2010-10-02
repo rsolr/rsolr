@@ -19,7 +19,7 @@ describe "RSolr::Http" do
   #   client.connection.should_receive(:get).
   #     and_return({:status => 400, :body => "", :headers => {}})
   #   lambda{
-  #     client.send_request '', :method => :get
+  #     client.send_and_receive '', :method => :get
   #   }.should raise_error(RSolr::Error::Http) {|error|
   #     error.should be_a(RSolr::Error::Http)
   #     error.should respond_to(:request)

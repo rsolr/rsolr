@@ -2,8 +2,10 @@
 # If the driver uses an http url/proxy and returns the standard http response
 # data (status, body, headers) then this module can be used.
 #
-# Requestable also handles :page/:per_page => :start/:rows
-# logic for the request.
+# It assumes that whatever class includes/extends it,
+# has the following interface/methods:
+#   +execute+
+#   +adapt_response+
 module RSolr::Requestable
   
   attr_reader :uri, :proxy, :options
@@ -28,10 +30,10 @@ module RSolr::Requestable
   end
   
   # creates a request context hash,
-  # sends it to the connection.execute method
+  # sends it to the connection's +execute+ method
   # which returns a simple hash,
-  # then passes the request/response into adapt_response.
-  def send_request path, opts
+  # then passes the request/response into +adapt_response+.
+  def send_and_receive path, opts
     request_context = build_request path, opts
     raw_response = execute request_context
     adapt_response request_context, raw_response
@@ -61,7 +63,6 @@ module RSolr::Requestable
     path = path.to_s
     opts[:method] ||= :get
     raise "The :data option can only be used if :method => :post" if opts[:method] != :post and opts[:data]
-    calculate_start_and_rows opts
     opts[:params] = opts[:params].nil? ? {:wt => :ruby} : {:wt => :ruby}.merge(opts[:params])
     query = RSolr::Uri.params_to_solr(opts[:params]) unless opts[:params].empty?
     opts[:query] = query
@@ -73,18 +74,6 @@ module RSolr::Requestable
     opts[:path] = path
     opts[:uri] = base_uri.merge(path.to_s + (query ? "?#{query}" : "")) if base_uri
     opts
-  end
-  
-  # figures out the "start" and "rows" Solr params
-  # by inspecting the :per_page and :page params.
-  def calculate_start_and_rows request
-    return unless request[:page] and request[:per_page]
-    page, per_page = request[:page], request[:per_page]
-    per_page ||= 10
-    page = page.to_s.to_i-1
-    page = page < 1 ? 0 : page
-    start = page * per_page
-    request[:params].merge! :start => start, :rows => per_page
   end
   
 end

@@ -16,13 +16,13 @@ describe "RSolr::Client" do
     end
   end
   
-  context "send_request" do
+  context "send_and_receive" do
     include ClientHelper
     it "should forward these method calls the #connection object" do
       [:get, :post, :head].each do |meth|
-        client.connection.should_receive(:send_request).
+        client.connection.should_receive(:send_and_receive).
             and_return({:status => 200, :body => "{}", :headers => {}})
-        client.send_request '', :method => meth, :params => {}, :data => nil, :headers => {}
+        client.send_and_receive '', :method => meth, :params => {}, :data => nil, :headers => {}
       end
     end
   end
@@ -30,7 +30,7 @@ describe "RSolr::Client" do
   context "post" do
     include ClientHelper
     it "should pass the expected params to the connection's #post method" do
-      client.connection.should_receive(:send_request).
+      client.connection.should_receive(:send_and_receive).
         with(
           "update", {:headers=>{"Content-Type"=>"text/plain"}, :method=>:post, :data=>"the data"}
         ).
@@ -56,7 +56,7 @@ describe "RSolr::Client" do
   context "add" do
     include ClientHelper
     it "should send xml to the connection's #post method" do
-      client.connection.should_receive(:send_request).
+      client.connection.should_receive(:send_and_receive).
         with(
           "update", {:headers=>{"Content-Type"=>"text/xml"}, :method=>:post, :data=>"<xml/>"}
         ).
@@ -80,7 +80,7 @@ describe "RSolr::Client" do
   context "update" do
     include ClientHelper
     it "should send data to the connection's #post method" do
-      client.connection.should_receive(:send_request).
+      client.connection.should_receive(:send_and_receive).
         with(
           "update", {:headers=>{"Content-Type"=>"text/xml"}, :method=>:post, :data=>"<optimize/>"}
         ).
@@ -100,7 +100,7 @@ describe "RSolr::Client" do
     include ClientHelper
     [:commit, :optimize, :rollback].each do |meth|
       it "should send a #{meth} message to the connection's #post method" do
-        client.connection.should_receive(:send_request).
+        client.connection.should_receive(:send_and_receive).
           with(
             "update", {:headers=>{"Content-Type"=>"text/xml"}, :method=>:post, :data=>"<?xml version=\"1.0\" encoding=\"UTF-8\"?><#{meth}/>"}
           ).
@@ -120,7 +120,7 @@ describe "RSolr::Client" do
   context "delete_by_id" do
     include ClientHelper
     it "should send data to the connection's #post method" do
-      client.connection.should_receive(:send_request).
+      client.connection.should_receive(:send_and_receive).
         with(
           "update", {:headers=>{"Content-Type"=>"text/xml"}, :method=>:post, :data=>"<?xml version=\"1.0\" encoding=\"UTF-8\"?><delete><id>1</id></delete>"}
         ).
@@ -139,7 +139,7 @@ describe "RSolr::Client" do
   context "delete_by_query" do
     include ClientHelper
     it "should send data to the connection's #post method" do
-      client.connection.should_receive(:send_request).
+      client.connection.should_receive(:send_and_receive).
         with(
           "update", {:headers=>{"Content-Type"=>"text/xml"}, :method=>:post, :data=>"<?xml version=\"1.0\" encoding=\"UTF-8\"?><delete><query fq=\"category:&quot;trash&quot;\"/></delete>"}
         ).

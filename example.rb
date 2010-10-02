@@ -2,7 +2,7 @@ require "#{File.dirname(__FILE__)}/lib/rsolr"
 require 'rubygems'
 require 'builder'
 
-solr = RSolr.connect :url => "http://localhost:8983/solr/development"
+solr = RSolr.connect :url => "http://localhost:9999/solr"
 
 begin
   r = solr.get 'select', :page => 1, :per_page => 1, :params => {:q => '*:*', :wt => :ruby}
@@ -13,10 +13,11 @@ rescue
 end
 
 puts r["response"]["docs"].inspect
-exit
 
-r = solr.connection.build_request "select", :params => {:q => "hello", :fq => ["one:1", "two:2"]}
-puts r.inspect
+r = solr.connection.build_request "select", :params => {:q => "hello", :fq => ["one:1", "two:2"]}, :method => :post
+puts r[:uri].query
+
+exit
 
 begin
   r = solr.select :params => {:q => "*:*", :facet => true, "facet.field" => "amenities_sms"}

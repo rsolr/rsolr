@@ -6,29 +6,29 @@ describe "RSolr::Requestable" do
     Object.new.extend RSolr::Requestable
   end
   
-  def responsable
-    Object.new.extend RSolr::Responsable
+  def responseable
+    Object.new.extend RSolr::Responseable
   end
   
-  context "Responsable.adapt_response" do
+  context "Responseable.adapt_response" do
     
     it 'should not try to evaluate ruby when the :qt is not :ruby' do
       body = '{:time=>"NOW"}'
-      result = responsable.adapt_response({:params=>{}}, {:status => 200, :body => body, :headers => {}})
+      result = responseable.adapt_response({:params=>{}}, {:status => 200, :body => body, :headers => {}})
       result.should be_a(String)
       result.should == body
     end
     
     it 'should evaluate ruby responses when the :wt is :ruby' do
       body = '{:time=>"NOW"}'
-      result = responsable.adapt_response({:params=>{:wt=>:ruby}}, {:status => 200, :body => body, :headers => {}})
+      result = responseable.adapt_response({:params=>{:wt=>:ruby}}, {:status => 200, :body => body, :headers => {}})
       result.should be_a(Hash)
       result.should == {:time=>"NOW"}
     end
     
     it "ought raise a RSolr::Error::InvalidRubyResponse when the ruby is indeed frugged" do
       lambda {
-        responsable.adapt_response({:params=>{:wt => :ruby}}, {:status => 200, :body => "<woops/>", :headers => {}})
+        responseable.adapt_response({:params=>{:wt => :ruby}}, {:status => 200, :body => "<woops/>", :headers => {}})
       }.should raise_error RSolr::Error::InvalidRubyResponse
     end
   

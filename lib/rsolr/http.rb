@@ -4,15 +4,12 @@ require 'net/https'
 class RSolr::Http
   
   include RSolr::Requestable
-  include RSolr::Responsable
+  include RSolr::Responseable
   
-  def initialize *args, &block
-    # call the initialize method from RSolr::Requestable
-    super
-  end
+  # No need for a constructor here, we have RSolr::Requestable for that.
   
   # using the request_context hash,
-  # issue a request,
+  # send a request,
   # then return the standard rsolr response hash {:status, :body, :headers}
   def execute request_context
     request = setup_raw_request request_context
@@ -27,8 +24,7 @@ class RSolr::Http
     end
   end
   
-  protected
-  
+  # This returns a singleton of a Net::HTTP or Net::HTTP.Proxy request object.
   def http
     @http ||= (
       http = if proxy
@@ -37,30 +33,12 @@ class RSolr::Http
       else
         Net::HTTP.new uri.host, uri.port
       end
-    
-      http.use_ssl = uri.port == 443 || uri.instance_of?(URI::HTTPS)
-
-      if options[:timeout] && options[:timeout].is_a?(Integer)
-        http.open_timeout = options[:timeout]
-        http.read_timeout = options[:timeout]
-      end
-
-      if options[:pem] && http.use_ssl?
-        http.cert = OpenSSL::X509::Certificate.new(options[:pem])
-        http.key = OpenSSL::PKey::RSA.new(options[:pem])
-        http.verify_mode = OpenSSL::SSL::VERIFY_PEER
-      else
-        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-      end
-
-      if options[:debug_output]
-        http.set_debug_output(options[:debug_output])
-      end
-
+      http.use_ssl = uri.port == 443 || uri.instance_of?(URI::HTTPS)      
       http
     )
   end
   
+  # 
   def setup_raw_request request_context
     http_method = case request_context[:method]
     when :get
@@ -75,26 +53,7 @@ class RSolr::Http
     headers = request_context[:headers] || {}
     raw_request = http_method.new request_context[:uri].to_s
     raw_request.initialize_http_header headers
-    raw_request.basic_auth username, password if options[:basic_auth]
-    if options[:digest_auth]
-      res = http.head(request_context[:uri].to_s, headers)
-      if res['www-authenticate'] != nil && res['www-authenticate'].length > 0
-        raw_request.digest_auth username, password, res
-      end
-    end
     raw_request
-  end
-  
-  def credentials
-    options[:basic_auth] || options[:digest_auth]
-  end
-
-  def username
-    credentials[:username]
-  end
-
-  def password
-    credentials[:password]
   end
   
 end
