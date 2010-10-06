@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Matt Mitchell"]
-  s.date = %q{2010-08-18}
+  s.date = %q{2010-10-05}
   s.description = %q{RSolr aims to provide a simple and extensible library for working with Solr}
   s.email = %q{goodieboy@gmail.com}
   s.extra_rdoc_files = [
@@ -23,23 +23,24 @@ Gem::Specification.new do |s|
      "lib/rsolr.rb",
      "lib/rsolr/char.rb",
      "lib/rsolr/client.rb",
-     "lib/rsolr/connectable.rb",
      "lib/rsolr/error.rb",
      "lib/rsolr/http.rb",
+     "lib/rsolr/requestable.rb",
+     "lib/rsolr/responseable.rb",
      "lib/rsolr/uri.rb",
      "lib/rsolr/xml.rb"
   ]
   s.homepage = %q{http://github.com/mwmitchell/rsolr}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.6}
+  s.rubygems_version = %q{1.3.7}
   s.summary = %q{A Ruby client for Apache Solr}
   s.test_files = [
     "spec/api/char_spec.rb",
      "spec/api/client_spec.rb",
-     "spec/api/connectable_spec.rb",
      "spec/api/error_spec.rb",
      "spec/api/http_spec.rb",
+     "spec/api/req_res_spec.rb",
      "spec/api/uri_spec.rb",
      "spec/api/xml_spec.rb",
      "spec/spec_helper.rb",
@@ -52,7 +53,7 @@ Gem::Specification.new do |s|
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
-    if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
+    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<builder>, [">= 2.1.2"])
     else
       s.add_dependency(%q<builder>, [">= 2.1.2"])
