@@ -3,7 +3,6 @@ require 'rubygems'
 require 'builder'
 
 solr = RSolr.connect :url => "http://localhost:9999/solr"
-solr.extend RSolr::Pagination::Client
 
 r = solr.paginate_select 1, 10, :params => {:q => "*:*"}
 puts r["response"]["docs"].per_page

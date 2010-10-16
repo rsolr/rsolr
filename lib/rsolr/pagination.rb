@@ -13,6 +13,8 @@ module RSolr::Pagination
     def method_missing name, *args
       if name.to_s =~ /^paginate_(.+)$/
         paginate args[0], args[1], $1, *args[2..-1]
+      else
+        super name, *args
       end
     end
     

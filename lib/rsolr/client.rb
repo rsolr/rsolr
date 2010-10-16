@@ -11,6 +11,7 @@ class RSolr::Client
     @uri = RSolr::Uri.create url
     @proxy = RSolr::Uri.create proxy_url if proxy_url
     @options = options
+    extend RSolr::Pagination::Client
   end
   
   # 
