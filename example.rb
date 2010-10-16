@@ -5,7 +5,7 @@ require 'builder'
 solr = RSolr.connect :url => "http://localhost:9999/solr"
 
 begin
-  r = solr.get 'select', :page => 1, :per_page => 1, :params => {:q => '*:*', :wt => :ruby}
+  r = solr.get 'select', :params => {:q => '*:*', :wt => :ruby}
 rescue
   puts $!
   puts $!.backtrace
@@ -14,10 +14,8 @@ end
 
 puts r["response"]["docs"].inspect
 
-r = solr.connection.build_request "select", :params => {:q => "hello", :fq => ["one:1", "two:2"]}, :method => :post
-puts r[:uri].query
-
-exit
+r = solr.build_request "select", :params => {:q => "hello", :fq => ["one:1", "two:2"]}, :method => :post
+puts r[:uri]
 
 begin
   r = solr.select :params => {:q => "*:*", :facet => true, "facet.field" => "amenities_sms"}

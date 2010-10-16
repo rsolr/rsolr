@@ -4,7 +4,7 @@ require 'rubygems'
 
 module RSolr
   
-  %W(Char Client Requestable Responseable Error Http Uri Xml).each{|n|autoload n.to_sym, "rsolr/#{n.downcase}"}
+  %W(Char Client Error Connection Uri Xml).each{|n|autoload n.to_sym, "rsolr/#{n.downcase}"}
   
   def self.version
     @version ||= File.read(File.join(File.dirname(__FILE__), '..', 'VERSION')).chomp
@@ -13,7 +13,7 @@ module RSolr
   VERSION = self.version
   
   def self.connect *args
-    Client.new Http.new(*args)
+    Client.new Connection.new, *args
   end
   
   # RSolr.escape
