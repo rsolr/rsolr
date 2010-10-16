@@ -204,12 +204,16 @@ class RSolr::Client
     data = response[:body]
     if request[:params][:wt] == :ruby
       begin
-        data = Kernel.eval data.to_s
+        data = evaluate_ruby_response data.to_s
       rescue SyntaxError
         raise RSolr::Error::InvalidRubyResponse.new request, response
       end
     end
     data
+  end
+  
+  def evaluate_ruby_response ruby_string
+    Kernel.eval ruby_string
   end
   
 end
