@@ -41,6 +41,7 @@ module RSolr::Pagination
     # will not be available if omitHeader is false...
     # so, a simple "extend" probably isn't going to cut it.
     def self.extended base
+      return unless base["response"] && base["response"]["docs"]
       d = base['response']['docs']
       d.extend PaginatedDocSet
       d.per_page = self["responseHeader"]["params"]["rows"].to_s.to_i rescue 10

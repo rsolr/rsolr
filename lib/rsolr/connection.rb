@@ -6,7 +6,7 @@ class RSolr::Connection
   # using the request_context hash,
   # send a request,
   # then return the standard rsolr response hash {:status, :body, :headers}
-  def execute request_context
+  def execute client, request_context
     h = http request_context[:uri], request_context[:proxy]
     request = setup_raw_request request_context
     request.body = request_context[:data] if request_context[:method] == :post and request_context[:data]
