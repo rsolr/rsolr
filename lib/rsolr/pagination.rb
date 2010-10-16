@@ -87,28 +87,5 @@ module RSolr::Pagination
     end
 
   end
-
-  # currently just a place to inject the pagination module.
-  def decorate_ruby_response request, response
-    if request[:page] and request[:per_page] and response["response"]["docs"]
-      docs = response['response']['docs'].extend PaginatedDocSet
-      docs.per_page = request[:per_page]
-      docs.start = request[:params][:start].to_i
-      docs.total = response["response"]["numFound"].to_i
-    end
-  end
-
-  # calculate_start_and_rows opts
-  # figures out the "start" and "rows" Solr params
-  # by inspecting the :per_page and :page params.
-  def calculate_start_and_rows request
-    return unless request[:page] and request[:per_page]
-    page, per_page = request[:page], request[:per_page]
-    per_page ||= 10
-    page = page.to_s.to_i-1
-    page = page < 1 ? 0 : page
-    start = page * per_page
-    request[:params].merge! :start => start, :rows => per_page
-  end
   
 end
