@@ -74,17 +74,14 @@ describe "RSolr::Client" do
   context "update" do
     include ClientHelper
     it "should send data to the connection's #post method" do
-      client.connection.should_receive(:send_and_receive).
+      client.connection.should_receive(:execute).
         with(
-          "update", {:headers=>{"Content-Type"=>"text/xml"}, :method=>:post, :data=>"<optimize/>"}
+          client, hash_including({:path => "update", :headers=>{"Content-Type"=>"text/xml"}, :method=>:post, :data=>"<optimize/>"})
         ).
           and_return(
-            :path => "update",
-            :data => "<optimize/>",
-            :headers => {"Content-Type"=>"text/xml"},
-            :method => :post,
-            :query => "wt=ruby",
-            :params => {:wt=>:ruby}
+            :body => "",
+            :status => 200,
+            :headers => {"Content-Type"=>"text/xml"}
           )
       client.update(:data => "<optimize/>")
     end
@@ -94,17 +91,14 @@ describe "RSolr::Client" do
     include ClientHelper
     [:commit, :optimize, :rollback].each do |meth|
       it "should send a #{meth} message to the connection's #post method" do
-        client.connection.should_receive(:send_and_receive).
+        client.connection.should_receive(:execute).
           with(
-            "update", {:headers=>{"Content-Type"=>"text/xml"}, :method=>:post, :data=>"<?xml version=\"1.0\" encoding=\"UTF-8\"?><#{meth}/>"}
+            client, hash_including({:path => "update", :headers=>{"Content-Type"=>"text/xml"}, :method=>:post, :data=>"<?xml version=\"1.0\" encoding=\"UTF-8\"?><#{meth}/>"})
           ).
             and_return(
-              :path => "update",
-              :data => "<?xml version=\"1.0\" encoding=\"UTF-8\"?><#{meth}/>",
-              :headers => {"Content-Type"=>"text/xml"},
-              :method => :post,
-              :query => "wt=ruby",
-              :params => {:wt=>:ruby}
+              :body => "",
+              :status => 200,
+              :headers => {"Content-Type"=>"text/xml"}
             )
         client.send meth
       end
@@ -114,17 +108,14 @@ describe "RSolr::Client" do
   context "delete_by_id" do
     include ClientHelper
     it "should send data to the connection's #post method" do
-      client.connection.should_receive(:send_and_receive).
+      client.connection.should_receive(:execute).
         with(
-          "update", {:headers=>{"Content-Type"=>"text/xml"}, :method=>:post, :data=>"<?xml version=\"1.0\" encoding=\"UTF-8\"?><delete><id>1</id></delete>"}
+          client, hash_including({:path => "update", :headers=>{"Content-Type"=>"text/xml"}, :method=>:post, :data=>"<?xml version=\"1.0\" encoding=\"UTF-8\"?><delete><id>1</id></delete>"})
         ).
           and_return(
-            :path => "update",
-            :data => "<?xml version=\"1.0\" encoding=\"UTF-8\"?><delete><id>1</id></delete>",
-            :headers => {"Content-Type"=>"text/xml"},
-            :method => :post,
-            :query => "wt=ruby",
-            :params => {:wt=>:ruby}
+            :body => "",
+            :status => 200,
+            :headers => {"Content-Type"=>"text/xml"}
           )
       client.delete_by_id 1
     end
@@ -133,17 +124,14 @@ describe "RSolr::Client" do
   context "delete_by_query" do
     include ClientHelper
     it "should send data to the connection's #post method" do
-      client.connection.should_receive(:send_and_receive).
+      client.connection.should_receive(:execute).
         with(
-          "update", {:headers=>{"Content-Type"=>"text/xml"}, :method=>:post, :data=>"<?xml version=\"1.0\" encoding=\"UTF-8\"?><delete><query fq=\"category:&quot;trash&quot;\"/></delete>"}
+          client, hash_including({:path => "update", :headers=>{"Content-Type"=>"text/xml"}, :method=>:post, :data=>"<?xml version=\"1.0\" encoding=\"UTF-8\"?><delete><query fq=\"category:&quot;trash&quot;\"/></delete>"})
         ).
           and_return(
-            :path => "update",
-            :data => "<?xml version=\"1.0\" encoding=\"UTF-8\"?><delete><query fq=\"category:&quot;trash&quot;\"/></delete>",
-            :headers => {"Content-Type"=>"text/xml"},
-            :method => :post,
-            :query => "wt=ruby",
-            :params => {:wt=>:ruby}
+            :body => "",
+            :status => 200,
+            :headers => {"Content-Type"=>"text/xml"}
           )
       client.delete_by_query :fq => "category:\"trash\""
     end
