@@ -2,11 +2,12 @@ require "#{File.dirname(__FILE__)}/lib/rsolr"
 require 'rubygems'
 require 'builder'
 
-solr = RSolr.connect :url => "http://localhost:9999/solr"
+solr = RSolr.connect :url => "http://localhost:8983/solr"
 
-r = solr.paginate_select 1, 10, :params => {:q => "*:*"}
-puts r["response"]["docs"].per_page
-exit
+r = solr.paginate 23, 10, "select", :params => {:q => "*:*"}
+puts r.inspect
+
+puts r["response"]["docs"].inspect
 
 begin
   r = solr.get 'select', :params => {:q => '*:*', :wt => :ruby}
@@ -20,6 +21,8 @@ puts r["response"]["docs"].inspect
 
 r = solr.build_request "select", :params => {:q => "hello", :fq => ["one:1", "two:2"]}, :method => :post
 puts r[:uri]
+
+exit
 
 begin
   r = solr.select :params => {:q => "*:*", :facet => true, "facet.field" => "amenities_sms"}

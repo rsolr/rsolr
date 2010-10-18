@@ -1,6 +1,7 @@
 require 'net/http'
 require 'net/https'
 
+# The default/Net::Http adapter for RSolr.
 class RSolr::Connection
   
   # using the request_context hash,
@@ -13,6 +14,7 @@ class RSolr::Connection
     begin
       response = h.request request
       {:status => response.code.to_i, :headers => response.to_hash, :body => response.body}
+    # catch the undefined closed? exception -- this is a confirmed ruby bug
     rescue NoMethodError
       $!.message == "undefined method `closed?' for nil:NilClass" ?
         raise(Errno::ECONNREFUSED.new) :

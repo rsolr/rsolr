@@ -1,15 +1,40 @@
 module RSolr::Pagination
   
+  # Calculates the "start" and "rows" Solr params
+  # by inspecting the :per_page and :page params.
+  def self.calculate_start_and_rows page, per_page
+    per_page ||= 10
+    page = page.to_s.to_i-1
+    page = page < 1 ? 0 : page
+    start = page * per_page
+    [start, per_page]
+  end
+  
+  # A mixin module for RSolr::Client
+  # -- note, this must mixed-in via
+  # "extend" on a RSolr::Client instance.
   module Client
     
+    # 
     def paginate page, per_page, path, opts = {}
-      opts[:params] ||= {}
-      values = calculate_start_and_rows(page, per_page)
-      opts[:params][:start] = values[0]
-      opts[:params][:rows] = values[1]
-      send_and_receive path, opts
+      request_context = build_paginated_request page, per_page, path, opts = {}
+      puts request_context.inspect
+      execute request_context
     end
     
+    def build_paginated_request page, per_page, path, opts = {}
+      opts[:page] = page
+      opts[:per_page] = per_page
+      opts[:params] ||= {}
+      values = RSolr::Pagination.calculate_start_and_rows(page, per_page)
+      opts[:params][:start] = values[0]
+      opts[:params][:rows] = values[1]
+      build_request path, opts
+    end
+    
+    protected
+    
+    # 
     def method_missing name, *args
       if name.to_s =~ /^paginate_(.+)$/
         paginate args[0], args[1], $1, *args[2..-1]
@@ -18,20 +43,12 @@ module RSolr::Pagination
       end
     end
     
-    def evaluate_ruby_response ruby_string
-      result = super ruby_string
-      result.extend PaginatedResponse
+    # TODO: maybe this method should get the request_context
+    # as well, so it can check for page/per_page values?
+    def evaluate_ruby_response request, response
+      result = super request, response
+      result.extend(PaginatedResponse) if request[:page] && request[:per_page]
       result
-    end
-    
-    # figures out the "start" and "rows" Solr params
-    # by inspecting the :per_page and :page params.
-    def calculate_start_and_rows page, per_page
-      per_page ||= 10
-      page = page.to_s.to_i-1
-      page = page < 1 ? 0 : page
-      start = page * per_page
-      [start, per_page]
     end
     
   end

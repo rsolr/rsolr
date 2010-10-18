@@ -14,12 +14,13 @@ class RSolr::Client
     extend RSolr::Pagination::Client
   end
   
-  # 
+  # returns the actual request uri object.
   def base_request_uri
     base_uri.request_uri
   end
   
-  #
+  # returns the uri proxy if present,
+  # otherwise just the uri object.
   def base_uri
     @proxy || @uri
   end
@@ -31,11 +32,6 @@ class RSolr::Client
       send_and_receive path, opts.merge(:method => :#{meth}), &block
     end
     RUBY
-  end
-  
-  # converts the method name for the solr request handler path.
-  def method_missing name, *args
-    send_and_receive name, *args
   end
   
   # POST XML messages to /update with optional params.
@@ -187,6 +183,14 @@ class RSolr::Client
     opts
   end
   
+  #  A mixin for used by #adapt_response
+  # This module essentially
+  # allows the raw response access to
+  # the original response and request.
+  module Context
+    attr_accessor :request, :response
+  end
+  
   # This method will evaluate the :body value
   # if the params[:uri].params[:wt] == :ruby
   # ... otherwise, the body is returned as is.
@@ -202,19 +206,33 @@ class RSolr::Client
       %W(body headers status) == response.keys.map{|k|k.to_s}.sort
     raise RSolr::Error::Http.new request, response unless
       [200,302].include? response[:status]
-    data = response[:body]
-    if request[:params][:wt] == :ruby
-      begin
-        data = evaluate_ruby_response data.to_s
-      rescue SyntaxError
-        raise RSolr::Error::InvalidRubyResponse.new request, response
-      end
-    end
-    data
+    result = request[:params][:wt] == :ruby ? evaluate_ruby_response(request, response) : response[:body]
+    result.extend Context
+    result.request = request
+    result.response = response
+    result
   end
   
-  def evaluate_ruby_response ruby_string
-    Kernel.eval ruby_string
+  protected
+  
+  # converts the method name for the solr request handler path.
+  def method_missing name, *args
+    send_and_receive name, *args
+  end
+  
+  # evaluates the response[:body],
+  # attemps to bring the ruby string to life.
+  # If a SyntaxError is raised, then
+  # this method intercepts and raises a
+  # RSolr::Error::InvalidRubyResponse
+  # instead, giving full access to the
+  # request/response objects.
+  def evaluate_ruby_response request, response
+    begin
+      Kernel.eval response[:body].to_s
+    rescue SyntaxError
+      raise RSolr::Error::InvalidRubyResponse.new request, response
+    end
   end
   
 end
