@@ -4,8 +4,8 @@ describe "RSolr::Client" do
   module ClientHelper
     def client
       @client ||= (
-        connection = RSolr::Http.new :url => "http://localhost:9999/solr"
-        RSolr::Client.new connection
+        connection = RSolr::Connection.new
+        RSolr::Client.new connection, :url => "http://localhost:9999/solr"
       )
     end
   end
@@ -20,7 +20,7 @@ describe "RSolr::Client" do
     include ClientHelper
     it "should forward these method calls the #connection object" do
       [:get, :post, :head].each do |meth|
-        client.connection.should_receive(:send_and_receive).
+        client.connection.should_receive(:execute).
             and_return({:status => 200, :body => "{}", :headers => {}})
         client.send_and_receive '', :method => meth, :params => {}, :data => nil, :headers => {}
       end
@@ -30,9 +30,9 @@ describe "RSolr::Client" do
   context "post" do
     include ClientHelper
     it "should pass the expected params to the connection's #post method" do
-      client.connection.should_receive(:send_and_receive).
+      client.connection.should_receive(:execute).
         with(
-          "update", {:headers=>{"Content-Type"=>"text/plain"}, :method=>:post, :data=>"the data"}
+          client, {:path => "update", :headers=>{"Content-Type"=>"text/plain"}, :method=>:post, :data=>"the data"}
         ).
           and_return(
             :params=>{:wt=>:ruby},
