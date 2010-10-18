@@ -32,17 +32,14 @@ describe "RSolr::Client" do
     it "should pass the expected params to the connection's #post method" do
       client.connection.should_receive(:execute).
         with(
-          client, {:path => "update", :headers=>{"Content-Type"=>"text/plain"}, :method=>:post, :data=>"the data"}
+          client, hash_including({:path => "update", :headers=>{"Content-Type"=>"text/plain"}, :method=>:post, :data=>"the data"})
         ).
           and_return(
-            :params=>{:wt=>:ruby},
-            :query=>"wt=ruby",
-            :path => "update",
-            :data=>"the data",
-            :method=>:post,
-            :headers=>{"Content-Type"=>"text/plain"}
+            :body => "",
+            :status => 200,
+            :headers => {"Content-Type"=>"text/plain"}
           )
-      client.post "update", :data => "the data", :headers => {"Content-Type" => "text/plain"}
+      client.post "update", :data => "the data", :method=>:post, :headers => {"Content-Type" => "text/plain"}
     end
   end
   
@@ -56,17 +53,14 @@ describe "RSolr::Client" do
   context "add" do
     include ClientHelper
     it "should send xml to the connection's #post method" do
-      client.connection.should_receive(:send_and_receive).
+      client.connection.should_receive(:execute).
         with(
-          "update", {:headers=>{"Content-Type"=>"text/xml"}, :method=>:post, :data=>"<xml/>"}
+          client, hash_including({:path => "update", :headers=>{"Content-Type"=>"text/xml"}, :method=>:post, :data=>"<xml/>"})
         ).
           and_return(
-            :path => "update",
-            :data => "<xml/>",
-            :headers => {"Content-Type"=>"text/xml"},
-            :method => :post,
-            :query => "wt=ruby",
-            :params => {:wt=>:ruby}
+            :body => "",
+            :status => 200,
+            :headers => {"Content-Type"=>"text/xml"}
           )
       # the :xml attr is lazy loaded... so load it up first
       client.xml
