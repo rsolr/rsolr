@@ -15,13 +15,16 @@ module RSolr::Pagination
   # "extend" on a RSolr::Client instance.
   module Client
     
-    # 
+    # A paginated request method.
     def paginate page, per_page, path, opts = {}
       request_context = build_paginated_request page, per_page, path, opts = {}
       puts request_context.inspect
       execute request_context
     end
     
+    # Just like RSolr::Client #build_request
+    # but converts the page and per_page
+    # arguments into :rows and :start.
     def build_paginated_request page, per_page, path, opts = {}
       opts[:page] = page
       opts[:per_page] = per_page
@@ -34,7 +37,16 @@ module RSolr::Pagination
     
     protected
     
-    # 
+    # Checks if the called method starts
+    # with "paginate_" and
+    # converts the paginate_* to the solr
+    # request path. It then calls paginate
+    # with the appropriate arguments.
+    # If the called method doesn't
+    # start with "paginate_",
+    # the original/super
+    # RSolr::Client #method_missing
+    # method is called.
     def method_missing name, *args
       if name.to_s =~ /^paginate_(.+)$/
         paginate args[0], args[1], $1, *args[2..-1]
@@ -43,8 +55,12 @@ module RSolr::Pagination
       end
     end
     
-    # TODO: maybe this method should get the request_context
-    # as well, so it can check for page/per_page values?
+    # Overrides the RSolr::Client #evaluate_ruby_response method.
+    # Calls the original/super
+    # RSolr::Client #evaluate_ruby_response method.
+    # Mixes in the PaginatedResponse if
+    # the request[:page] and request[:per_page]
+    # opts are set.
     def evaluate_ruby_response request, response
       result = super request, response
       result.extend(PaginatedResponse) if request[:page] && request[:per_page]
