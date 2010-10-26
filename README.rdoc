@@ -34,7 +34,8 @@ Use the #get / #post method to send search requests to the /select handler:
     :rows=>10
   }
 
-The :params sent into the method are sent to Solr as-is. When an array is used, multiple parameters *with the same name* are generated for the Solr query. Example:
+The :params sent into the method are sent to Solr as-is, which is to say they are converted to Solr url style, but no special mapping is used.
+When an array is used, multiple parameters *with the same name* are generated for the Solr query. Example:
   
   solr.get 'select', :params => {:q=>'roses', :fq=>['red', 'violet']}
 
@@ -50,12 +51,24 @@ The RSolr::Client class also uses method_missing for setting the request handler
 This is sent to Solr as:
   paintings?q=roses&fq=red&fq=violet
 
-
 ===Using POST for Search Queries
 There may be cases where the query string is too long for a GET request. RSolr solves this issue by converting hash objects into form-encoded strings:
-  response = solr.post "select", :data => enormous_params_hash
+  response = solr.paintings :data => {:q => "*:*"}
 
 The :data hash is serialized as a form-encoded query string, and the correct content-type headers are sent along to Solr.
+
+===Sending HEAD Requests
+There may be cases where you'd like to send a HEAD request to Solr:
+  response = solr.head "select", :q => "test"
+
+==Sending HTTP Headers
+Solr responds to the request headers listed here: http://wiki.apache.org/solr/SolrAndHTTPCaches
+To send header information to Solr using RSolr, just use the :headers option:
+  response = solr.head "admin/ping", :headers => {"Cache-Control" => "If-None-Match"}
+
+===Building a Request
+RSolr::Client provides a method for building a request context, which can be useful for debugging or logging etc.:
+  request_context = solr.build_request "select", :data => {:q => "*:*"}, :method => :post, :headers => {}
 
 == Updating Solr
 Updating is done using native Ruby objects. Hashes are used for single documents and arrays are used for a collection of documents (hashes). These objects get turned into simple XML "messages". Raw XML strings can also be used.
