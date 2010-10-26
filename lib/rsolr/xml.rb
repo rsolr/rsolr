@@ -74,7 +74,7 @@ module RSolr::Xml
     
     def build &block
       require 'builder'
-      b = ::Builder::XmlMarkup.new(:indent=>0, :margin=>0, :encoding => 'UTF-8')
+      b = ::Builder::XmlMarkup.new(:indent => 0, :margin => 0, :encoding => 'UTF-8')
       b.instruct!
       block_given? ? yield(b) : b
     end

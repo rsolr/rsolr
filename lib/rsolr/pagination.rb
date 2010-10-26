@@ -38,8 +38,8 @@ module RSolr::Pagination
     protected
     
     # Checks if the called method starts
-    # with "paginate_" and
-    # converts the paginate_* to the solr
+    # with "paginate_*" and
+    # converts the * to the solr
     # request path. It then calls paginate
     # with the appropriate arguments.
     # If the called method doesn't
