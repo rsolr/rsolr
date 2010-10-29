@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{rsolr}
-  s.version = "1.0.0.beta4"
+  s.version = "1.0.0.beta5"
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Matt Mitchell"]
-  s.date = %q{2010-10-17}
+  s.date = %q{2010-10-28}
   s.description = %q{RSolr aims to provide a simple and extensible library for working with Solr}
   s.email = %q{goodieboy@gmail.com}
   s.extra_rdoc_files = [
@@ -37,8 +37,10 @@ Gem::Specification.new do |s|
   s.test_files = [
     "spec/api/char_spec.rb",
      "spec/api/client_spec.rb",
+     "spec/api/connection_spec.rb",
      "spec/api/error_spec.rb",
-     "spec/api/http_spec.rb",
+     "spec/api/pagination_spec.rb",
+     "spec/api/rsolr_spec.rb",
      "spec/api/uri_spec.rb",
      "spec/api/xml_spec.rb",
      "spec/spec_helper.rb",
