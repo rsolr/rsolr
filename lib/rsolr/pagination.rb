@@ -3,7 +3,7 @@ module RSolr::Pagination
   # Calculates the "start" and "rows" Solr params
   # by inspecting the :per_page and :page params.
   def self.calculate_start_and_rows page, per_page
-    per_page ||= 10
+    per_page = per_page.to_s.to_i
     page = page.to_s.to_i-1
     page = page < 1 ? 0 : page
     start = page * per_page
@@ -16,16 +16,16 @@ module RSolr::Pagination
   module Client
     
     # A paginated request method.
-    def paginate page, per_page, path, opts = {}
-      request_context = build_paginated_request page, per_page, path, opts = {}
-      puts request_context.inspect
+    def paginate page, per_page, path, opts = nil
+      request_context = build_paginated_request page, per_page, path, opts
       execute request_context
     end
     
     # Just like RSolr::Client #build_request
     # but converts the page and per_page
     # arguments into :rows and :start.
-    def build_paginated_request page, per_page, path, opts = {}
+    def build_paginated_request page, per_page, path, opts = nil
+      opts ||= {}
       opts[:page] = page
       opts[:per_page] = per_page
       opts[:params] ||= {}
