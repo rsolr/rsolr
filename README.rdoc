@@ -26,6 +26,14 @@ The code docs can be viewed here : http://rdoc.info/projects/mwmitchell/rsolr
   # send a request to /catalog
   response = solr.get 'catalog', :params => {:q => '*:*'}
 
+When the Solr :wt is :ruby, then the response will be a Hash. This Hash is the same object returned by Solr, but evaluated as Ruby. If the :wt is not :ruby, then the response will be a String.
+
+The response also exposes 2 attribute readers (for any :wt value), :request and :response. Both are Hash objects with symbolized keys.
+
+The :request attribute contains the original request context. You can use this for debugging or logging. Some of the keys this object contains are :uri, :query, :method etc..
+
+The :response attribute contains the original response. This object contains the :status, :body and :headers keys.
+
 == Querying
 Use the #get / #post method to send search requests to the /select handler:
   response = solr.get 'select', :params => {
@@ -33,6 +41,7 @@ Use the #get / #post method to send search requests to the /select handler:
     :start=>0,
     :rows=>10
   }
+  response["response"]["docs"].each{|doc| puts doc["id"] }
 
 The :params sent into the method are sent to Solr as-is, which is to say they are converted to Solr url style, but no special mapping is used.
 When an array is used, multiple parameters *with the same name* are generated for the Solr query. Example:
@@ -43,6 +52,15 @@ The above statement generates this Solr query:
   
   select?q=roses&fq=red&fq=violet
 
+===Pagination
+To paginate through a set of Solr documents, use the paginate method:
+  solr.paginate 1, 10, "select", :params => {:q => "test"}
+
+The first argument is the current page, the second is how many documents to return for each page. In other words, "page" is the "start" Solr param and "per-page" is the "rows" Solr param.
+
+The paginate method returns WillPaginate ready "docs" objects, so for example in a Rails application, paginating is as simple as:
+  <%= will_paginate @solr_response["response"]["docs"] %>
+
 ===Method Missing
 The RSolr::Client class also uses method_missing for setting the request handler/path:
   
@@ -51,15 +69,19 @@ The RSolr::Client class also uses method_missing for setting the request handler
 This is sent to Solr as:
   paintings?q=roses&fq=red&fq=violet
 
+This works with pagination as well:
+  
+  solr.paginate_paintings 1, 10, {:q=>'roses', :fq=>['red', 'violet']}
+
 ===Using POST for Search Queries
 There may be cases where the query string is too long for a GET request. RSolr solves this issue by converting hash objects into form-encoded strings:
-  response = solr.paintings :data => {:q => "*:*"}
+  response = solr.music :data => {:q => "*:*"}
 
 The :data hash is serialized as a form-encoded query string, and the correct content-type headers are sent along to Solr.
 
 ===Sending HEAD Requests
 There may be cases where you'd like to send a HEAD request to Solr:
-  response = solr.head "select", :q => "test"
+  solr.head("admin/ping").response[:status] == 200
 
 ==Sending HTTP Headers
 Solr responds to the request headers listed here: http://wiki.apache.org/solr/SolrAndHTTPCaches
@@ -69,7 +91,10 @@ To send header information to Solr using RSolr, just use the :headers option:
 ===Building a Request
 RSolr::Client provides a method for building a request context, which can be useful for debugging or logging etc.:
   request_context = solr.build_request "select", :data => {:q => "*:*"}, :method => :post, :headers => {}
-
+  
+To build a paginated request use build_paginated_request:
+  request_context = solr.build_paginated_request 1, 10, "select", ...
+  
 == Updating Solr
 Updating is done using native Ruby objects. Hashes are used for single documents and arrays are used for a collection of documents (hashes). These objects get turned into simple XML "messages". Raw XML strings can also be used.
 
@@ -100,7 +125,7 @@ When adding, you can also supply "add" xml element attributes and/or a block for
 
 Now the "add_xml" object can be sent to Solr like:
   solr.update :data => add_xml
-  
+
 ===Deleting
 Delete by id
   solr.delete_by_id 1
@@ -128,10 +153,6 @@ The default response format is Ruby. When the :wt param is set to :ruby, the res
   solr.get 'select', :params => {:wt => :xml}
 ===JSON:
   solr.get 'select', :params => {:wt => :json}
-
-==Http Request Methods: +get+, +post+, and +head+ 
-RSolr can send GET, POST and HEAD requests to Solr:
-  response = solr.head "admin"
 
 ==Related Resources & Projects
 * {RSolr Google Group}[http://groups.google.com/group/rsolr] -- The RSolr discussion group
