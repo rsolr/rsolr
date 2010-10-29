@@ -29,17 +29,16 @@ describe "RSolr::Client" do
 
   context "post" do
     include ClientHelper
-    it "should pass the expected params to the connection's #post method" do
+    it "should pass the expected params to the connection's #execute method" do
+      request_opts = {:data => "the data", :method=>:post, :headers => {"Content-Type" => "text/plain"}}
       client.connection.should_receive(:execute).
-        with(
-          client, hash_including({:path => "update", :headers=>{"Content-Type"=>"text/plain"}, :method=>:post, :data=>"the data"})
-        ).
-          and_return(
-            :body => "",
-            :status => 200,
-            :headers => {"Content-Type"=>"text/plain"}
-          )
-      client.post "update", :data => "the data", :method=>:post, :headers => {"Content-Type" => "text/plain"}
+        with(client, hash_including(request_opts)).
+        and_return(
+          :body => "",
+          :status => 200,
+          :headers => {"Content-Type"=>"text/plain"}
+        )
+      client.post "update", request_opts
     end
   end
   
@@ -55,15 +54,18 @@ describe "RSolr::Client" do
     it "should send xml to the connection's #post method" do
       client.connection.should_receive(:execute).
         with(
-          client, hash_including({:path => "update", :headers=>{"Content-Type"=>"text/xml"}, :method=>:post, :data=>"<xml/>"})
+          client, hash_including({
+            :path => "update",
+            :headers => {"Content-Type"=>"text/xml"},
+            :method => :post,
+            :data => "<xml/>"
+          })
         ).
           and_return(
             :body => "",
             :status => 200,
             :headers => {"Content-Type"=>"text/xml"}
           )
-      # the :xml attr is lazy loaded... so load it up first
-      client.xml
       client.xml.should_receive(:add).
         with({:id=>1}, {:commitWith=>10}).
           and_return("<xml/>")
@@ -76,7 +78,12 @@ describe "RSolr::Client" do
     it "should send data to the connection's #post method" do
       client.connection.should_receive(:execute).
         with(
-          client, hash_including({:path => "update", :headers=>{"Content-Type"=>"text/xml"}, :method=>:post, :data=>"<optimize/>"})
+          client, hash_including({
+            :path => "update",
+            :headers => {"Content-Type"=>"text/xml"},
+            :method => :post,
+            :data => "<optimize/>"
+          })
         ).
           and_return(
             :body => "",
@@ -93,7 +100,12 @@ describe "RSolr::Client" do
       it "should send a #{meth} message to the connection's #post method" do
         client.connection.should_receive(:execute).
           with(
-            client, hash_including({:path => "update", :headers=>{"Content-Type"=>"text/xml"}, :method=>:post, :data=>"<?xml version=\"1.0\" encoding=\"UTF-8\"?><#{meth}/>"})
+            client, hash_including({
+              :path => "update",
+              :headers => {"Content-Type"=>"text/xml"},
+              :method => :post,
+              :data => "<?xml version=\"1.0\" encoding=\"UTF-8\"?><#{meth}/>"
+            })
           ).
             and_return(
               :body => "",
@@ -110,7 +122,12 @@ describe "RSolr::Client" do
     it "should send data to the connection's #post method" do
       client.connection.should_receive(:execute).
         with(
-          client, hash_including({:path => "update", :headers=>{"Content-Type"=>"text/xml"}, :method=>:post, :data=>"<?xml version=\"1.0\" encoding=\"UTF-8\"?><delete><id>1</id></delete>"})
+          client, hash_including({
+            :path => "update",
+            :headers => {"Content-Type"=>"text/xml"},
+            :method => :post,
+            :data => "<?xml version=\"1.0\" encoding=\"UTF-8\"?><delete><id>1</id></delete>"
+          })
         ).
           and_return(
             :body => "",
@@ -126,7 +143,12 @@ describe "RSolr::Client" do
     it "should send data to the connection's #post method" do
       client.connection.should_receive(:execute).
         with(
-          client, hash_including({:path => "update", :headers=>{"Content-Type"=>"text/xml"}, :method=>:post, :data=>"<?xml version=\"1.0\" encoding=\"UTF-8\"?><delete><query fq=\"category:&quot;trash&quot;\"/></delete>"})
+          client, hash_including({
+            :path => "update",
+            :headers => {"Content-Type"=>"text/xml"},
+            :method => :post,
+            :data => "<?xml version=\"1.0\" encoding=\"UTF-8\"?><delete><query fq=\"category:&quot;trash&quot;\"/></delete>"
+          })
         ).
           and_return(
             :body => "",
@@ -142,18 +164,16 @@ describe "RSolr::Client" do
     it 'should not try to evaluate ruby when the :qt is not :ruby' do
       body = '{:time=>"NOW"}'
       result = client.adapt_response({:params=>{}}, {:status => 200, :body => body, :headers => {}})
-      result.should be_a(String)
       result.should == body
     end
     
     it 'should evaluate ruby responses when the :wt is :ruby' do
       body = '{:time=>"NOW"}'
       result = client.adapt_response({:params=>{:wt=>:ruby}}, {:status => 200, :body => body, :headers => {}})
-      result.should be_a(Hash)
       result.should == {:time=>"NOW"}
     end
     
-    it "ought raise a RSolr::Error::InvalidRubyResponse when the ruby is indeed frugged" do
+    it "ought raise a RSolr::Error::InvalidRubyResponse when the ruby is indeed frugged, or even fruggified" do
       lambda {
         client.adapt_response({:params=>{:wt => :ruby}}, {:status => 200, :body => "<woops/>", :headers => {}})
       }.should raise_error RSolr::Error::InvalidRubyResponse
@@ -164,7 +184,12 @@ describe "RSolr::Client" do
   context "build_request" do
     include ClientHelper
     it 'should return a request context array' do
-      result = client.build_request 'select', :method => :post, :params => {:q=>'test', :fq=>[0,1]}, :data => "data", :headers => {}
+      result = client.build_request('select',
+        :method => :post,
+        :params => {:q=>'test', :fq=>[0,1]},
+        :data => "data",
+        :headers => {}
+      )
       [/fq=0/, /fq=1/, /q=test/, /wt=ruby/].each do |pattern|
         result[:query].should match pattern
       end
@@ -173,7 +198,11 @@ describe "RSolr::Client" do
     end
     
     it "should set the Content-Type header to application/x-www-form-urlencoded if a hash is passed in to the data arg" do
-      result = client.build_request 'select', :method => :post, :data => {:q=>'test', :fq=>[0,1]}, :headers => {}
+      result = client.build_request('select',
+        :method => :post,
+        :data => {:q=>'test', :fq=>[0,1]},
+        :headers => {}
+      )
       result[:query].should == "wt=ruby"
       [/fq=0/, /fq=1/, /q=test/].each do |pattern|
         result[:data].should match pattern
