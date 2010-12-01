@@ -2,12 +2,19 @@ require "#{File.dirname(__FILE__)}/lib/rsolr"
 require 'rubygems'
 require 'builder'
 
+# puts RSolr::Uri.params_to_solr({:id => "test this - or this, '; ", :fq => [1, 2, 3]}, false)
+
 solr = RSolr.connect :url => "http://localhost:8983/solr"
 
 r = solr.paginate 23, 10, "select", :params => {:q => "*:*"}
 puts r.inspect
 
 puts r["response"]["docs"].inspect
+
+# solr.update("extract",
+#   :data => open("data.html"),
+#   :params => {"literal.id" => 1},
+#   :headers => {"Content-Type"=>"text/html"})
 
 begin
   r = solr.get 'select', :params => {:q => '*:*', :wt => :ruby}

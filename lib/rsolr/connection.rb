@@ -44,7 +44,15 @@ class RSolr::Connection
     when :get
       Net::HTTP::Get
     when :post
-      Net::HTTP::Post
+      require 'net/http/post/multipart'
+      File === request_context[:data] ?
+        Net::HTTP::Post::Multipart.new(
+          request_context[:path],
+          "file" => UploadIO.new(
+            request_context[:data],
+            request_context[:headers]["Content-Type"],
+            File.basename(request_context[:data].path))) : 
+        Net::HTTP::Post
     when :head
       Net::HTTP::Head
     else

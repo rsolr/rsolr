@@ -8,8 +8,10 @@ module RSolr::Uri
   
   # Returns a query string param pair as a string.
   # Both key and value are escaped.
-  def build_param(k,v)
-    "#{escape_query_value(k)}=#{escape_query_value(v)}"
+  def build_param(k,v, escape = true)
+    escape ? 
+      "#{escape_query_value(k)}=#{escape_query_value(v)}" :
+      "#{k}=#{v}"
   end
 
   # Return the bytesize of String; uses String#size under Ruby 1.8 and
@@ -29,13 +31,13 @@ module RSolr::Uri
   #   params_to_solr(:q => 'query', :fq => ['a', 'b'])
   # is converted to:
   #   ?q=query&fq=a&fq=b
-  def params_to_solr(params)
+  def params_to_solr(params, escape = true)
     mapped = params.map do |k, v|
       next if v.to_s.empty?
       if v.class == Array
-        params_to_solr(v.map { |x| [k, x] })
+        params_to_solr(v.map { |x| [k, x] }, escape)
       else
-        build_param k, v
+        build_param k, v, escape
       end
     end
     mapped.compact.join("&")
