@@ -2,7 +2,7 @@ require 'uri'
 
 module RSolr::Uri
   
-  def self.create url
+  def create url
     ::URI.parse url[-1] == ?/ ? url : "#{url}/"
   end
   
