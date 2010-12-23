@@ -8,7 +8,8 @@ begin
     gemspec.homepage = "http://github.com/mwmitchell/rsolr"
     gemspec.authors = ["Matt Mitchell"]
     
-    gemspec.files = FileList['lib/**/*.rb', 'LICENSE', 'README.rdoc', 'CHANGES', 'VERSION']
+    gemspec.files = FileList['lib/**/*.rb', 'LICENSE', 'README.rdoc', 'CHANGES', 'VERSION'].
+      exclude("rsolr-direct.rb")
     
     gemspec.test_files = ['spec/**/*.rb', 'Rakefile', 'tasks/spec.rake', 'tasks/rdoc.rake']
     

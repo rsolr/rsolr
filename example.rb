@@ -3,7 +3,6 @@ require 'rubygems'
 require 'builder'
 
 # puts RSolr::Uri.params_to_solr({:id => "test this - or this, '; ", :fq => [1, 2, 3]}, false)
-# puts RSolr.lucene_escape("OR this and +that but NOT this")
 # puts RSolr.escape("OR this and +that but NOT this")
 
 solr = RSolr.connect :url => "http://localhost:8983/solr"
