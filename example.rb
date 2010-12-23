@@ -3,18 +3,14 @@ require 'rubygems'
 require 'builder'
 
 # puts RSolr::Uri.params_to_solr({:id => "test this - or this, '; ", :fq => [1, 2, 3]}, false)
+# puts RSolr.lucene_escape("OR this and +that but NOT this")
+# puts RSolr.escape("OR this and +that but NOT this")
 
 solr = RSolr.connect :url => "http://localhost:8983/solr"
 
 r = solr.paginate 23, 10, "select", :params => {:q => "*:*"}
-puts r.inspect
 
 puts r["response"]["docs"].inspect
-
-# solr.update("extract",
-#   :data => open("data.html"),
-#   :params => {"literal.id" => 1},
-#   :headers => {"Content-Type"=>"text/html"})
 
 begin
   r = solr.get 'select', :params => {:q => '*:*', :wt => :ruby}
@@ -29,10 +25,8 @@ puts r["response"]["docs"].inspect
 r = solr.build_request "select", :params => {:q => "hello", :fq => ["one:1", "two:2"]}, :method => :post
 puts r[:uri]
 
-exit
-
 begin
-  r = solr.select :params => {:q => "*:*", :facet => true, "facet.field" => "amenities_sms"}
+  r = solr.select :params => {"q" => "*:*", "facet" => true, "facet.field" => "cat"}
   r["facet_counts"]["facet_fields"].each_pair do |field, hits|
     hits.each_slice 2 do |k,v|
       puts "#{k} : #{v}"
@@ -69,11 +63,12 @@ puts "basic select using RSolr::Client #method_missing"
 puts r.inspect
 puts
 
-# "asdf" doesn't exists, so a http error is raised...
+# "blah/blah/blah" doesn't exists, so a http error is raised...
 begin
-  solr.head "blah blah blah"
+  solr.head "blah/blah/blah"
 rescue
-  # puts $!
+  puts $!.request.inspect
+  puts "====================="
   # the error will have #request and #response attributes
   # puts "blah blah blah HEAD response: " + $!.response.inspect
 end
@@ -85,7 +80,7 @@ puts
 #puts
 
 # add some shiz via solr.xml
-add_xml = solr.xml.add({:name_s => "blah blah", :id => Time.now.to_s}, {:boost=>5.0, :commitWithin=>1}) do |xml|
+add_xml = solr.xml.add({:name_s => "blah blah", :id => Time.now.to_s}, :add_attributes => {:boost=>5.0, :commitWithin=>1}) do |xml|
   # can setup individual doc add attributes here...
 end
 
