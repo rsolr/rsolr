@@ -10,9 +10,9 @@ module RSolr::Direct
   # load the java libs that ship with rsolr-direct
   # RSolr.load_java_libs
   # rsolr = RSolr.connect :direct, :solr_home => ''
-  def self.load_java_libs
+  def self.load_java_libs apache_solr_dir
     @java_libs_loaded ||= (
-      base_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'solr-libs'))
+      base_dir = File.expand_path(apache_solr_dir)
       ['lib', 'dist'].each do |sub|
         Dir[File.join(base_dir, sub, '*.jar')].each do |jar|
           require jar
