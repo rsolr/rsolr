@@ -18,7 +18,7 @@ class RSolr::Client
   
   # returns the actual request uri object.
   def base_request_uri
-    base_uri.request_uri
+    base_uri.request_uri if base_uri
   end
   
   # returns the uri proxy if present,
