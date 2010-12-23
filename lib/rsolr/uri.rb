@@ -48,7 +48,7 @@ module RSolr::Uri
   # version since it's faster.
   # (Stolen from Rack).
   def escape_query_value(s)
-    s.to_s.gsub(/([^ a-zA-Z0-9_.-]+)/n) {
+    s.to_s.gsub(/([^ a-zA-Z0-9_.-]+)/u) {
       #'%'+$1.unpack('H2'*$1.size).join('%').upcase
       '%'+$1.unpack('H2'*bytesize($1)).join('%').upcase
     }.tr(' ', '+')

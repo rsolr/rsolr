@@ -119,7 +119,7 @@ class RSolr::Client
     update opts.merge(:data => xml.delete_by_query(query))
   end
   
-  # shortcut to RSolr::Message::Generator
+  # shortcut to RSolr::Xml::Generator
   def xml
     @xml ||= RSolr::Xml::Generator.new
   end
@@ -127,7 +127,7 @@ class RSolr::Client
   # +send_and_receive+ is the main request method responsible for sending requests to the +connection+ object.
   # 
   # "path" : A string value that usually represents a solr request handler
-  # "opt" : A hash, which can contain the following keys:
+  # "opts" : A hash, which can contain the following keys:
   #   :method : required - the http method (:get, :post or :head)
   #   :params : optional - the query string params in hash form
   #   :data : optional - post data -- if a hash is given, it's sent as "application/x-www-form-urlencoded"

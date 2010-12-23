@@ -12,7 +12,7 @@ module RSolr::Direct
   # rsolr = RSolr.connect :direct, :solr_home => ''
   def self.load_java_libs
     @java_libs_loaded ||= (
-      base_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'solrj'))
+      base_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'solr-libs'))
       ['lib', 'dist'].each do |sub|
         Dir[File.join(base_dir, sub, '*.jar')].each do |jar|
           require jar
@@ -90,7 +90,6 @@ module RSolr::Direct
     def execute client, request_context
       #data = request_context[:data]
       #data = data.to_xml if data.respond_to?(:to_xml)
-      #puts request_context.inspect
       url = [request_context[:path], request_context[:query]].join("?")
       url = "/" + url unless url[0].chr == "/"
       begin
