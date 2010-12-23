@@ -8,7 +8,7 @@ Notice: This document is only for the the 1.0 (pre-release) in the master branch
 The code docs can be viewed here : http://rdoc.info/projects/mwmitchell/rsolr
 
 == Installation:
-  sudo gem install rsolr
+  sudo gem install rsolr --pre
 
 == Example:
   require 'rubygems'
