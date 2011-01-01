@@ -32,9 +32,7 @@ module RSolr::Pagination
       values = RSolr::Pagination.calculate_start_and_rows(page, per_page)
       opts[:params][:start] = values[0]
       opts[:params][:rows] = values[1]
-      req = build_request path, opts
-      puts "build_paginated_request.req = #{req.inspect}"
-      req
+      build_request path, opts
     end
     
     protected
@@ -70,10 +68,6 @@ module RSolr::Pagination
         d.per_page = request[:per_page]
         d.start = request[:params][:start]
         d.total = result["response"]["numFound"].to_s.to_i
-        puts "per_page = #{d.per_page}"
-        puts "start = #{d.start}"
-        puts "total = #{d.total}"
-        puts "total_pages = #{d.total_pages}"
       end
       result
     end
