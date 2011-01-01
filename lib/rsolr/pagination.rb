@@ -32,7 +32,9 @@ module RSolr::Pagination
       values = RSolr::Pagination.calculate_start_and_rows(page, per_page)
       opts[:params][:start] = values[0]
       opts[:params][:rows] = values[1]
-      build_request path, opts
+      req = build_request path, opts
+      puts "build_paginated_request.req = #{req.inspect}"
+      req
     end
     
     protected
@@ -48,7 +50,7 @@ module RSolr::Pagination
     # RSolr::Client #method_missing
     # method is called.
     def method_missing name, *args
-      if name.to_s =~ /^paginate_(.+)$/
+      if name.to_s =~ /^paginated?_(.+)$/
         paginate args[0], args[1], $1, *args[2..-1]
       else
         super name, *args
@@ -58,29 +60,24 @@ module RSolr::Pagination
     # Overrides the RSolr::Client #evaluate_ruby_response method.
     # Calls the original/super
     # RSolr::Client #evaluate_ruby_response method.
-    # Mixes in the PaginatedResponse if
+    # Mixes in the PaginatedDocSet if
     # the request[:page] and request[:per_page]
     # opts are set.
     def evaluate_ruby_response request, response
       result = super request, response
-      result.extend(PaginatedResponse) if request[:page] && request[:per_page]
+      if request[:page] && request[:per_page] && result["response"] && result["response"]["docs"]
+        d = result['response']['docs'].extend PaginatedDocSet
+        d.per_page = request[:per_page]
+        d.start = request[:params][:start]
+        d.total = result["response"]["numFound"].to_s.to_i
+        puts "per_page = #{d.per_page}"
+        puts "start = #{d.start}"
+        puts "total = #{d.total}"
+        puts "total_pages = #{d.total_pages}"
+      end
       result
     end
     
-  end
-  
-  module PaginatedResponse
-    # TODO: self["responseHeader"]["params"]["rows"]
-    # will not be available if omitHeader is false...
-    # so, a simple "extend" probably isn't going to cut it.
-    def self.extended base
-      return unless base["response"] && base["response"]["docs"]
-      d = base['response']['docs']
-      d.extend PaginatedDocSet
-      d.per_page = self["responseHeader"]["params"]["rows"].to_s.to_i rescue 10
-      d.start = base["response"]["start"].to_s.to_i
-      d.total = base["response"]["numFound"].to_s.to_i
-    end
   end
   
   # A response module which gets mixed into the solr ["response"]["docs"] array.
