@@ -2,7 +2,7 @@
 
 A simple, extensible Ruby client for Apache Solr.
 
-Notice: This document is only for the the 1.0 (pre-release) in the master branch. The last stable gem release documentation can be found here: http://github.com/mwmitchell/rsolr/tree/v0.12.1
+Notice: This document is only for the the 1.0 in the master. The last pre-1.0 gem release documentation can be found here: http://github.com/mwmitchell/rsolr/tree/v0.12.1
 
 ==Documentation
 The code docs can be viewed here : http://rdoc.info/projects/mwmitchell/rsolr
