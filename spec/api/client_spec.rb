@@ -1,6 +1,6 @@
 require 'spec_helper'
 describe "RSolr::Client" do
-  
+
   module ClientHelper
     def client
       @client ||= (
@@ -9,13 +9,13 @@ describe "RSolr::Client" do
       )
     end
   end
-  
+
   context "initialize" do
     it "should accept whatevs and set it as the @connection" do
       RSolr::Client.new(:whatevs).connection.should == :whatevs
     end
   end
-  
+
   context "send_and_receive" do
     include ClientHelper
     it "should forward these method calls the #connection object" do
@@ -41,14 +41,14 @@ describe "RSolr::Client" do
       client.post "update", request_opts
     end
   end
-  
+
   context "xml" do
     include ClientHelper
     it "should return an instance of RSolr::Xml::Generator" do
       client.xml.should be_a RSolr::Xml::Generator
     end
   end
-  
+
   context "add" do
     include ClientHelper
     it "should send xml to the connection's #post method" do
@@ -72,7 +72,7 @@ describe "RSolr::Client" do
       client.add({:id=>1}, :add_attributes => {:commitWith=>10})
     end
   end
-  
+
   context "update" do
     include ClientHelper
     it "should send data to the connection's #post method" do
@@ -93,7 +93,7 @@ describe "RSolr::Client" do
       client.update(:data => "<optimize/>")
     end
   end
-  
+
   context "post based helper methods:" do
     include ClientHelper
     [:commit, :optimize, :rollback].each do |meth|
@@ -116,7 +116,7 @@ describe "RSolr::Client" do
       end
     end
   end
-  
+
   context "delete_by_id" do
     include ClientHelper
     it "should send data to the connection's #post method" do
@@ -137,7 +137,7 @@ describe "RSolr::Client" do
       client.delete_by_id 1
     end
   end
-  
+
   context "delete_by_query" do
     include ClientHelper
     it "should send data to the connection's #post method" do
@@ -158,7 +158,7 @@ describe "RSolr::Client" do
       client.delete_by_query :fq => "category:\"trash\""
     end
   end
-  
+
   context "adapt_response" do
     include ClientHelper
     it 'should not try to evaluate ruby when the :qt is not :ruby' do
@@ -166,21 +166,21 @@ describe "RSolr::Client" do
       result = client.adapt_response({:params=>{}}, {:status => 200, :body => body, :headers => {}})
       result.should == body
     end
-    
+
     it 'should evaluate ruby responses when the :wt is :ruby' do
       body = '{:time=>"NOW"}'
       result = client.adapt_response({:params=>{:wt=>:ruby}}, {:status => 200, :body => body, :headers => {}})
       result.should == {:time=>"NOW"}
     end
-    
+
     it "ought raise a RSolr::Error::InvalidRubyResponse when the ruby is indeed frugged, or even fruggified" do
       lambda {
         client.adapt_response({:params=>{:wt => :ruby}}, {:status => 200, :body => "<woops/>", :headers => {}})
       }.should raise_error RSolr::Error::InvalidRubyResponse
     end
-  
+
   end
-  
+
   context "build_request" do
     include ClientHelper
     it 'should return a request context array' do
@@ -196,7 +196,7 @@ describe "RSolr::Client" do
       result[:data].should == "data"
       result[:headers].should == {}
     end
-    
+
     it "should set the Content-Type header to application/x-www-form-urlencoded if a hash is passed in to the data arg" do
       result = client.build_request('select',
         :method => :post,
@@ -210,7 +210,7 @@ describe "RSolr::Client" do
       result[:data].should_not match /wt=ruby/
       result[:headers].should == {"Content-Type" => "application/x-www-form-urlencoded"}
     end
-    
+
   end
-  
+
 end

@@ -1,9 +1,9 @@
 require 'builder'
 
 module RSolr::Xml
-  
+
   class Document
-    
+
     # "attrs" is a hash for setting the "doc" xml attributes
     # "fields" is an array of Field objects
     attr_accessor :attrs, :fields
@@ -47,11 +47,11 @@ module RSolr::Xml
     def add_field(name, value, options = {})
       @fields << RSolr::Xml::Field.new(options.merge({:name=>name}), value)
     end
-    
+
   end
-  
+
   class Field
-    
+
     # "attrs" is a hash for setting the "doc" xml attributes
     # "value" is the text value for the node
     attr_accessor :attrs, :value
@@ -67,11 +67,11 @@ module RSolr::Xml
     def name
       @attrs[:name]
     end
-    
+
   end
-  
+
   class Generator
-    
+
     def build &block
       require 'builder'
       b = ::Builder::XmlMarkup.new(:indent => 0, :margin => 0, :encoding => 'UTF-8')
@@ -85,7 +85,7 @@ module RSolr::Xml
     # If a value is an array, multiple fields will be created.
     #
     # "add_attrs" can be a hash for setting the add xml element attributes.
-    # 
+    #
     # This method can also accept a block.
     # The value yielded to the block is a Message::Document; for each solr doc in "data".
     # You can set xml element attributes for each "doc" element or individual "field" elements.
@@ -121,19 +121,19 @@ module RSolr::Xml
         end
       end
     end
-    
+
     # generates a <commit/> message
     def commit opts = nil
       opts ||= {}
       build {|xml| xml.commit(opts) }
     end
-    
+
     # generates a <optimize/> message
     def optimize opts = nil
       opts ||= {}
       build {|xml| xml.optimize(opts) }
     end
-    
+
     # generates a <rollback/> message
     def rollback
       build {|xml| xml.rollback({}) }
@@ -160,7 +160,7 @@ module RSolr::Xml
         end
       end
     end
-    
+
   end
-  
+
 end

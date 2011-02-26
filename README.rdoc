@@ -13,16 +13,16 @@ The code docs can be viewed here : http://rdoc.info/projects/mwmitchell/rsolr
 == Example:
   require 'rubygems'
   require 'rsolr'
-  
+
   # Direct connection
   solr = RSolr.connect :url => 'http://solrserver.com'
-  
+
   # Connecting over a proxy server
   solr = RSolr.connect :url => 'http://solrserver.com', :proxy=>'http://user:pass@proxy.example.com:8080'
-  
+
   # send a request to /select
   response = solr.get 'select', :params => {:q => '*:*'}
-  
+
   # send a request to /catalog
   response = solr.get 'catalog', :params => {:q => '*:*'}
 
@@ -45,11 +45,11 @@ Use the #get / #post method to send search requests to the /select handler:
 
 The :params sent into the method are sent to Solr as-is, which is to say they are converted to Solr url style, but no special mapping is used.
 When an array is used, multiple parameters *with the same name* are generated for the Solr query. Example:
-  
+
   solr.get 'select', :params => {:q=>'roses', :fq=>['red', 'violet']}
 
 The above statement generates this Solr query:
-  
+
   select?q=roses&fq=red&fq=violet
 
 ===Pagination
@@ -63,14 +63,14 @@ The paginate method returns WillPaginate ready "docs" objects, so for example in
 
 ===Method Missing
 The RSolr::Client class also uses method_missing for setting the request handler/path:
-  
+
   solr.paintings :params => {:q=>'roses', :fq=>['red', 'violet']}
-  
+
 This is sent to Solr as:
   paintings?q=roses&fq=red&fq=violet
 
 This works with pagination as well:
-  
+
   solr.paginate_paintings 1, 10, {:q=>'roses', :fq=>['red', 'violet']}
 
 ===Using POST for Search Queries
@@ -91,10 +91,10 @@ To send header information to Solr using RSolr, just use the :headers option:
 ===Building a Request
 RSolr::Client provides a method for building a request context, which can be useful for debugging or logging etc.:
   request_context = solr.build_request "select", :data => {:q => "*:*"}, :method => :post, :headers => {}
-  
+
 To build a paginated request use build_paginated_request:
   request_context = solr.build_paginated_request 1, 10, "select", ...
-  
+
 == Updating Solr
 Updating is done using native Ruby objects. Hashes are used for single documents and arrays are used for a collection of documents (hashes). These objects get turned into simple XML "messages". Raw XML strings can also be used.
 
@@ -113,7 +113,7 @@ Raw XML via  #update
   solr.update :data => '<optimize/>'
 
 When adding, you can also supply "add" xml element attributes and/or a block for manipulating other "add" related elements (docs and fields) by calling the +xml+ method directly:
-  
+
   doc = {:id=>1, :price=>1.00}
   add_attributes = {:allowDups=>false, :commitWithin=>10}
   add_xml = solr.xml.add(doc, add_attributes) do |doc|
@@ -174,7 +174,7 @@ The default response format is Ruby. When the :wt param is set to :ruby, the res
 * Send me a pull request. Bonus points for topic branches.
 
 == Note on Patches/Pull Requests
- 
+
 * Fork the project.
 * Make your feature addition or bug fix.
 * Add tests for it. This is important so I don't break it in a

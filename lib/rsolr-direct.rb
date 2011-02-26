@@ -6,7 +6,7 @@ require 'rsolr'
 # Connection for JRuby + DirectSolrConnection
 #
 module RSolr::Direct
-  
+
   # load the java libs that ship with rsolr-direct
   # RSolr.load_java_libs
   # rsolr = RSolr.connect :direct, :solr_home => ''
@@ -21,7 +21,7 @@ module RSolr::Direct
       true
     )
   end
-  
+
   RSolr.class_eval do
     # RSolr.direct_connect :solr_home => 'apache-solr/example/solr'
     # RSolr.direct_connect java_solr_core
@@ -37,17 +37,17 @@ module RSolr::Direct
       end
     end
   end
-  
+
   class Connection
-    
+
     attr_accessor :opts
-    
+
     class MissingRequiredJavaLibs < RuntimeError
     end
-    
+
     class InvalidSolrHome < RuntimeError
     end
-    
+
     # opts can be an instance of org.apache.solr.servlet.DirectSolrConnection
     # if opts is NOT an instance of org.apache.solr.servlet.DirectSolrConnection
     # then...
@@ -70,22 +70,22 @@ module RSolr::Direct
       opts[:auto_connect] = true unless opts.key?(:auto_connect)
       self.direct if opts[:auto_connect]
     end
-    
+
     # sets the @direct instance variable if it has not yet been set
     def direct
       @direct ||= org.apache.solr.servlet.DirectSolrConnection.new(opts[:solr_home], @opts[:data_dir], nil)
     end
-    
+
     # rsolr.connection.open
     alias_method :open, :direct
-    
+
     def close
       if @direct
         @direct.close
         @direct = nil
       end
     end
-    
+
     # send a request to the connection
     def execute client, request_context
       #data = request_context[:data]
@@ -105,7 +105,7 @@ module RSolr::Direct
         :headers => {}
       }
     end
-    
+
   end
-  
+
 end

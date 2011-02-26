@@ -1,15 +1,15 @@
 require 'uri'
 
 module RSolr::Uri
-  
+
   def create url
     ::URI.parse url[-1] == ?/ ? url : "#{url}/"
   end
-  
+
   # Returns a query string param pair as a string.
   # Both key and value are escaped.
   def build_param(k,v, escape = true)
-    escape ? 
+    escape ?
       "#{escape_query_value(k)}=#{escape_query_value(v)}" :
       "#{k}=#{v}"
   end
@@ -42,7 +42,7 @@ module RSolr::Uri
     end
     mapped.compact.join("&")
   end
-  
+
   # Performs URI escaping so that you can construct proper
   # query strings faster.  Use this rather than the cgi.rb
   # version since it's faster.
@@ -52,7 +52,7 @@ module RSolr::Uri
       '%'+$1.unpack('H2'*bytesize($1)).join('%').upcase
     }.tr(' ', '+')
   end
-  
+
   extend self
-  
+
 end

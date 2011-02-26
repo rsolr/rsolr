@@ -1,9 +1,9 @@
 module RSolr::Error
-  
+
   module SolrContext
-    
+
     attr_accessor :request, :response
-    
+
     def to_s
       m = "#{super.to_s}"
       if response
@@ -19,9 +19,9 @@ module RSolr::Error
       m << p
       m
     end
-    
+
     protected
-    
+
     def parse_solr_error_response body
       begin
         info = body.scan(/<pre>(.*)<\/pre>/mi)[0]
@@ -31,13 +31,13 @@ module RSolr::Error
         nil
       end
     end
-    
+
   end
-  
+
   class Http < RuntimeError
-    
+
     include SolrContext
-    
+
     # ripped right from ActionPack
     # Defines the standard HTTP status codes, by integer, with their
     # corresponding default message texts.
@@ -97,17 +97,17 @@ module RSolr::Error
       507 => "Insufficient Storage",
       510 => "Not Extended"
     }
-    
+
     def initialize request, response
       @request, @response = request, response
     end
-    
+
   end
-  
+
   # Thrown if the :wt is :ruby
   # but the body wasn't succesfully parsed/evaluated
   class InvalidRubyResponse < Http
-    
+
   end
-  
+
 end

@@ -1,8 +1,8 @@
 require 'spec_helper'
 describe "RSolr::Xml" do
-  
+
   let(:generator){ RSolr::Xml::Generator.new }
-  
+
   # call all of the simple methods...
   # make sure the xml string is valid
   # ensure the class is actually Solr::XML
@@ -12,9 +12,9 @@ describe "RSolr::Xml" do
       result.should == "<?xml version=\"1.0\" encoding=\"UTF-8\"?><#{meth}/>"
     end
   end
-  
+
   context :add do
-    
+
     it 'should yield a Message::Document object when #add is called with a block' do
       documents = [{:id=>1, :name=>'sam', :cat=>['cat 1', 'cat 2']}]
       add_attrs = {:boost=>200.00}
@@ -29,7 +29,7 @@ describe "RSolr::Xml" do
       result.should match(%r(boost="10"))
       result.should match(%r(<field name="id">1</field>))
     end
-    
+
     # add a single hash ("doc")
     it 'should create an add from a hash' do
       data = {
@@ -81,7 +81,7 @@ describe "RSolr::Xml" do
       result.should match Regexp.escape('name="name"')
       result.should match Regexp.escape('matt</field>')
     end
-    
+
     it 'should create adds from multiple Message::Documents' do
       documents = (1..2).map do |i|
         doc = RSolr::Xml::Document.new
@@ -93,29 +93,29 @@ describe "RSolr::Xml" do
       result.should match(/<field name="name">matt1<\/field>/)
       result.should match(/<field name="name">matt2<\/field>/)
     end
-    
+
   end
-  
+
   context :delete_by_id do
-    
+
     it 'should create a doc id delete' do
       generator.delete_by_id(10).should == "<?xml version=\"1.0\" encoding=\"UTF-8\"?><delete><id>10</id></delete>"
     end
-    
+
     it 'should create many doc id deletes' do
       generator.delete_by_id([1, 2, 3]).should == "<?xml version=\"1.0\" encoding=\"UTF-8\"?><delete><id>1</id><id>2</id><id>3</id></delete>"
     end
-    
+
   end
-  
+
   context :delete_by_query do
     it 'should create a query delete' do
       generator.delete_by_query('status:"LOST"').should == "<?xml version=\"1.0\" encoding=\"UTF-8\"?><delete><query>status:\"LOST\"</query></delete>"
     end
-    
+
     it 'should create many query deletes' do
       generator.delete_by_query(['status:"LOST"', 'quantity:0']).should == "<?xml version=\"1.0\" encoding=\"UTF-8\"?><delete><query>status:\"LOST\"</query><query>quantity:0</query></delete>"
     end
   end
-  
+
 end

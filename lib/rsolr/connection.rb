@@ -3,7 +3,7 @@ require 'net/https'
 
 # The default/Net::Http adapter for RSolr.
 class RSolr::Connection
-  
+
   # using the request_context hash,
   # send a request,
   # then return the standard rsolr response hash {:status, :body, :headers}
@@ -21,9 +21,9 @@ class RSolr::Connection
         raise($!)
     end
   end
-  
+
   protected
-  
+
   # This returns a singleton of a Net::HTTP or Net::HTTP.Proxy request object.
   def http uri, proxy = nil
     @http ||= (
@@ -33,12 +33,12 @@ class RSolr::Connection
       else
         Net::HTTP.new uri.host, uri.port
       end
-      http.use_ssl = uri.port == 443 || uri.instance_of?(URI::HTTPS)      
+      http.use_ssl = uri.port == 443 || uri.instance_of?(URI::HTTPS)
       http
     )
   end
-  
-  # 
+
+  #
   def setup_raw_request request_context
     http_method = case request_context[:method]
     when :get
@@ -66,5 +66,5 @@ class RSolr::Connection
     raw_request.initialize_http_header headers
     raw_request
   end
-  
+
 end

@@ -1,19 +1,19 @@
 require 'spec_helper'
 describe "RSolr::Uri" do
-  
+
   context "class-level methods" do
-    
+
     let(:uri){ RSolr::Uri }
-    
+
     it "should return a URI object with a trailing slash" do
       u = uri.create 'http://apache.org'
       u.path[0].should == ?/
     end
-  
+
     it "should return the bytesize of a string" do
       uri.bytesize("test").should == 4
     end
-  
+
     it "should convert a solr query string from a hash w/o a starting ?" do
       hash = {:q => "gold", :fq => ["mode:one", "level:2"]}
       query = uri.params_to_solr hash
@@ -23,9 +23,9 @@ describe "RSolr::Uri" do
       end
       query.split('&').size.should == 3
     end
-    
+
     context "escape_query_value" do
-      
+
       it 'should escape &' do
         uri.params_to_solr(:fq => "&").should == 'fq=%26'
       end
@@ -45,7 +45,7 @@ describe "RSolr::Uri" do
         expected = 'q=%2Bpopularity%3A%5B10+TO+%2A%5D+%2Bsection%3A0'
         uri.params_to_solr(my_params).should == expected
       end
-      
+
       it 'should escape properly' do
         uri.escape_query_value('+').should == '%2B'
         uri.escape_query_value('This is a test').should == 'This+is+a+test'
@@ -62,9 +62,9 @@ describe "RSolr::Uri" do
       it 'should escape exclamation marks!' do
         uri.escape_query_value('!').should == '%21'
       end
-      
+
     end
-    
+
   end
-  
+
 end

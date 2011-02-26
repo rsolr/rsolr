@@ -1,5 +1,5 @@
 module RSolr::Pagination
-  
+
   # Calculates the "start" and "rows" Solr params
   # by inspecting the :per_page and :page params.
   def self.calculate_start_and_rows page, per_page
@@ -9,18 +9,18 @@ module RSolr::Pagination
     start = page * per_page
     [start, per_page]
   end
-  
+
   # A mixin module for RSolr::Client
   # -- note, this must mixed-in via
   # "extend" on a RSolr::Client instance.
   module Client
-    
+
     # A paginated request method.
     def paginate page, per_page, path, opts = nil
       request_context = build_paginated_request page, per_page, path, opts
       execute request_context
     end
-    
+
     # Just like RSolr::Client #build_request
     # but converts the page and per_page
     # arguments into :rows and :start.
@@ -34,9 +34,9 @@ module RSolr::Pagination
       opts[:params][:rows] = values[1]
       build_request path, opts
     end
-    
+
     protected
-    
+
     # Checks if the called method starts
     # with "paginate_*" and
     # converts the * to the solr
@@ -54,7 +54,7 @@ module RSolr::Pagination
         super name, *args
       end
     end
-    
+
     # Overrides the RSolr::Client #evaluate_ruby_response method.
     # Calls the original/super
     # RSolr::Client #evaluate_ruby_response method.
@@ -71,9 +71,9 @@ module RSolr::Pagination
       end
       result
     end
-    
+
   end
-  
+
   # A response module which gets mixed into the solr ["response"]["docs"] array.
   module PaginatedDocSet
 
@@ -114,5 +114,5 @@ module RSolr::Pagination
     end
 
   end
-  
+
 end
