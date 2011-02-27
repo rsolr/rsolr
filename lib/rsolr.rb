@@ -1,22 +1,24 @@
-$: << "#{File.dirname(__FILE__)}" unless $:.include? File.dirname(__FILE__)
+$:.unshift(File.dirname(__FILE__)) unless
+  $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
 
-require 'rubygems'
+require 'bundler'
+Bundler.require
+
+require 'rsolr/char'
 
 module RSolr
-
-  %W(Char Client Error Connection Pagination Uri Xml).each{|n|autoload n.to_sym, "rsolr/#{n.downcase}"}
-
-  def self.version
-    @version ||= File.read(File.join(File.dirname(__FILE__), '..', 'VERSION')).chomp
-  end
-
-  VERSION = self.version
-
-  def self.connect *args
-    Client.new Connection.new, *args
-  end
-
-  # RSolr.escape
   extend Char
 
+  autoload :Client,     'rsolr/client'
+  autoload :Error,      'rsolr/error'
+  autoload :Connection, 'rsolr/connection'
+  autoload :Pagination, 'rsolr/pagination'
+  autoload :Uri,        'rsolr/uri'
+  autoload :Xml,        'rsolr/xml'
+
+  # Convenience method
+  #   @see RSolr::Client#new
+  def self.connect *args
+    Client.new *args
+  end
 end

@@ -1,21 +1,17 @@
-# A module that contains (1) string related methods
-module RSolr::Char
+module RSolr
+  module Char
+    # Attempts to destructively escape non-word character in a string
+    #   @param [String] value Some string
+    #   @return [String] The value, escaped
+    def escape!(value)
+      value.gsub! /(\W)/, '\\\\\1'
+    end
 
-  # backslash everything
-  # that isn't a word character
-  def escape value
-    value.gsub /(\W)/, '\\\\\1'
+    # Attempts to escape non-word character in a string
+    #   @param [String] value Some string
+    #   @return [String] The value, escaped
+    def escape(value)
+      escape! value.dup
+    end
   end
-
-  # LUCENE_CHAR_RX = /([\+\-\!\(\)\[\]\^\"\~\*\?\:\\]+)/
-  # LUCENE_WORD_RX = /(OR|AND|NOT)/
-  #
-  # # More specific/lucene escape sequence
-  # def lucene_escape string
-  #   delim = " "
-  #   string.gsub(LUCENE_CHAR_RX, '\\\\\1').split(delim).map { |v|
-  #     v.gsub(LUCENE_WORD_RX, '\\\\\1')
-  #   }.join(delim)
-  # end
-
 end
