@@ -5,7 +5,7 @@ class RSolr::Client
   def initialize connection, options = {}
     @connection = connection
     unless false === options[:url]
-      url = options[:url] || 'http://127.0.0.1:8983/solr/'
+      url = options[:url].dup || 'http://127.0.0.1:8983/solr/'
       url << "/" unless url[-1] == ?/
       proxy_url = options[:proxy]
       proxy_url << "/" unless proxy_url.nil? or proxy_url[-1] == ?/
