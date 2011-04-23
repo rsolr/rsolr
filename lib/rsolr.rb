@@ -13,7 +13,9 @@ module RSolr
   VERSION = self.version
   
   def self.connect *args
-    Client.new Connection.new, *args
+    driver = Class === args[0] ? args[0] : RSolr::Connection
+    opts = Hash === args[-1] ? args[-1] : {}
+    Client.new driver.new, opts
   end
   
   # RSolr.escape

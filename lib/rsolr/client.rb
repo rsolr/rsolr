@@ -5,12 +5,14 @@ class RSolr::Client
   def initialize connection, options = {}
     @connection = connection
     unless false === options[:url]
-      url = options[:url].dup || 'http://127.0.0.1:8983/solr/'
+      url = options[:url] ? options[:url].dup : 'http://127.0.0.1:8983/solr/'
       url << "/" unless url[-1] == ?/
-      proxy_url = options[:proxy]
-      proxy_url << "/" unless proxy_url.nil? or proxy_url[-1] == ?/
       @uri = RSolr::Uri.create url
-      @proxy = RSolr::Uri.create proxy_url if proxy_url
+      if options[:proxy]
+        proxy_url = options[:proxy].dup
+        proxy_url << "/" unless proxy_url.nil? or proxy_url[-1] == ?/
+        @proxy = RSolr::Uri.create proxy_url if proxy_url
+      end
     end
     @options = options
     extend RSolr::Pagination::Client
