@@ -225,7 +225,7 @@ class RSolr::Client
   end
   
   # evaluates the response[:body],
-  # attemps to bring the ruby string to life.
+  # attempts to bring the ruby string to life.
   # If a SyntaxError is raised, then
   # this method intercepts and raises a
   # RSolr::Error::InvalidRubyResponse
