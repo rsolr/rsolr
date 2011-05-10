@@ -14,8 +14,24 @@ describe "RSolr::Client" do
     it "should accept whatevs and set it as the @connection" do
       RSolr::Client.new(:whatevs).connection.should == :whatevs
     end
+
+    it "should default the connection method to :get" do
+      RSolr::Client.new(:watevs).request_method.should == :get
+    end
+
+    RSolr::Connection.valid_methods.each do |method|
+      it "should use the #{method} as a valid connection method" do
+        RSolr::Client.new(:whatevs, { :method => method }).request_method.should == method
+      end
+    end
+
+    it "should validate the connection method as either :get or :post" do
+      lambda {
+        RSolr::Client.new(:whatevs, :method => :foo)
+      }.should raise_exception(ArgumentError)
+    end
   end
-  
+
   context "send_and_receive" do
     include ClientHelper
     it "should forward these method calls the #connection object" do
@@ -210,7 +226,17 @@ describe "RSolr::Client" do
       result[:data].should_not match /wt=ruby/
       result[:headers].should == {"Content-Type" => "application/x-www-form-urlencoded"}
     end
-    
+
+    it "should use the default request_method" do
+      client.build_request(:foo, {})[:method] == :get
+    end
+
+    it "should use the request_method value" do
+      client.request_method = :head
+
+      client.build_request(:foo, {})[:method] == :head
+    end
+
   end
-  
+
 end

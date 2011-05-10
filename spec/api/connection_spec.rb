@@ -1,11 +1,11 @@
 require 'spec_helper'
+
 describe "RSolr::Connection" do
-  
-  # context "execute" do
-  #   c = RSolr::Connection.new
-  #   base_url = "http://localhost:8983/solr"
-  #   client = RSolr::Client.new c, :url => base_url
-  #   c.execute client, {:method => :get, :uri => URI.parse(base_url + "/select")}
-  # end
-  
+
+  context "self.valid_methods" do
+    it "should return the valid http verbs" do
+      RSolr::Connection.valid_methods.should == [:get, :post, :head]
+    end
+  end
+
 end

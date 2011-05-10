@@ -1,8 +1,12 @@
 class RSolr::Client
   
+  attr_accessor :request_method
   attr_reader :connection, :uri, :proxy, :options
   
   def initialize connection, options = {}
+    @request_method = options.delete(:method) || :get
+    raise ArgumentError unless RSolr::Connection.valid_methods.include?(@request_method)
+
     @connection = connection
     unless false === options[:url]
       url = options[:url] ? options[:url].dup : 'http://127.0.0.1:8983/solr/'
@@ -172,7 +176,7 @@ class RSolr::Client
     raise "path must be a string or symbol, not #{path.inspect}" unless [String,Symbol].include?(path.class)
     path = path.to_s
     opts[:proxy] = proxy unless proxy.nil?
-    opts[:method] ||= :get
+    opts[:method] ||= request_method
     raise "The :data option can only be used if :method => :post" if opts[:method] != :post and opts[:data]
     opts[:params] = opts[:params].nil? ? {:wt => :ruby} : {:wt => :ruby}.merge(opts[:params])
     query = RSolr::Uri.params_to_solr(opts[:params]) unless opts[:params].empty?

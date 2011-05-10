@@ -22,6 +22,10 @@ class RSolr::Connection
     end
   end
   
+  def self.valid_methods
+    [:get, :post, :head]
+  end
+
   protected
   
   # This returns a singleton of a Net::HTTP or Net::HTTP.Proxy request object.
