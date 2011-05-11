@@ -1,13 +1,14 @@
 class RSolr::Client
   
-  attr_accessor :request_method
+  attr_accessor :request_method, :raise_connection_exceptions
   attr_reader :connection, :uri, :proxy, :options
   
   def initialize connection, options = {}
     @request_method = options.delete(:method) || :get
     raise ArgumentError unless RSolr::Connection.valid_methods.include?(@request_method)
-
+    @raise_connection_exceptions = options.delete(:raise_connection_exceptions) || true
     @connection = connection
+
     unless false === options[:url]
       url = options[:url] ? options[:url].dup : 'http://127.0.0.1:8983/solr/'
       url << "/" unless url[-1] == ?/
@@ -210,14 +211,20 @@ class RSolr::Client
   # if :wt == :ruby and the body
   # couldn't be evaluated.
   def adapt_response request, response
-    raise "The response does not have the correct keys => :body, :headers, :status" unless
-      %W(body headers status) == response.keys.map{|k|k.to_s}.sort
-    raise RSolr::Error::Http.new request, response unless
-      [200,302].include? response[:status]
+    unless %W(body headers status) == response.keys.map{|k|k.to_s}.sort
+      raise "The response does not have the correct keys => :body, :headers, :status"
+    end
+
+    if raise_connection_exceptions && ![200,302].include?(response[:status])
+      raise RSolr::Error::Http.new(request, response)
+    end
+
     result = request[:params][:wt] == :ruby ? evaluate_ruby_response(request, response) : response[:body]
+
     result.extend Context
-    result.request = request
+    result.request  = request
     result.response = response
+
     result
   end
   
