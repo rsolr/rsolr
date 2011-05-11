@@ -36,7 +36,7 @@ class RSolr::Connection
   protected
   
   def stubbed_empty_response
-    { :status => 500, :headers => {}, :body => "{'responseHeader'=>{'status'=>0,'params'=>{'wt'=>'ruby','rows'=>'0'}},'response'=>{'numFound'=>0,'docs'=>[]}}" }
+    { :status => 500, :headers => {}, :body => "{'response'=>{'start'=>0, 'docs'=>[], 'numFound'=>0}, 'responseHeader'=>{'QTime'=>0, 'params'=>{'facet'=>'true', 'q'=>'(dsadassa) ', 'wt'=>'ruby', 'rows'=>'0'}, 'status'=>0}, 'facet_counts'=>{'facet_fields'=>{'section'=>[]}, 'facet_dates'=>{}, 'facet_queries'=>{}}}" }
   end
 
   # This returns a singleton of a Net::HTTP or Net::HTTP.Proxy request object.
