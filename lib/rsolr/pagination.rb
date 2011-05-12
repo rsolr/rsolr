@@ -1,4 +1,4 @@
-warn "DEPRECATION WARNING: RSolr::Pagination / pagination functionality will be removed in 1.1.0. This will be available in RSolr::Ext 1.1.0"
+warn "DEPRECATION WARNING: RSolr::Pagination / pagination functionality will be removed in 1.1.0. It will instead be available in RSolr::Ext 1.1.0"
 
 module RSolr::Pagination
   
