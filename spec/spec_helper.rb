@@ -1,1 +1,1 @@
-require File.join(File.dirname(__FILE__), '..', 'lib', 'rsolr')
+require File.expand_path('../../lib/rsolr', __FILE__)

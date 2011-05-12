@@ -25,6 +25,10 @@ module RSolr::Error
     def parse_solr_error_response body
       begin
         info = body.scan(/<pre>(.*)<\/pre>/mi)[0]
+        info = info.join if info.respond_to? :join
+
+        info ||= body  # body may not contain <pre> elements
+
         partial = info.to_s.split("\n")[0..10]
         partial.join("\n").gsub("&gt;", ">").gsub("&lt;", "<")
       rescue
