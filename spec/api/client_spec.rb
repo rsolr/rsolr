@@ -14,8 +14,35 @@ describe "RSolr::Client" do
     it "should accept whatevs and set it as the @connection" do
       RSolr::Client.new(:whatevs).connection.should == :whatevs
     end
+
+    it "should default the connection method to :get" do
+      RSolr::Client.new(:watevs).request_method.should == :get
+    end
+
+    RSolr::Connection.valid_methods.each do |method|
+      it "should use the #{method} as a valid connection method" do
+        RSolr::Client.new(:whatevs, { :method => method }).request_method.should == method
+      end
+    end
+
+    it "should validate the connection method as either :get or :post" do
+      lambda {
+        RSolr::Client.new(:whatevs, :method => :foo)
+      }.should raise_exception(ArgumentError)
+    end
+
+    it "should default the raise_connection_exceptions to true" do
+      RSolr::Client.new(:watevs).raise_connection_exceptions.should == true
+    end
+
+    it "should set the raise_connection_exceptions to false" do
+      client = RSolr::Client.new(:watevs)
+      lambda {
+        client.raise_connection_exceptions = false
+      }.should change(client, :raise_connection_exceptions).from(true).to(false)
+    end
   end
-  
+
   context "send_and_receive" do
     include ClientHelper
     it "should forward these method calls the #connection object" do
@@ -178,7 +205,19 @@ describe "RSolr::Client" do
         client.adapt_response({:params=>{:wt => :ruby}}, {:status => 200, :body => "<woops/>", :headers => {}})
       }.should raise_error RSolr::Error::InvalidRubyResponse
     end
-  
+
+    it "should raise an error when we want to raise_connection_exceptions" do
+      lambda {
+        client.adapt_response({:params=>{:wt=>:ruby}}, {:status => 500, :body => '{:time=>"NOW"}', :headers => {}})
+      }.should raise_exception
+    end
+
+    it "should not raise an error when we want to hide connection exceptions" do
+      client.raise_connection_exceptions = false
+      lambda {
+        client.adapt_response({:params=>{:wt=>:ruby}}, {:status => 500, :body => '{:time=>"NOW"}', :headers => {}})
+      }.should_not raise_exception
+    end
   end
   
   context "build_request" do
@@ -210,7 +249,17 @@ describe "RSolr::Client" do
       result[:data].should_not match /wt=ruby/
       result[:headers].should == {"Content-Type" => "application/x-www-form-urlencoded"}
     end
-    
+
+    it "should use the default request_method" do
+      client.build_request(:foo, {})[:method] == :get
+    end
+
+    it "should use the request_method value" do
+      client.request_method = :head
+
+      client.build_request(:foo, {})[:method] == :head
+    end
+
   end
-  
+
 end

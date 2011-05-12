@@ -154,6 +154,18 @@ The default response format is Ruby. When the :wt param is set to :ruby, the res
 ===JSON:
   solr.get 'select', :params => {:wt => :json}
 
+==Degradation
+You can set the Rsolr.client to not raise exceptions when there is issue with the Solr endpoint. An empty set will be returned, with a 500 status in this case.
+
+  solr = RSolr.connect :url => 'http://solrserver.com'
+  solr.raise_connection_exceptions = false
+
+==Default Request Method
+The client allows a default HTTP method to be set to either GET, or POST. All requests passed to the Solr endpoint will use this.
+
+  solr = RSolr.connect :url => 'http://solrserver.com'
+  solr.request_method = :post
+
 ==Related Resources & Projects
 * {RSolr Google Group}[http://groups.google.com/group/rsolr] -- The RSolr discussion group
 * {rsolr-ext}[http://github.com/mwmitchell/rsolr-ext] -- An extension kit for RSolr

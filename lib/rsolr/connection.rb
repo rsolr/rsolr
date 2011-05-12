@@ -8,22 +8,37 @@ class RSolr::Connection
   # send a request,
   # then return the standard rsolr response hash {:status, :body, :headers}
   def execute client, request_context
-    h = http request_context[:uri], request_context[:proxy]
-    request = setup_raw_request request_context
+    http_request = http(request_context[:uri], request_context[:proxy])
+    request      = setup_raw_request(request_context)
     request.body = request_context[:data] if request_context[:method] == :post and request_context[:data]
+
     begin
-      response = h.request request
-      {:status => response.code.to_i, :headers => response.to_hash, :body => response.body}
-    # catch the undefined closed? exception -- this is a confirmed ruby bug
-    rescue NoMethodError
-      $!.message == "undefined method `closed?' for nil:NilClass" ?
-        raise(Errno::ECONNREFUSED.new) :
-        raise($!)
+      response = http_request.request(request)
+
+      { :status => response.code.to_i, :headers => response.to_hash, :body => response.body }
+    rescue Exception => e # catch the undefined closed? exception -- this is a confirmed ruby bug
+      if client.raise_connection_exceptions
+        if e.message == "undefined method `closed?' for nil:NilClass"
+          raise(e)
+        else
+          raise(Errno::ECONNREFUSED.new)
+        end
+      end
+
+      stubbed_empty_response
     end
   end
   
+  def self.valid_methods
+    [:get, :post, :head]
+  end
+
   protected
   
+  def stubbed_empty_response
+    { :status => 500, :headers => {}, :body => "{'response'=>{'start'=>0, 'docs'=>[], 'numFound'=>0}, 'responseHeader'=>{'QTime'=>0, 'params'=>{'facet'=>'true', 'q'=>'(dsadassa) ', 'wt'=>'ruby', 'rows'=>'0'}, 'status'=>0}, 'facet_counts'=>{'facet_fields'=>{'section'=>[]}, 'facet_dates'=>{}, 'facet_queries'=>{}}}" }
+  end
+
   # This returns a singleton of a Net::HTTP or Net::HTTP.Proxy request object.
   def http uri, proxy = nil
     @http ||= (

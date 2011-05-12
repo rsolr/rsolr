@@ -13,8 +13,8 @@ module RSolr
   VERSION = self.version
   
   def self.connect *args
-    driver = Class === args[0] ? args[0] : RSolr::Connection
-    opts = Hash === args[-1] ? args[-1] : {}
+    driver = args[0].is_a?(Class) ? args[0] : RSolr::Connection
+    opts = args[-1].is_a?(Hash) ? args[-1] : {}
     Client.new driver.new, opts
   end
   
