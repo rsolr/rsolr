@@ -1,3 +1,5 @@
+warn "DEPRECATION WARNING: RSolr::Pagination / pagination functionality will be removed in 1.1.0. This will be available in RSolr::Ext 1.1.0"
+
 module RSolr::Pagination
   
   # Calculates the "start" and "rows" Solr params
