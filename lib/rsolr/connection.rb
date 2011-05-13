@@ -13,7 +13,8 @@ class RSolr::Connection
     request.body = request_context[:data] if request_context[:method] == :post and request_context[:data]
     begin
       response = h.request request
-      {:status => response.code.to_i, :headers => response.to_hash, :body => response.body}
+      charset = response.type_params["charset"]
+      {:status => response.code.to_i, :headers => response.to_hash, :body => force_charset(response.body, charset)}
     # catch the undefined closed? exception -- this is a confirmed ruby bug
     rescue NoMethodError
       $!.message == "undefined method `closed?' for nil:NilClass" ?
@@ -65,6 +66,13 @@ class RSolr::Connection
     # end
     raw_request.initialize_http_header headers
     raw_request
+  end
+
+  private
+
+  def force_charset body, charset
+    return body unless charset and body.respond_to?(:force_encoding)
+    body.force_encoding(charset)
   end
 
 end
