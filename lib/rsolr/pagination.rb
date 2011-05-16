@@ -1,5 +1,3 @@
-warn "DEPRECATION WARNING: RSolr::Pagination / pagination functionality will be removed in 1.1.0. It will instead be available in RSolr::Ext 1.1.0"
-
 module RSolr::Pagination
   
   # Calculates the "start" and "rows" Solr params
@@ -19,6 +17,7 @@ module RSolr::Pagination
     
     # A paginated request method.
     def paginate page, per_page, path, opts = nil
+      warn "DEPRECATION WARNING: RSolr::Pagination / pagination functionality will be removed in 1.1.0. It will instead be available in RSolr::Ext 1.1.0"
       request_context = build_paginated_request page, per_page, path, opts
       execute request_context
     end
