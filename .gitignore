@@ -1,9 +1,8 @@
 .DS_Store
-
+.yardoc/
 pkg/*
-
-jetty/solr/data/**/*
-
+apache-solr-1.4.1/
 coverage/
-
 doc/
+example/
+rsolr-em.gemspec
