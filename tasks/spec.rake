@@ -1,9 +1,6 @@
-gem 'rspec'
-
-# $stderr.puts `gem list`
-
-require 'spec'
-require 'spec/rake/spectask'
+require "rubygems"
+require 'rspec'
+require 'rspec/core/rake_task'
 
 namespace :spec do
   
@@ -20,23 +17,23 @@ namespace :spec do
   end
   
   desc 'run api specs (mock out Solr dependency)'
-  Spec::Rake::SpecTask.new(:api) do |t|
+  RSpec::Core::RakeTask.new(:api) do |t|
     
-    t.spec_files = [File.join('spec', 'spec_helper.rb')]
-    t.spec_files += FileList[File.join('spec', 'api', '**', '*_spec.rb')]
+    t.pattern = [File.join('spec', 'spec_helper.rb')]
+    t.pattern += FileList[File.join('spec', 'api', '**', '*_spec.rb')]
     
     t.verbose = true
-    t.spec_opts = ['--color']
+    t.rspec_opts = ['--color']
   end
   
   desc 'run integration specs'
-  Spec::Rake::SpecTask.new(:integration) do |t|
+  RSpec::Core::RakeTask.new(:integration) do |t|
     
-    t.spec_files = [File.join('spec', 'spec_helper.rb')]
-    t.spec_files += FileList[File.join('spec', 'integration', '**', '*_spec.rb')]
+    t.pattern = [File.join('spec', 'spec_helper.rb')]
+    t.pattern += FileList[File.join('spec', 'integration', '**', '*_spec.rb')]
     
     t.verbose = true
-    t.spec_opts = ['--color']
+    t.rspec_opts = ['--color']
   end
   
 end
