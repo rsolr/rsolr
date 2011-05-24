@@ -61,7 +61,7 @@ class RSolr::Connection
     #       request_context[:path],
     #       :file => io)
     # else
-      raw_request = http_method.new request_context[:uri].to_s
+      raw_request = http_method.new request_context[:uri].request_uri
     # end
     raw_request.initialize_http_header headers
     raw_request
