@@ -11,7 +11,7 @@ module RSolr::Error
         details = parse_solr_error_response response[:body]
         m << "\nError: #{details}\n" if details
       end
-      p = "\nQuery: #{request[:path]}?#{request[:query]}"
+      p = "\nURI: #{request[:uri].to_s}"
       p = "\nRequest Headers: #{request[:headers].inspect}" if request[:headers]
       p = "\nRequest Data: #{request[:data].inspect}" if request[:data]
       p << "\n"
