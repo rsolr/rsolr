@@ -1,7 +1,7 @@
 require 'rake'
 require 'rake/testtask'
-require 'rake/rdoctask'
-require 'rake/gempackagetask'
+
+require 'rubygems/package_task'
 
 ENV['RUBYOPT'] = '-W1'
  

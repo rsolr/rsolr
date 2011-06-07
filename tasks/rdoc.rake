@@ -1,8 +1,8 @@
 # Rdoc
-#require "rdoc/task"
+require "rdoc/task"
 
 desc 'Generate documentation for the rsolr gem.'
-Rake::RDocTask.new(:doc) do |rdoc|
+RDoc::Task.new(:doc) do |rdoc|
   rdoc.rdoc_dir = 'doc'
   rdoc.title = 'RSolr'
   rdoc.options << '--line-numbers' << '--inline-source'

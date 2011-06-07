@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{rsolr}
-  s.version = "1.0.1"
+  s.version = "1.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Matt Mitchell", "Jeremy Hinegardner", "Mat Brown", "Mike Perham", "Nathan Witmer", "Peter Kieltyka", "Randy Souza", "shairon toledo", "shima", "Chris Beer", "Jonathan Rochkind"]
-  s.date = %q{2011-05-23}
+  s.date = %q{2011-06-06}
   s.description = %q{RSolr aims to provide a simple and extensible library for working with Solr}
   s.email = %q{goodieboy@gmail.com}
   s.extra_rdoc_files = [
@@ -34,6 +34,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.6.2}
   s.summary = %q{A Ruby client for Apache Solr}
+  s.test_files = ["spec/api/char_spec.rb", "spec/api/client_spec.rb", "spec/api/connection_spec.rb", "spec/api/error_spec.rb", "spec/api/pagination_spec.rb", "spec/api/rsolr_spec.rb", "spec/api/uri_spec.rb", "spec/api/xml_spec.rb", "spec/spec_helper.rb", "Rakefile", "tasks/spec.rake", "tasks/rdoc.rake"]
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
