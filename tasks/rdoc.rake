@@ -1,5 +1,5 @@
 # Rdoc
-require "rake/rdoctask"
+#require "rdoc/task"
 
 desc 'Generate documentation for the rsolr gem.'
 Rake::RDocTask.new(:doc) do |rdoc|
