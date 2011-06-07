@@ -17,7 +17,10 @@ module RSolr::Pagination
     
     # A paginated request method.
     def paginate page, per_page, path, opts = nil
-      warn "DEPRECATION WARNING: RSolr::Pagination / pagination functionality will be removed in 1.1.0."
+      @warned ||= begin
+        warn "DEPRECATION WARNING: RSolr::Pagination / pagination functionality will be removed in 1.1.0."
+        true
+      end
       request_context = build_paginated_request page, per_page, path, opts
       execute request_context
     end
