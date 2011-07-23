@@ -3,6 +3,7 @@ class RSolr::Client
   attr_reader :connection, :uri, :proxy, :options
   
   def initialize connection, options = {}
+    @proxy = @uri = nil
     @connection = connection
     unless false === options[:url]
       url = options[:url] ? options[:url].dup : 'http://127.0.0.1:8983/solr/'
@@ -15,10 +16,9 @@ class RSolr::Client
       end
     end
     @options = options
-    extend RSolr::Pagination::Client
   end
   
-  # returns the actual request uri object.
+  # returns the request uri object.
   def base_request_uri
     base_uri.request_uri if base_uri
   end
@@ -26,7 +26,7 @@ class RSolr::Client
   # returns the uri proxy if present,
   # otherwise just the uri object.
   def base_uri
-    @proxy || @uri
+    @proxy ? @proxy : @uri
   end
   
   # Create the get, post, and head methods
@@ -36,6 +36,16 @@ class RSolr::Client
       send_and_receive path, opts.merge(:method => :#{meth}), &block
     end
     RUBY
+  end
+  
+  # A paginated request method.
+  # Converts the page and per_page
+  # arguments into "rows" and "start".
+  def paginate page, per_page, path, opts = nil
+    opts ||= {}
+    opts[:params] ||= {}
+    raise "'rows' or 'start' params should not be set when using +paginate+" if ["start", "rows"].include?(opts[:params].keys)
+    execute build_paginated_request(page, per_page, path, opts)
   end
   
   # POST XML messages to /update with optional params.
@@ -187,10 +197,16 @@ class RSolr::Client
     opts
   end
   
+  def build_paginated_request page, per_page, path, opts
+    per_page = per_page.to_s.to_i
+    page = page.to_s.to_i-1
+    page = page < 1 ? 0 : page
+    opts[:params]["start"] = page * per_page
+    opts[:params]["rows"] = per_page
+    build_request path, opts
+  end
+  
   #  A mixin for used by #adapt_response
-  # This module essentially
-  # allows the raw response access to
-  # the original response and request.
   module Context
     attr_accessor :request, :response
   end
@@ -208,20 +224,22 @@ class RSolr::Client
   def adapt_response request, response
     raise "The response does not have the correct keys => :body, :headers, :status" unless
       %W(body headers status) == response.keys.map{|k|k.to_s}.sort
-    raise RSolr::Error::Http.new request, response unless
-      [200,302].include? response[:status]
+    raise RSolr::Error::Http.new request, response unless [200,302].include? response[:status]
     result = request[:params][:wt] == :ruby ? evaluate_ruby_response(request, response) : response[:body]
     result.extend Context
-    result.request = request
-    result.response = response
-    result
+    result.request, result.response = request, response
+    result.is_a?(Hash) ? result.extend(RSolr::Response) : result
   end
   
   protected
   
   # converts the method name for the solr request handler path.
   def method_missing name, *args
-    send_and_receive name, *args
+    if name.to_s =~ /^paginated?_(.+)$/
+      paginate args[0], args[1], $1, *args[2..-1]
+    else
+      send_and_receive name, *args
+    end
   end
   
   # evaluates the response[:body],
