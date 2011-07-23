@@ -1,7 +1,7 @@
 .DS_Store
 .yardoc/
 pkg/*
-apache-solr-1.4.1/
+apache-solr-3.3.0/
 coverage/
 doc/
 example/
