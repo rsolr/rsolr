@@ -4,7 +4,7 @@ module RSolr::Char
   # backslash everything
   # that isn't a word character
   def escape value
-    value.gsub /(\W)/, '\\\\\1'
+    value.gsub(/(\W)/, '\\\\\1')
   end
   
   # LUCENE_CHAR_RX = /([\+\-\!\(\)\[\]\^\"\~\*\?\:\\]+)/
