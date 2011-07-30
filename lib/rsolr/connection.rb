@@ -3,7 +3,7 @@ require 'net/https'
 
 # The default/Net::Http adapter for RSolr.
 class RSolr::Connection
-  
+
   # using the request_context hash,
   # send a request,
   # then return the standard rsolr response hash {:status, :body, :headers}
@@ -13,7 +13,8 @@ class RSolr::Connection
     request.body = request_context[:data] if request_context[:method] == :post and request_context[:data]
     begin
       response = h.request request
-      {:status => response.code.to_i, :headers => response.to_hash, :body => response.body}
+      charset = response.type_params["charset"]
+      {:status => response.code.to_i, :headers => response.to_hash, :body => force_charset(response.body, charset)}
     # catch the undefined closed? exception -- this is a confirmed ruby bug
     rescue NoMethodError
       $!.message == "undefined method `closed?' for nil:NilClass" ?
@@ -21,9 +22,9 @@ class RSolr::Connection
         raise($!)
     end
   end
-  
+
   protected
-  
+
   # This returns a singleton of a Net::HTTP or Net::HTTP.Proxy request object.
   def http uri, proxy = nil
     @http ||= (
@@ -33,12 +34,12 @@ class RSolr::Connection
       else
         Net::HTTP.new uri.host, uri.port
       end
-      http.use_ssl = uri.port == 443 || uri.instance_of?(URI::HTTPS)      
+      http.use_ssl = uri.port == 443 || uri.instance_of?(URI::HTTPS)
       http
     )
   end
-  
-  # 
+
+  #
   def setup_raw_request request_context
     http_method = case request_context[:method]
     when :get
@@ -66,5 +67,12 @@ class RSolr::Connection
     raw_request.initialize_http_header headers
     raw_request
   end
-  
+
+  private
+
+  def force_charset body, charset
+    return body unless charset and body.respond_to?(:force_encoding)
+    body.force_encoding(charset)
+  end
+
 end
