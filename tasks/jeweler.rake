@@ -19,8 +19,7 @@ Jeweler::Tasks.new do |gemspec|
   #require File.dirname(__FILE__) + '/../lib/rsolr'
   #gemspec.version = RSolr.version
   
-  now = Time.now
-  gemspec.date = "#{now.year}-#{now.month}-#{now.day}"
+  gemspec.date = Time.now.strftime("%Y-%m-%d")
   
   gemspec.has_rdoc = true
 end
