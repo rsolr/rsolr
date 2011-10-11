@@ -210,7 +210,10 @@ describe "RSolr::Client" do
       result[:data].should_not match /wt=ruby/
       result[:headers].should == {"Content-Type" => "application/x-www-form-urlencoded"}
     end
-    
+    it "should set the correct uri" do
+      result = client.build_request('/select', :params => {:q => 'a'})
+      result[:uri].to_s.should == "http://localhost:9999/solr/select?q=a"
+    end
   end
   
 end
