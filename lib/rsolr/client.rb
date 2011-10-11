@@ -184,7 +184,7 @@ class RSolr::Client
     opts[:proxy] = proxy unless proxy.nil?
     opts[:method] ||= :get
     raise "The :data option can only be used if :method => :post" if opts[:method] != :post and opts[:data]
-    opts[:params] = opts[:params].nil? ? {} : opts[:params]
+    opts[:params] = opts[:params].nil? ? {:wt => :ruby} : opts[:params].merge({:wt => :ruby})
     query = RSolr::Uri.params_to_solr(opts[:params]) unless opts[:params].empty?
     opts[:query] = query
     if opts[:data].is_a? Hash

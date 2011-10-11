@@ -20,7 +20,8 @@ describe "RSolr::Pagination" do
         #:per_page => 10,
         :params => {
           "rows" => 10,
-          "start" => 0
+          "start" => 0,
+          :wt => :ruby
         }
       }))
       c.paginate 1, 10, "select"
