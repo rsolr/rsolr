@@ -193,7 +193,7 @@ class RSolr::Client
       opts[:headers]['Content-Type'] ||= 'application/x-www-form-urlencoded'
     end
     opts[:path] = path
-    opts[:uri] = base_uri.merge(path.to_s + (query ? "?#{query}" : "")) if base_uri
+    opts[:uri] = base_uri.merge(base_request_uri + path.to_s + (query ? "?#{query}" : "")) if base_uri
     opts
   end
   

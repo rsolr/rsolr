@@ -161,7 +161,7 @@ describe "RSolr::Client" do
   
   context "adapt_response" do
     include ClientHelper
-    it 'should not try to evaluate ruby when the :qt is not :ruby' do
+    it 'should not try to evaluate ruby when the :wt is not :ruby' do
       body = '{:time=>"NOW"}'
       result = client.adapt_response({:params=>{}}, {:status => 200, :body => body, :headers => {}})
       result.should == body
@@ -193,6 +193,7 @@ describe "RSolr::Client" do
       [/fq=0/, /fq=1/, /q=test/, /wt=ruby/].each do |pattern|
         result[:query].should match pattern
       end
+
       result[:data].should == "data"
       result[:headers].should == {}
     end
@@ -203,14 +204,23 @@ describe "RSolr::Client" do
         :data => {:q=>'test', :fq=>[0,1]},
         :headers => {}
       )
-      result[:query].should == "wt=ruby"
       [/fq=0/, /fq=1/, /q=test/].each do |pattern|
         result[:data].should match pattern
       end
+      result[:query].should == "wt=ruby"
       result[:data].should_not match /wt=ruby/
       result[:headers].should == {"Content-Type" => "application/x-www-form-urlencoded"}
     end
-    
+
+    it "should set the correct uri" do
+      result = client.build_request('/select', :params => {:q => 'a'})
+      result[:uri].to_s.should == "http://localhost:9999/solr/select?wt=ruby&q=a"
+    end
+
+    it "should allow the user to pass in the response format" do
+      result = client.build_request('/select', :params => {:q => 'a', :wt => :xml})
+      result[:params][:wt].should == :xml
+    end
   end
   
 end
