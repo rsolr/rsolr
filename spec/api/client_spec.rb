@@ -214,7 +214,12 @@ describe "RSolr::Client" do
 
     it "should set the correct uri" do
       result = client.build_request('/select', :params => {:q => 'a'})
-      result[:uri].to_s.should == "http://localhost:9999/solr/select?q=a&wt=ruby"
+      result[:uri].to_s.should == "http://localhost:9999/solr/select?wt=ruby&q=a"
+    end
+
+    it "should allow the user to pass in the response format" do
+      result = client.build_request('/select', :params => {:q => 'a', :wt => :xml})
+      result[:params][:wt].should == :xml
     end
   end
   
