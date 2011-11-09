@@ -20,7 +20,8 @@ Jeweler::Tasks.new do |gemspec|
   #gemspec.version = RSolr.version
   
   now = Time.now
-  gemspec.date = "#{now.year}-#{now.month}-#{now.day}"
+  
+  gemspec.date = now.strftime("%Y-%m-%d")
   
   gemspec.has_rdoc = true
 end
