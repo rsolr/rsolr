@@ -4,8 +4,8 @@ module RSolr::Response
     if base["response"] && base["response"]["docs"]
       base["response"]["docs"].tap do |d|
         d.extend PaginatedDocSet
-        d.per_page = base.request[:params]["rows"]
-        d.start = base.request[:params]["start"]
+        d.per_page = base.request[:params][:rows]
+        d.start = base.request[:params][:start]
         d.total = base["response"]["numFound"].to_s.to_i
       end
     end
