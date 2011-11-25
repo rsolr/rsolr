@@ -1,5 +1,6 @@
 require 'rake'
 require 'rake/testtask'
+require 'bundler/gem_tasks'
 
 require 'rubygems/package_task'
 
