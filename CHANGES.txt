@@ -1,3 +1,8 @@
+1.0.4
+   - The "builder" gem dependency is less strict: ~> 2.1.2
+   - RSolr.version is no longer read from a file
+   - Gemspec updated -- less strict dev/test versions
+   - Jeweler is no longer used for building the gemspec
 1.0.3
    - Proper encodings in Ruby 1.9
    - Applied pull request from https://github.com/mwmitchell/rsolr/pull/20
