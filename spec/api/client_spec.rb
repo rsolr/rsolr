@@ -5,7 +5,7 @@ describe "RSolr::Client" do
     def client
       @client ||= (
         connection = RSolr::Connection.new
-        RSolr::Client.new connection, :url => "http://localhost:9999/solr"
+        RSolr::Client.new connection, :url => "http://localhost:9999/solr", :read_timeout => 42
       )
     end
   end
@@ -22,6 +22,13 @@ describe "RSolr::Client" do
       [:get, :post, :head].each do |meth|
         client.connection.should_receive(:execute).
             and_return({:status => 200, :body => "{}", :headers => {}})
+        client.send_and_receive '', :method => meth, :params => {}, :data => nil, :headers => {}
+      end
+    end
+
+    it "should be timeout aware" do
+      [:get, :post, :head].each do |meth|
+        client.connection.should_receive(:execute).with(client, hash_including(:read_timeout => 42))
         client.send_and_receive '', :method => meth, :params => {}, :data => nil, :headers => {}
       end
     end
