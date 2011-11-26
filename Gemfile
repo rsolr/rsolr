@@ -2,7 +2,7 @@ source "http://rubygems.org"
 
 gemspec
 
-gem "builder", "~> 2.1.2"
+gem "builder", ">= 2.1.2"
 
 group :development do
   gem "rake", "~> 0.9.2"
