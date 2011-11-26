@@ -3,7 +3,7 @@
 A simple, extensible Ruby client for Apache Solr.
 
 ==Documentation
-The code docs for the last *release* can be viewed here: http://rubydoc.info/gems/rsolr/
+The code docs for the last *release* can be viewed here: http://rubydoc.info/gems/rsolr/1.0.6/frames
 
 == Installation:
   sudo gem install rsolr
