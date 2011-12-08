@@ -1,5 +1,6 @@
 require 'net/http'
 require 'net/https'
+require 'ostruct'
 
 # The default/Net::Http adapter for RSolr.
 class RSolr::Connection
@@ -28,12 +29,15 @@ class RSolr::Connection
   # This returns a singleton of a Net::HTTP or Net::HTTP.Proxy request object.
   def http uri, proxy = nil, read_timeout = nil
     @http ||= (
-      http = if proxy
-        proxy_user, proxy_pass = proxy.userinfo.split(/:/) if proxy.userinfo
-        Net::HTTP.Proxy(proxy.host, proxy.port, proxy_user, proxy_pass).new uri.host, uri.port
+      if proxy
+        proxy = URI.parse(proxy)
       else
-        Net::HTTP.new uri.host, uri.port
+        proxy = ENV['http_proxy'] ? URI.parse(ENV['http_proxy']) : OpenStruct.new
       end
+
+      proxy_user, proxy_pass = proxy.userinfo.split(/:/) if proxy.userinfo
+      http = Net::HTTP::Proxy( proxy.host, proxy.port, proxy_user, proxy_pass ).new( uri.host, uri.port )
+
       http.use_ssl = uri.port == 443 || uri.instance_of?(URI::HTTPS)
       http.read_timeout = read_timeout if read_timeout
       http
