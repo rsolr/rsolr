@@ -9,7 +9,7 @@ class RSolr::Connection
   # send a request,
   # then return the standard rsolr response hash {:status, :body, :headers}
   def execute client, request_context
-    h = http request_context[:uri], request_context[:proxy]
+    h = http request_context[:uri], request_context[:proxy], request_context[:read_timeout]
     request = setup_raw_request request_context
     request.body = request_context[:data] if request_context[:method] == :post and request_context[:data]
     begin
@@ -26,10 +26,8 @@ class RSolr::Connection
 
   protected
 
-  # This returns a singleton of a Net::HTTP or Net::HTTP.Proxy request object. It will
-  # also check for the http_proxy environment variable and use if available
-
-  def http uri, proxy = nil
+  # This returns a singleton of a Net::HTTP or Net::HTTP.Proxy request object.
+  def http uri, proxy = nil, read_timeout = nil
     @http ||= (
       if proxy
         proxy = URI.parse(proxy)
@@ -41,6 +39,7 @@ class RSolr::Connection
       http = Net::HTTP::Proxy( proxy.host, proxy.port, proxy_user, proxy_pass ).new( uri.host, uri.port )
 
       http.use_ssl = uri.port == 443 || uri.instance_of?(URI::HTTPS)
+      http.read_timeout = read_timeout if read_timeout
       http
     )
   end

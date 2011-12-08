@@ -155,6 +155,7 @@ class RSolr::Client
   # then passes the request/response into +adapt_response+.
   def send_and_receive path, opts
     request_context = build_request path, opts
+    request_context[:read_timeout] = @options[:read_timeout]
     execute request_context
   end
   
