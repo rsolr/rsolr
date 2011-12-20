@@ -204,7 +204,7 @@ describe "RSolr::Client" do
       result[:headers].should == {}
     end
     
-    it "should set the Content-Type header to application/x-www-form-urlencoded if a hash is passed in to the data arg" do
+    it "should set the Content-Type header to application/x-www-form-urlencoded; charset=UTF-8 if a hash is passed in to the data arg" do
       result = client.build_request('select',
         :method => :post,
         :data => {:q=>'test', :fq=>[0,1]},
@@ -215,7 +215,7 @@ describe "RSolr::Client" do
         result[:data].should match pattern
       end
       result[:data].should_not match /wt=ruby/
-      result[:headers].should == {"Content-Type" => "application/x-www-form-urlencoded"}
+      result[:headers].should == {"Content-Type" => "application/x-www-form-urlencoded; charset=UTF-8"}
     end
     
   end
