@@ -217,6 +217,14 @@ describe "RSolr::Client" do
       result[:data].should_not match /wt=ruby/
       result[:headers].should == {"Content-Type" => "application/x-www-form-urlencoded; charset=UTF-8"}
     end
+
+    it "should not escape the params if escape == false" do
+      connection = RSolr::Connection.new
+      client = RSolr::Client.new connection, :url => "http://localhost/solr", :escape=>false
+      result = client.build_request('select', :method => :get, :params=>{:q=>"test+no+escape"})
+      client.escape.should be_false
+      result[:uri].query.include?("test+no+escape").should be_true
+    end
     
   end
   
