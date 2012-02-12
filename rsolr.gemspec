@@ -8,7 +8,17 @@ Gem::Specification.new do |s|
   s.summary     = "A Ruby client for Apache Solr"
   s.description = %q{RSolr aims to provide a simple and extensible library for working with Solr}
   s.version     = RSolr.version
-  s.authors     = ["Matt Mitchell", "Jeremy Hinegardner", "Mat Brown", "Mike Perham", "Nathan Witmer", "Peter Kieltyka", "Randy Souza", "shairon toledo", "shima", "Chris Beer", "Jonathan Rochkind"]
+  s.authors     = ["Antoine Latter", "Dmitry Lihachev",
+                  "Lucas Souza", "Peter Kieltyka",
+                  "Rob Di Marco", "Magnus Bergmark",
+                  "Jonathan Rochkind", "Chris Beer",
+                  "Craig Smith", "Randy Souza",
+                  "Colin Steele", "Peter Kieltyka",
+                  "Lorenzo Riccucci", "Mike Perham",
+                  "Mat Brown", "Shairon Toledo",
+                  "Matthew Rudy", "Fouad Mardini",
+                  "Jeremy Hinegardner", "Nathan Witmer",
+                  "\"shima\""]
   s.email       = ["goodieboy@gmail.com"]
   s.homepage    = "https://github.com/mwmitchell/rsolr"
   s.rubyforge_project = "rsolr"
