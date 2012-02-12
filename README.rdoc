@@ -32,6 +32,10 @@ The :request attribute contains the original request context. You can use this f
 
 The :response attribute contains the original response. This object contains the :status, :body and :headers keys.
 
+== Timeouts
+The read and connect timeout settings can be set when creating a new instance of RSolr:
+  solr = RSolr.connect(:read_timeout => 120, :open_timeout => 120)
+
 == Querying
 Use the #get / #post method to send search requests to the /select handler:
   response = solr.get 'select', :params => {
