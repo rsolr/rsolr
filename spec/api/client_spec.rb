@@ -55,6 +55,13 @@ describe "RSolr::Client" do
       client.xml.should be_a RSolr::Xml::Generator
     end
   end
+
+  context "json" do
+    include ClientHelper
+    it "should return an instance of RSolr::JSON::Generator" do
+      client.json.should be_a RSolr::JSON::Generator
+    end
+  end
   
   context "add" do
     include ClientHelper
@@ -79,7 +86,27 @@ describe "RSolr::Client" do
       client.add({:id=>1}, :add_attributes => {:commitWith=>10})
     end
   end
-  
+
+  context "update_json" do
+    include ClientHelper
+    it "should send json to the connection's #post method" do
+      client.connection.should_receive(:execute).
+        with(
+          client, hash_including({
+            :path => 'update/json',
+            :headers => {'Content-Type'=>'application/json'},
+            :method => :post,
+            :data => '{"optimise" : {}}'
+          })
+        ).
+          and_return(
+            :body => "",
+            :status => 200,
+            :headers => {"Content-Type"=>"text/xml"}
+        )
+      client.update_json(:data => '{"optimise" : {}}')
+    end
+  end
   context "update" do
     include ClientHelper
     it "should send data to the connection's #post method" do
