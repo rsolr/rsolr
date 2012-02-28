@@ -14,6 +14,7 @@ class RSolr::Client
         proxy_url << "/" unless proxy_url.nil? or proxy_url[-1] == ?/
         @proxy = RSolr::Uri.create proxy_url if proxy_url
       end
+      @update_format = options.delete(:update_format) || :xml
     end
     @options = options
   end
@@ -95,7 +96,11 @@ class RSolr::Client
   # 
   def add doc, opts = {}
     add_attributes = opts.delete :add_attributes
-    update opts.merge(:data => xml.add(doc, add_attributes))
+    if @update_format == :json
+      update_json opts.merge(:data => json.add(doc, add_attributes))
+    else
+      update opts.merge(:data => xml.add(doc, add_attributes))
+    end
   end
 
   # send "commit" xml with opts
