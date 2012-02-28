@@ -15,12 +15,11 @@ describe 'RSolr::JSON' do
       add_attrs = {:boost=>200.00}
       result = generator.add(documents, add_attrs) do |doc|
         doc.field_by_name(:name).attrs[:boost] = 10
-        doc.fields.size.should == 4
-        doc.fields_by_name(:cat).size.should == 2
+        doc.fields.size.should == 3
+        doc.fields_by_name(:cat).size.should == 1
       end
-      pending 'Multi-Valued fields' do
-        result.should be_json_eql('["cat 1", "cat 2"]').at_path('add/doc/0/cat')
-      end
+      puts result
+      result.should be_json_eql('["cat 1", "cat 2"]').at_path('add/doc/0/cat')
       result.should be_json_eql('200.0').at_path('add/boost')
       result.should be_json_eql('10').at_path('add/doc/0/name/boost')
     end
@@ -60,9 +59,7 @@ describe 'RSolr::JSON' do
       :name => ['matt1', 'matt2']
     }
     result = generator.add(data)
-    pending 'working out multi-value fields' do
-      result.should be_json_eql('["matt1","matt2"]').at_path('add/doc/0/name')
-    end
+    result.should be_json_eql('["matt1","matt2"]').at_path('add/doc/0/name')
   end
 
 end

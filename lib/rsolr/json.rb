@@ -12,7 +12,7 @@ module RSolr::JSON
       build do |json|
         json.add do
           json.doc data do |doc|
-            doc = RSolr::Document.new(doc) if doc.respond_to?(:each_pair)
+            doc = RSolr::JSON::Document.new(doc) if doc.respond_to?(:each_pair)
             yield doc if block_given?
             # json << doc.attrs if doc.attrs
             doc.fields.each do |f|
@@ -23,9 +23,20 @@ module RSolr::JSON
               end
             end
           end
+          add_attrs.map{|k,v| json[k] = v} if add_attrs  # Done down here to game Jsonify's append logic.
         end
-        add_attrs.map{|k,v| json[k] = v} if add_attrs  # Done down here to game Jsonify's append logic.
         json.compile!
+      end
+    end
+  end
+
+  class Document < RSolr::Document
+    def initialize(doc_hash = {})
+      @fields = []
+      @attrs = {}
+      doc_hash.each_pair do |field, values|
+        vals = values.is_a?(Array) ? values.map(&:to_s) : values
+        @fields << RSolr::Field.new({:name => field}, vals)
       end
     end
   end
