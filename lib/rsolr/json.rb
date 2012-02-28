@@ -10,20 +10,17 @@ module RSolr::JSON
     def add data, add_attrs = nil, &block
       data = [data] unless data.is_a?(Array)
       build do |json|
-        json.add do
-          json.doc data do |doc|
-            doc = RSolr::JSON::Document.new(doc) if doc.respond_to?(:each_pair)
-            yield doc if block_given?
-            # json << doc.attrs if doc.attrs
-            doc.fields.each do |f|
-              if f.attrs.keys.length > 1
-                json[f.name] = f.attrs.merge(:value => f.value)
-              else
-                json[f.name] = f.value
-              end
+        json.add data do |doc|
+          doc = RSolr::JSON::Document.new(doc) if doc.respond_to?(:each_pair)
+          yield doc if block_given?
+          doc.attrs.map{|k,v| json[k] = v} if doc.attrs
+          doc.fields.each do |f|
+            if f.attrs.keys.length > 1
+              json[f.name] = f.attrs.merge(:value => f.value)
+            else
+              json[f.name] = f.value
             end
           end
-          add_attrs.map{|k,v| json[k] = v} if add_attrs  # Done down here to game Jsonify's append logic.
         end
         json.compile!
       end
