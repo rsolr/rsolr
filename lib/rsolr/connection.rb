@@ -67,6 +67,7 @@ class RSolr::Connection
       raw_request = http_method.new request_context[:uri].request_uri
     # end
     raw_request.initialize_http_header headers
+    raw_request.basic_auth(request_context[:uri].user, request_context[:uri].password) if request_context[:uri].user && request_context[:uri].password
     raw_request
   end
 
