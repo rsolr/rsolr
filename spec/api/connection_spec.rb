@@ -1,4 +1,6 @@
 require 'spec_helper'
+require 'base64'
+
 describe "RSolr::Connection" do
   
   context "setup_raw_request" do
@@ -56,4 +58,19 @@ describe "RSolr::Connection" do
     end
   end
   
+  describe "basic auth support" do
+    let(:http) { mock(Net::HTTP).as_null_object }
+    
+    before do
+      Net::HTTP.stub(:new) { http }
+    end
+    
+    it "sets the authorization header" do
+      http.should_receive(:request) do |request|
+        request.fetch('authorization').should == "Basic #{Base64.encode64("joe:pass")}".strip
+        mock(Net::HTTPResponse).as_null_object
+      end
+      RSolr::Connection.new.execute nil, :uri => URI.parse("http://joe:pass@localhost:8983/solr"), :method => :get
+    end
+  end
 end
