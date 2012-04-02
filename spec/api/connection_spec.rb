@@ -1,4 +1,6 @@
 require 'spec_helper'
+require 'base64'
+
 describe "RSolr::Connection" do
   
   context "setup_raw_request" do
@@ -15,37 +17,60 @@ describe "RSolr::Connection" do
   context "read timeout configuration" do
     let(:client) { mock.as_null_object }
 
+    let(:http) { mock(Net::HTTP).as_null_object }
+
     subject { RSolr::Connection.new } 
 
+    before do
+      Net::HTTP.stub(:new) { http }
+    end
+
     it "should configure Net:HTTP read_timeout" do
+      http.should_receive(:read_timeout=).with(42)
       subject.execute client, {:uri => URI.parse("http://localhost/some_uri"), :method => :get, :read_timeout => 42}
-      http = subject.instance_variable_get(:@http)
-      http.read_timeout.should == 42
     end
 
     it "should use Net:HTTP default read_timeout if not specified" do
+      http.should_not_receive(:read_timeout=)
       subject.execute client, {:uri => URI.parse("http://localhost/some_uri"), :method => :get}
-      http = subject.instance_variable_get(:@http)
-      http.read_timeout.should == 60
     end
   end
 
   context "open timeout configuration" do
     let(:client) { mock.as_null_object }
 
+    let(:http) { mock(Net::HTTP).as_null_object }
+
     subject { RSolr::Connection.new } 
 
+    before do
+      Net::HTTP.stub(:new) { http }
+    end
+
     it "should configure Net:HTTP open_timeout" do
+      http.should_receive(:open_timeout=).with(42)
       subject.execute client, {:uri => URI.parse("http://localhost/some_uri"), :method => :get, :open_timeout => 42}
-      http = subject.instance_variable_get(:@http)
-      http.open_timeout.should == 42
     end
 
     it "should use Net:HTTP default open_timeout if not specified" do
+      http.should_not_receive(:open_timeout=)
       subject.execute client, {:uri => URI.parse("http://localhost/some_uri"), :method => :get}
-      http = subject.instance_variable_get(:@http)
-      http.open_timeout.should == nil
     end
   end
   
+  describe "basic auth support" do
+    let(:http) { mock(Net::HTTP).as_null_object }
+    
+    before do
+      Net::HTTP.stub(:new) { http }
+    end
+    
+    it "sets the authorization header" do
+      http.should_receive(:request) do |request|
+        request.fetch('authorization').should == "Basic #{Base64.encode64("joe:pass")}".strip
+        mock(Net::HTTPResponse).as_null_object
+      end
+      RSolr::Connection.new.execute nil, :uri => URI.parse("http://joe:pass@localhost:8983/solr"), :method => :get
+    end
+  end
 end
