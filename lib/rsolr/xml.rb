@@ -1,3 +1,5 @@
+begin; require 'nokogiri'; rescue LoadError; end
+
 module RSolr::Xml
   
   class Document
@@ -71,7 +73,6 @@ module RSolr::Xml
   class Generator
     class << self
       attr_accessor :use_nokogiri
-      @use_nokogiri = false
 
       def builder_proc
         if use_nokogiri 
@@ -83,6 +84,7 @@ module RSolr::Xml
         end
       end
     end
+    self.use_nokogiri = (defined?(::Nokogiri::XML::Builder) and not defined?(JRuby)) ? true : false
 
     def nokogiri_build &block
       b = ::Nokogiri::XML::Builder.new do |xml|
