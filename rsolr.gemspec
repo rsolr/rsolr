@@ -28,6 +28,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   
   s.add_dependency 'builder', '>= 2.1.2'
+  s.add_development_dependency 'nokogiri', '>= 1.4.0'
   s.add_development_dependency 'rake', '~> 0.9.2'
   s.add_development_dependency 'rdoc', '~> 3.9.4'
   s.add_development_dependency 'rspec', '~> 2.6.0'
