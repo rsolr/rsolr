@@ -183,15 +183,17 @@ class RSolr::Client
     return false unless retry_503 && retry_503 > 0
     retry_after_limit = request_context[:retry_after_limit] || 1
     retry_after = retry_after(response)
-    return false unless retry_after && retry_after < retry_after_limit
+    return false unless retry_after && retry_after <= retry_after_limit
     true
   end
 
   # Retry-After can be a relative number of seconds from now, or an RFC 1123 Date.
   # If the latter, attempt to convert it to a relative time in seconds.
   def retry_after(response)
-    retry_after = response[:headers]['Retry-After']
-    if retry_after.is_a?(String)
+    retry_after = Array(response[:headers]['Retry-After'] || response[:headers]['retry-after']).flatten.first
+    if retry_after =~ /\A[0-9]+\Z/
+      retry_after = retry_after.to_i
+    else
       begin
         retry_after_date = DateTime.parse(retry_after)
         retry_after = retry_after_date.to_time - Time.now
