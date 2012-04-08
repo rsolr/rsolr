@@ -34,6 +34,38 @@ describe "RSolr::Client" do
     end
   end
 
+  context "execute" do
+    include ClientHelper
+    let :request_context do
+      {
+        :method => :post,
+        :params => {},
+        :data => nil,
+        :headers => {},
+        :path => '',
+        :uri => client.base_uri,
+        :retry_503 => 1
+      }
+    end
+    it "should retry 503s if requested" do
+      client.connection.should_receive(:execute).exactly(2).times.and_return(
+        {:status => 503, :body => "{}", :headers => {'Retry-After' => 0}},
+        {:status => 200, :body => "{}", :headers => {}}
+      )
+      client.execute request_context
+    end
+    it "should not retry a 503 if the retry-after is too large" do
+      client.connection.should_receive(:execute).exactly(1).times.and_return(
+        {:status => 503, :body => "{}", :headers => {'Retry-After' => 10}}
+      )
+      lambda {
+        Timeout.timeout(0.5) do
+          client.execute({:retry_after_limit => 0}.merge(request_context))
+        end
+      }.should raise_error(RSolr::Error::Http)
+    end
+  end
+
   context "post" do
     include ClientHelper
     it "should pass the expected params to the connection's #execute method" do
