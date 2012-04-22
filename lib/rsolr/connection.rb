@@ -47,8 +47,6 @@ class RSolr::Connection
     when :get
       Net::HTTP::Get
     when :post
-      #require 'net/http/post/multipart'
-      #File === request_context[:data] ? Net::HTTP::Post::Multipart : Net::HTTP::Post
       Net::HTTP::Post
     when :head
       Net::HTTP::Head
@@ -56,16 +54,7 @@ class RSolr::Connection
       raise "Only :get, :post and :head http method types are allowed."
     end
     headers = request_context[:headers] || {}
-    # if http_method.to_s == "Net::HTTP::Post::Multipart"
-    #   io = request_context[:data]
-    #   UploadIO.convert! io, request_context[:headers]["Content-Type"], io.path, io.path
-    #   raw_request =
-    #     Net::HTTP::Post::Multipart.new(
-    #       request_context[:path],
-    #       :file => io)
-    # else
-      raw_request = http_method.new request_context[:uri].request_uri
-    # end
+    raw_request = http_method.new request_context[:uri].request_uri
     raw_request.initialize_http_header headers
     raw_request.basic_auth(request_context[:uri].user, request_context[:uri].password) if request_context[:uri].user && request_context[:uri].password
     raw_request
