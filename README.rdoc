@@ -36,6 +36,13 @@ The :response attribute contains the original response. This object contains the
 The read and connect timeout settings can be set when creating a new instance of RSolr:
   solr = RSolr.connect(:read_timeout => 120, :open_timeout => 120)
 
+== Retry 503s
+A 503 is usually a temporary error which RSolr may retry if requested. You may specify the number of retry attempts with the :retry_503 option.
+
+Only requests which specify a Retry-After header will be retried, after waiting the indicated retry interval, otherwise RSolr will treat the request as a 500. You may specify a maximum Retry-After interval to wait with the :retry_after_limit option (default: one second).
+  solr = RSolr.connect(:retry_503 => 1, :retry_after_limit => 1)
+
+
 == Querying
 Use the #get / #post method to send search requests to the /select handler:
   response = solr.get 'select', :params => {
