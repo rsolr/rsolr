@@ -6,8 +6,8 @@ describe "RSolr::Pagination" do
       r = c.build_paginated_request 3, 25, "select", {:params => {:q => "test"}}
       #r[:page].should == 3
       #r[:per_page].should == 25
-      r[:params]["start"].should == 50
-      r[:params]["rows"].should == 25
+      r[:params][:start].should == 50
+      r[:params][:rows].should == 25
       r[:uri].query.should =~ /rows=25/
       r[:uri].query.should =~ /start=50/
     end
@@ -19,8 +19,8 @@ describe "RSolr::Pagination" do
         #:page => 1,
         #:per_page => 10,
         :params => {
-          "rows" => 10,
-          "start" => 0,
+          :rows => 10,
+          :start => 0,
           :wt => :ruby
         }
       }))
