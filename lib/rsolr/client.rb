@@ -14,6 +14,7 @@ class RSolr::Client
         proxy_url << "/" unless proxy_url.nil? or proxy_url[-1] == ?/
         @proxy = RSolr::Uri.create proxy_url if proxy_url
       end
+      @update_format = options.delete(:update_format) || :xml
     end
     @options = options
   end
@@ -66,7 +67,18 @@ class RSolr::Client
     opts[:headers]['Content-Type'] ||= 'text/xml'
     post 'update', opts
   end
-  
+
+  # POST JSON messages to /update/json with optional params
+  # http://wiki.apache.org/solr/UpdateJSON
+  #
+  # Analagous to +#update+, but with json instead of XML.
+  #
+  def update_json opts = {}
+    opts[:headers] ||= {}
+    opts[:headers]['Content-Type'] ||= 'application/json'
+    post 'update/json', opts
+  end
+
   # 
   # +add+ creates xml "add" documents and sends the xml data to the +update+ method
   # 
@@ -84,7 +96,11 @@ class RSolr::Client
   # 
   def add doc, opts = {}
     add_attributes = opts.delete :add_attributes
-    update opts.merge(:data => xml.add(doc, add_attributes))
+    if @update_format == :json
+      update_json opts.merge(:data => json.add(doc, add_attributes))
+    else
+      update opts.merge(:data => xml.add(doc, add_attributes))
+    end
   end
 
   # send "commit" xml with opts
@@ -134,6 +150,10 @@ class RSolr::Client
   # shortcut to RSolr::Xml::Generator
   def xml
     @xml ||= RSolr::Xml::Generator.new
+  end
+
+  def json
+    @json ||= RSolr::JSON::Generator.new
   end
   
   # +send_and_receive+ is the main request method responsible for sending requests to the +connection+ object.

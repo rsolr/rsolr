@@ -55,6 +55,13 @@ describe "RSolr::Client" do
       client.xml.should be_a RSolr::Xml::Generator
     end
   end
+
+  context "json" do
+    include ClientHelper
+    it "should return an instance of RSolr::JSON::Generator" do
+      client.json.should be_a RSolr::JSON::Generator
+    end
+  end
   
   context "add" do
     include ClientHelper
@@ -78,8 +85,55 @@ describe "RSolr::Client" do
           and_return("<xml/>")
       client.add({:id=>1}, :add_attributes => {:commitWith=>10})
     end
+
+    context 'when the client is configured for json updates' do
+      let(:json_client) do
+        connection = RSolr::Connection.new
+        RSolr::Client.new connection, :update_format => :json
+      end
+      it "should send json to the connection's #post method" do
+        json_client.connection.should_receive(:execute).
+          with(
+            json_client, hash_including({
+              :path => 'update/json',
+              :headers => {"Content-Type" => 'application/json'},
+              :method => :post,
+              :data => '{"hello":"this is json"}'
+        })
+          ).
+            and_return(
+              :body => "",
+              :status => 200,
+              :headers => {"Content-Type"=>"text/xml"}
+            )
+        json_client.json.should_receive(:add).
+          with({:id => 1}, {:commitWith=>10}).
+            and_return('{"hello":"this is json"}')
+        json_client.add({:id=>1}, :add_attributes => {:commitWith=>10})
+      end
+    end
   end
-  
+
+  context "update_json" do
+    include ClientHelper
+    it "should send json to the connection's #post method" do
+      client.connection.should_receive(:execute).
+        with(
+          client, hash_including({
+            :path => 'update/json',
+            :headers => {'Content-Type'=>'application/json'},
+            :method => :post,
+            :data => '{"optimise" : {}}'
+          })
+        ).
+          and_return(
+            :body => "",
+            :status => 200,
+            :headers => {"Content-Type"=>"text/xml"}
+        )
+      client.update_json(:data => '{"optimise" : {}}')
+    end
+  end
   context "update" do
     include ClientHelper
     it "should send data to the connection's #post method" do

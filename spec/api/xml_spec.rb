@@ -71,7 +71,7 @@ describe "RSolr::Xml" do
     end
 
     it 'should create an add from a single Message::Document' do
-      document = RSolr::Xml::Document.new
+      document = RSolr::Document.new
       document.add_field('id', 1)
       document.add_field('name', 'matt', :boost => 2.0)
       result = generator.add(document)
@@ -84,7 +84,7 @@ describe "RSolr::Xml" do
     
     it 'should create adds from multiple Message::Documents' do
       documents = (1..2).map do |i|
-        doc = RSolr::Xml::Document.new
+        doc = RSolr::Document.new
         doc.add_field('id', i)
         doc.add_field('name', "matt#{i}")
         doc
