@@ -6,7 +6,7 @@ module RSolr
   
   %W(Response Char Client Error Connection Uri Xml).each{|n|autoload n.to_sym, "rsolr/#{n.downcase}"}
   
-  def self.version; "1.0.7" end
+  def self.version; "1.0.8" end
   
   VERSION = self.version
   
