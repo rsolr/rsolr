@@ -176,20 +176,20 @@ The default response format is Ruby. When the :wt param is set to :ruby, the res
 * Send me a pull request. Bonus points for topic branches.
 
 ==Contributors
-Nathan Witmer
-Magnus Bergmark
-shima
-Randy Souza
-Mat Brown
-Jeremy Hinegardner
-Denis Goeury
-shairon toledo
-Rob Di Marco
-Peter Kieltyka
-Mike Perham
-Lucas Souza
-Dmitry Lihachev
-Antoine Latter
+* Nathan Witmer
+* Magnus Bergmark
+* shima
+* Randy Souza
+* Mat Brown
+* Jeremy Hinegardner
+* Denis Goeury
+* shairon toledo
+* Rob Di Marco
+* Peter Kieltyka
+* Mike Perham
+* Lucas Souza
+* Dmitry Lihachev
+* Antoine Latter
 
 ==Author
 
