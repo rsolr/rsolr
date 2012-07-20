@@ -42,6 +42,9 @@ module RSolr::Error
 
   end
 
+  class ConnectionRefused < ::Errno::ECONNREFUSED
+  end
+
   class Http < RuntimeError
 
     include SolrContext
