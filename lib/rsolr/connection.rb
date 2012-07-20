@@ -15,10 +15,12 @@ class RSolr::Connection
       response = h.request request
       charset = response.type_params["charset"]
       {:status => response.code.to_i, :headers => response.to_hash, :body => force_charset(response.body, charset)}
+    rescue Errno::ECONNREFUSED
+      raise RSolr::Error::ConnectionRefused
     # catch the undefined closed? exception -- this is a confirmed ruby bug
     rescue NoMethodError
       $!.message == "undefined method `closed?' for nil:NilClass" ?
-        raise(Errno::ECONNREFUSED.new) :
+        raise(RSolr::Error::ConnectionRefused) :
         raise($!)
     end
   end

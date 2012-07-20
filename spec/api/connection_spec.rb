@@ -14,6 +14,20 @@ describe "RSolr::Connection" do
     headers.should == {"content-type"=>"text/xml"}
   end
 
+  context "when the connection is refused" do
+    subject { RSolr::Connection.new }
+
+    it "raises a custom exception" do
+      http_stub = double("Net:HTTP")
+      http_stub.stub(:request){ raise(Errno::ECONNREFUSED.new) }
+
+      subject.stub(:setup_raw_request){ http_stub }
+      subject.stub(:http){ Net::HTTP.new("localhost", 80) }
+
+      lambda{ subject.execute(nil,{}) }.should raise_error(RSolr::Error::ConnectionRefused)
+    end
+  end
+
   context "read timeout configuration" do
     let(:client) { mock.as_null_object }
 

@@ -37,6 +37,9 @@ module RSolr::Error
     end
     
   end
+
+  class ConnectionRefused < ::Errno::ECONNREFUSED
+  end
   
   class Http < RuntimeError
     
