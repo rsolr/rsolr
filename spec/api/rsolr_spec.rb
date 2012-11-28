@@ -7,7 +7,7 @@ describe "RSolr" do
   
   it "can escape" do
     RSolr.should be_a(RSolr::Char)
-    RSolr.escape("this string").should == "this\\ string"
+    RSolr.escape("this=string").should == "this\\=string"
   end
   
   context "connect" do

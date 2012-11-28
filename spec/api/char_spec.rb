@@ -7,7 +7,7 @@ describe "RSolr::Char" do
     (0..255).each do |ascii|
       chr = ascii.chr
       esc = char.escape(chr)
-      if chr =~ /\W/
+      if chr =~ /[^\w ]/
         esc.to_s.should == "\\#{chr}"
       else
         esc.to_s.should == chr
