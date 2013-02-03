@@ -57,6 +57,27 @@ describe "RSolr::Connection" do
       subject.execute client, {:uri => URI.parse("http://localhost/some_uri"), :method => :get}
     end
   end
+
+  context "connection refused" do
+    let(:client) { mock.as_null_object }
+
+    let(:http) { mock(Net::HTTP).as_null_object }
+    let(:request_context) {
+      {:uri => URI.parse("http://localhost/some_uri"), :method => :get, :open_timeout => 42}
+    }
+    subject { RSolr::Connection.new } 
+
+    before do
+      Net::HTTP.stub(:new) { http }
+    end
+
+    it "should configure Net:HTTP open_timeout" do
+      http.should_receive(:request).and_raise(Errno::ECONNREFUSED)
+      lambda {
+        subject.execute client, request_context
+      }.should raise_error(Errno::ECONNREFUSED, /#{request_context}/)
+    end
+  end
   
   describe "basic auth support" do
     let(:http) { mock(Net::HTTP).as_null_object }
