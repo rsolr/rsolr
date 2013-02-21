@@ -177,15 +177,13 @@ class RSolr::Client
 
   #
   def execute request_context
-
-    raw_response = connection.execute self, request_context
+    raw_response = connection.execute request_context
 
     while retry_503?(request_context, raw_response)
       request_context[:retry_503] -= 1
       sleep retry_after(raw_response)
-      raw_response = connection.execute self, request_context
+      raw_response = connection.execute request_context
     end
-
     adapt_response(request_context, raw_response) unless raw_response.nil?
   end
 
