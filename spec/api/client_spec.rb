@@ -61,7 +61,7 @@ RSpec.describe RSolr::Client do
 
     it "should be timeout aware" do
       [:get, :post, :head].each do |meth|
-        expect(client.connection).to receive(:execute).with(client, hash_including(:read_timeout => 42, :open_timeout=>43))
+        expect(client.connection).to receive(:execute).with(hash_including(:read_timeout => 42, :open_timeout=>43))
         client.send_and_receive '', :method => meth, :params => {}, :data => nil, :headers => {}
       end
     end
@@ -104,7 +104,7 @@ RSpec.describe RSolr::Client do
     it "should pass the expected params to the connection's #execute method" do
       request_opts = {:data => "the data", :method=>:post, :headers => {"Content-Type" => "text/plain"}}
       expect(client.connection).to receive(:execute).
-        with(client, hash_including(request_opts)).
+        with(hash_including(request_opts)).
         and_return(
           :body => "",
           :status => 200,
@@ -126,7 +126,7 @@ RSpec.describe RSolr::Client do
     it "should send xml to the connection's #post method" do
       expect(client.connection).to receive(:execute).
         with(
-          client, hash_including({
+          hash_including({
             :path => "update",
             :headers => {"Content-Type"=>"text/xml"},
             :method => :post,
@@ -150,7 +150,7 @@ RSpec.describe RSolr::Client do
     it "should send data to the connection's #post method" do
       expect(client.connection).to receive(:execute).
         with(
-          client, hash_including({
+          hash_including({
             :path => "update",
             :headers => {"Content-Type"=>"text/xml"},
             :method => :post,
@@ -184,7 +184,7 @@ RSpec.describe RSolr::Client do
       it "should send a #{meth} message to the connection's #post method" do
         expect(client.connection).to receive(:execute).
           with(
-            client, hash_including({
+            hash_including({
               :path => "update",
               :headers => {"Content-Type"=>"text/xml"},
               :method => :post,
@@ -206,7 +206,7 @@ RSpec.describe RSolr::Client do
     it "should send data to the connection's #post method" do
       expect(client.connection).to receive(:execute).
         with(
-          client, hash_including({
+          hash_including({
             :path => "update",
             :headers => {"Content-Type"=>"text/xml"},
             :method => :post,
@@ -227,7 +227,7 @@ RSpec.describe RSolr::Client do
     it "should send data to the connection's #post method" do
       expect(client.connection).to receive(:execute).
         with(
-          client, hash_including({
+          hash_including({
             :path => "update",
             :headers => {"Content-Type"=>"text/xml"},
             :method => :post,
