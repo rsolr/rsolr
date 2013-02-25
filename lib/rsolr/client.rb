@@ -163,7 +163,7 @@ class RSolr::Client
   
   # 
   def execute request_context
-    raw_response = connection.execute self, request_context
+    raw_response = connection.execute request_context
     adapt_response(request_context, raw_response) unless raw_response.nil?
   end
   
