@@ -5,8 +5,8 @@ module RSolr::Response
       base["response"]["docs"].tap do |d|
         d.extend PaginatedDocSet
         d.per_page = base.request[:params]["rows"]
-        d.start = base.request[:params]["start"]
-        d.total = base["response"]["numFound"].to_s.to_i
+        d.page_start = base.request[:params]["start"]
+        d.page_total = base["response"]["numFound"].to_s.to_i
       end
     end
   end
@@ -14,7 +14,13 @@ module RSolr::Response
   # A response module which gets mixed into the solr ["response"]["docs"] array.
   module PaginatedDocSet
 
-    attr_accessor :start, :per_page, :total
+    attr_accessor :page_start, :per_page, :page_total
+    if not (Object.const_defined?("RUBY_ENGINE") and Object::RUBY_ENGINE=='rbx')
+      alias_method(:start,:page_start)
+      alias_method(:start=,:page_start=)
+      alias_method(:total,:page_total)
+      alias_method(:total=,:page_total=)
+    end
 
     # Returns the current page calculated from 'rows' and 'start'
     def current_page
