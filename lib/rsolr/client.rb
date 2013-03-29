@@ -190,7 +190,7 @@ class RSolr::Client
   # Retry-After can be a relative number of seconds from now, or an RFC 1123 Date.
   # If the latter, attempt to convert it to a relative time in seconds.
   def retry_after(response)
-    retry_after = Array(response[:headers]['Retry-After'] || response[:headers]['retry-after']).flatten.first
+    retry_after = Array(response[:headers]['Retry-After'] || response[:headers]['retry-after']).flatten.first.to_s
     if retry_after =~ /\A[0-9]+\Z/
       retry_after = retry_after.to_i
     else
