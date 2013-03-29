@@ -155,7 +155,7 @@ class RSolr::Client
   # then passes the request/response into +adapt_response+.
   def send_and_receive path, opts
     request_context = build_request path, opts
-    [:open_timeout, :read_timeout].each do |k|
+    [:open_timeout, :read_timeout, :retry_503, :retry_after_limit].each do |k|
       request_context[k] = @options[k]
     end
     execute request_context
@@ -163,8 +163,46 @@ class RSolr::Client
   
   # 
   def execute request_context
+
     raw_response = connection.execute self, request_context
+
+    while retry_503?(request_context, raw_response)
+      request_context[:retry_503] -= 1
+      sleep retry_after(raw_response)
+      raw_response = connection.execute self, request_context
+    end
+
     adapt_response(request_context, raw_response) unless raw_response.nil?
+  end
+
+  def retry_503?(request_context, response)
+    return false if response.nil?
+    status = response[:status] && response[:status].to_i
+    return false unless status == 503
+    retry_503 = request_context[:retry_503]
+    return false unless retry_503 && retry_503 > 0
+    retry_after_limit = request_context[:retry_after_limit] || 1
+    retry_after = retry_after(response)
+    return false unless retry_after && retry_after <= retry_after_limit
+    true
+  end
+
+  # Retry-After can be a relative number of seconds from now, or an RFC 1123 Date.
+  # If the latter, attempt to convert it to a relative time in seconds.
+  def retry_after(response)
+    retry_after = Array(response[:headers]['Retry-After'] || response[:headers]['retry-after']).flatten.first
+    if retry_after =~ /\A[0-9]+\Z/
+      retry_after = retry_after.to_i
+    else
+      begin
+        retry_after_date = DateTime.parse(retry_after)
+        retry_after = retry_after_date.to_time - Time.now
+        retry_after = nil if retry_after < 0
+      rescue ArgumentError => e
+        retry_after = retry_after.to_i
+      end
+    end
+    retry_after
   end
   
   # +build_request+ accepts a path and options hash,

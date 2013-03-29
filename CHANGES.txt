@@ -1,5 +1,7 @@
 1.0.8
    -  Fix connection refused errors in specs + add basic auth support (Denis Goeury)
+   - Ability to set :retry_503, the number of retry attempts for a 503 response
+     with a Retry-After header.
 1.0.7
    - Response body encoding is set to response charset in Ruby >= 1.9
    - Ability to set :read_timeout and :open_timeout when creating new instance of RSolr
