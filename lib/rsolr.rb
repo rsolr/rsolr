@@ -1,10 +1,6 @@
-$: << "#{File.dirname(__FILE__)}" unless $:.include? File.dirname(__FILE__)
-
-require 'rubygems'
-
 module RSolr
   
-  %W(Response Char Client Error Connection Uri Xml).each{|n|autoload n.to_sym, "rsolr/#{n.downcase}"}
+  Dir.glob(File.expand_path("../rsolr/*.rb", __FILE__)).each{|rb_file| require(rb_file)}
   
   def self.version; "1.0.9" end
   
