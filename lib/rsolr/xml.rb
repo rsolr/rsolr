@@ -19,7 +19,7 @@ module RSolr::Xml
         values = [values] unless values.is_a?(Array)
         values.each do |v|
           next if v.to_s.empty?
-          @fields << RSolr::Xml::Field.new({:name=>field}, v.to_s)
+          @fields << RSolr::Xml::Field.instance({:name=>field}, v)
         end
       end
       @attrs={}
@@ -45,12 +45,19 @@ module RSolr::Xml
     #   document.add_field('title', 'A Title', :boost => 2.0)
     #
     def add_field(name, value, options = {})
-      @fields << RSolr::Xml::Field.new(options.merge({:name=>name}), value)
+      @fields << RSolr::Xml::Field.instance(options.merge({:name=>name}), value)
     end
     
   end
   
   class Field
+
+    def self.instance(attrs, value)
+      field_type = attrs.fetch(:type, value.class.name) + "Field"
+      search_scope = Module.nesting[1]
+      klass = search_scope.const_defined?(field_type, false) ? search_scope.const_get(field_type) : Field
+      klass.new(attrs, value)
+    end
     
     # "attrs" is a hash for setting the "doc" xml attributes
     # "value" is the text value for the node
@@ -67,9 +74,26 @@ module RSolr::Xml
     def name
       @attrs[:name]
     end
+
+    def value
+      @value.to_s
+    end
     
   end
-  
+
+  class DateField < Field
+    def value
+      @value.iso8601
+    end
+  end
+
+  class TimeField < Field
+    def value
+      @value.getutc.strftime('%FT%TZ')
+    end
+  end
+
+
   class Generator
     
     def build &block
