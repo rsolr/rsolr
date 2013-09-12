@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'date'
 describe "RSolr::Xml" do
   
   let(:generator){ RSolr::Xml::Generator.new }
@@ -116,6 +117,50 @@ describe "RSolr::Xml" do
     it 'should create many query deletes' do
       generator.delete_by_query(['status:"LOST"', 'quantity:0']).should == "<?xml version=\"1.0\" encoding=\"UTF-8\"?><delete><query>status:\"LOST\"</query><query>quantity:0</query></delete>"
     end
+  end
+
+  describe "::Field" do
+    describe ".instance" do
+      subject { RSolr::Xml::Field }
+
+      it "detect class name by value" do
+        subject.instance({}, Time.new).should be_a_kind_of(RSolr::Xml::TimeField)
+      end
+
+      it "detect class name by option" do
+        subject.instance({:type => 'Time'}, nil).should be_a_kind_of(RSolr::Xml::TimeField)
+      end
+
+      it "fallback with basic Field" do
+        subject.instance({:type => 'UndefinedType'}, nil).should be_a_kind_of(RSolr::Xml::Field)
+      end
+    end
+
+    describe "#value" do
+      it "convert value to string" do
+        RSolr::Xml::Field.instance({}, 1).value.should === '1'
+      end
+    end
+  end
+
+  describe "::TimeField" do
+    it "convert value to string" do
+      time_value = Time.utc(2013, 9, 11, 18, 10, 0)
+      RSolr::Xml::Field.instance({}, time_value).value.should === '2013-09-11T18:10:00Z'
+    end
+
+    it "convert time to UTC" do
+      time_value = Time.new(2013, 9, 11, 18, 10, 0, '+02:00')
+      RSolr::Xml::Field.instance({}, time_value).value.should === '2013-09-11T16:10:00Z'
+    end
+  end
+
+  describe "::DateField" do
+    it "convert value to string" do
+      date_value = Date.new(2013, 9, 11)
+      RSolr::Xml::Field.instance({}, date_value).value.should === '2013-09-11'
+    end
+
   end
   
 end
