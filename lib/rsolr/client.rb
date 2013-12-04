@@ -64,7 +64,7 @@ class RSolr::Client
   def update opts = {}
     opts[:headers] ||= {}
     opts[:headers]['Content-Type'] ||= 'text/xml'
-		post Sunspot.config.solr.url + '/update/', opts
+    post Sunspot.config.solr.url + '/update/', opts
   end
   
   # 
