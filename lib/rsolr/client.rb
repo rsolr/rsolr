@@ -267,9 +267,12 @@ class RSolr::Client
       %W(body headers status) == response.keys.map{|k|k.to_s}.sort
     raise RSolr::Error::Http.new request, response unless [200,302].include? response[:status]
     result = request[:params][:wt] == :ruby ? evaluate_ruby_response(request, response) : response[:body]
+    if result.instance_of?(Hash) && result.respond_to?(:with_indifferent_access)
+      result = result.with_indifferent_access
+    end
     result.extend Context
     result.request, result.response = request, response
-    result.is_a?(Hash) ? result.extend(RSolr::Response) : result
+    result.kind_of?(Hash) ? result.extend(RSolr::Response) : result
   end
   
   protected
