@@ -1,5 +1,7 @@
 =RSolr
 
+NOTE: There is now the rsolr organization! Please go to https://github.com/rsolr/rsolr instead of using this repository!
+
 A simple, extensible Ruby client for Apache Solr.
 
 ==Documentation
