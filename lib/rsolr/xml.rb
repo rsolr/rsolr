@@ -1,4 +1,4 @@
-require 'builder'
+begin; require 'nokogiri'; rescue LoadError; end
 
 module RSolr::Xml
   
@@ -71,13 +71,40 @@ module RSolr::Xml
   end
   
   class Generator
+    class << self
+      attr_accessor :use_nokogiri
+
+      def builder_proc
+        if use_nokogiri 
+          require 'nokogiri' unless defined?(::Nokogiri::XML::Builder)
+          :nokogiri_build
+        else
+          require 'builder' unless defined?(::Builder::XmlMarkup)
+          :builder_build
+        end
+      end
+    end
+    self.use_nokogiri = (defined?(::Nokogiri::XML::Builder) and not defined?(JRuby)) ? true : false
+
+    def nokogiri_build &block
+      b = ::Nokogiri::XML::Builder.new do |xml|
+        block_given? ? yield(xml) : xml
+      end
+      '<?xml version="1.0" encoding="UTF-8"?>'+b.to_xml(:indent => 0, :encoding => 'UTF-8', :save_with => ::Nokogiri::XML::Node::SaveOptions::AS_XML | ::Nokogiri::XML::Node::SaveOptions::NO_DECLARATION).strip
+    end
+    protected :nokogiri_build
     
-    def build &block
+    def builder_build &block
       b = ::Builder::XmlMarkup.new(:indent => 0, :margin => 0, :encoding => 'UTF-8')
       b.instruct!
       block_given? ? yield(b) : b
     end
-
+    protected :builder_build
+    
+    def build &block
+      self.send(self.class.builder_proc,&block)
+    end
+    
     # generates "add" xml for updating solr
     # "data" can be a hash or an array of hashes.
     # - each hash should be a simple key=>value pair representing a solr doc.
@@ -111,11 +138,12 @@ module RSolr::Xml
           data.each do |doc|
             doc = RSolr::Xml::Document.new(doc) if doc.respond_to?(:each_pair)
             yield doc if block_given?
-            add_node.doc(doc.attrs) do |doc_node|
+            doc_node_builder = lambda do |doc_node|
               doc.fields.each do |field_obj|
                 doc_node.field field_obj.value, field_obj.attrs
               end
             end
+            self.class.use_nokogiri ? add_node.doc_(doc.attrs,&doc_node_builder) : add_node.doc(doc.attrs,&doc_node_builder)
           end
         end
       end
@@ -144,7 +172,9 @@ module RSolr::Xml
       ids = [ids] unless ids.is_a?(Array)
       build do |xml|
         xml.delete do |delete_node|
-          ids.each { |id| delete_node.id(id) }
+          ids.each do |id| 
+            self.class.use_nokogiri ? delete_node.id_(id) : delete_node.id(id)
+          end
         end
       end
     end
