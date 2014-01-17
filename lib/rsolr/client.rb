@@ -1,6 +1,6 @@
 class RSolr::Client
   
-  attr_reader :connection, :uri, :proxy, :options
+  attr_reader :connection, :uri, :proxy, :options, :escape
   
   def initialize connection, options = {}
     @proxy = @uri = nil
@@ -14,6 +14,7 @@ class RSolr::Client
         proxy_url << "/" unless proxy_url.nil? or proxy_url[-1] == ?/
         @proxy = RSolr::Uri.create proxy_url if proxy_url
       end
+      @escape = options[:escape].nil? ? true : options[:escape]
     end
     @options = options
   end
@@ -226,7 +227,7 @@ class RSolr::Client
     opts[:method] ||= :get
     raise "The :data option can only be used if :method => :post" if opts[:method] != :post and opts[:data]
     opts[:params] = opts[:params].nil? ? {:wt => :ruby} : {:wt => :ruby}.merge(opts[:params])
-    query = RSolr::Uri.params_to_solr(opts[:params]) unless opts[:params].empty?
+    query = RSolr::Uri.params_to_solr(opts[:params], escape) unless opts[:params].empty?
     opts[:query] = query
     if opts[:data].is_a? Hash
       opts[:data] = RSolr::Uri.params_to_solr opts[:data]
