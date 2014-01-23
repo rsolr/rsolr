@@ -72,6 +72,7 @@ describe "RSolr::Connection" do
     end
 
     it "should configure Net:HTTP open_timeout" do
+      pending "doesn't work with ruby 1.8" if RUBY_VERSION < "1.9"
       http.should_receive(:request).and_raise(Errno::ECONNREFUSED)
       lambda {
         subject.execute client, request_context

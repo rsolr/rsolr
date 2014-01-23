@@ -14,3 +14,7 @@ env:
   global:
     - JRUBY_OPTS="-J-Xms512m -J-Xmx1024m"
     - NOKOGIRI_USE_SYSTEM_LIBRARIES=true
+
+matrix:
+  allow_failures:
+    - rvm: 1.8.7
