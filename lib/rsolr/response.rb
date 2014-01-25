@@ -11,6 +11,14 @@ module RSolr::Response
     end
   end
   
+  def with_indifferent_access
+    if {}.respond_to?(:with_indifferent_access)
+      super.extend RSolr::Response
+    else
+      raise NoMethodError, "undefined method `with_indifferent_access' for #{self.inspect}:#{self.class.name}"
+    end
+  end
+
   # A response module which gets mixed into the solr ["response"]["docs"] array.
   module PaginatedDocSet
 
