@@ -1,4 +1,19 @@
+begin
+  require 'json'
+rescue LoadError
+end
+
 class RSolr::Client
+
+  class << self
+    def default_wt
+      @default_wt || :ruby
+    end
+
+    def default_wt= value
+      @default_wt = value
+    end
+  end
   
   attr_reader :connection, :uri, :proxy, :options
   
@@ -225,7 +240,7 @@ class RSolr::Client
     opts[:proxy] = proxy unless proxy.nil?
     opts[:method] ||= :get
     raise "The :data option can only be used if :method => :post" if opts[:method] != :post and opts[:data]
-    opts[:params] = opts[:params].nil? ? {:wt => :ruby} : {:wt => :ruby}.merge(opts[:params])
+    opts[:params] = opts[:params].nil? ? {:wt => default_wt} : {:wt => default_wt}.merge(opts[:params])
     query = RSolr::Uri.params_to_solr(opts[:params]) unless opts[:params].empty?
     opts[:query] = query
     if opts[:data].is_a? Hash
@@ -266,7 +281,13 @@ class RSolr::Client
     raise "The response does not have the correct keys => :body, :headers, :status" unless
       %W(body headers status) == response.keys.map{|k|k.to_s}.sort
     raise RSolr::Error::Http.new request, response unless [200,302].include? response[:status]
-    result = request[:params][:wt] == :ruby ? evaluate_ruby_response(request, response) : response[:body]
+
+    result = if respond_to? "evaluate_#{request[:params][:wt]}_response", true
+      send "evaluate_#{request[:params][:wt]}_response", request, response
+    else
+      response[:body]
+    end
+
     result.extend Context
     result.request, result.response = request, response
     result.is_a?(Hash) ? result.extend(RSolr::Response) : result
@@ -297,5 +318,18 @@ class RSolr::Client
       raise RSolr::Error::InvalidRubyResponse.new request, response
     end
   end
-  
+
+  def evaluate_json_response request, response
+    return response[:body] unless defined? JSON
+
+    begin
+      JSON.parse response[:body].to_s, :symbolize_names => true
+    rescue JSON::ParserError
+      raise RSolr::Error::InvalidJsonResponse.new request, response
+    end
+  end
+
+  def default_wt
+    self.class.default_wt
+  end
 end

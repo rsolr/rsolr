@@ -212,6 +212,17 @@ describe "RSolr::Client" do
       result.should == {:time=>"NOW"}
     end
     
+    it 'should evaluate json responses when the :wt is :json' do
+      body = '{"time": "NOW"}'
+      result = client.adapt_response({:params=>{:wt=>:json}}, {:status => 200, :body => body, :headers => {}})
+      if defined? JSON
+        result.should == {:time=>"NOW"}
+      else
+        # ruby 1.8 without the JSON gem
+        result.should == '{"time": "NOW"}'
+      end
+    end
+
     it "ought raise a RSolr::Error::InvalidRubyResponse when the ruby is indeed frugged, or even fruggified" do
       lambda {
         client.adapt_response({:params=>{:wt => :ruby}}, {:status => 200, :body => "<woops/>", :headers => {}})

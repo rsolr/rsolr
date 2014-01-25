@@ -110,7 +110,19 @@ module RSolr::Error
   
   # Thrown if the :wt is :ruby
   # but the body wasn't succesfully parsed/evaluated
-  class InvalidRubyResponse < Http
+  class InvalidResponse < Http
+
+  end
+
+  # Thrown if the :wt is :ruby
+  # but the body wasn't succesfully parsed/evaluated
+  class InvalidJsonResponse < InvalidResponse
+
+  end
+
+  # Thrown if the :wt is :ruby
+  # but the body wasn't succesfully parsed/evaluated
+  class InvalidRubyResponse < InvalidResponse
     
   end
   
