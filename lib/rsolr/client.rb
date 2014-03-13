@@ -283,7 +283,7 @@ class RSolr::Client
     raise RSolr::Error::Http.new request, response unless [200,302].include? response[:status]
 
     result = if respond_to? "evaluate_#{request[:params][:wt]}_response", true
-      send "evaluate_#{request[:params][:wt]}_response", request, response
+      send("evaluate_#{request[:params][:wt]}_response", request, response) || {}
     else
       response[:body]
     end
