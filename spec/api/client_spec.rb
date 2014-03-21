@@ -14,6 +14,20 @@ describe "RSolr::Client" do
     it "should accept whatevs and set it as the @connection" do
       RSolr::Client.new(:whatevs).connection.should == :whatevs
     end
+
+    it "should connect to default URI" do
+      RSolr::Client.new(:whatevs).uri.to_s.should == 'http://127.0.0.1:8983/solr/'
+    end
+
+    {
+      :host => ['localhost', 'http://localhost:8983/solr/'],
+      :port => [8080,        'http://127.0.0.1:8080/solr/'],
+      :path => ['path',      'http://127.0.0.1:8983/path/']
+    }.each { |key, (value, result)|
+      it "should accept a #{key} param" do
+        RSolr::Client.new(:whatevs, key => value).uri.to_s.should == result
+      end
+    }
   end
   
   context "send_and_receive" do

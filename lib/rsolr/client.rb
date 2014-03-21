@@ -5,6 +5,10 @@ end
 
 class RSolr::Client
 
+  DEFAULT_HOST = '127.0.0.1'
+  DEFAULT_PORT = 8983
+  DEFAULT_PATH = 'solr'
+
   class << self
     def default_wt
       @default_wt || :ruby
@@ -21,7 +25,11 @@ class RSolr::Client
     @proxy = @uri = nil
     @connection = connection
     unless false === options[:url]
-      url = options[:url] ? options[:url].dup : 'http://127.0.0.1:8983/solr/'
+      url = options[:url] ? options[:url].dup : 'http://%s:%d/%s' % [
+        options.fetch(:host, DEFAULT_HOST),
+        options.fetch(:port, DEFAULT_PORT),
+        options.fetch(:path, DEFAULT_PATH)
+      ]
       url << "/" unless url[-1] == ?/
       @uri = RSolr::Uri.create url
       if options[:proxy]
