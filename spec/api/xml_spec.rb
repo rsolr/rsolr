@@ -4,12 +4,11 @@ require 'nokogiri'
 describe "RSolr::Xml" do
   
   let(:generator){ RSolr::Xml::Generator.new }
-  let(:builder_engines) do
-    { 
-      :builder   => { :val => false, :class => Builder::XmlMarkup, :engine => Builder::XmlMarkup.new(:indent => 0, :margin => 0, :encoding => 'UTF-8') },
-      :nokogiri  => { :val => true,  :class => Nokogiri::XML::Builder, :engine => Nokogiri::XML::Builder.new }
-    }
-  end
+
+  builder_engines = { 
+    :builder   => { :val => false, :class => Builder::XmlMarkup, :engine => Builder::XmlMarkup.new(:indent => 0, :margin => 0, :encoding => 'UTF-8') },
+    :nokogiri  => { :val => true,  :class => Nokogiri::XML::Builder, :engine => Nokogiri::XML::Builder.new }
+  }
 
   [:builder,:nokogiri].each do |engine_name|
     describe engine_name do
