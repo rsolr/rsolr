@@ -282,7 +282,9 @@ class RSolr::Client
       %W(body headers status) == response.keys.map{|k|k.to_s}.sort
     raise RSolr::Error::Http.new request, response unless [200,302].include? response[:status]
 
-    result = if respond_to? "evaluate_#{request[:params][:wt]}_response", true
+    result = if request[:method] == :head
+      ''
+    elsif respond_to? "evaluate_#{request[:params][:wt]}_response", true
       send "evaluate_#{request[:params][:wt]}_response", request, response
     else
       response[:body]

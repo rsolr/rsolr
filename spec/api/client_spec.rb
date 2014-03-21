@@ -228,6 +228,12 @@ describe "RSolr::Client" do
         client.adapt_response({:params=>{:wt => :ruby}}, {:status => 200, :body => "<woops/>", :headers => {}})
       }.should raise_error RSolr::Error::InvalidRubyResponse
     end
+
+    it "should never evaluate the response body for HEAD requests" do
+      body = nil
+      result = client.adapt_response({:params=>{:wt=>:json}, :method=>:head}, {:status => 200, :body => body, :headers => {}})
+      result.should == ''
+    end
   
   end
   
