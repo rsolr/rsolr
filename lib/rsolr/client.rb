@@ -284,8 +284,12 @@ class RSolr::Client
 
     result = if request[:method] == :head
       ''
-    elsif respond_to? "evaluate_#{request[:params][:wt]}_response", true
-      send "evaluate_#{request[:params][:wt]}_response", request, response
+    elsif (wt = request[:params][:wt]).is_a?(Symbol)
+      if respond_to?(method = "evaluate_#{wt}_response", true)
+        send(method, request, response)
+      else
+        raise "The response cannot be evaluated: #{wt} not supported."
+      end
     else
       response[:body]
     end

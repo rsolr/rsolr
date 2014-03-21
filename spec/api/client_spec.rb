@@ -211,6 +211,12 @@ describe "RSolr::Client" do
       result = client.adapt_response({:params=>{:wt=>:ruby}}, {:status => 200, :body => body, :headers => {}})
       result.should == {:time=>"NOW"}
     end
+
+    it "should not evaluate ruby responses when the :wt is 'ruby'" do
+      body = '{:time=>"NOW"}'
+      result = client.adapt_response({:params=>{:wt=>'ruby'}}, {:status => 200, :body => body, :headers => {}})
+      result.should == body
+    end
     
     it 'should evaluate json responses when the :wt is :json' do
       body = '{"time": "NOW"}'
@@ -221,6 +227,12 @@ describe "RSolr::Client" do
         # ruby 1.8 without the JSON gem
         result.should == '{"time": "NOW"}'
       end
+    end
+
+    it "should try to evaluate the response when the :wt is a symbol" do
+      lambda {
+        client.adapt_response({:params=>{:wt => :a_symbol}}, {:status => 200, :body => '', :headers => {}})
+      }.should raise_error RuntimeError, /a_symbol/
     end
 
     it "ought raise a RSolr::Error::InvalidRubyResponse when the ruby is indeed frugged, or even fruggified" do
