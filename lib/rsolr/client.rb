@@ -20,6 +20,7 @@ class RSolr::Client
   end
   
   attr_reader :connection, :uri, :proxy, :options
+  attr_accessor :default_wt
   
   def initialize connection, options = {}
     @proxy = @uri = nil
@@ -38,6 +39,7 @@ class RSolr::Client
         @proxy = RSolr::Uri.create proxy_url if proxy_url
       end
     end
+    self.default_wt = options.fetch(:default_wt, self.class.default_wt)
     @options = options
   end
   
@@ -335,9 +337,5 @@ class RSolr::Client
     rescue JSON::ParserError
       raise RSolr::Error::InvalidJsonResponse.new request, response
     end
-  end
-
-  def default_wt
-    self.class.default_wt
   end
 end

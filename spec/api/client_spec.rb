@@ -28,6 +28,21 @@ describe "RSolr::Client" do
         RSolr::Client.new(:whatevs, key => value).uri.to_s.should == result
       end
     }
+
+    it "should have a default wt" do
+      RSolr::Client.new(:whatevs).default_wt.should == :ruby
+    end
+
+    it "should accept a default wt param" do
+      RSolr::Client.new(:whatevs, :default_wt => :json).default_wt.should == :json
+    end
+
+    it "should set the default wt" do
+      client = RSolr::Client.new(:whatevs)
+      client.default_wt.should == :ruby
+      client.default_wt = :json
+      client.default_wt.should == :json
+    end
   end
   
   context "send_and_receive" do
