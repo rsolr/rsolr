@@ -1,13 +1,13 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
 
-require "rsolr"
+require "rsolr/version"
 
 Gem::Specification.new do |s|
   s.name        = "rsolr"
   s.summary     = "A Ruby client for Apache Solr"
   s.description = %q{RSolr aims to provide a simple and extensible library for working with Solr}
-  s.version     = RSolr.version
+  s.version     = RSolr::VERSION
   s.authors     = ["Antoine Latter", "Dmitry Lihachev",
                   "Lucas Souza", "Peter Kieltyka",
                   "Rob Di Marco", "Magnus Bergmark",

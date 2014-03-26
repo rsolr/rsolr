@@ -1,14 +1,11 @@
 $: << "#{File.dirname(__FILE__)}" unless $:.include? File.dirname(__FILE__)
 
 require 'rubygems'
+require 'rsolr/version'
 
 module RSolr
   
   %W(Response Char Client Error Connection Uri Xml).each{|n|autoload n.to_sym, "rsolr/#{n.downcase}"}
-  
-  def self.version; "1.0.10.pre1" end
-  
-  VERSION = self.version
   
   def self.connect *args
     driver = Class === args[0] ? args[0] : RSolr::Connection
