@@ -12,8 +12,8 @@ module RSolr::Error
         m << "\nError: #{details}\n" if details
       end
       p = "\nURI: #{request[:uri].to_s}"
-      p = "\nRequest Headers: #{request[:headers].inspect}" if request[:headers]
-      p = "\nRequest Data: #{request[:data].inspect}" if request[:data]
+      p << "\nRequest Headers: #{request[:headers].inspect}" if request[:headers]
+      p << "\nRequest Data: #{request[:data].inspect}" if request[:data]
       p << "\n"
       p << "\nBacktrace: " + self.backtrace[0..10].join("\n")
       m << p
