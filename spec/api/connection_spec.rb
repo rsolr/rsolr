@@ -15,9 +15,9 @@ describe "RSolr::Connection" do
   end
 
   context "read timeout configuration" do
-    let(:client) { mock.as_null_object }
+    let(:client) { double.as_null_object }
 
-    let(:http) { mock(Net::HTTP).as_null_object }
+    let(:http) { double(Net::HTTP).as_null_object }
 
     subject { RSolr::Connection.new } 
 
@@ -37,9 +37,9 @@ describe "RSolr::Connection" do
   end
 
   context "open timeout configuration" do
-    let(:client) { mock.as_null_object }
+    let(:client) { double.as_null_object }
 
-    let(:http) { mock(Net::HTTP).as_null_object }
+    let(:http) { double(Net::HTTP).as_null_object }
 
     subject { RSolr::Connection.new } 
 
@@ -59,9 +59,9 @@ describe "RSolr::Connection" do
   end
 
   context "connection refused" do
-    let(:client) { mock.as_null_object }
+    let(:client) { double.as_null_object }
 
-    let(:http) { mock(Net::HTTP).as_null_object }
+    let(:http) { double(Net::HTTP).as_null_object }
     let(:request_context) {
       {:uri => URI.parse("http://localhost/some_uri"), :method => :get, :open_timeout => 42}
     }
@@ -81,7 +81,7 @@ describe "RSolr::Connection" do
   end
   
   describe "basic auth support" do
-    let(:http) { mock(Net::HTTP).as_null_object }
+    let(:http) { double(Net::HTTP).as_null_object }
     
     before do
       Net::HTTP.stub(:new) { http }
@@ -90,7 +90,7 @@ describe "RSolr::Connection" do
     it "sets the authorization header" do
       http.should_receive(:request) do |request|
         request.fetch('authorization').should == "Basic #{Base64.encode64("joe:pass")}".strip
-        mock(Net::HTTPResponse).as_null_object
+        double(Net::HTTPResponse).as_null_object
       end
       RSolr::Connection.new.execute nil, :uri => URI.parse("http://joe:pass@localhost:8983/solr"), :method => :get
     end

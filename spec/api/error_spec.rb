@@ -10,7 +10,7 @@ describe "RSolr::Error" do
     before do
       response_lines = (1..15).to_a.map { |i| "line #{i}" }
 
-      @request  = mock :[] => "mocked"
+      @request  = double :[] => "mocked"
       @response = {
         :body   => "<pre>" + response_lines.join("\n") + "</pre>",
         :status => 400
@@ -34,7 +34,7 @@ describe "RSolr::Error" do
     before do
       response_lines = (1..15).to_a.map { |i| "line #{i}" }
 
-      @request  = mock :[] => "mocked"
+      @request  = double :[] => "mocked"
       @response = {
         :body   => response_lines.join("\n"),
         :status => 400
