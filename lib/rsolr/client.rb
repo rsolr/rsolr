@@ -282,8 +282,14 @@ class RSolr::Client
       %W(body headers status) == response.keys.map{|k|k.to_s}.sort
     raise RSolr::Error::Http.new request, response unless [200,302].include? response[:status]
 
-    result = if respond_to? "evaluate_#{request[:params][:wt]}_response", true
-      send "evaluate_#{request[:params][:wt]}_response", request, response
+    result = if request[:method] == :head
+      ''
+    elsif (wt = request[:params][:wt]).is_a?(Symbol)
+      if respond_to?(method = "evaluate_#{wt}_response", true)
+        send(method, request, response)
+      else
+        raise "The response cannot be evaluated: #{wt} not supported."
+      end
     else
       response[:body]
     end
