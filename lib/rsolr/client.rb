@@ -5,6 +5,10 @@ end
 
 class RSolr::Client
 
+  DEFAULT_HOST = '127.0.0.1'
+  DEFAULT_PORT = 8983
+  DEFAULT_PATH = 'solr'
+
   class << self
     def default_wt
       @default_wt || :ruby
@@ -16,12 +20,17 @@ class RSolr::Client
   end
   
   attr_reader :connection, :uri, :proxy, :options
+  attr_accessor :default_wt
   
   def initialize connection, options = {}
     @proxy = @uri = nil
     @connection = connection
     unless false === options[:url]
-      url = options[:url] ? options[:url].dup : 'http://127.0.0.1:8983/solr/'
+      url = options[:url] ? options[:url].dup : 'http://%s:%d/%s' % [
+        options.fetch(:host, DEFAULT_HOST),
+        options.fetch(:port, DEFAULT_PORT),
+        options.fetch(:path, DEFAULT_PATH)
+      ]
       url << "/" unless url[-1] == ?/
       @uri = RSolr::Uri.create url
       if options[:proxy]
@@ -30,6 +39,7 @@ class RSolr::Client
         @proxy = RSolr::Uri.create proxy_url if proxy_url
       end
     end
+    self.default_wt = options.fetch(:default_wt, self.class.default_wt)
     @options = options
   end
   
@@ -327,9 +337,5 @@ class RSolr::Client
     rescue JSON::ParserError
       raise RSolr::Error::InvalidJsonResponse.new request, response
     end
-  end
-
-  def default_wt
-    self.class.default_wt
   end
 end

@@ -11,6 +11,12 @@ The code docs for the last *release* can be viewed here: http://rubydoc.info/gem
 == Example:
   require 'rubygems'
   require 'rsolr'
+
+  # Default connection (http://127.0.0.1:8983/solr/)
+  solr = RSolr.connect
+
+  # Explicit port (or host, or path)
+  solr = RSolr.connect :port => 8080
   
   # Direct connection
   solr = RSolr.connect :url => 'http://solrserver.com'
