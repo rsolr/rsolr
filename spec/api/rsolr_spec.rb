@@ -2,17 +2,17 @@ require 'spec_helper'
 describe "RSolr" do
   
   it "has a version that can be read via #version or VERSION" do
-    RSolr.version.should == RSolr::VERSION
+    expect(RSolr.version).to eq(RSolr::VERSION)
   end
   
   it "can escape" do
-    RSolr.should be_a(RSolr::Char)
-    RSolr.escape("this string").should == "this\\ string"
+    expect(RSolr).to be_a(RSolr::Char)
+    expect(RSolr.escape("this string")).to eq("this\\ string")
   end
   
   context "connect" do
     it "should return a RSolr::Client instance" do
-      RSolr.connect.should be_a(RSolr::Client)
+      expect(RSolr.connect).to be_a(RSolr::Client)
     end
   end
   
