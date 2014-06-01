@@ -8,9 +8,9 @@ describe "RSolr::Char" do
       chr = ascii.chr
       esc = char.escape(chr)
       if chr =~ /\W/
-        esc.to_s.should == "\\#{chr}"
+        expect(esc.to_s).to eq("\\#{chr}")
       else
-        esc.to_s.should == chr
+        expect(esc.to_s).to eq(chr)
       end
     end
   end

@@ -19,14 +19,14 @@ describe "RSolr::Error" do
 
     it "only shows the first eleven lines of the response" do
       error = generate_error_with_backtrace @request, @response
-      error.to_s.should match(/line 1\n.+line 11\n\n/m)
+      expect(error.to_s).to match(/line 1\n.+line 11\n\n/m)
     end
 
     it "shows only one line when the response is one line long" do
       @response[:body] = "<pre>failed</pre>"
 
       error = generate_error_with_backtrace @request, @response
-      error.to_s.should match(/Error: failed/)
+      expect(error.to_s).to match(/Error: failed/)
     end
   end
 
@@ -43,14 +43,14 @@ describe "RSolr::Error" do
 
     it "only shows the first eleven lines of the response" do
       error = generate_error_with_backtrace @request, @response
-      error.to_s.should match(/line 1\n.+line 11\n\n/m)
+      expect(error.to_s).to match(/line 1\n.+line 11\n\n/m)
     end
 
     it "shows only one line when the response is one line long" do
       @response[:body] = "failed"
 
       error = generate_error_with_backtrace @request, @response
-      error.to_s.should match(/Error: failed/)
+      expect(error.to_s).to match(/Error: failed/)
     end
   end
 end

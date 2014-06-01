@@ -6,16 +6,16 @@ describe "RSolr::Pagination" do
       r = c.build_paginated_request 3, 25, "select", {:params => {:q => "test"}}
       #r[:page].should == 3
       #r[:per_page].should == 25
-      r[:params]["start"].should == 50
-      r[:params]["rows"].should == 25
-      r[:uri].query.should =~ /rows=25/
-      r[:uri].query.should =~ /start=50/
+      expect(r[:params]["start"]).to eq(50)
+      expect(r[:params]["rows"]).to eq(25)
+      expect(r[:uri].query).to match(/rows=25/)
+      expect(r[:uri].query).to match(/start=50/)
     end
   end
   context "paginate" do
     it "should build a paginated request context and call execute" do
       c = RSolr::Client.new(nil, {})#.extend(RSolr::Pagination::Client)
-      c.should_receive(:execute).with(hash_including({
+      expect(c).to receive(:execute).with(hash_including({
         #:page => 1,
         #:per_page => 10,
         :params => {

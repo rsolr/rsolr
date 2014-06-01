@@ -7,60 +7,60 @@ describe "RSolr::Uri" do
     
     it "should return a URI object with a trailing slash" do
       u = uri.create 'http://apache.org'
-      u.path[0].should == ?/
+      expect(u.path[0]).to eq(?/)
     end
   
     it "should return the bytesize of a string" do
-      uri.bytesize("test").should == 4
+      expect(uri.bytesize("test")).to eq(4)
     end
   
     it "should convert a solr query string from a hash w/o a starting ?" do
       hash = {:q => "gold", :fq => ["mode:one", "level:2"]}
       query = uri.params_to_solr hash
-      query[0].should_not == ??
+      expect(query[0]).not_to eq(??)
       [/q=gold/, /fq=mode%3Aone/, /fq=level%3A2/].each do |p|
-        query.should match p
+        expect(query).to match p
       end
-      query.split('&').size.should == 3
+      expect(query.split('&').size).to eq(3)
     end
     
     context "escape_query_value" do
       
       it 'should escape &' do
-        uri.params_to_solr(:fq => "&").should == 'fq=%26'
+        expect(uri.params_to_solr(:fq => "&")).to eq('fq=%26')
       end
 
       it 'should convert spaces to +' do
-        uri.params_to_solr(:fq => "me and you").should == 'fq=me+and+you'
+        expect(uri.params_to_solr(:fq => "me and you")).to eq('fq=me+and+you')
       end
 
       it 'should escape comlex queries, part 1' do
         my_params = {'fq' => '{!raw f=field_name}crazy+\"field+value'}
         expected = 'fq=%7B%21raw+f%3Dfield_name%7Dcrazy%2B%5C%22field%2Bvalue'
-        uri.params_to_solr(my_params).should == expected
+        expect(uri.params_to_solr(my_params)).to eq(expected)
       end
 
       it 'should escape complex queries, part 2' do
         my_params = {'q' => '+popularity:[10 TO *] +section:0'}
         expected = 'q=%2Bpopularity%3A%5B10+TO+%2A%5D+%2Bsection%3A0'
-        uri.params_to_solr(my_params).should == expected
+        expect(uri.params_to_solr(my_params)).to eq(expected)
       end
       
       it 'should escape properly' do
-        uri.escape_query_value('+').should == '%2B'
-        uri.escape_query_value('This is a test').should == 'This+is+a+test'
-        uri.escape_query_value('<>/\\').should == '%3C%3E%2F%5C'
-        uri.escape_query_value('"').should == '%22'
-        uri.escape_query_value(':').should == '%3A'
+        expect(uri.escape_query_value('+')).to eq('%2B')
+        expect(uri.escape_query_value('This is a test')).to eq('This+is+a+test')
+        expect(uri.escape_query_value('<>/\\')).to eq('%3C%3E%2F%5C')
+        expect(uri.escape_query_value('"')).to eq('%22')
+        expect(uri.escape_query_value(':')).to eq('%3A')
       end
 
       it 'should escape brackets' do
-        uri.escape_query_value('{').should == '%7B'
-        uri.escape_query_value('}').should == '%7D'
+        expect(uri.escape_query_value('{')).to eq('%7B')
+        expect(uri.escape_query_value('}')).to eq('%7D')
       end
 
       it 'should escape exclamation marks!' do
-        uri.escape_query_value('!').should == '%21'
+        expect(uri.escape_query_value('!')).to eq('%21')
       end
       
     end

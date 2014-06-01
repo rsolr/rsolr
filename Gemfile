@@ -11,7 +11,7 @@ end
 
 group :test do
   gem "rake", ">= 0.9.2"
-  gem "rspec", "~> 2.6"
+  gem "rspec", "~> 2.14"
 end
 
 if defined? RUBY_VERSION and RUBY_VERSION < "1.9"
