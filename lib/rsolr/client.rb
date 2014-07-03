@@ -7,7 +7,7 @@ class RSolr::Client
 
   class << self
     def default_wt
-      @default_wt || :ruby
+      @default_wt || :json
     end
 
     def default_wt= value
@@ -319,21 +319,17 @@ class RSolr::Client
   # instead, giving full access to the
   # request/response objects.
   def evaluate_ruby_response request, response
-    begin
-      Kernel.eval response[:body].to_s
-    rescue SyntaxError
-      raise RSolr::Error::InvalidRubyResponse.new request, response
-    end
+    Kernel.eval response[:body].to_s
+  rescue SyntaxError
+    raise RSolr::Error::InvalidRubyResponse.new request, response
   end
 
   def evaluate_json_response request, response
-    return response[:body] unless defined? JSON
+    return if response[:body].nil? || response[:body].empty?
 
-    begin
-      JSON.parse response[:body].to_s
-    rescue JSON::ParserError
-      raise RSolr::Error::InvalidJsonResponse.new request, response
-    end
+    JSON.parse response[:body].to_s
+  rescue JSON::ParserError
+    raise RSolr::Error::InvalidJsonResponse.new request, response
   end
 
   def default_wt

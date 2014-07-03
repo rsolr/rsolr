@@ -316,7 +316,7 @@ RSpec.describe RSolr::Client do
 
     context "when params are symbols" do
       it 'should return a request context array' do
-        [/fq=0/, /fq=1/, /q=test/, /wt=ruby/].each do |pattern|
+        [/fq=0/, /fq=1/, /q=test/, /wt=json/].each do |pattern|
           expect(subject[:query]).to match pattern
         end
         expect(subject[:data]).to eq("data")
@@ -338,11 +338,11 @@ RSpec.describe RSolr::Client do
       let(:options) { { method: :post, data: data, headers: {} } }
 
       it "sets the Content-Type header to application/x-www-form-urlencoded; charset=UTF-8" do
-        expect(subject[:query]).to eq("wt=ruby")
+        expect(subject[:query]).to eq("wt=json")
         [/fq=0/, /fq=1/, /q=test/].each do |pattern|
           expect(subject[:data]).to match pattern
         end
-        expect(subject[:data]).not_to match /wt=ruby/
+        expect(subject[:data]).not_to match /wt=json/
         expect(subject[:headers]).to eq({"Content-Type" => "application/x-www-form-urlencoded; charset=UTF-8"})
       end
     end
@@ -354,6 +354,6 @@ RSpec.describe RSolr::Client do
         :headers => {}
       )
       expect(result[:uri].to_s).to match /^http:\/\/localhost:9999\/solr\//
-    end 
+    end
   end
 end
