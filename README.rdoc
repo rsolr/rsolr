@@ -153,14 +153,13 @@ Delete by array of queries
 == Response Formats
 The default response format is Ruby. When the :wt param is set to :ruby, the response is eval'd resulting in a Hash. You can get a raw response by setting the :wt to "ruby" - notice, the string -- not a symbol. RSolr will eval the Ruby string ONLY if the :wt value is :ruby. All other response formats are available as expected, :wt=>'xml' etc..
 
-===Evaluated Ruby (default)
+===Evaluated Ruby:
   solr.get 'select', :params => {:wt => :ruby} # notice :ruby is a Symbol
-===Raw Ruby
+===Raw Ruby:
   solr.get 'select', :params => {:wt => 'ruby'} # notice 'ruby' is a String
-
 ===XML:
   solr.get 'select', :params => {:wt => :xml}
-===JSON:
+===JSON (default):
   solr.get 'select', :params => {:wt => :json}
 
 ==Related Resources & Projects

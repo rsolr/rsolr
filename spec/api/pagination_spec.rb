@@ -21,7 +21,7 @@ describe "RSolr::Pagination" do
         :params => {
           "rows" => 10,
           "start" => 0,
-          :wt => :ruby
+          :wt => :json
         }
       }))
       c.paginate 1, 10, "select"
