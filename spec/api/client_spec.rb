@@ -233,12 +233,11 @@ describe "RSolr::Client" do
   
   context "indifferent access" do
     include ClientHelper
-    it "should raise a NoMethodError if the #with_indifferent_access extension isn't loaded" do
-      # TODO: Find a less implmentation-tied way to test this
-      expect_any_instance_of(Hash).to receive(:respond_to?).with(:with_indifferent_access).and_return(false)
+    it "should raise a RuntimeError if the #with_indifferent_access extension isn't loaded" do
+      hide_const("HashWithIndifferentAccess")
       body = "{'foo'=>'bar'}"
       result = client.adapt_response({:params=>{:wt=>:ruby}}, {:status => 200, :body => body, :headers => {}})
-      expect { result.with_indifferent_access }.to raise_error NoMethodError
+      expect { result.with_indifferent_access }.to raise_error RuntimeError
     end
 
     it "should provide indifferent access" do

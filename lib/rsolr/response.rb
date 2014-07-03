@@ -1,26 +1,47 @@
 module RSolr::Response
-  
-  def self.extended base
-    if base["response"] && base["response"]["docs"]
-      base["response"]["docs"].tap do |d|
-        d.extend PaginatedDocSet
-        d.per_page = base.request[:params]["rows"]
-        d.page_start = base.request[:params]["start"]
-        d.page_total = base["response"]["numFound"].to_s.to_i
-      end
+
+  def self.included(base)
+    unless base < Hash
+      raise ArgumentError, "RSolr::Response expects to included only in (sub)classes of Hash; got included in '#{base}' instead."
+    end
+    base.send(:attr_reader, :request, :response)
+  end
+
+  def initialize_rsolr_response(request, response, result)
+    @request = request
+    @response = response
+    self.merge!(result)
+    if self["response"] && self["response"]["docs"].is_a?(Array)
+      docs = PaginatedDocSet.new(self["response"]["docs"])
+      docs.per_page = request[:params]["rows"]
+      docs.page_start = request[:params]["start"]
+      docs.page_total = self["response"]["numFound"].to_s.to_i
+      self["response"]["docs"] = docs
     end
   end
-  
+
   def with_indifferent_access
-    if {}.respond_to?(:with_indifferent_access)
-      super.extend RSolr::Response
+    if defined?(::RSolr::HashWithIndifferentAccessWithResponse)
+      ::RSolr::HashWithIndifferentAccessWithResponse.new(request, response, self)
     else
-      raise NoMethodError, "undefined method `with_indifferent_access' for #{self.inspect}:#{self.class.name}"
+      if defined?(ActiveSupport::HashWithIndifferentAccess)
+        RSolr.const_set("HashWithIndifferentAccessWithResponse", Class.new(ActiveSupport::HashWithIndifferentAccess))
+        RSolr::HashWithIndifferentAccessWithResponse.class_eval <<-eos
+          include RSolr::Response
+          def initialize(request, response, result)
+            super()
+            initialize_rsolr_response(request, response, result)
+          end
+        eos
+        ::RSolr::HashWithIndifferentAccessWithResponse.new(request, response, self)
+      else
+        raise RuntimeError, "HashWithIndifferentAccess is not currently defined"
+      end
     end
   end
 
   # A response module which gets mixed into the solr ["response"]["docs"] array.
-  module PaginatedDocSet
+  class PaginatedDocSet < Array
 
     attr_accessor :page_start, :per_page, :page_total
     if not (Object.const_defined?("RUBY_ENGINE") and Object::RUBY_ENGINE=='rbx')
@@ -61,5 +82,14 @@ module RSolr::Response
     end
 
   end
-  
+
+end
+
+class RSolr::HashWithResponse < Hash
+  include RSolr::Response
+
+  def initialize(request, response, result)
+    super()
+    initialize_rsolr_response(request, response, result)
+  end
 end
