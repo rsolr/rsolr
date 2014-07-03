@@ -323,7 +323,12 @@ class RSolr::Client
     return response[:body] unless defined? JSON
 
     begin
-      JSON.parse response[:body].to_s, :symbolize_names => true
+      json = response[:body].to_s
+      if json.empty?
+        nil
+      else
+        JSON.parse json, :symbolize_names => true
+      end
     rescue JSON::ParserError
       raise RSolr::Error::InvalidJsonResponse.new request, response
     end
