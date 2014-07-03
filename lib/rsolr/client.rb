@@ -330,6 +330,6 @@ class RSolr::Client
   end
 
   def default_wt
-    self.class.default_wt
+    self.options[:default_wt] || self.class.default_wt
   end
 end
