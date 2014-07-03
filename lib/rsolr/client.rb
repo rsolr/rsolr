@@ -327,7 +327,7 @@ class RSolr::Client
       if json.empty?
         nil
       else
-        JSON.parse json, :symbolize_names => true
+        JSON.parse json
       end
     rescue JSON::ParserError
       raise RSolr::Error::InvalidJsonResponse.new request, response

@@ -201,22 +201,22 @@ describe "RSolr::Client" do
   context "adapt_response" do
     include ClientHelper
     it 'should not try to evaluate ruby when the :qt is not :ruby' do
-      body = '{:time=>"NOW"}'
+      body = '{"time"=>"NOW"}'
       result = client.adapt_response({:params=>{}}, {:status => 200, :body => body, :headers => {}})
       expect(result).to eq(body)
     end
     
     it 'should evaluate ruby responses when the :wt is :ruby' do
-      body = '{:time=>"NOW"}'
+      body = '{"time"=>"NOW"}'
       result = client.adapt_response({:params=>{:wt=>:ruby}}, {:status => 200, :body => body, :headers => {}})
-      expect(result).to eq({:time=>"NOW"})
+      expect(result).to eq({"time"=>"NOW"})
     end
     
     it 'should evaluate json responses when the :wt is :json' do
       body = '{"time": "NOW"}'
       result = client.adapt_response({:params=>{:wt=>:json}}, {:status => 200, :body => body, :headers => {}})
       if defined? JSON
-        expect(result).to eq({:time=>"NOW"})
+        expect(result).to eq({"time"=>"NOW"})
       else
         # ruby 1.8 without the JSON gem
         expect(result).to eq('{"time": "NOW"}')
