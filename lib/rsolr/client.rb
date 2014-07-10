@@ -261,12 +261,7 @@ class RSolr::Client
     opts[:params]["rows"] = per_page
     build_request path, opts
   end
-  
-  #  A mixin for used by #adapt_response
-  module Context
-    attr_accessor :request, :response
-  end
-  
+
   # This method will evaluate the :body value
   # if the params[:uri].params[:wt] == :ruby
   # ... otherwise, the body is returned as is.
@@ -288,13 +283,15 @@ class RSolr::Client
       response[:body]
     end
 
-    result.extend Context
-    result.request, result.response = request, response
-    result.is_a?(Hash) ? result.extend(RSolr::Response) : result
+    if result.is_a?(Hash)
+      result = RSolr::HashWithResponse.new(request, response, result)
+    end
+
+    result
   end
-  
+
   protected
-  
+
   # converts the method name for the solr request handler path.
   def method_missing name, *args
     if name.to_s =~ /^paginated?_(.+)$/
