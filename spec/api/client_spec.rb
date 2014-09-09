@@ -272,6 +272,21 @@ describe "RSolr::Client" do
       expect(result[:headers]).to eq({})
     end
     
+    it 'should handle "wt"' do
+      result = client.build_request('select',
+        :method => :post,
+        :params => {:q=>'test', :fq=>[0,1], "wt"=>:json},
+        :data => "data",
+        :headers => {}
+      )
+      [/fq=0/, /fq=1/, /q=test/, /wt=json/].each do |pattern|
+        expect(result[:query]).to match pattern
+      end
+      expect(result[:query]).to_not match /wt=ruby/
+      expect(result[:data]).to eq("data")
+      expect(result[:headers]).to eq({})
+    end
+
     it "should set the Content-Type header to application/x-www-form-urlencoded; charset=UTF-8 if a hash is passed in to the data arg" do
       result = client.build_request('select',
         :method => :post,
