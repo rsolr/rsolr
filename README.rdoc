@@ -24,22 +24,22 @@ The code docs for the last *release* can be viewed here: http://rubydoc.info/gem
   # send a request to /catalog
   response = solr.get 'catalog', :params => {:q => '*:*'}
 
-When the Solr :wt is :ruby, then the response will be a Hash. This Hash is the same object returned by Solr, but evaluated as Ruby. If the :wt is not :ruby, then the response will be a String.
+When the Solr +:wt+ is +:ruby+, then the response will be a Hash. This Hash is the same object returned by Solr, but evaluated as Ruby. If the +:wt+ is not +:ruby+, then the response will be a String.
 
-The response also exposes 2 attribute readers (for any :wt value), :request and :response. Both are Hash objects with symbolized keys.
+The response also exposes 2 attribute readers (for any +:wt+ value), +:request+ and +:response+. Both are Hash objects with symbolized keys.
 
-The :request attribute contains the original request context. You can use this for debugging or logging. Some of the keys this object contains are :uri, :query, :method etc..
+The +:request+ attribute contains the original request context. You can use this for debugging or logging. Some of the keys this object contains are +:uri+, +:query+, +:method+ etc..
 
-The :response attribute contains the original response. This object contains the :status, :body and :headers keys.
+The +:response+ attribute contains the original response. This object contains the +:status+, +:body+ and +:headers+ keys.
 
 == Timeouts
 The read and connect timeout settings can be set when creating a new instance of RSolr:
   solr = RSolr.connect(:read_timeout => 120, :open_timeout => 120)
 
 == Retry 503s
-A 503 is usually a temporary error which RSolr may retry if requested. You may specify the number of retry attempts with the :retry_503 option.
+A 503 is usually a temporary error which RSolr may retry if requested. You may specify the number of retry attempts with the +:retry_503+ option.
 
-Only requests which specify a Retry-After header will be retried, after waiting the indicated retry interval, otherwise RSolr will treat the request as a 500. You may specify a maximum Retry-After interval to wait with the :retry_after_limit option (default: one second).
+Only requests which specify a Retry-After header will be retried, after waiting the indicated retry interval, otherwise RSolr will treat the request as a 500. You may specify a maximum Retry-After interval to wait with the +:retry_after_limit+ option (default: one second).
   solr = RSolr.connect(:retry_503 => 1, :retry_after_limit => 1)
 
 
@@ -52,7 +52,7 @@ Use the #get / #post method to send search requests to the /select handler:
   }
   response["response"]["docs"].each{|doc| puts doc["id"] }
 
-The :params sent into the method are sent to Solr as-is, which is to say they are converted to Solr url style, but no special mapping is used.
+The +:params+ sent into the method are sent to Solr as-is, which is to say they are converted to Solr url style, but no special mapping is used.
 When an array is used, multiple parameters *with the same name* are generated for the Solr query. Example:
   
   solr.get 'select', :params => {:q=>'roses', :fq=>['red', 'violet']}
@@ -71,7 +71,7 @@ The paginate method returns WillPaginate ready "docs" objects, so for example in
   <%= will_paginate @solr_response["response"]["docs"] %>
 
 ===Method Missing
-The RSolr::Client class also uses method_missing for setting the request handler/path:
+The +RSolr::Client+ class also uses +method_missing+ for setting the request handler/path:
   
   solr.paintings :params => {:q=>'roses', :fq=>['red', 'violet']}
   
@@ -86,7 +86,7 @@ This works with pagination as well:
 There may be cases where the query string is too long for a GET request. RSolr solves this issue by converting hash objects into form-encoded strings:
   response = solr.music :data => {:q => "*:*"}
 
-The :data hash is serialized as a form-encoded query string, and the correct content-type headers are sent along to Solr.
+The +:data+ hash is serialized as a form-encoded query string, and the correct content-type headers are sent along to Solr.
 
 ===Sending HEAD Requests
 There may be cases where you'd like to send a HEAD request to Solr:
@@ -94,11 +94,11 @@ There may be cases where you'd like to send a HEAD request to Solr:
 
 ==Sending HTTP Headers
 Solr responds to the request headers listed here: http://wiki.apache.org/solr/SolrAndHTTPCaches
-To send header information to Solr using RSolr, just use the :headers option:
+To send header information to Solr using RSolr, just use the +:headers+ option:
   response = solr.head "admin/ping", :headers => {"Cache-Control" => "If-None-Match"}
 
 ===Building a Request
-RSolr::Client provides a method for building a request context, which can be useful for debugging or logging etc.:
++RSolr::Client+ provides a method for building a request context, which can be useful for debugging or logging etc.:
   request_context = solr.build_request "select", :data => {:q => "*:*"}, :method => :post, :headers => {}
   
 To build a paginated request use build_paginated_request:
@@ -114,7 +114,7 @@ Multiple documents via #add
   documents = [{:id=>1, :price=>1.00}, {:id=>2, :price=>10.50}]
   solr.add documents
 
-The optional :add_attributes hash can also be used to set Solr "add" document attributes:
+The optional +:add_attributes+ hash can also be used to set Solr "add" document attributes:
   solr.add documents, :add_attributes => {:commitWithin => 10}
 
 Raw XML via  #update
@@ -151,7 +151,7 @@ Delete by array of queries
   solr.optimize, :optimize_attributes => {}
 
 == Response Formats
-The default response format is Ruby. When the :wt param is set to :ruby, the response is eval'd resulting in a Hash. You can get a raw response by setting the :wt to "ruby" - notice, the string -- not a symbol. RSolr will eval the Ruby string ONLY if the :wt value is :ruby. All other response formats are available as expected, :wt=>'xml' etc..
+The default response format is Ruby. When the +:wt+ param is set to +:ruby+, the response is eval'd resulting in a Hash. You can get a raw response by setting the +:wt+ to +"ruby"+ - notice, the string -- not a symbol. RSolr will eval the Ruby string ONLY if the :wt value is :ruby. All other response formats are available as expected, +:wt=>'xml'+ etc..
 
 ===Evaluated Ruby (default)
   solr.get 'select', :params => {:wt => :ruby} # notice :ruby is a Symbol
