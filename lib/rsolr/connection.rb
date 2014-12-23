@@ -8,20 +8,21 @@ class RSolr::Connection
   # send a request,
   # then return the standard rsolr response hash {:status, :body, :headers}
   def execute client, request_context
-    h = http request_context[:uri], request_context[:proxy], request_context[:read_timeout], request_context[:open_timeout]
+    h = http(request_context[:uri], request_context[:proxy], request_context[:read_timeout], request_context[:open_timeout])
     request = setup_raw_request request_context
     request.body = request_context[:data] if request_context[:method] == :post and request_context[:data]
+
     begin
-      response = h.request request
+      response = h.request(request)
       charset = response.type_params["charset"]
-      {:status => response.code.to_i, :headers => response.to_hash, :body => force_charset(response.body, charset)}
+
+      { :status => response.code.to_i,
+        :headers => response.to_hash,
+        :body => force_charset(response.body, charset) }
     rescue Errno::ECONNREFUSED => e
-      raise(Errno::ECONNREFUSED.new(request_context.inspect))
-    # catch the undefined closed? exception -- this is a confirmed ruby bug
-    rescue NoMethodError
-      $!.message == "undefined method `closed?' for nil:NilClass" ?
-        raise(Errno::ECONNREFUSED.new) :
-        raise($!)
+      self.retry(client, request_context)
+    rescue NoMethodError => e # catch the undefined closed? exception -- this is a confirmed ruby bug
+      e.message == "undefined method `closed?' for nil:NilClass" ? self.retry(client, request_context) : raise(e)
     end
   end
 
@@ -60,6 +61,16 @@ class RSolr::Connection
     raw_request.initialize_http_header headers
     raw_request.basic_auth(request_context[:uri].user, request_context[:uri].password) if request_context[:uri].user && request_context[:uri].password
     raw_request
+  end
+
+  def retry(client, request_context)
+    unless client.try_another_node?(request_context)
+      raise(Errno::ECONNREFUSED.new(request_context.inspect))
+    end
+
+    @http = nil
+
+    execute(client, request_context)
   end
 
   private

@@ -18,19 +18,43 @@ class RSolr::Client
   attr_reader :connection, :uri, :proxy, :options
   
   def initialize connection, options = {}
-    @proxy = @uri = nil
     @connection = connection
+    @proxy = nil
+    @primary_uri = nil
+    @failed_uri = []
+    @uri = []
+
     unless false === options[:url]
-      url = options[:url] ? options[:url].dup : 'http://127.0.0.1:8983/solr/'
-      url << "/" unless url[-1] == ?/
-      @uri = RSolr::Uri.create url
+      [options[:url]].flatten.compact.each do |url|
+        @uri << (url[-1] == ?/ ? url.dup : "#{url}/")
+      end
+
+      @uri << 'http://127.0.0.1:8983/solr/' if @uri.empty?
+      @uri.map! { |u| RSolr::Uri.create(u) }
+
+      select_primary_uri
+
       if options[:proxy]
         proxy_url = options[:proxy].dup
         proxy_url << "/" unless proxy_url.nil? or proxy_url[-1] == ?/
         @proxy = RSolr::Uri.create proxy_url if proxy_url
       end
     end
+
     @options = options
+  end
+
+  def select_primary_uri
+    return if @uri.empty?
+
+    @failed_uri << @primary_uri if @primary_uri
+
+    @primary_uri = @uri.find { |u| not @failed_uri.include?(u) }
+  end
+
+  def reset_failed_uri
+    @failed_uri.clear
+    select_primary_uri
   end
   
   # returns the request uri object.
@@ -41,7 +65,7 @@ class RSolr::Client
   # returns the uri proxy if present,
   # otherwise just the uri object.
   def base_uri
-    @proxy ? @proxy : @uri
+    @proxy ? @proxy : @primary_uri
   end
   
   # Create the get, post, and head methods
@@ -188,6 +212,23 @@ class RSolr::Client
     end
 
     adapt_response(request_context, raw_response) unless raw_response.nil?
+  end
+
+  def try_another_node?(request_context)
+    return false unless @primary_uri
+
+    select_primary_uri
+
+    unless @primary_uri
+      reset_failed_uri
+      return false
+    end
+
+    request_context[:uri].scheme = @primary_uri.scheme
+    request_context[:uri].host = @primary_uri.host
+    request_context[:uri].port = @primary_uri.port
+
+    true
   end
 
   def retry_503?(request_context, response)
