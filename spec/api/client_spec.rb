@@ -1,21 +1,22 @@
 require 'spec_helper'
 describe "RSolr::Client" do
-  
+
   module ClientHelper
+    def node_urls
+      @node_urls ||= ["http://localhost:9998/solr/", "http://localhost:9999/solr/"]
+    end
+
     def client
-      @client ||= (
-        connection = RSolr::Connection.new
-        RSolr::Client.new connection, :url => "http://localhost:9999/solr", :read_timeout => 42, :open_timeout=>43
-      )
+      @client ||= RSolr.connect(:url => node_urls.dup, :read_timeout => 42, :open_timeout => 43)
     end
   end
-  
+
   context "initialize" do
     it "should accept whatevs and set it as the @connection" do
       expect(RSolr::Client.new(:whatevs).connection).to eq(:whatevs)
     end
   end
-  
+
   context "send_and_receive" do
     include ClientHelper
     it "should forward these method calls the #connection object" do
@@ -64,6 +65,41 @@ describe "RSolr::Client" do
         end
       }.to raise_error(RSolr::Error::Http)
     end
+
+    it "should not modify stored URIs" do
+      client.instance_variable_get("@uri").map(&:to_s).should eq node_urls
+
+      expect { client.execute request_context }.to raise_error(Errno::ECONNREFUSED)
+
+      client.instance_variable_get("@uri").map(&:to_s).should eq node_urls
+    end
+
+    it "should try all available nodes and then raise" do
+      index = 0
+      new = Net::HTTP.method(:new)
+
+      Net::HTTP.stub(:new) do |*args, &block|
+        new.call(*args, &block).tap do |http|
+          http_request = http.method(:request)
+
+          http.stub(:request) do |request|
+            "http://#{http.address}:#{http.port}/solr/".should eq node_urls[index]
+            client.instance_variable_get("@primary_uri").to_s.should eq node_urls[index]
+            client.instance_variable_get("@failed_uri").size.should eq index
+
+            index += 1
+
+            # run original Net::HTTP#request
+            http_request.call(request)
+          end
+        end
+      end
+
+      expect { client.execute request_context }.to raise_error(Errno::ECONNREFUSED)
+
+      client.instance_variable_get("@primary_uri").to_s.should eq node_urls.first
+      client.instance_variable_get("@failed_uri").size.should eq 0
+    end
   end
 
   context "post" do
@@ -80,14 +116,14 @@ describe "RSolr::Client" do
       client.post "update", request_opts
     end
   end
-  
+
   context "xml" do
     include ClientHelper
     it "should return an instance of RSolr::Xml::Generator" do
       expect(client.xml).to be_a RSolr::Xml::Generator
     end
   end
-  
+
   context "add" do
     include ClientHelper
     it "should send xml to the connection's #post method" do
@@ -111,7 +147,7 @@ describe "RSolr::Client" do
       client.add({:id=>1}, :add_attributes => {:commitWith=>10})
     end
   end
-  
+
   context "update" do
     include ClientHelper
     it "should send data to the connection's #post method" do
@@ -132,7 +168,7 @@ describe "RSolr::Client" do
       client.update(:data => "<optimize/>")
     end
   end
-  
+
   context "post based helper methods:" do
     include ClientHelper
     [:commit, :optimize, :rollback].each do |meth|
@@ -155,7 +191,7 @@ describe "RSolr::Client" do
       end
     end
   end
-  
+
   context "delete_by_id" do
     include ClientHelper
     it "should send data to the connection's #post method" do
@@ -176,7 +212,7 @@ describe "RSolr::Client" do
       client.delete_by_id 1
     end
   end
-  
+
   context "delete_by_query" do
     include ClientHelper
     it "should send data to the connection's #post method" do
@@ -197,7 +233,7 @@ describe "RSolr::Client" do
       client.delete_by_query :fq => "category:\"trash\""
     end
   end
-  
+
   context "adapt_response" do
     include ClientHelper
     it 'should not try to evaluate ruby when the :qt is not :ruby' do
@@ -205,13 +241,13 @@ describe "RSolr::Client" do
       result = client.adapt_response({:params=>{}}, {:status => 200, :body => body, :headers => {}})
       expect(result).to eq(body)
     end
-    
+
     it 'should evaluate ruby responses when the :wt is :ruby' do
       body = '{:time=>"NOW"}'
       result = client.adapt_response({:params=>{:wt=>:ruby}}, {:status => 200, :body => body, :headers => {}})
       expect(result).to eq({:time=>"NOW"})
     end
-    
+
     it 'should evaluate json responses when the :wt is :json' do
       body = '{"time": "NOW"}'
       result = client.adapt_response({:params=>{:wt=>:json}}, {:status => 200, :body => body, :headers => {}})
@@ -228,9 +264,9 @@ describe "RSolr::Client" do
         client.adapt_response({:params=>{:wt => :ruby}}, {:status => 200, :body => "<woops/>", :headers => {}})
       }.to raise_error RSolr::Error::InvalidRubyResponse
     end
-  
+
   end
-  
+
   context "indifferent access" do
     include ClientHelper
     it "should raise a RuntimeError if the #with_indifferent_access extension isn't loaded" do
@@ -271,7 +307,7 @@ describe "RSolr::Client" do
       expect(result[:data]).to eq("data")
       expect(result[:headers]).to eq({})
     end
-    
+
     it "should set the Content-Type header to application/x-www-form-urlencoded; charset=UTF-8 if a hash is passed in to the data arg" do
       result = client.build_request('select',
         :method => :post,
@@ -285,7 +321,7 @@ describe "RSolr::Client" do
       expect(result[:data]).not_to match /wt=ruby/
       expect(result[:headers]).to eq({"Content-Type" => "application/x-www-form-urlencoded; charset=UTF-8"})
     end
-    
+
   end
-  
+
 end
