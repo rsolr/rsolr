@@ -9,6 +9,14 @@ describe "RSolr::Client" do
     def client
       @client ||= RSolr.connect(:url => node_urls.dup, :read_timeout => 42, :open_timeout => 43)
     end
+
+    def successful_response(httpv = '1.1', code = '200', msg = 'Ok')
+      response = Net::HTTPOK.new(httpv, code, msg)
+      response["content-type"] = "text/plain;charset=UTF-8"
+      response.body = "{'responseHeader'=>{'status'=>0,'QTime'=>0,'params'=>{'q'=>'*:*'}},'response'=>{'numFound'=>0,'start'=>0,'docs'=>[]}}"
+      response.instance_variable_set("@read", true)
+      response
+    end
   end
 
   context "initialize" do
@@ -74,31 +82,58 @@ describe "RSolr::Client" do
       client.instance_variable_get("@available_uris").map(&:to_s).should eq node_urls
     end
 
-    it "should try all available nodes and then raise" do
-      index = 0
-      new = Net::HTTP.method(:new)
+    context "in case of failures" do
+      it "should try all available URIs and reset previously failed ones" do
+        calls_index = -1
+        called_uris = []
+        new = Net::HTTP.method(:new)
 
-      Net::HTTP.stub(:new) do |*args, &block|
-        new.call(*args, &block).tap do |http|
-          http_request = http.method(:request)
+        Net::HTTP.stub(:new) do |*args, &block|
+          new.call(*args, &block).tap do |http|
+            http_request = http.method(:request)
 
-          http.stub(:request) do |request|
-            "http://#{http.address}:#{http.port}/solr/".should eq node_urls[index]
-            client.instance_variable_get("@primary_uri").to_s.should eq node_urls[index]
-            client.instance_variable_get("@failed_uris").size.should eq index
+            http.stub(:request) do |request|
+              calls_index += 1
+              called_uris << "http://#{http.address}:#{http.port}/solr/"
 
-            index += 1
-
-            # run original Net::HTTP#request
-            http_request.call(request)
+              case calls_index
+                when 0 # primary uri is http://localhost:9998/solr/
+                  called_uris.last.should eq node_urls.first
+                  http_request.call(request) # original http#request
+                when 1 # primary uri is http://localhost:9999/solr/
+                  called_uris.last.should eq node_urls.last
+                  successful_response
+                when 2 # primary uri is http://localhost:9999/solr/
+                  called_uris.last.should eq node_urls.last
+                  http_request.call(request) # original http#request
+                when 3 # primary uri is http://localhost:9998/solr/
+                  called_uris.last.should eq node_urls.first
+                  successful_response
+                else
+                  http_request.call(request) # original http#request
+              end
+            end
           end
         end
+
+        # Calls 0-1
+        expect { client.execute request_context }.not_to raise_error
+        client.instance_variable_get("@failed_uris").size.should eq 0
+        client.instance_variable_get("@primary_uri").to_s.should eq node_urls.last
+        called_uris.should eq node_urls
+
+        # Calls 2-3
+        expect { client.execute request_context }.not_to raise_error
+        client.instance_variable_get("@failed_uris").size.should eq 0
+        client.instance_variable_get("@primary_uri").to_s.should eq node_urls.first
+        called_uris.should eq node_urls + node_urls.reverse
+
+        # Calls 3+
+        expect { client.execute request_context }.to raise_error(Errno::ECONNREFUSED)
+        client.instance_variable_get("@failed_uris").size.should eq 0
+        client.instance_variable_get("@primary_uri").to_s.should eq node_urls.first
+        called_uris.should eq node_urls + node_urls.reverse + node_urls
       end
-
-      expect { client.execute request_context }.to raise_error(Errno::ECONNREFUSED)
-
-      client.instance_variable_get("@primary_uri").to_s.should eq node_urls.first
-      client.instance_variable_get("@failed_uris").size.should eq 0
     end
   end
 

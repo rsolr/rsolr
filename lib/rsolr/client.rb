@@ -189,7 +189,6 @@ class RSolr::Client
   
   # 
   def execute request_context
-
     raw_response = connection.execute self, request_context
 
     while retry_503?(request_context, raw_response)
@@ -198,7 +197,10 @@ class RSolr::Client
       raw_response = connection.execute self, request_context
     end
 
-    adapt_response(request_context, raw_response) unless raw_response.nil?
+    unless raw_response.nil?
+      @failed_uris.clear unless @failed_uris.empty?
+      adapt_response(request_context, raw_response)
+    end
   end
 
   def try_another_node?(request_context)
