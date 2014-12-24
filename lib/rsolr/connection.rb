@@ -30,6 +30,10 @@ class RSolr::Connection
 
   # This returns a singleton of a Net::HTTP or Net::HTTP.Proxy request object.
   def http uri, proxy = nil, read_timeout = nil, open_timeout = nil
+    if @http and (@http.address != uri.host or @http.port != uri.port)
+      @http = nil
+    end
+
     @http ||= (
       http = if proxy
         proxy_user, proxy_pass = proxy.userinfo.split(/:/) if proxy.userinfo
@@ -67,8 +71,6 @@ class RSolr::Connection
     unless client.try_another_node?(request_context)
       raise(Errno::ECONNREFUSED.new(request_context.inspect))
     end
-
-    @http = nil
 
     execute(client, request_context)
   end

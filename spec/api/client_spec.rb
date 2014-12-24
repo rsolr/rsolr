@@ -17,6 +17,18 @@ describe "RSolr::Client" do
       response.instance_variable_set("@read", true)
       response
     end
+
+    def request_context
+      {
+        :method => :post,
+        :params => {},
+        :data => nil,
+        :headers => {},
+        :path => '',
+        :uri => client.base_uri,
+        :retry_503 => 1
+      }
+    end
   end
 
   context "initialize" do
@@ -45,17 +57,7 @@ describe "RSolr::Client" do
 
   context "execute" do
     include ClientHelper
-    let :request_context do
-      {
-        :method => :post,
-        :params => {},
-        :data => nil,
-        :headers => {},
-        :path => '',
-        :uri => client.base_uri,
-        :retry_503 => 1
-      }
-    end
+
     it "should retry 503s if requested" do
       expect(client.connection).to receive(:execute).exactly(2).times.and_return(
         {:status => 503, :body => "{}", :headers => {'Retry-After' => 0}},
