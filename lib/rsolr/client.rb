@@ -21,16 +21,16 @@ class RSolr::Client
     @connection = connection
     @proxy = nil
     @primary_uri = nil
-    @failed_uri = []
-    @uri = []
+    @failed_uris = []
+    @available_uris = []
 
     unless false === options[:url]
       [options[:url]].flatten.compact.each do |url|
-        @uri << (url[-1] == ?/ ? url.dup : "#{url}/")
+        @available_uris << (url[-1] == ?/ ? url.dup : "#{url}/")
       end
 
-      @uri << 'http://127.0.0.1:8983/solr/' if @uri.empty?
-      @uri.map! { |u| RSolr::Uri.create(u) }
+      @available_uris << 'http://127.0.0.1:8983/solr/' if @available_uris.empty?
+      @available_uris.map! { |u| RSolr::Uri.create(u) }
 
       select_primary_uri
 
@@ -43,19 +43,6 @@ class RSolr::Client
 
     @options = options
   end
-
-  def select_primary_uri
-    return if @uri.empty?
-
-    @failed_uri << @primary_uri if @primary_uri
-
-    @primary_uri = @uri.find { |u| not @failed_uri.include?(u) }
-  end
-
-  def reset_failed_uri
-    @failed_uri.clear
-    select_primary_uri
-  end
   
   # returns the request uri object.
   def base_request_uri
@@ -65,7 +52,7 @@ class RSolr::Client
   # returns the uri proxy if present,
   # otherwise just the uri object.
   def base_uri
-    @proxy ? @proxy : @primary_uri.dup
+    @proxy or @primary_uri
   end
   
   # Create the get, post, and head methods
@@ -224,6 +211,7 @@ class RSolr::Client
       return false
     end
 
+    request_context[:uri] = request_context[:uri].dup
     request_context[:uri].scheme = @primary_uri.scheme
     request_context[:uri].host = @primary_uri.host
     request_context[:uri].port = @primary_uri.port
@@ -369,5 +357,19 @@ class RSolr::Client
 
   def default_wt
     self.options[:default_wt] || self.class.default_wt
+  end
+
+  private
+
+  def select_primary_uri
+    return if @available_uris.empty?
+
+    @failed_uris << @primary_uri if @primary_uri
+    @primary_uri = @available_uris.find { |u| not @failed_uris.include?(u) }
+  end
+
+  def reset_failed_uri
+    @failed_uris.clear
+    select_primary_uri
   end
 end

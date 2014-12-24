@@ -67,11 +67,11 @@ describe "RSolr::Client" do
     end
 
     it "should not modify stored URIs" do
-      client.instance_variable_get("@uri").map(&:to_s).should eq node_urls
+      client.instance_variable_get("@available_uris").map(&:to_s).should eq node_urls
 
       expect { client.execute request_context }.to raise_error(Errno::ECONNREFUSED)
 
-      client.instance_variable_get("@uri").map(&:to_s).should eq node_urls
+      client.instance_variable_get("@available_uris").map(&:to_s).should eq node_urls
     end
 
     it "should try all available nodes and then raise" do
@@ -85,7 +85,7 @@ describe "RSolr::Client" do
           http.stub(:request) do |request|
             "http://#{http.address}:#{http.port}/solr/".should eq node_urls[index]
             client.instance_variable_get("@primary_uri").to_s.should eq node_urls[index]
-            client.instance_variable_get("@failed_uri").size.should eq index
+            client.instance_variable_get("@failed_uris").size.should eq index
 
             index += 1
 
@@ -98,7 +98,7 @@ describe "RSolr::Client" do
       expect { client.execute request_context }.to raise_error(Errno::ECONNREFUSED)
 
       client.instance_variable_get("@primary_uri").to_s.should eq node_urls.first
-      client.instance_variable_get("@failed_uri").size.should eq 0
+      client.instance_variable_get("@failed_uris").size.should eq 0
     end
   end
 
