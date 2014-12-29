@@ -19,7 +19,7 @@ class RSolr::Connection
       { :status => response.code.to_i,
         :headers => response.to_hash,
         :body => force_charset(response.body, charset) }
-    rescue Errno::ECONNREFUSED => e
+    rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Net::OpenTimeout => e
       self.retry(client, request_context)
     rescue NoMethodError => e # catch the undefined closed? exception -- this is a confirmed ruby bug
       e.message == "undefined method `closed?' for nil:NilClass" ? self.retry(client, request_context) : raise(e)
