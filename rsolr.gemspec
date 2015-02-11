@@ -18,9 +18,10 @@ Gem::Specification.new do |s|
                   "Mat Brown", "Shairon Toledo",
                   "Matthew Rudy", "Fouad Mardini",
                   "Jeremy Hinegardner", "Nathan Witmer",
+                  "Naomi Dushay",
                   "\"shima\""]
   s.email       = ["goodieboy@gmail.com"]
-  s.homepage    = "https://github.com/mwmitchell/rsolr"
+  s.homepage    = "https://github.com/rsolr/rsolr"
   s.rubyforge_project = "rsolr"
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {spec}/*`.split("\n")
