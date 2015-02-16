@@ -29,7 +29,7 @@ class RSolr::Connection
 
   # This returns a singleton of a Net::HTTP or Net::HTTP.Proxy request object.
   def http uri, proxy = nil, read_timeout = nil, open_timeout = nil
-    @http ||= (
+    Thread.current[:rsolr_http] ||= (
       http = if proxy
         proxy_user, proxy_pass = proxy.userinfo.split(/:/) if proxy.userinfo
         Net::HTTP.Proxy(proxy.host, proxy.port, proxy_user, proxy_pass).new uri.host, uri.port
