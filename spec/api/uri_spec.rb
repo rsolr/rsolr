@@ -9,7 +9,7 @@ describe "RSolr::Uri" do
       expect(u).to be_a_kind_of URI
     end
     it "calls URI.parse" do
-      expect(URI).to receive(:parse)
+      expect(URI).to receive(:parse).twice.and_call_original
       u = uri.create 'http://apache.org'
     end
     it "adds a trailing slash after host if there is none" do

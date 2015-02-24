@@ -3,7 +3,7 @@ require 'uri'
 module RSolr::Uri
   
   def create url
-    ::URI.parse url[-1] == ?/ ? url : "#{url}/"
+    ::URI.parse (url[-1] == '/' || URI.parse(url).query) ? url : "#{url}/"
   end
   
   # Returns a query string param pair as a string.
