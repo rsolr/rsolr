@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
                   "Naomi Dushay",
                   "\"shima\""]
   s.email       = ["goodieboy@gmail.com"]
+  s.license     = 'Apache-2.0'
   s.homepage    = "https://github.com/rsolr/rsolr"
   s.rubyforge_project = "rsolr"
   s.files         = `git ls-files`.split("\n")
