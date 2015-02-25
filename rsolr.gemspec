@@ -33,6 +33,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'activesupport'
   s.add_development_dependency 'nokogiri', '>= 1.4.0'
   s.add_development_dependency 'rake', '~> 10.0'
-  s.add_development_dependency 'rdoc', '~> 3.9.4'
+  s.add_development_dependency 'rdoc', '~> 4.0'
   s.add_development_dependency 'rspec', '~> 3.0'
 end
