@@ -45,31 +45,20 @@ describe "RSolr::Uri" do
   end
 
   context '.build_param' do
-    it "calls escape_query_value by default" do
-      expect(RSolr::Uri).to receive(:escape_query_value).twice
+    it "calls URI.encode_www_form_component by default" do
+      expect(URI).to receive(:encode_www_form_component).twice
       uri.build_param("foo", "bar")
     end
-    it "calls escape_query_value if escape arg = true" do
-      expect(RSolr::Uri).to receive(:escape_query_value).twice
+    it "calls URI.encode_www_form_component if escape arg = true" do
+      expect(URI).to receive(:encode_www_form_component).twice
       uri.build_param("foo", "bar", true)
     end
-    it "doesn't call escape_query_value if escape arg = false" do
-      expect(RSolr::Uri).not_to receive(:escape_query_value)
+    it "doesn't call URI.encode_www_form_component if escape arg = false" do
+      expect(URI).not_to receive(:encode_www_form_component)
       uri.build_param("foo", "bar", false)
     end
   end
 
-  context '.bytesize' do
-    it "calls .bytesize for String" do
-      str = "testing"
-      expect(str).to receive(:bytesize)
-      uri.bytesize(str)
-    end
-    it "returns the size of a String" do
-      expect(uri.bytesize("test")).to eq(4)
-    end
-  end
-  
   context '.params_to_solr' do
     it "converts Hash to Solr query string w/o a starting ?" do
       hash = {:q => "gold", :fq => ["mode:one", "level:2"]}
@@ -96,11 +85,13 @@ describe "RSolr::Uri" do
 
     it 'should escape complex queries, part 2' do
       my_params = {'q' => '+popularity:[10 TO *] +section:0'}
-      expected = 'q=%2Bpopularity%3A%5B10+TO+%2A%5D+%2Bsection%3A0'
+      expected = 'q=%2Bpopularity%3A%5B10+TO+*%5D+%2Bsection%3A0'
       expect(uri.params_to_solr(my_params)).to eq(expected)
     end
   end
   
+=begin
+  # deprecated
   context ".escape_query_value" do
     it 'should escape properly' do
       expect(uri.escape_query_value('+')).to eq('%2B')
@@ -120,4 +111,17 @@ describe "RSolr::Uri" do
     end
   end
   
+  # deprecated
+  context '.bytesize' do
+    it "calls .bytesize for String" do
+      str = "testing"
+      expect(str).to receive(:bytesize)
+      uri.bytesize(str)
+    end
+    it "returns the size of a String" do
+      expect(uri.bytesize("test")).to eq(4)
+    end
+  end
+=end
+
 end
