@@ -59,8 +59,7 @@ describe "RSolr::Connection" do
   end
 
   context "connection refused" do
-    let(:client) { double.as_null_object }
-
+    let(:client) { RSolr.connect(:url => "http://localhost/some_uri") }
     let(:http) { double(Net::HTTP).as_null_object }
     let(:request_context) {
       {:uri => URI.parse("http://localhost/some_uri"), :method => :get, :open_timeout => 42}
