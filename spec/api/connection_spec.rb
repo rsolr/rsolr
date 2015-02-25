@@ -4,14 +4,16 @@ require 'base64'
 describe "RSolr::Connection" do
   
   context "setup_raw_request" do
-    c = RSolr::Connection.new
-    base_url = "http://localhost:8983/solr"
-    client = RSolr::Client.new c, :url => base_url
-    req = c.send :setup_raw_request, {:headers => {"content-type" => "text/xml"}, :method => :get, :uri => URI.parse(base_url + "/select?q=*:*")}
-    req.path.should == "/solr/select?q=*:*"
-    headers = {}
-    req.each_header{|k,v| headers[k] = v}
-    headers.should == {"content-type"=>"text/xml"}
+    it "should set the correct request parameters" do
+      c = RSolr::Connection.new
+      base_url = "http://localhost:8983/solr"
+      client = RSolr::Client.new c, :url => base_url
+      req = c.send :setup_raw_request, {:headers => {"content-type" => "text/xml"}, :method => :get, :uri => URI.parse(base_url + "/select?q=*:*")}
+      expect(req.path).to eq("/solr/select?q=*:*")
+      headers = {}
+      req.each_header{|k,v| headers[k] = v}
+      expect(headers).to eq({"content-type"=>"text/xml"})
+    end
   end
 
   context "read timeout configuration" do
@@ -72,7 +74,7 @@ describe "RSolr::Connection" do
     end
 
     it "should configure Net:HTTP open_timeout" do
-      pending "doesn't work with ruby 1.8" if RUBY_VERSION < "1.9"
+      skip "doesn't work with ruby 1.8" if RUBY_VERSION < "1.9"
       expect(http).to receive(:request).and_raise(Errno::ECONNREFUSED)
       expect {
         subject.execute client, request_context
