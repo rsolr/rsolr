@@ -59,12 +59,12 @@ module RSolr::Uri
   # @deprecated  as bytesize was only used by escape_query_value which is itself deprecated
   if ''.respond_to?(:bytesize)
     def bytesize(string)
-      warn "[DEPRECATION] `bytesize` is deprecated.  If you are using it, please provide use case to github.com/rsolr/rsolr as an issue."
+      warn "[DEPRECATION] `bytesize` is deprecated.  Use String.bytesize"
       string.bytesize
     end
   else
     def bytesize(string)
-      warn "[DEPRECATION] `bytesize` is deprecated.  If you are using it, please provide use case to github.com/rsolr/rsolr as an issue."
+      warn "[DEPRECATION] `bytesize` is deprecated.  Use String.size"
       string.size
     end
   end
