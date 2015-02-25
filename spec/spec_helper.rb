@@ -1,1 +1,6 @@
-require File.expand_path('../../lib/rsolr', __FILE__)
+require 'rsolr'
+require 'rspec'
+
+RSpec.configure do |c|
+
+end
