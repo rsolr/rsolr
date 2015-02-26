@@ -1,4 +1,5 @@
 # A module that contains (1) string related methods
+# @deprecated remove this module when we remove the method (duh)
 module RSolr::Char
   
   # backslash everything
