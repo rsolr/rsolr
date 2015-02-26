@@ -44,21 +44,6 @@ describe "RSolr::Uri" do
     end
   end
 
-  context '.build_param' do
-    it "calls URI.encode_www_form_component by default" do
-      expect(URI).to receive(:encode_www_form_component).twice
-      uri.build_param("foo", "bar")
-    end
-    it "calls URI.encode_www_form_component if escape arg = true" do
-      expect(URI).to receive(:encode_www_form_component).twice
-      uri.build_param("foo", "bar", true)
-    end
-    it "doesn't call URI.encode_www_form_component if escape arg = false" do
-      expect(URI).not_to receive(:encode_www_form_component)
-      uri.build_param("foo", "bar", false)
-    end
-  end
-
   context '.params_to_solr' do
     it "converts Hash to Solr query string w/o a starting ?" do
       hash = {:q => "gold", :fq => ["mode:one", "level:2"]}
@@ -91,6 +76,22 @@ describe "RSolr::Uri" do
   end
   
 =begin
+  # deprecated
+  context '.build_param' do
+    it "calls URI.encode_www_form_component by default" do
+      expect(URI).to receive(:encode_www_form_component).twice
+      uri.build_param("foo", "bar")
+    end
+    it "calls URI.encode_www_form_component if escape arg = true" do
+      expect(URI).to receive(:encode_www_form_component).twice
+      uri.build_param("foo", "bar", true)
+    end
+    it "doesn't call URI.encode_www_form_component if escape arg = false" do
+      expect(URI).not_to receive(:encode_www_form_component)
+      uri.build_param("foo", "bar", false)
+    end
+  end
+
   # deprecated
   context ".escape_query_value" do
     it 'should escape properly' do
