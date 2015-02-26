@@ -3,7 +3,9 @@ module RSolr::Char
   
   # backslash everything
   # that isn't a word character
+  # @deprecated - this is incorrect Solr escaping
   def escape value
+    warn "[DEPRECATION] `RSolr.escape` is deprecated (and incorrect).  Use `Rsolr.solr_escape` instead."
     value.gsub(/(\W)/, '\\\\\1')
   end
   

@@ -54,7 +54,7 @@ describe "RSolr::Uri" do
       end
       expect(query.split('&').size).to eq(3)
     end
-    it 'should escape &' do
+    it 'should URL escape &' do
       expect(uri.params_to_solr(:fq => "&")).to eq('fq=%26')
     end
 
@@ -62,13 +62,13 @@ describe "RSolr::Uri" do
       expect(uri.params_to_solr(:fq => "me and you")).to eq('fq=me+and+you')
     end
 
-    it 'should escape complex queries, part 1' do
+    it 'should URL escape complex queries, part 1' do
       my_params = {'fq' => '{!raw f=field_name}crazy+\"field+value'}
       expected = 'fq=%7B%21raw+f%3Dfield_name%7Dcrazy%2B%5C%22field%2Bvalue'
       expect(uri.params_to_solr(my_params)).to eq(expected)
     end
 
-    it 'should escape complex queries, part 2' do
+    it 'should URL escape complex queries, part 2' do
       my_params = {'q' => '+popularity:[10 TO *] +section:0'}
       expected = 'q=%2Bpopularity%3A%5B10+TO+*%5D+%2Bsection%3A0'
       expect(uri.params_to_solr(my_params)).to eq(expected)
