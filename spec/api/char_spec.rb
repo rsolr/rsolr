@@ -1,4 +1,5 @@
 require 'spec_helper'
+# @deprecated remove this module's specs when we remove the method (duh)
 describe "RSolr::Char" do
   
   let(:char){Object.new.extend RSolr::Char}
