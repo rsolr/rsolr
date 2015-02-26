@@ -1,3 +1,17 @@
+1.0.11
+   - add RSolr.solr_escape method and add deprecation messages to RSolr.escape (ndushay)
+   - use stdlib URI.escape methods instead of homegrown in RSolr::URI (ndushay)
+   - fix bug with Rsolr::Uri.create adding trailing slash if query params (ndushay)
+   - update rake tasks  (cbeer)
+   - add Ruby 2.2.0 to travis ci build (ndushay)
+   - Housekeeping (badges to README, license in gemspec, correct url in gemspec ...)  (ndushay)
+   - Improve rdoc styling (udaykadaboina)
+   - Support setting default_wt per connection via its options. (jcoleman)
+   - eliminates the usage of per-instance `extend` (jcoleman)
+   - Upgrade to RSpec 3 (blackwinter, adamjonas, cbeer)
+   - Fixed RSolr::Error to_s  (PofMagicfingers)
+1.0.10 xxx
+
 1.0.8
    -  Fix connection refused errors in specs + add basic auth support (Denis Goeury)
    - Ability to set :retry_503, the number of retry attempts for a 503 response
