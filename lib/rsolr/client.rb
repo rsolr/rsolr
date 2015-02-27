@@ -7,7 +7,7 @@ class RSolr::Client
 
   class << self
     def default_wt
-      @default_wt || :ruby
+      @default_wt || :json
     end
 
     def default_wt= value
@@ -320,7 +320,12 @@ class RSolr::Client
     return response[:body] unless defined? JSON
 
     begin
-      JSON.parse response[:body].to_s, :symbolize_names => true
+      json = response[:body].to_s
+      if json.empty?
+        nil
+      else
+        JSON.parse json
+      end
     rescue JSON::ParserError
       raise RSolr::Error::InvalidJsonResponse.new request, response
     end

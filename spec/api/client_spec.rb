@@ -201,22 +201,22 @@ describe "RSolr::Client" do
   context "adapt_response" do
     include ClientHelper
     it 'should not try to evaluate ruby when the :qt is not :ruby' do
-      body = '{:time=>"NOW"}'
+      body = '{"time"=>"NOW"}'
       result = client.adapt_response({:params=>{}}, {:status => 200, :body => body, :headers => {}})
       expect(result).to eq(body)
     end
     
     it 'should evaluate ruby responses when the :wt is :ruby' do
-      body = '{:time=>"NOW"}'
+      body = '{"time"=>"NOW"}'
       result = client.adapt_response({:params=>{:wt=>:ruby}}, {:status => 200, :body => body, :headers => {}})
-      expect(result).to eq({:time=>"NOW"})
+      expect(result).to eq({"time"=>"NOW"})
     end
     
     it 'should evaluate json responses when the :wt is :json' do
       body = '{"time": "NOW"}'
       result = client.adapt_response({:params=>{:wt=>:json}}, {:status => 200, :body => body, :headers => {}})
       if defined? JSON
-        expect(result).to eq({:time=>"NOW"})
+        expect(result).to eq({"time"=>"NOW"})
       else
         # ruby 1.8 without the JSON gem
         expect(result).to eq('{"time": "NOW"}')
@@ -265,7 +265,7 @@ describe "RSolr::Client" do
         :data => "data",
         :headers => {}
       )
-      [/fq=0/, /fq=1/, /q=test/, /wt=ruby/].each do |pattern|
+      [/fq=0/, /fq=1/, /q=test/, /wt=json/].each do |pattern|
         expect(result[:query]).to match pattern
       end
       expect(result[:data]).to eq("data")
@@ -278,7 +278,7 @@ describe "RSolr::Client" do
         :data => {:q=>'test', :fq=>[0,1]},
         :headers => {}
       )
-      expect(result[:query]).to eq("wt=ruby")
+      expect(result[:query]).to eq("wt=json")
       [/fq=0/, /fq=1/, /q=test/].each do |pattern|
         expect(result[:data]).to match pattern
       end
