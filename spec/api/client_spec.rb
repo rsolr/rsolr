@@ -258,34 +258,42 @@ describe "RSolr::Client" do
 
   context "build_request" do
     include ClientHelper
-    it 'should return a request context array' do
-      result = client.build_request('select',
-        :method => :post,
-        :params => {:q=>'test', :fq=>[0,1]},
-        :data => "data",
-        :headers => {}
-      )
-      [/fq=0/, /fq=1/, /q=test/, /wt=ruby/].each do |pattern|
-        expect(result[:query]).to match pattern
+    let(:data) { 'data' }
+    let(:params) { { q: 'test', fq: [0,1] } }
+    let(:options) { { method: :post, params: params, data: data, headers: {} } }
+    subject { client.build_request('select', options) }
+
+    context "when params are symbols" do
+      it 'should return a request context array' do
+        [/fq=0/, /fq=1/, /q=test/, /wt=ruby/].each do |pattern|
+          expect(subject[:query]).to match pattern
+        end
+        expect(subject[:data]).to eq("data")
+        expect(subject[:headers]).to eq({})
       end
-      expect(result[:data]).to eq("data")
-      expect(result[:headers]).to eq({})
     end
-    
-    it "should set the Content-Type header to application/x-www-form-urlencoded; charset=UTF-8 if a hash is passed in to the data arg" do
-      result = client.build_request('select',
-        :method => :post,
-        :data => {:q=>'test', :fq=>[0,1]},
-        :headers => {}
-      )
-      expect(result[:query]).to eq("wt=ruby")
-      [/fq=0/, /fq=1/, /q=test/].each do |pattern|
-        expect(result[:data]).to match pattern
+
+    context "when params are strings" do
+      let(:params) { { 'q' => 'test', 'wt' => 'json' } }
+      it 'should return a request context array' do
+        expect(subject[:query]).to eq 'q=test&wt=json'
+        expect(subject[:data]).to eq("data")
+        expect(subject[:headers]).to eq({})
       end
-      expect(result[:data]).not_to match /wt=ruby/
-      expect(result[:headers]).to eq({"Content-Type" => "application/x-www-form-urlencoded; charset=UTF-8"})
     end
-    
+
+    context "when a Hash is passed in as data" do
+      let(:data) { { q: 'test', fq: [0,1] } }
+      let(:options) { { method: :post, data: data, headers: {} } }
+
+      it "sets the Content-Type header to application/x-www-form-urlencoded; charset=UTF-8" do
+        expect(subject[:query]).to eq("wt=ruby")
+        [/fq=0/, /fq=1/, /q=test/].each do |pattern|
+          expect(subject[:data]).to match pattern
+        end
+        expect(subject[:data]).not_to match /wt=ruby/
+        expect(subject[:headers]).to eq({"Content-Type" => "application/x-www-form-urlencoded; charset=UTF-8"})
+      end
+    end
   end
-  
 end
