@@ -240,8 +240,8 @@ class RSolr::Client
     opts[:proxy] = proxy unless proxy.nil?
     opts[:method] ||= :get
     raise "The :data option can only be used if :method => :post" if opts[:method] != :post and opts[:data]
-    opts[:params] = opts[:params].nil? ? {:wt => default_wt} : {:wt => default_wt}.merge(opts[:params])
-    query = RSolr::Uri.params_to_solr(opts[:params]) unless opts[:params].empty?
+    opts[:params] = handle_params opts[:params]
+    query = RSolr::Uri.params_to_solr(opts[:params])
     opts[:query] = query
     if opts[:data].is_a? Hash
       opts[:data] = RSolr::Uri.params_to_solr opts[:data]
@@ -249,8 +249,21 @@ class RSolr::Client
       opts[:headers]['Content-Type'] ||= 'application/x-www-form-urlencoded; charset=UTF-8'
     end
     opts[:path] = path
-    opts[:uri] = base_uri.merge(path.to_s + (query ? "?#{query}" : "")) if base_uri
+    opts[:uri] = base_uri.merge(path.to_s + "?#{query}") if base_uri
     opts
+  end
+
+  #process incoming params - setting defaults, normalizing :wt, ...
+  def handle_params user_params
+    if user_params.nil? || user_params.empty?
+      {:wt => default_wt}
+    elsif user_params.fetch('wt', nil)
+      user_params[:wt] = user_params['wt']
+      user_params.delete('wt')
+      user_params
+    else
+      {:wt => default_wt}.merge(user_params)
+    end
   end
   
   def build_paginated_request page, per_page, path, opts
