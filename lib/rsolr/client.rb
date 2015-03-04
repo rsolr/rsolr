@@ -240,7 +240,7 @@ class RSolr::Client
     opts[:proxy] = proxy unless proxy.nil?
     opts[:method] ||= :get
     raise "The :data option can only be used if :method => :post" if opts[:method] != :post and opts[:data]
-    opts[:params] = opts[:params].nil? ? {:wt => default_wt} : {:wt => default_wt}.merge(opts[:params])
+    opts[:params] = params_with_wt(opts[:params])
     query = RSolr::Uri.params_to_solr(opts[:params]) unless opts[:params].empty?
     opts[:query] = query
     if opts[:data].is_a? Hash
@@ -252,7 +252,13 @@ class RSolr::Client
     opts[:uri] = base_uri.merge(path.to_s + (query ? "?#{query}" : "")) if base_uri
     opts
   end
-  
+
+  def params_with_wt(params)
+    return { wt: default_wt } if params.nil?
+    return params if params.key?(:wt) || params.key?('wt')
+    { wt: default_wt }.merge(params)
+  end
+
   def build_paginated_request page, per_page, path, opts
     per_page = per_page.to_s.to_i
     page = page.to_s.to_i-1
