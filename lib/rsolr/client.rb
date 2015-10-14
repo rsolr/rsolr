@@ -289,7 +289,7 @@ class RSolr::Client
       response[:body]
     end
 
-    if result.is_a?(Hash)
+    if result.is_a?(Hash) || request[:method] == :head
       result = RSolr::HashWithResponse.new(request, response, result)
     end
 

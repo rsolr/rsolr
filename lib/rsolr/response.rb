@@ -90,6 +90,6 @@ class RSolr::HashWithResponse < Hash
 
   def initialize(request, response, result)
     super()
-    initialize_rsolr_response(request, response, result)
+    initialize_rsolr_response(request, response, result || {})
   end
 end
