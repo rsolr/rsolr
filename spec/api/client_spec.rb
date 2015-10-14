@@ -223,6 +223,11 @@ describe "RSolr::Client" do
       end
     end
 
+    it 'should return a response for a head request' do
+      result = client.adapt_response({:method=>:head,:params=>{}}, {:status => 200, :body => nil, :headers => {}})
+      expect(result.response[:status]).to eq 200
+    end
+
     it "ought raise a RSolr::Error::InvalidRubyResponse when the ruby is indeed frugged, or even fruggified" do
       expect {
         client.adapt_response({:params=>{:wt => :ruby}}, {:status => 200, :body => "<woops/>", :headers => {}})
