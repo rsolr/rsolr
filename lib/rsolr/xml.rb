@@ -16,6 +16,7 @@ module RSolr::Xml
       doc_hash.each_pair do |field,values|
         # create a new field for each value (multi-valued)
         # put non-array values into an array
+        values = Array(values) if values.respond_to?(:to_a) || values.respond_to?(:to_ary)
         values = [values] unless values.is_a?(Array)
         values.each do |v|
           next if v.to_s.empty?
