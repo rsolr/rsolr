@@ -16,9 +16,7 @@ module RSolr::Xml
       @fields = []
       doc_hash.each_pair do |field,values|
         # create a new field for each value (multi-valued)
-        # put non-array values into an array
-        values = [values] unless values.is_a?(Array)
-        values.each do |v|
+        wrap(values).each do |v|
           v = format_value(v)
           next if v.empty?
           @fields << RSolr::Xml::Field.new({:name=>field}, v)
@@ -59,6 +57,16 @@ module RSolr::Xml
         v.to_time.getutc.iso8601
       else
         v.to_s
+      end
+    end
+
+    def wrap(object)
+      if object.nil?
+        []
+      elsif object.respond_to?(:to_ary)
+        object.to_ary || [object]
+      else
+        [object]
       end
     end
   end
