@@ -19,7 +19,7 @@ describe "Solr basic_configs" do
       end
 
       it "should not have a body" do
-        expect(subject.head('admin/ping')).to be_nil
+        expect(subject.head('admin/ping')).to eq({})
       end
     end
   end
