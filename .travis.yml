@@ -1,3 +1,7 @@
+addons:
+  apt:
+    packages:
+    - libgmp-dev
 language: ruby
 sudo: false
 rvm:
