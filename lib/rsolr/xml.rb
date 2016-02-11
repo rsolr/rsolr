@@ -1,4 +1,5 @@
 begin; require 'nokogiri'; rescue LoadError; end
+require 'time'
 
 module RSolr::Xml
   
@@ -18,8 +19,9 @@ module RSolr::Xml
         # put non-array values into an array
         values = [values] unless values.is_a?(Array)
         values.each do |v|
-          next if v.to_s.empty?
-          @fields << RSolr::Xml::Field.new({:name=>field}, v.to_s)
+          v = format_value(v)
+          next if v.empty?
+          @fields << RSolr::Xml::Field.new({:name=>field}, v)
         end
       end
       @attrs={}
@@ -47,9 +49,20 @@ module RSolr::Xml
     def add_field(name, value, options = {})
       @fields << RSolr::Xml::Field.new(options.merge({:name=>name}), value)
     end
-    
+
+    private
+
+    def format_value(v)
+      if v.is_a?(Date) && !v.is_a?(DateTime)
+        Time.utc(v.year, v.mon, v.mday).iso8601
+      elsif v.respond_to?(:to_time)
+        v.to_time.getutc.iso8601
+      else
+        v.to_s
+      end
+    end
   end
-  
+
   class Field
     
     # "attrs" is a hash for setting the "doc" xml attributes

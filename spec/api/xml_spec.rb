@@ -152,5 +152,30 @@ describe "RSolr::Xml" do
 
     end
   end
-    
+
+  context :formatting do
+    it 'should format date objects into ISO 8601' do
+      data = {
+        dt: Date.new(1992, 03, 15)
+      }
+      result = generator.add(data)
+      result.should match(/<field name="dt">1992-03-15T00:00:00Z<\/field>/)
+    end
+
+    it 'should format time objects into ISO 8601' do
+      data = {
+        dt: Time.new(1992, 03, 15, 16, 23, 55, 3600)
+      }
+      result = generator.add(data)
+      result.should match(/<field name="dt">1992-03-15T15:23:55Z<\/field>/)
+    end
+
+    it 'should format datetime objects into ISO 8601' do
+      data = {
+        dt: DateTime.new(1992, 03, 15, 16, 23, 55, '+1')
+      }
+      result = generator.add(data)
+      result.should match(/<field name="dt">1992-03-15T15:23:55Z<\/field>/)
+    end
+  end
 end
