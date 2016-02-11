@@ -102,6 +102,17 @@ describe "RSolr::Xml" do
           expect(result).to match(/<field name="name">matt2<\/field>/)
         end
 
+        it 'should allow for objects which can be casted to an array' do
+          name = double("name", to_ary: ['matt1', 'matt2'])
+          data = {
+            :id => 1,
+            :name => name
+          }
+          result = generator.add(data)
+          expect(result).to match(/<field name="name">matt1<\/field>/)
+          expect(result).to match(/<field name="name">matt2<\/field>/)
+        end
+
         it 'should create an add from a single Message::Document' do
           document = RSolr::Xml::Document.new
           document.add_field('id', 1)
@@ -159,7 +170,7 @@ describe "RSolr::Xml" do
         dt: Date.new(1992, 03, 15)
       }
       result = generator.add(data)
-      result.should match(/<field name="dt">1992-03-15T00:00:00Z<\/field>/)
+      expect(result).to match(/<field name="dt">1992-03-15T00:00:00Z<\/field>/)
     end
 
     it 'should format time objects into ISO 8601' do
@@ -167,7 +178,7 @@ describe "RSolr::Xml" do
         dt: Time.new(1992, 03, 15, 16, 23, 55, 3600)
       }
       result = generator.add(data)
-      result.should match(/<field name="dt">1992-03-15T15:23:55Z<\/field>/)
+      expect(result).to match(/<field name="dt">1992-03-15T15:23:55Z<\/field>/)
     end
 
     it 'should format datetime objects into ISO 8601' do
@@ -175,7 +186,7 @@ describe "RSolr::Xml" do
         dt: DateTime.new(1992, 03, 15, 16, 23, 55, '+1')
       }
       result = generator.add(data)
-      result.should match(/<field name="dt">1992-03-15T15:23:55Z<\/field>/)
+      expect(result).to match(/<field name="dt">1992-03-15T15:23:55Z<\/field>/)
     end
   end
 end
