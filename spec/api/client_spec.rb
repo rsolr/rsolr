@@ -14,6 +14,16 @@ describe "RSolr::Client" do
     it "should accept whatevs and set it as the @connection" do
       expect(RSolr::Client.new(:whatevs).connection).to eq(:whatevs)
     end
+    
+    it "should use :update_path from options" do
+      client = RSolr::Client.new(:whatevs, { update_path: 'update_test' })
+      expect(client.update_path).to eql('update_test')
+    end
+    
+    it "should use 'update' for update_path by default" do
+      client = RSolr::Client.new(:whatevs)
+      expect(client.update_path).to eql('update')
+    end
   end
   
   context "send_and_receive" do
@@ -130,6 +140,18 @@ describe "RSolr::Client" do
             :headers => {"Content-Type"=>"text/xml"}
           )
       client.update(:data => "<optimize/>")
+    end
+
+    it "should use #update_path" do
+      expect(client).to receive(:post).with('update_test', any_args)
+      expect(client).to receive(:update_path).and_return('update_test')
+      client.update({})
+    end
+    
+    it "should use path from opts" do
+      expect(client).to receive(:post).with('update_opts', any_args)
+      allow(client).to receive(:update_path).and_return('update_test')
+      client.update({path: 'update_opts'})
     end
   end
   

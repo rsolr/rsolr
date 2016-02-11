@@ -15,7 +15,7 @@ class RSolr::Client
     end
   end
   
-  attr_reader :connection, :uri, :proxy, :options
+  attr_reader :connection, :uri, :proxy, :options, :update_path
   
   def initialize connection, options = {}
     @proxy = @uri = nil
@@ -30,6 +30,7 @@ class RSolr::Client
         @proxy = RSolr::Uri.create proxy_url if proxy_url
       end
     end
+    @update_path = options.fetch(:update_path, 'update')
     @options = options
   end
   
@@ -79,7 +80,7 @@ class RSolr::Client
   def update opts = {}
     opts[:headers] ||= {}
     opts[:headers]['Content-Type'] ||= 'text/xml'
-    post 'update', opts
+    post opts.fetch(:path, update_path), opts
   end
   
   # 
