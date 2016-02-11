@@ -188,5 +188,26 @@ describe "RSolr::Xml" do
       result = generator.add(data)
       expect(result).to match(/<field name="dt">1992-03-15T15:23:55Z<\/field>/)
     end
+
+    it 'passes through other values' do
+      data = {
+        whatever: 'some string'
+      }
+
+      result = generator.add(data)
+      expect(result).to match(/<field name="whatever">some string<\/field>/)
+    end
+
+    # rails monkey-patches String to add a #to_time casting..
+    context 'with rails monkey patching' do
+      it 'passes through string values' do
+        data = {
+          whatever: double(to_s: 'some string', to_time: nil)
+        }
+
+        result = generator.add(data)
+        expect(result).to match(/<field name="whatever">some string<\/field>/)
+      end
+    end
   end
 end
