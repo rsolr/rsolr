@@ -33,6 +33,10 @@ class RSolr::Connection
       http = if proxy
         proxy_user, proxy_pass = proxy.userinfo.split(/:/) if proxy.userinfo
         Net::HTTP.Proxy(proxy.host, proxy.port, proxy_user, proxy_pass).new uri.host, uri.port
+      elsif proxy == false
+        # If explicitly passing in false, make sure we set proxy_addr to nil
+        # to tell Net::HTTP to *not* use the environment proxy variables.
+        Net::HTTP.new uri.host, uri.port, nil
       else
         Net::HTTP.new uri.host, uri.port
       end
