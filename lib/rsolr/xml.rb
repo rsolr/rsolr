@@ -53,7 +53,7 @@ module RSolr::Xml
     def format_value(v)
       if v.is_a?(Date) && !v.is_a?(DateTime)
         Time.utc(v.year, v.mon, v.mday).iso8601
-      elsif v.respond_to?(:to_time)
+      elsif v.respond_to?(:to_time) && v.to_time
         v.to_time.getutc.iso8601
       else
         v.to_s
