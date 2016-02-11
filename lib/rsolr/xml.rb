@@ -210,7 +210,5 @@ module RSolr::Xml
         end
       end
     end
-    
   end
-  
 end
