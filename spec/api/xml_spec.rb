@@ -102,6 +102,17 @@ describe "RSolr::Xml" do
           expect(result).to match(/<field name="name">matt2<\/field>/)
         end
 
+        it 'should allow for objects which can be casted to an array' do
+          name = double("name", to_ary: ['matt1', 'matt2'])
+          data = {
+            :id => 1,
+            :name => name
+          }
+          result = generator.add(data)
+          expect(result).to match(/<field name="name">matt1<\/field>/)
+          expect(result).to match(/<field name="name">matt2<\/field>/)
+        end
+
         it 'should create an add from a single Message::Document' do
           document = RSolr::Xml::Document.new
           document.add_field('id', 1)
