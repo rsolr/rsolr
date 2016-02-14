@@ -41,10 +41,9 @@ class RSolr::Client
     base_uri.request_uri if base_uri
   end
 
-  # returns the uri proxy if present,
-  # otherwise just the uri object.
+  # returns the RSolr::URI uri object.
   def base_uri
-    @proxy ? @proxy : @uri
+    @uri
   end
 
   # Create the get, post, and head methods

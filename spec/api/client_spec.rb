@@ -8,6 +8,13 @@ describe "RSolr::Client" do
         RSolr::Client.new connection, :url => "http://localhost:9999/solr", :read_timeout => 42, :open_timeout=>43
       )
     end
+
+    def client_with_proxy
+      @client_with_proxy ||= (
+        connection = RSolr::Connection.new
+        RSolr::Client.new connection, :url => "http://localhost:9999/solr", :proxy => 'http://localhost:8080', :read_timeout => 42, :open_timeout=>43
+      )
+    end
   end
 
   context "initialize" do
@@ -337,5 +344,14 @@ describe "RSolr::Client" do
         expect(subject[:headers]).to eq({"Content-Type" => "application/x-www-form-urlencoded; charset=UTF-8"})
       end
     end
+   
+    it "should properly handle proxy configuration" do
+      result = client_with_proxy.build_request('select',
+        :method => :post,
+        :data => {:q=>'test', :fq=>[0,1]},
+        :headers => {}
+      )
+      result[:uri].to_s.should match /^http:\/\/localhost:9999\/solr\//
+    end 
   end
 end
