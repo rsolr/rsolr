@@ -214,7 +214,7 @@ class RSolr::Client
         retry_after_date = DateTime.parse(retry_after)
         retry_after = retry_after_date.to_time - Time.now
         retry_after = nil if retry_after < 0
-      rescue ArgumentError => e
+      rescue ArgumentError
         retry_after = retry_after.to_i
       end
     end
