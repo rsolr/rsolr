@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'base64'
 
 describe "RSolr::Connection" do
-  
+
   context "setup_raw_request" do
     it "should set the correct request parameters" do
       c = RSolr::Connection.new
@@ -35,7 +35,7 @@ describe "RSolr::Connection" do
 
     let(:http) { double(Net::HTTP).as_null_object }
 
-    subject { RSolr::Connection.new } 
+    subject { RSolr::Connection.new }
 
     before do
       allow(Net::HTTP).to receive(:new) { http }
@@ -57,7 +57,7 @@ describe "RSolr::Connection" do
 
     let(:http) { double(Net::HTTP).as_null_object }
 
-    subject { RSolr::Connection.new } 
+    subject { RSolr::Connection.new }
 
     before do
       allow(Net::HTTP).to receive(:new) { http }
@@ -74,6 +74,32 @@ describe "RSolr::Connection" do
     end
   end
 
+  context "proxy configuration" do
+    let(:client) { double.as_null_object }
+
+    let(:http) { double(Net::HTTP).as_null_object }
+
+    let(:uri) { URI.parse("http://localhost/some_url") }
+    let(:proxy) { URI.parse("http://my.proxy/") }
+
+    subject { RSolr::Connection.new }
+
+    it "should use the default if no proxy is provided" do
+      expect(Net::HTTP).to receive(:new).with(uri.host, uri.port) { http }
+      subject.execute client, { :uri => uri, :method => :get }
+    end
+
+    it "should use the proxy if one is provided" do
+      expect(Net::HTTP).to receive(:Proxy).with(proxy.host, proxy.port, nil, nil) { http }
+      subject.execute client, { :uri => uri, :proxy => proxy, :method => :get }
+    end
+
+    it "should not use a proxy if proxy setting is false" do
+      expect(Net::HTTP).to receive(:new).with(uri.host, uri.port, nil) { http }
+      subject.execute client, { :uri => uri, :proxy => false, :method => :get }
+    end
+  end
+
   context "connection refused" do
     let(:client) { double.as_null_object }
 
@@ -81,7 +107,7 @@ describe "RSolr::Connection" do
     let(:request_context) {
       {:uri => URI.parse("http://localhost/some_uri"), :method => :get, :open_timeout => 42}
     }
-    subject { RSolr::Connection.new } 
+    subject { RSolr::Connection.new }
 
     before do
       allow(Net::HTTP).to receive(:new) { http }
@@ -95,14 +121,14 @@ describe "RSolr::Connection" do
       }.to raise_error(Errno::ECONNREFUSED, /#{request_context}/)
     end
   end
-  
+
   describe "basic auth support" do
     let(:http) { double(Net::HTTP).as_null_object }
-    
+
     before do
       allow(Net::HTTP).to receive(:new) { http }
     end
-    
+
     it "sets the authorization header" do
       expect(http).to receive(:request) do |request|
         expect(request.fetch('authorization')).to eq("Basic #{Base64.encode64("joe:pass")}".strip)

@@ -1,6 +1,6 @@
 require 'spec_helper'
 describe "RSolr::Client" do
-  
+
   module ClientHelper
     def client
       @client ||= (
@@ -9,29 +9,44 @@ describe "RSolr::Client" do
       )
     end
   end
-  
+
   context "initialize" do
     it "should accept whatevs and set it as the @connection" do
       expect(RSolr::Client.new(:whatevs).connection).to eq(:whatevs)
     end
-    
+
     it "should use :update_path from options" do
       client = RSolr::Client.new(:whatevs, { update_path: 'update_test' })
       expect(client.update_path).to eql('update_test')
     end
-    
+
     it "should use 'update' for update_path by default" do
       client = RSolr::Client.new(:whatevs)
       expect(client.update_path).to eql('update')
     end
+
+    it "should use :proxy from options" do
+      client = RSolr::Client.new(:whatevs, { proxy: 'http://my.proxy/' })
+      expect(client.proxy.to_s).to eql('http://my.proxy/')
+    end
+
+    it "should use 'nil' for proxy by default" do
+      client = RSolr::Client.new(:whatevs)
+      expect(client.proxy).to be_nil
+    end
+
+    it "should use 'false' for proxy if passed 'false'" do
+      client = RSolr::Client.new(:whatevs, { proxy: false })
+      expect(client.proxy).to eq(false)
+    end
   end
-  
+
   context "send_and_receive" do
     include ClientHelper
     it "should forward these method calls the #connection object" do
       [:get, :post, :head].each do |meth|
         expect(client.connection).to receive(:execute).
-            and_return({:status => 200, :body => "{}", :headers => {}})
+          and_return({:status => 200, :body => "{}", :headers => {}})
         client.send_and_receive '', :method => meth, :params => {}, :data => nil, :headers => {}
       end
     end
@@ -87,17 +102,17 @@ describe "RSolr::Client" do
           :status => 200,
           :headers => {"Content-Type"=>"text/plain"}
         )
-      client.post "update", request_opts
+        client.post "update", request_opts
     end
   end
-  
+
   context "xml" do
     include ClientHelper
     it "should return an instance of RSolr::Xml::Generator" do
       expect(client.xml).to be_a RSolr::Xml::Generator
     end
   end
-  
+
   context "add" do
     include ClientHelper
     it "should send xml to the connection's #post method" do
@@ -109,19 +124,19 @@ describe "RSolr::Client" do
             :method => :post,
             :data => "<xml/>"
           })
-        ).
-          and_return(
-            :body => "",
-            :status => 200,
-            :headers => {"Content-Type"=>"text/xml"}
-          )
+      ).
+      and_return(
+        :body => "",
+        :status => 200,
+        :headers => {"Content-Type"=>"text/xml"}
+      )
       expect(client.xml).to receive(:add).
         with({:id=>1}, {:commitWith=>10}).
-          and_return("<xml/>")
+        and_return("<xml/>")
       client.add({:id=>1}, :add_attributes => {:commitWith=>10})
     end
   end
-  
+
   context "update" do
     include ClientHelper
     it "should send data to the connection's #post method" do
@@ -133,12 +148,12 @@ describe "RSolr::Client" do
             :method => :post,
             :data => "<optimize/>"
           })
-        ).
-          and_return(
-            :body => "",
-            :status => 200,
-            :headers => {"Content-Type"=>"text/xml"}
-          )
+      ).
+      and_return(
+        :body => "",
+        :status => 200,
+        :headers => {"Content-Type"=>"text/xml"}
+      )
       client.update(:data => "<optimize/>")
     end
 
@@ -147,14 +162,14 @@ describe "RSolr::Client" do
       expect(client).to receive(:update_path).and_return('update_test')
       client.update({})
     end
-    
+
     it "should use path from opts" do
       expect(client).to receive(:post).with('update_opts', any_args)
       allow(client).to receive(:update_path).and_return('update_test')
       client.update({path: 'update_opts'})
     end
   end
-  
+
   context "post based helper methods:" do
     include ClientHelper
     [:commit, :optimize, :rollback].each do |meth|
@@ -167,17 +182,17 @@ describe "RSolr::Client" do
               :method => :post,
               :data => "<?xml version=\"1.0\" encoding=\"UTF-8\"?><#{meth}/>"
             })
-          ).
-            and_return(
-              :body => "",
-              :status => 200,
-              :headers => {"Content-Type"=>"text/xml"}
-            )
+        ).
+        and_return(
+          :body => "",
+          :status => 200,
+          :headers => {"Content-Type"=>"text/xml"}
+        )
         client.send meth
       end
     end
   end
-  
+
   context "delete_by_id" do
     include ClientHelper
     it "should send data to the connection's #post method" do
@@ -189,16 +204,16 @@ describe "RSolr::Client" do
             :method => :post,
             :data => "<?xml version=\"1.0\" encoding=\"UTF-8\"?><delete><id>1</id></delete>"
           })
-        ).
-          and_return(
-            :body => "",
-            :status => 200,
-            :headers => {"Content-Type"=>"text/xml"}
-          )
+      ).
+      and_return(
+        :body => "",
+        :status => 200,
+        :headers => {"Content-Type"=>"text/xml"}
+      )
       client.delete_by_id 1
     end
   end
-  
+
   context "delete_by_query" do
     include ClientHelper
     it "should send data to the connection's #post method" do
@@ -210,16 +225,16 @@ describe "RSolr::Client" do
             :method => :post,
             :data => "<?xml version=\"1.0\" encoding=\"UTF-8\"?><delete><query fq=\"category:&quot;trash&quot;\"/></delete>"
           })
-        ).
-          and_return(
-            :body => "",
-            :status => 200,
-            :headers => {"Content-Type"=>"text/xml"}
-          )
+      ).
+      and_return(
+        :body => "",
+        :status => 200,
+        :headers => {"Content-Type"=>"text/xml"}
+      )
       client.delete_by_query :fq => "category:\"trash\""
     end
   end
-  
+
   context "adapt_response" do
     include ClientHelper
     it 'should not try to evaluate ruby when the :qt is not :ruby' do
@@ -227,13 +242,13 @@ describe "RSolr::Client" do
       result = client.adapt_response({:params=>{}}, {:status => 200, :body => body, :headers => {}})
       expect(result).to eq(body)
     end
-    
+
     it 'should evaluate ruby responses when the :wt is :ruby' do
       body = '{"time"=>"NOW"}'
       result = client.adapt_response({:params=>{:wt=>:ruby}}, {:status => 200, :body => body, :headers => {}})
       expect(result).to eq({"time"=>"NOW"})
     end
-    
+
     it 'should evaluate json responses when the :wt is :json' do
       body = '{"time": "NOW"}'
       result = client.adapt_response({:params=>{:wt=>:json}}, {:status => 200, :body => body, :headers => {}})
@@ -255,9 +270,9 @@ describe "RSolr::Client" do
         client.adapt_response({:params=>{:wt => :ruby}}, {:status => 200, :body => "<woops/>", :headers => {}})
       }.to raise_error RSolr::Error::InvalidRubyResponse
     end
-  
+
   end
-  
+
   context "indifferent access" do
     include ClientHelper
     it "should raise a RuntimeError if the #with_indifferent_access extension isn't loaded" do
