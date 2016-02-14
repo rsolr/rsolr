@@ -91,11 +91,11 @@ class RSolr::Client
   # http://wiki.apache.org/solr/UpdateXmlMessages#add.2BAC8-update
   #
   # single record:
-  # solr.update(:id=>1, :name=>'one')
+  # solr.add(:id=>1, :name=>'one')
   #
-  # update using an array
+  # add using an array
   #
-  # solr.update(
+  # solr.add(
   #   [{:id=>1, :name=>'one'}, {:id=>2, :name=>'two'}],
   #   :add_attributes => {:boost=>5.0, :commitWithin=>10}
   # )
