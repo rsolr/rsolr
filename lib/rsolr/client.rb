@@ -14,9 +14,9 @@ class RSolr::Client
       @default_wt = value
     end
   end
-  
+
   attr_reader :connection, :uri, :proxy, :options, :update_path
-  
+
   def initialize connection, options = {}
     @proxy = @uri = nil
     @connection = connection
@@ -28,23 +28,25 @@ class RSolr::Client
         proxy_url = options[:proxy].dup
         proxy_url << "/" unless proxy_url.nil? or proxy_url[-1] == ?/
         @proxy = RSolr::Uri.create proxy_url if proxy_url
+      elsif options[:proxy] == false
+        @proxy = false  # used to avoid setting the proxy from the environment.
       end
     end
     @update_path = options.fetch(:update_path, 'update')
     @options = options
   end
-  
+
   # returns the request uri object.
   def base_request_uri
     base_uri.request_uri if base_uri
   end
-  
+
   # returns the uri proxy if present,
   # otherwise just the uri object.
   def base_uri
     @proxy ? @proxy : @uri
   end
-  
+
   # Create the get, post, and head methods
   %W(get post head).each do |meth|
     class_eval <<-RUBY
@@ -53,7 +55,7 @@ class RSolr::Client
     end
     RUBY
   end
-  
+
   # A paginated request method.
   # Converts the page and per_page
   # arguments into "rows" and "start".
@@ -63,9 +65,9 @@ class RSolr::Client
     raise "'rows' or 'start' params should not be set when using +paginate+" if ["start", "rows"].include?(opts[:params].keys)
     execute build_paginated_request(page, per_page, path, opts)
   end
-  
+
   # POST XML messages to /update with optional params.
-  # 
+  #
   # http://wiki.apache.org/solr/UpdateXmlMessages#add.2BAC8-update
   #
   # If not set, opts[:headers] will be set to a hash with the key
@@ -82,22 +84,22 @@ class RSolr::Client
     opts[:headers]['Content-Type'] ||= 'text/xml'
     post opts.fetch(:path, update_path), opts
   end
-  
-  # 
+
+  #
   # +add+ creates xml "add" documents and sends the xml data to the +update+ method
-  # 
+  #
   # http://wiki.apache.org/solr/UpdateXmlMessages#add.2BAC8-update
-  # 
+  #
   # single record:
   # solr.update(:id=>1, :name=>'one')
   #
   # update using an array
-  # 
+  #
   # solr.update(
   #   [{:id=>1, :name=>'one'}, {:id=>2, :name=>'two'}],
   #   :add_attributes => {:boost=>5.0, :commitWithin=>10}
   # )
-  # 
+  #
   def add doc, opts = {}
     add_attributes = opts.delete :add_attributes
     update opts.merge(:data => xml.add(doc, add_attributes))
@@ -120,16 +122,16 @@ class RSolr::Client
     optimize_attributes = opts.delete :optimize_attributes
     update opts.merge(:data => xml.optimize(optimize_attributes))
   end
-  
+
   # send </rollback>
-  # 
+  #
   # http://wiki.apache.org/solr/UpdateXmlMessages#A.22rollback.22
-  # 
+  #
   # NOTE: solr 1.4 only
   def rollback opts = {}
     update opts.merge(:data => xml.rollback)
   end
-  
+
   # Delete one or many documents by id
   #   solr.delete_by_id 10
   #   solr.delete_by_id([12, 41, 199])
@@ -138,22 +140,22 @@ class RSolr::Client
   end
 
   # delete one or many documents by query.
-  # 
+  #
   # http://wiki.apache.org/solr/UpdateXmlMessages#A.22delete.22_by_ID_and_by_Query
-  # 
+  #
   #   solr.delete_by_query 'available:0'
   #   solr.delete_by_query ['quantity:0', 'manu:"FQ"']
   def delete_by_query query, opts = {}
     update opts.merge(:data => xml.delete_by_query(query))
   end
-  
+
   # shortcut to RSolr::Xml::Generator
   def xml
     @xml ||= RSolr::Xml::Generator.new
   end
-  
+
   # +send_and_receive+ is the main request method responsible for sending requests to the +connection+ object.
-  # 
+  #
   # "path" : A string value that usually represents a solr request handler
   # "opts" : A hash, which can contain the following keys:
   #   :method : required - the http method (:get, :post or :head)
@@ -161,7 +163,7 @@ class RSolr::Client
   #   :data : optional - post data -- if a hash is given, it's sent as "application/x-www-form-urlencoded; charset=UTF-8"
   #   :headers : optional - hash of request headers
   # All other options are passed right along to the connection's +send_and_receive+ method (:get, :post, or :head)
-  # 
+  #
   # +send_and_receive+ returns either a string or hash on a successful ruby request.
   # When the :params[:wt] => :ruby, the response will be a hash, else a string.
   #
@@ -176,8 +178,8 @@ class RSolr::Client
     end
     execute request_context
   end
-  
-  # 
+
+  #
   def execute request_context
 
     raw_response = connection.execute self, request_context
@@ -220,7 +222,7 @@ class RSolr::Client
     end
     retry_after
   end
-  
+
   # +build_request+ accepts a path and options hash,
   # then prepares a normalized hash to return for sending
   # to a solr connection driver.
@@ -307,7 +309,7 @@ class RSolr::Client
       send_and_receive name, *args
     end
   end
-  
+
   # evaluates the response[:body],
   # attempts to bring the ruby string to life.
   # If a SyntaxError is raised, then
