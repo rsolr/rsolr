@@ -1,5 +1,5 @@
 module RSolr
-  VERSION = "1.1.1.pre2"
+  VERSION = "1.1.1"
 
   def self.version
     VERSION
