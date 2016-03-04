@@ -21,12 +21,12 @@ describe "RSolr::Connection" do
 
     it "raises a custom exception" do
       http_stub = double("Net:HTTP")
-      http_stub.stub(:request){ raise(Errno::ECONNREFUSED.new) }
+      allow(http_stub).to receive(:request).and_raise(Errno::ECONNREFUSED)
 
-      subject.stub(:setup_raw_request){ http_stub }
-      subject.stub(:http){ Net::HTTP.new("localhost", 80) }
+      allow(subject).to receive(:setup_raw_request) { http_stub }
+      allow(subject).to receive(:http) { Net::HTTP.new("localhost", 80) }
 
-      lambda{ subject.execute(nil,{}) }.should raise_error(RSolr::Error::ConnectionRefused)
+      expect { subject.execute(nil, {}) }.to raise_error(RSolr::Error::ConnectionRefused)
     end
   end
 

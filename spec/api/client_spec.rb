@@ -351,7 +351,7 @@ describe "RSolr::Client" do
         :data => {:q=>'test', :fq=>[0,1]},
         :headers => {}
       )
-      result[:uri].to_s.should match /^http:\/\/localhost:9999\/solr\//
+      expect(result[:uri].to_s).to match /^http:\/\/localhost:9999\/solr\//
     end 
   end
 end
