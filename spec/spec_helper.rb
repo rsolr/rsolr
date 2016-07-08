@@ -1,6 +1,5 @@
 require 'rsolr'
 require 'rspec'
-require 'byebug'
 
 FIXTURES_DIR = File.expand_path("fixtures", File.dirname(__FILE__))
 
