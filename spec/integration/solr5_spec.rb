@@ -2,6 +2,7 @@ require 'spec_helper'
 require 'solr_wrapper'
 
 describe "Solr basic_configs" do
+  SolrWrapper.default_instance_options = { :version => '5.5.2', :port => "9999" }
   SOLR_INSTANCE =  SolrWrapper.default_instance({})
   before(:all) { SOLR_INSTANCE.start }
   after(:all) { SOLR_INSTANCE.stop }
