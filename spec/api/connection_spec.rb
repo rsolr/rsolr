@@ -20,13 +20,15 @@ describe "RSolr::Connection" do
     subject { RSolr::Connection.new }
 
     it "raises a custom exception" do
-      http_stub = double("Net:HTTP")
-      allow(http_stub).to receive(:request).and_raise(Errno::ECONNREFUSED)
+      client = double(RSolr::Client, :try_another_node? => false)
+      http = Net::HTTP.new("localhost", 80)
+      request = Net::HTTP::Get.new(:path => "/")
 
-      allow(subject).to receive(:setup_raw_request) { http_stub }
-      allow(subject).to receive(:http) { Net::HTTP.new("localhost", 80) }
+      allow(http).to receive(:request) { raise(Errno::ECONNREFUSED.new) }
+      allow(subject).to receive(:setup_raw_request) { request }
+      allow(subject).to receive(:http) { http }
 
-      expect { subject.execute(nil, {}) }.to raise_error(RSolr::Error::ConnectionRefused)
+      expect { subject.execute(client, {}) }.to raise_error(RSolr::Error::ConnectionRefused)
     end
   end
 
@@ -101,8 +103,7 @@ describe "RSolr::Connection" do
   end
 
   context "connection refused" do
-    let(:client) { double.as_null_object }
-
+    let(:client) { double(RSolr::Client, :try_another_node? => false) }
     let(:http) { double(Net::HTTP).as_null_object }
     let(:request_context) {
       {:uri => URI.parse("http://localhost/some_uri"), :method => :get, :open_timeout => 42}
