@@ -68,6 +68,8 @@ module RSolr::Xml
         []
       elsif object.respond_to?(:to_ary)
         object.to_ary || [object]
+      elsif object.is_a? Enumerator
+        object
       else
         [object]
       end

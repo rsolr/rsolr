@@ -61,6 +61,14 @@ describe "RSolr::Xml" do
           expect(result).to match(%r(boost="10"))
           expect(result).to match(%r(<field name="id">1</field>))
         end
+
+        it 'should work for values that yield enumerators' do
+          documents = [{id: 1, cat: ['cat 1', 'cat 2'].to_enum}]
+          result = generator.add(documents)
+
+          expect(result).to match(%r(name="cat">cat 1</field>))
+          expect(result).to match(%r(name="cat">cat 2</field>))
+        end
     
         # add a single hash ("doc")
         it 'should create an add from a hash' do
