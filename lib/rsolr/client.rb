@@ -18,12 +18,24 @@ class RSolr::Client
   attr_reader :connection, :uri, :proxy, :options, :update_path
 
   def initialize connection, options = {}
-    @proxy = @uri = nil
     @connection = connection
+    @proxy = nil
+    @primary_uri = nil
+    @failed_uris = []
+    @available_uris = []
+
     unless false === options[:url]
-      url = options[:url] ? options[:url].dup : 'http://127.0.0.1:8983/solr/'
-      url << "/" unless url[-1] == ?/
-      @uri = RSolr::Uri.create url
+      [options[:url]].flatten.compact.each do |url|
+        @available_uris << (url[-1] == ?/ ? url.dup : "#{url}/")
+      end
+
+      # Add default URI
+      @available_uris << 'http://127.0.0.1:8983/solr/' if @available_uris.empty?
+      @available_uris.map! { |u| RSolr::Uri.create(u) }
+
+      # Select primary URI
+      select_primary_uri
+
       if options[:proxy]
         proxy_url = options[:proxy].dup
         proxy_url << "/" unless proxy_url.nil? or proxy_url[-1] == ?/
@@ -43,7 +55,7 @@ class RSolr::Client
 
   # returns the RSolr::URI uri object.
   def base_uri
-    @uri
+    @primary_uri
   end
 
   # Create the get, post, and head methods
@@ -177,7 +189,6 @@ class RSolr::Client
 
   #
   def execute request_context
-
     raw_response = connection.execute self, request_context
 
     while retry_503?(request_context, raw_response)
@@ -186,7 +197,29 @@ class RSolr::Client
       raw_response = connection.execute self, request_context
     end
 
-    adapt_response(request_context, raw_response) unless raw_response.nil?
+    unless raw_response.nil?
+      # Reset failed URIs in case of a successful request
+      @failed_uris.clear
+      adapt_response(request_context, raw_response)
+    end
+  end
+
+  def try_another_node?(request_context)
+    return false unless @primary_uri
+
+    select_primary_uri
+
+    unless @primary_uri
+      reset_failed_uri
+      return false
+    end
+
+    request_context[:uri] = request_context[:uri].dup
+    request_context[:uri].scheme = @primary_uri.scheme
+    request_context[:uri].host = @primary_uri.host
+    request_context[:uri].port = @primary_uri.port
+
+    true
   end
 
   def retry_503?(request_context, response)
@@ -338,5 +371,21 @@ class RSolr::Client
 
   def default_wt
     self.options[:default_wt] || self.class.default_wt
+  end
+
+  private
+
+  def select_primary_uri
+    return if @available_uris.empty?
+
+    # Move current primary URI to failed
+    @failed_uris << @primary_uri if @primary_uri
+    # Try to select a new primary URI, if available
+    @primary_uri = @available_uris.find { |u| not @failed_uris.include?(u) }
+  end
+
+  def reset_failed_uri
+    @failed_uris.clear
+    select_primary_uri
   end
 end

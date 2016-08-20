@@ -1,12 +1,21 @@
 require 'spec_helper'
 describe "RSolr::Client" do
 
+  let(:node_urls) do
+    ["http://localhost:9998/solr/", "http://localhost:9999/solr/"]
+  end
+
+  let(:successful_response) do |httpv = '1.1', code = '200', msg = 'Ok'|
+    response = Net::HTTPOK.new(httpv, code, msg)
+    response["content-type"] = "text/plain;charset=UTF-8"
+    response.body = "{'responseHeader'=>{'status'=>0,'QTime'=>0,'params'=>{'q'=>'*:*'}},'response'=>{'numFound'=>0,'start'=>0,'docs'=>[]}}"
+    response.instance_variable_set("@read", true)
+    response
+  end
+
   module ClientHelper
     def client
-      @client ||= (
-        connection = RSolr::Connection.new
-        RSolr::Client.new connection, :url => "http://localhost:9999/solr", :read_timeout => 42, :open_timeout=>43
-      )
+      @client ||= RSolr.connect(:url => node_urls.dup, :read_timeout => 42, :open_timeout => 43)
     end
 
     def client_with_proxy
@@ -95,6 +104,66 @@ describe "RSolr::Client" do
           client.execute({:retry_after_limit => 0}.merge(request_context))
         end
       }.to raise_error(RSolr::Error::Http)
+    end
+
+    it "should not modify stored URIs" do
+      expect(client.instance_variable_get("@available_uris").map(&:to_s)).to eq node_urls
+      expect { client.execute request_context }.to raise_error(RSolr::Error::ConnectionRefused)
+      expect(client.instance_variable_get("@available_uris").map(&:to_s)).to eq node_urls
+    end
+
+    context "in case of failures" do
+      it "should try all available URIs and reset previously failed ones" do
+        call_index = -1
+        called_uris = []
+        new = Net::HTTP.method(:new)
+
+        allow(Net::HTTP).to receive(:new) do |*args, &block|
+          new.call(*args, &block).tap do |http|
+            http_request = http.method(:request)
+
+            allow(http).to receive(:request) do |request|
+              call_index += 1
+              called_uris << "http://#{http.address}:#{http.port}/solr/"
+
+              case call_index
+                when 0 # primary uri is http://localhost:9998/solr/
+                  expect(called_uris.last).to eq node_urls.first
+                  http_request.call(request) # original http#request
+                when 1 # primary uri is http://localhost:9999/solr/
+                  expect(called_uris.last).to eq node_urls.last
+                  successful_response
+                when 2 # primary uri is http://localhost:9999/solr/
+                  expect(called_uris.last).to eq node_urls.last
+                  http_request.call(request) # original http#request
+                when 3 # primary uri is http://localhost:9998/solr/
+                  expect(called_uris.last).to eq node_urls.first
+                  successful_response
+                else
+                  http_request.call(request) # original http#request
+              end
+            end
+          end
+        end
+
+        # Calls 0-1
+        expect { client.execute request_context }.not_to raise_error
+        expect(client.instance_variable_get("@failed_uris").size).to eq 0
+        expect(client.instance_variable_get("@primary_uri").to_s).to eq node_urls.last
+        expect(called_uris).to eq node_urls
+
+        # Calls 2-3
+        expect { client.execute request_context }.not_to raise_error
+        expect(client.instance_variable_get("@failed_uris").size).to eq 0
+        expect(client.instance_variable_get("@primary_uri").to_s).to eq node_urls.first
+        expect(called_uris).to eq node_urls + node_urls.reverse
+
+        # Calls 3+
+        expect { client.execute request_context }.to raise_error(RSolr::Error::ConnectionRefused)
+        expect(client.instance_variable_get("@failed_uris").size).to eq 0
+        expect(client.instance_variable_get("@primary_uri").to_s).to eq node_urls.first
+        expect(called_uris).to eq node_urls + node_urls.reverse + node_urls
+      end
     end
   end
 
@@ -344,7 +413,7 @@ describe "RSolr::Client" do
         expect(subject[:headers]).to eq({"Content-Type" => "application/x-www-form-urlencoded; charset=UTF-8"})
       end
     end
-   
+
     it "should properly handle proxy configuration" do
       result = client_with_proxy.build_request('select',
         :method => :post,
@@ -352,6 +421,6 @@ describe "RSolr::Client" do
         :headers => {}
       )
       expect(result[:uri].to_s).to match /^http:\/\/localhost:9999\/solr\//
-    end 
+    end
   end
 end
