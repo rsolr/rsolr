@@ -123,6 +123,7 @@ describe "RSolr::Client" do
   context "add" do
     include ClientHelper
     it "should send xml to the connection's #post method" do
+      expect(RSolr::SanitizeControlCharactersForIndexing).to receive(:sanitize_document).and_call_original
       expect(client.connection).to receive(:execute).
         with(
           client, hash_including({
@@ -344,7 +345,7 @@ describe "RSolr::Client" do
         expect(subject[:headers]).to eq({"Content-Type" => "application/x-www-form-urlencoded; charset=UTF-8"})
       end
     end
-   
+
     it "should properly handle proxy configuration" do
       result = client_with_proxy.build_request('select',
         :method => :post,
@@ -352,6 +353,6 @@ describe "RSolr::Client" do
         :headers => {}
       )
       expect(result[:uri].to_s).to match /^http:\/\/localhost:9999\/solr\//
-    end 
+    end
   end
 end
