@@ -73,6 +73,12 @@ RSpec.describe RSolr::Client do
     end
   end
 
+  context "json" do
+    it "should return an instance of RSolr::JSON::Generator" do
+      expect(client.json).to be_a RSolr::JSON::Generator
+    end
+  end
+
   context "add" do
     it "should send xml to the connection's #post method" do
       expect(client).to receive(:execute).
@@ -93,6 +99,48 @@ RSpec.describe RSolr::Client do
         with({:id=>1}, {:commitWith=>10}).
         and_return("<xml/>")
       client.add({:id=>1}, :add_attributes => {:commitWith=>10})
+    end
+
+    context 'when the client is configured for json updates' do
+      let(:client) do
+        RSolr::Client.new nil, :url => "http://localhost:9999/solr", :read_timeout => 42, :open_timeout=>43, :update_format => :json
+      end
+      it "should send json to the connection's #post method" do
+        expect(client).to receive(:execute).
+          with(hash_including({
+              :path => 'update',
+              :headers => {"Content-Type" => 'application/json'},
+              :method => :post,
+              :data => '{"hello":"this is json"}'
+            })
+          ).
+            and_return(
+              :body => "",
+              :status => 200,
+              :headers => {"Content-Type"=>"text/xml"}
+            )
+        expect(client.json).to receive(:add).
+          with({:id => 1}, {:commitWith=>10}).
+            and_return('{"hello":"this is json"}')
+        client.add({:id=>1}, :add_attributes => {:commitWith=>10})
+      end
+
+      it "should send json to the connection's #post method" do
+        expect(client).to receive(:execute).
+          with(hash_including({
+              :path => 'update',
+              :headers => {'Content-Type'=>'application/json'},
+              :method => :post,
+              :data => '{"optimise" : {}}'
+            })
+          ).
+            and_return(
+              :body => "",
+              :status => 200,
+              :headers => {"Content-Type"=>"text/xml"}
+          )
+        client.update(:data => '{"optimise" : {}}')
+      end
     end
   end
 

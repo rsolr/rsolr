@@ -43,8 +43,10 @@ module RSolr
     end
 
     def as_json
-      @fields.each_with_object({}) do |field, result|
-        result[field.name] = field.as_json
+      @fields.group_by(&:name).each_with_object({}) do |(field, values), result|
+        v = values.map(&:as_json)
+        v = v.first if v.length == 1
+        result[field] = v
       end
     end
 
