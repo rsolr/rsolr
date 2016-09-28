@@ -1,5 +1,6 @@
 require 'spec_helper'
-describe "RSolr::Client" do
+
+RSpec.describe RSolr::Client do
 
   module ClientHelper
     def client

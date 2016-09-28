@@ -1,5 +1,6 @@
 require 'spec_helper'
-describe "RSolr::Uri" do
+
+RSpec.describe RSolr::Uri do
   
   let(:uri) { RSolr::Uri }
   

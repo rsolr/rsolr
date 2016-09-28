@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'solr_wrapper'
 
-describe "Solr basic_configs" do
+RSpec.describe "Solr basic_configs" do
   SOLR_INSTANCE =  SolrWrapper.default_instance({})
   before(:all) { SOLR_INSTANCE.start }
   after(:all) { SOLR_INSTANCE.stop }
