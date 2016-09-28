@@ -7,10 +7,7 @@ module RSolr
     opts = Hash === args[-1] ? args[-1] : {}
     Client.new driver.new, opts
   end
-  
-  # RSolr.escape, which is deprecated as of 2015-02
-  extend Char
-  
+
   # backslash escape characters that have special meaning to Solr query parser
   # per http://lucene.apache.org/core/4_0_0/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#Escaping_Special_Characters
   #  + - & | ! ( ) { } [ ] ^ " ~ * ? : \ /
