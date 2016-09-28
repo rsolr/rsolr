@@ -15,7 +15,7 @@ class RSolr::Client
     end
   end
 
-  attr_reader :connection, :uri, :proxy, :options, :update_path
+  attr_reader :uri, :proxy, :options, :update_path
 
   def initialize connection, options = {}
     @proxy = @uri = nil
@@ -23,11 +23,11 @@ class RSolr::Client
     unless false === options[:url]
       url = options[:url] ? options[:url].dup : 'http://127.0.0.1:8983/solr/'
       url << "/" unless url[-1] == ?/
-      @uri = RSolr::Uri.create url
+      @uri = ::URI.parse(url)
       if options[:proxy]
         proxy_url = options[:proxy].dup
         proxy_url << "/" unless proxy_url.nil? or proxy_url[-1] == ?/
-        @proxy = RSolr::Uri.create proxy_url if proxy_url
+        @proxy = ::URI.parse proxy_url if proxy_url
       elsif options[:proxy] == false
         @proxy = false  # used to avoid setting the proxy from the environment.
       end
@@ -41,7 +41,7 @@ class RSolr::Client
     base_uri.request_uri if base_uri
   end
 
-  # returns the RSolr::URI uri object.
+  # returns the URI uri object.
   def base_uri
     @uri
   end
@@ -177,44 +177,19 @@ class RSolr::Client
 
   #
   def execute request_context
-    raw_response = connection.execute request_context
+    raw_response = begin
+      response = connection.send(request_context[:method], request_context[:uri].to_s) do |req|
+        req.body = request_context[:data] if request_context[:method] == :post and request_context[:data]
+        req.headers.merge!(request_context[:headers]) if request_context[:headers]
+      end
 
-    while retry_503?(request_context, raw_response)
-      request_context[:retry_503] -= 1
-      sleep retry_after(raw_response)
-      raw_response = connection.execute request_context
+      { status: response.status.to_i, headers: response.headers, body: response.body.force_encoding('utf-8') }
+    rescue Faraday::ClientError => e
+      raise RSolr::Error::Http, request_context, e.response[:body]
+    rescue Errno::ECONNREFUSED
+      raise RSolr::Error::ConnectionRefused, request_context.inspect
     end
     adapt_response(request_context, raw_response) unless raw_response.nil?
-  end
-
-  def retry_503?(request_context, response)
-    return false if response.nil?
-    status = response[:status] && response[:status].to_i
-    return false unless status == 503
-    retry_503 = request_context[:retry_503]
-    return false unless retry_503 && retry_503 > 0
-    retry_after_limit = request_context[:retry_after_limit] || 1
-    retry_after = retry_after(response)
-    return false unless retry_after && retry_after <= retry_after_limit
-    true
-  end
-
-  # Retry-After can be a relative number of seconds from now, or an RFC 1123 Date.
-  # If the latter, attempt to convert it to a relative time in seconds.
-  def retry_after(response)
-    retry_after = Array(response[:headers]['Retry-After'] || response[:headers]['retry-after']).flatten.first.to_s
-    if retry_after =~ /\A[0-9]+\Z/
-      retry_after = retry_after.to_i
-    else
-      begin
-        retry_after_date = DateTime.parse(retry_after)
-        retry_after = retry_after_date.to_time - Time.now
-        retry_after = nil if retry_after < 0
-      rescue ArgumentError
-        retry_after = retry_after.to_i
-      end
-    end
-    retry_after
   end
 
   # +build_request+ accepts a path and options hash,
@@ -248,10 +223,6 @@ class RSolr::Client
     opts[:path] = path
     opts[:uri] = base_uri.merge(path.to_s + (query ? "?#{query}" : "")) if base_uri
 
-    [:open_timeout, :read_timeout, :retry_503, :retry_after_limit].each do |k|
-      opts[k] = @options[k]
-    end
-
     opts
   end
 
@@ -283,7 +254,6 @@ class RSolr::Client
   def adapt_response request, response
     raise "The response does not have the correct keys => :body, :headers, :status" unless
       %W(body headers status) == response.keys.map{|k|k.to_s}.sort
-    raise RSolr::Error::Http.new request, response unless [200,302].include? response[:status]
 
     result = if respond_to? "evaluate_#{request[:params][:wt]}_response", true
       send "evaluate_#{request[:params][:wt]}_response", request, response
@@ -296,6 +266,24 @@ class RSolr::Client
     end
 
     result
+  end
+  
+  def connection
+    @connection ||= begin
+      conn_opts = { request: {} }
+      conn_opts[:proxy] = proxy if proxy
+      conn_opts[:request][:open_timeout] = options[:open_timeout] if options[:open_timeout]
+      conn_opts[:request][:timeout] = options[:read_timeout] if options[:read_timeout]
+
+      Faraday.new(conn_opts) do |conn|
+        conn.basic_auth(uri.user, uri.password) if uri.user && uri.password
+        conn.response :raise_error
+        conn.request :retry, max: options[:retry_after_limit], interval: 0.05,
+                             interval_randomness: 0.5, backoff_factor: 2,
+                             exceptions: ['Faraday::Error', 'Timeout::Error'] if options[:retry_503]
+        conn.adapter options.fetch(:adapter, :net_http)
+      end
+    end
   end
 
   protected

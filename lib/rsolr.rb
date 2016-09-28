@@ -3,9 +3,12 @@ module RSolr
   Dir.glob(File.expand_path("../rsolr/*.rb", __FILE__)).each{|rb_file| require(rb_file)}
   
   def self.connect *args
-    driver = Class === args[0] ? args[0] : RSolr::Connection
-    opts = Hash === args[-1] ? args[-1] : {}
-    Client.new driver.new, opts
+    opts = args.pop if args.last.is_a?(::Hash)
+    opts ||= {}
+
+    connection = args.first
+
+    Client.new connection, opts
   end
 
   # backslash escape characters that have special meaning to Solr query parser
