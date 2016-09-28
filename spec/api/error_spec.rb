@@ -1,5 +1,6 @@
 require 'spec_helper'
-describe "RSolr::Error" do
+
+RSpec.describe RSolr::Error do
   def generate_error_with_backtrace(request, response)
     raise RSolr::Error::Http.new request, response
   rescue RSolr::Error::Http => exception

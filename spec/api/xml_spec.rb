@@ -1,8 +1,8 @@
 require 'spec_helper'
 require 'builder'
 require 'nokogiri'
-describe "RSolr::Xml" do
-  
+
+RSpec.describe RSolr::Xml do
   let(:generator){ RSolr::Xml::Generator.new }
 
   builder_engines = { 

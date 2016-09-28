@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'base64'
 
-describe "RSolr::Connection" do
+RSpec.describe RSolr::Connection do
 
   context "setup_raw_request" do
     it "should set the correct request parameters" do

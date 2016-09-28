@@ -10,3 +10,4 @@ Gemfile.lock
 
 *.gem
 .bundle
+/spec/examples.txt

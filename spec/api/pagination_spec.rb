@@ -1,5 +1,6 @@
 require 'spec_helper'
-describe "RSolr::Pagination" do
+
+RSpec.describe RSolr::Client do
   context "build_paginated_request" do
     it "should create the proper solr params and query string" do
       c = RSolr::Client.new(nil, {})#.extend(RSolr::Pagination::Client)

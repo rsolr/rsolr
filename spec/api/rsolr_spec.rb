@@ -1,5 +1,6 @@
 require 'spec_helper'
-describe "RSolr" do
+
+RSpec.describe RSolr do
   
   it "has a version that can be read via #version or VERSION" do
     expect(RSolr.version).to eq(RSolr::VERSION)
