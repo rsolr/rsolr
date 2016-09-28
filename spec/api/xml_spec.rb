@@ -52,8 +52,6 @@ RSpec.describe RSolr::Xml do
           add_attrs = {:boost=>200.00}
           result = generator.add(documents, add_attrs) do |doc|
             doc.field_by_name(:name).attrs[:boost] = 10
-            expect(doc.fields.size).to eq(4)
-            expect(doc.fields_by_name(:cat).size).to eq(2)
           end
           expect(result).to match(%r(name="cat">cat 1</field>))
           expect(result).to match(%r(name="cat">cat 2</field>))
@@ -122,7 +120,7 @@ RSpec.describe RSolr::Xml do
         end
 
         it 'should create an add from a single Message::Document' do
-          document = RSolr::Xml::Document.new
+          document = RSolr::Document.new
           document.add_field('id', 1)
           document.add_field('name', 'matt', :boost => 2.0)
           result = generator.add(document)
@@ -135,7 +133,7 @@ RSpec.describe RSolr::Xml do
     
         it 'should create adds from multiple Message::Documents' do
           documents = (1..2).map do |i|
-            doc = RSolr::Xml::Document.new
+            doc = RSolr::Document.new
             doc.add_field('id', i)
             doc.add_field('name', "matt#{i}")
             doc
@@ -217,50 +215,5 @@ RSpec.describe RSolr::Xml do
         expect(result).to match(/<field name="whatever">some string<\/field>/)
       end
     end
-  end
-
-  describe RSolr::Xml::Field do
-    describe ".instance" do
-      subject { RSolr::Xml::Field }
-
-      it "detect class name by value" do
-        expect(subject.instance({}, Time.new)).to be_a_kind_of(RSolr::Xml::TimeField)
-      end
-
-      it "detect class name by option" do
-        expect(subject.instance({:type => 'Time'}, nil)).to be_a_kind_of(RSolr::Xml::TimeField)
-      end
-
-      it "fallback with basic Field" do
-        expect(subject.instance({:type => 'UndefinedType'}, nil)).to be_a_kind_of(RSolr::Xml::Field)
-      end
-    end
-
-    describe "#value" do
-      it "convert value to string" do
-        expect(RSolr::Xml::Field.instance({}, 1).value).to eq '1'
-      end
-    end
-  end
-
-  describe RSolr::Xml::TimeField do
-    it "convert value to string" do
-      time_value = Time.utc(2013, 9, 11, 18, 10, 0)
-      expect(RSolr::Xml::Field.instance({}, time_value).value).to eq '2013-09-11T18:10:00Z'
-    end
-
-    it "convert time to UTC" do
-      time_value = Time.new(2013, 9, 11, 18, 10, 0, '+02:00')
-      expect(RSolr::Xml::Field.instance({}, time_value).value).to eq '2013-09-11T16:10:00Z'
-    end
-  end
-
-  describe "::DateField" do
-    it "convert value to string" do
-      date_value = Date.new(2013, 9, 11)
-      expect(RSolr::Xml::Field.instance({}, date_value).value).to eq '2013-09-11T00:00:00Z'
-    end
-
-  end
-  
+  end  
 end
