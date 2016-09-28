@@ -28,13 +28,4 @@ RSpec.describe RSolr do
       expect(RSolr.solr_escape(str)).to eq str
     end
   end
-
-  # deprecated as of 2015-02
-=begin
-  it "can escape" do
-    expect(RSolr).to be_a(RSolr::Char)
-    expect(RSolr.escape("this string")).to eq("this\\ string")
-  end
-=end
-  
 end
