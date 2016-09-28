@@ -3,6 +3,8 @@ begin
 rescue LoadError
 end
 
+require 'rsolr/sanitize_control_characters_for_indexing'
+
 class RSolr::Client
 
   class << self
@@ -101,7 +103,8 @@ class RSolr::Client
   #
   def add doc, opts = {}
     add_attributes = opts.delete :add_attributes
-    update opts.merge(:data => xml.add(doc, add_attributes))
+    sanitized_doc = RSolr::SanitizeControlCharactersForIndexing.sanitize_document(doc)
+    update opts.merge(:data => xml.add(sanitized_doc, add_attributes))
   end
 
   # send "commit" xml with opts
