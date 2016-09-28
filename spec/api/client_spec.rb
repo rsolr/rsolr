@@ -1,21 +1,15 @@
 require 'spec_helper'
 
 RSpec.describe RSolr::Client do
+  let(:connection) { nil }
+  let(:connection_options) { { url: "http://localhost:9999/solr", read_timeout: 42, open_timeout: 43 } }
 
-  module ClientHelper
-    def client
-      @client ||= (
-        connection = nil
-        RSolr::Client.new connection, :url => "http://localhost:9999/solr", :read_timeout => 42, :open_timeout=>43
-      )
-    end
+  let(:client) do
+    RSolr::Client.new connection, connection_options
+  end
 
-    def client_with_proxy
-      @client_with_proxy ||= (
-        connection = nil
-        RSolr::Client.new connection, :url => "http://localhost:9999/solr", :proxy => 'http://localhost:8080', :read_timeout => 42, :open_timeout=>43
-      )
-    end
+  let(:client_with_proxy) do
+    RSolr::Client.new connection, connection_options.merge(proxy: 'http://localhost:8080')
   end
 
   context "initialize" do
@@ -50,7 +44,6 @@ RSpec.describe RSolr::Client do
   end
 
   context "send_and_receive" do
-    include ClientHelper
     it "should forward these method calls the #connection object" do
       [:get, :post, :head].each do |meth|
         expect(client).to receive(:execute).
@@ -61,7 +54,6 @@ RSpec.describe RSolr::Client do
   end
 
   context "post" do
-    include ClientHelper
     it "should pass the expected params to the connection's #execute method" do
       request_opts = {:data => "the data", :method=>:post, :headers => {"Content-Type" => "text/plain"}}
       expect(client).to receive(:execute).
@@ -76,14 +68,12 @@ RSpec.describe RSolr::Client do
   end
 
   context "xml" do
-    include ClientHelper
     it "should return an instance of RSolr::Xml::Generator" do
       expect(client.xml).to be_a RSolr::Xml::Generator
     end
   end
 
   context "add" do
-    include ClientHelper
     it "should send xml to the connection's #post method" do
       expect(client).to receive(:execute).
         with(
@@ -107,7 +97,6 @@ RSpec.describe RSolr::Client do
   end
 
   context "update" do
-    include ClientHelper
     it "should send data to the connection's #post method" do
       expect(client).to receive(:execute).
         with(hash_including({
@@ -139,7 +128,6 @@ RSpec.describe RSolr::Client do
   end
 
   context "post based helper methods:" do
-    include ClientHelper
     [:commit, :optimize, :rollback].each do |meth|
       it "should send a #{meth} message to the connection's #post method" do
         expect(client).to receive(:execute).
@@ -161,7 +149,6 @@ RSpec.describe RSolr::Client do
   end
 
   context "delete_by_id" do
-    include ClientHelper
     it "should send data to the connection's #post method" do
       expect(client).to receive(:execute).
         with(
@@ -182,7 +169,6 @@ RSpec.describe RSolr::Client do
   end
 
   context "delete_by_query" do
-    include ClientHelper
     it "should send data to the connection's #post method" do
       expect(client).to receive(:execute).
         with(
@@ -203,7 +189,6 @@ RSpec.describe RSolr::Client do
   end
 
   context "adapt_response" do
-    include ClientHelper
     it 'should not try to evaluate ruby when the :qt is not :ruby' do
       body = '{"time"=>"NOW"}'
       result = client.adapt_response({:params=>{}}, {:status => 200, :body => body, :headers => {}})
@@ -241,7 +226,6 @@ RSpec.describe RSolr::Client do
   end
 
   context "indifferent access" do
-    include ClientHelper
     it "should raise a RuntimeError if the #with_indifferent_access extension isn't loaded" do
       hide_const("::RSolr::HashWithIndifferentAccessWithResponse")
       hide_const("ActiveSupport::HashWithIndifferentAccess")
@@ -267,7 +251,6 @@ RSpec.describe RSolr::Client do
   end
 
   context "build_request" do
-    include ClientHelper
     let(:data) { 'data' }
     let(:params) { { q: 'test', fq: [0,1] } }
     let(:options) { { method: :post, params: params, data: data, headers: {} } }
