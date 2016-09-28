@@ -1,10 +1,6 @@
 require 'uri'
 
 module RSolr::Uri
-  def self.create url
-    ::URI.parse (url[-1] == '/' || URI.parse(url).query) ? url : "#{url}/"
-  end
-
   # Creates a Solr based query string.
   # Keys that have arrays values are set multiple times:
   #   params_to_solr(:q => 'query', :fq => ['a', 'b'])

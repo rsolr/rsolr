@@ -5,14 +5,14 @@ RSpec.describe RSolr::Client do
   module ClientHelper
     def client
       @client ||= (
-        connection = RSolr::Connection.new
+        connection = nil
         RSolr::Client.new connection, :url => "http://localhost:9999/solr", :read_timeout => 42, :open_timeout=>43
       )
     end
 
     def client_with_proxy
       @client_with_proxy ||= (
-        connection = RSolr::Connection.new
+        connection = nil
         RSolr::Client.new connection, :url => "http://localhost:9999/solr", :proxy => 'http://localhost:8080', :read_timeout => 42, :open_timeout=>43
       )
     end
@@ -53,49 +53,10 @@ RSpec.describe RSolr::Client do
     include ClientHelper
     it "should forward these method calls the #connection object" do
       [:get, :post, :head].each do |meth|
-        expect(client.connection).to receive(:execute).
+        expect(client).to receive(:execute).
           and_return({:status => 200, :body => "{}", :headers => {}})
         client.send_and_receive '', :method => meth, :params => {}, :data => nil, :headers => {}
       end
-    end
-
-    it "should be timeout aware" do
-      [:get, :post, :head].each do |meth|
-        expect(client.connection).to receive(:execute).with(hash_including(:read_timeout => 42, :open_timeout=>43))
-        client.send_and_receive '', :method => meth, :params => {}, :data => nil, :headers => {}
-      end
-    end
-  end
-
-  context "execute" do
-    include ClientHelper
-    let :request_context do
-      {
-        :method => :post,
-        :params => {},
-        :data => nil,
-        :headers => {},
-        :path => '',
-        :uri => client.base_uri,
-        :retry_503 => 1
-      }
-    end
-    it "should retry 503s if requested" do
-      expect(client.connection).to receive(:execute).exactly(2).times.and_return(
-        {:status => 503, :body => "{}", :headers => {'Retry-After' => 0}},
-        {:status => 200, :body => "{}", :headers => {}}
-      )
-      client.execute request_context
-    end
-    it "should not retry a 503 if the retry-after is too large" do
-      expect(client.connection).to receive(:execute).exactly(1).times.and_return(
-        {:status => 503, :body => "{}", :headers => {'Retry-After' => 10}}
-      )
-      expect {
-        Timeout.timeout(0.5) do
-          client.execute({:retry_after_limit => 0}.merge(request_context))
-        end
-      }.to raise_error(RSolr::Error::Http)
     end
   end
 
@@ -103,7 +64,7 @@ RSpec.describe RSolr::Client do
     include ClientHelper
     it "should pass the expected params to the connection's #execute method" do
       request_opts = {:data => "the data", :method=>:post, :headers => {"Content-Type" => "text/plain"}}
-      expect(client.connection).to receive(:execute).
+      expect(client).to receive(:execute).
         with(hash_including(request_opts)).
         and_return(
           :body => "",
@@ -124,7 +85,7 @@ RSpec.describe RSolr::Client do
   context "add" do
     include ClientHelper
     it "should send xml to the connection's #post method" do
-      expect(client.connection).to receive(:execute).
+      expect(client).to receive(:execute).
         with(
           hash_including({
             :path => "update",
@@ -148,9 +109,8 @@ RSpec.describe RSolr::Client do
   context "update" do
     include ClientHelper
     it "should send data to the connection's #post method" do
-      expect(client.connection).to receive(:execute).
-        with(
-          hash_including({
+      expect(client).to receive(:execute).
+        with(hash_including({
             :path => "update",
             :headers => {"Content-Type"=>"text/xml"},
             :method => :post,
@@ -182,9 +142,8 @@ RSpec.describe RSolr::Client do
     include ClientHelper
     [:commit, :optimize, :rollback].each do |meth|
       it "should send a #{meth} message to the connection's #post method" do
-        expect(client.connection).to receive(:execute).
-          with(
-            hash_including({
+        expect(client).to receive(:execute).
+          with(hash_including({
               :path => "update",
               :headers => {"Content-Type"=>"text/xml"},
               :method => :post,
@@ -204,7 +163,7 @@ RSpec.describe RSolr::Client do
   context "delete_by_id" do
     include ClientHelper
     it "should send data to the connection's #post method" do
-      expect(client.connection).to receive(:execute).
+      expect(client).to receive(:execute).
         with(
           hash_including({
             :path => "update",
@@ -225,7 +184,7 @@ RSpec.describe RSolr::Client do
   context "delete_by_query" do
     include ClientHelper
     it "should send data to the connection's #post method" do
-      expect(client.connection).to receive(:execute).
+      expect(client).to receive(:execute).
         with(
           hash_including({
             :path => "update",

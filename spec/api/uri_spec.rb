@@ -3,47 +3,6 @@ require 'spec_helper'
 RSpec.describe RSolr::Uri do
   
   let(:uri) { RSolr::Uri }
-  
-  context '.create' do
-    it "returns a URI object" do
-      u = uri.create 'http://apache.org'
-      expect(u).to be_a_kind_of URI
-    end
-    it "calls URI.parse" do
-      expect(URI).to receive(:parse).twice.and_call_original
-      u = uri.create 'http://apache.org'
-    end
-    it "adds a trailing slash after host if there is none" do
-      u = uri.create 'http://apache.org'
-      u_str = u.to_s
-      size = u_str.size
-      expect(u_str[size - 1]).to eq '/'
-    end
-    it "does not add trailing slash after host if there already is one" do
-      u = uri.create 'http://apache.org/'
-      u_str = u.to_s
-      size = u_str.size
-      expect(u_str[size - 2, 2]).to eq 'g/'
-    end
-    it "adds a trailing slash after path if there is none" do
-      u = uri.create 'http://apache.org/lucene'
-      u_str = u.to_s
-      size = u_str.size
-      expect(u_str[size - 1]).to eq '/'
-    end
-    it "does not add trailing slash after path if there already is one" do
-      u = uri.create 'http://apache.org/lucene/'
-      u_str = u.to_s
-      size = u_str.size
-      expect(u_str[size - 2, 2]).to eq 'e/'
-    end
-    it "does not add trailing slash if there are query params" do
-      u = uri.create 'http://apache.org?foo=bar'
-      u_str = u.to_s
-      size = u_str.size
-      expect(u_str[size - 1]).not_to eq '/'
-    end
-  end
 
   context '.params_to_solr' do
     it "converts Hash to Solr query string w/o a starting ?" do
