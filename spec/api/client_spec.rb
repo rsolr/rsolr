@@ -284,7 +284,8 @@ RSpec.describe RSolr::Client do
   context "indifferent access" do
     include ClientHelper
     it "should raise a RuntimeError if the #with_indifferent_access extension isn't loaded" do
-      hide_const("HashWithIndifferentAccess")
+      hide_const("::RSolr::HashWithIndifferentAccessWithResponse")
+      hide_const("ActiveSupport::HashWithIndifferentAccess")
       body = "{'foo'=>'bar'}"
       result = client.adapt_response({:params=>{:wt=>:ruby}}, {:status => 200, :body => body, :headers => {}})
       expect { result.with_indifferent_access }.to raise_error RuntimeError
