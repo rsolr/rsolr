@@ -34,7 +34,7 @@ class RSolr::Client
         @proxy = false  # used to avoid setting the proxy from the environment.
       end
     end
-    @update_format = options.delete(:update_format) || :xml
+    @update_format = options.delete(:update_format) || :json
     @update_path = options.fetch(:update_path, 'update')
     @options = options
   end

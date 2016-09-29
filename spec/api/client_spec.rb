@@ -2,7 +2,7 @@ require 'spec_helper'
 
 RSpec.describe RSolr::Client do
   let(:connection) { nil }
-  let(:connection_options) { { url: "http://localhost:9999/solr", read_timeout: 42, open_timeout: 43 } }
+  let(:connection_options) { { url: "http://localhost:9999/solr", read_timeout: 42, open_timeout: 43, update_format: :xml } }
 
   let(:client) do
     RSolr::Client.new connection, connection_options
