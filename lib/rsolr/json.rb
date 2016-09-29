@@ -22,7 +22,7 @@ module RSolr::JSON
 
     # generates a rollback message
     def rollback
-      { rollback: {} }
+      { rollback: {} }.to_json
     end
 
     # generates a delete message
@@ -34,7 +34,7 @@ module RSolr::JSON
     # generates a delete message
     # "queries" can be a single value or an array of values
     def delete_by_query(queries)
-      { delete: { query: queries } }
+      { delete: { query: queries } }.to_json
     end
   end
 end
