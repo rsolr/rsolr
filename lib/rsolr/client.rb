@@ -291,6 +291,7 @@ class RSolr::Client
       conn_opts[:proxy] = proxy if proxy
       conn_opts[:request][:open_timeout] = options[:open_timeout] if options[:open_timeout]
       conn_opts[:request][:timeout] = options[:read_timeout] if options[:read_timeout]
+      conn_opts[:request][:params_encoder] = Faraday::FlatParamsEncoder
 
       Faraday.new(conn_opts) do |conn|
         conn.basic_auth(uri.user, uri.password) if uri.user && uri.password
@@ -298,7 +299,7 @@ class RSolr::Client
         conn.request :retry, max: options[:retry_after_limit], interval: 0.05,
                              interval_randomness: 0.5, backoff_factor: 2,
                              exceptions: ['Faraday::Error', 'Timeout::Error'] if options[:retry_503]
-        conn.adapter options.fetch(:adapter, :net_http)
+        conn.adapter options[:adapter] || Faraday.default_adapter
       end
     end
   end
