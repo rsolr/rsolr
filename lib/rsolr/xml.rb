@@ -17,9 +17,8 @@ module RSolr::Xml
       doc_hash.each_pair do |field,values|
         # create a new field for each value (multi-valued)
         wrap(values).each do |v|
-          v = format_value(v)
-          next if v.empty?
-          @fields << RSolr::Xml::Field.new({:name=>field}, v)
+          next if v.nil?
+          @fields << RSolr::Xml::Field.instance({:name=>field}, v)
         end
       end
       @attrs={}
@@ -45,23 +44,10 @@ module RSolr::Xml
     #   document.add_field('title', 'A Title', :boost => 2.0)
     #
     def add_field(name, value, options = {})
-      @fields << RSolr::Xml::Field.new(options.merge({:name=>name}), value)
+      @fields << RSolr::Xml::Field.instance(options.merge({:name=>name}), value)
     end
 
     private
-
-    def format_value(v)
-      case v
-      when Time
-        v.getutc.iso8601
-      when DateTime
-        v.to_time.getutc.iso8601
-      when Date
-        Time.utc(v.year, v.mon, v.mday).iso8601
-      else
-        v.to_s
-      end
-    end
 
     def wrap(object)
       if object.nil?
@@ -77,25 +63,53 @@ module RSolr::Xml
   end
 
   class Field
-    
+
+    def self.instance(attrs, value)
+      field_type = attrs.fetch(:type, value.class.name) + "Field"
+      search_scope = Module.nesting[1]
+      klass = search_scope.const_defined?(field_type, false) ? search_scope.const_get(field_type) : Field
+      klass.new(attrs, value)
+    end
+
     # "attrs" is a hash for setting the "doc" xml attributes
     # "value" is the text value for the node
-    attr_accessor :attrs, :value
+    attr_accessor :attrs, :source_value
 
     # "attrs" must be a hash
     # "value" should be something that responds to #_to_s
-    def initialize(attrs, value)
+    def initialize(attrs, source_value)
       @attrs = attrs
-      @value = value
+      @source_value = source_value
     end
 
     # the value of the "name" attribute
     def name
-      @attrs[:name]
+      attrs[:name]
     end
-    
+
+    def value
+      source_value.to_s
+    end
   end
-  
+
+  class DateField < Field
+    def value
+      Time.utc(source_value.year, source_value.mon, source_value.mday).iso8601
+    end
+  end
+
+  class TimeField < Field
+    def value
+      source_value.getutc.strftime('%FT%TZ')
+    end
+  end
+
+  class DateTimeField < Field
+    def value
+      source_value.to_time.getutc.iso8601
+    end
+  end
+
   class Generator
     class << self
       attr_accessor :use_nokogiri
