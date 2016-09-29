@@ -1,7 +1,6 @@
 module RSolr
-  
   Dir.glob(File.expand_path("../rsolr/*.rb", __FILE__)).each{|rb_file| require(rb_file)}
-  
+
   def self.connect *args
     opts = args.pop if args.last.is_a?(::Hash)
     opts ||= {}
