@@ -95,8 +95,12 @@ module RSolr
     end
 
     def as_json
-      if attrs.any? { |k, _| k != :name }
-        attrs.merge(value: value)
+      if attrs[:update]
+        { attrs[:update] => value }
+      elsif attrs.any? { |k, _| k != :name }
+        hash = attrs.dup
+        hash.delete(:name)
+        hash.merge(value: value)
       else
         value
       end
