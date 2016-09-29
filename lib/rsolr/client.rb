@@ -3,6 +3,8 @@ begin
 rescue LoadError
 end
 
+require 'faraday'
+
 class RSolr::Client
 
   class << self
