@@ -93,8 +93,8 @@ RSpec.describe RSolr::Xml do
           ]
           message = generator.add(data)
           expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><add><doc><field name=\"id\">1</field><field name=\"name\">matt</field></doc><doc><field name=\"id\">2</field><field name=\"name\">sam</field></doc></add>"
-          expect(message).to match(/<field name="name">matt<\/field>/)
-          expect(message).to match(/<field name="name">sam<\/field>/)
+          expect(message).to match %r{<field name="name">matt</field>}
+          expect(message).to match %r{<field name="name">sam</field>}
         end
 
         # multiValue field support test, thanks to Fouad Mardini!
