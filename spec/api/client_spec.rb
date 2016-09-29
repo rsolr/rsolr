@@ -332,7 +332,7 @@ RSpec.describe RSolr::Client do
         [/fq=0/, /fq=1/, /q=test/].each do |pattern|
           expect(subject[:data]).to match pattern
         end
-        expect(subject[:data]).not_to match /wt=json/
+        expect(subject[:data]).not_to match(/wt=json/)
         expect(subject[:headers]).to eq({"Content-Type" => "application/x-www-form-urlencoded; charset=UTF-8"})
       end
     end
@@ -343,7 +343,7 @@ RSpec.describe RSolr::Client do
         :data => {:q=>'test', :fq=>[0,1]},
         :headers => {}
       )
-      expect(result[:uri].to_s).to match /^http:\/\/localhost:9999\/solr\//
+      expect(result[:uri].to_s).to match %r{^http://localhost:9999/solr/}
     end
   end
 end
