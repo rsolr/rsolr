@@ -116,7 +116,7 @@ class RSolr::Client
   #
   def commit opts = {}
     commit_attrs = opts.delete :commit_attributes
-    update opts.merge(:data => xml.commit( commit_attrs ))
+    update opts.merge(:data => builder.commit( commit_attrs ))
   end
 
   # send "optimize" xml with opts.
@@ -125,7 +125,7 @@ class RSolr::Client
   #
   def optimize opts = {}
     optimize_attributes = opts.delete :optimize_attributes
-    update opts.merge(:data => xml.optimize(optimize_attributes))
+    update opts.merge(:data => builder.optimize(optimize_attributes))
   end
 
   # send </rollback>
@@ -134,14 +134,14 @@ class RSolr::Client
   #
   # NOTE: solr 1.4 only
   def rollback opts = {}
-    update opts.merge(:data => xml.rollback)
+    update opts.merge(:data => builder.rollback)
   end
 
   # Delete one or many documents by id
   #   solr.delete_by_id 10
   #   solr.delete_by_id([12, 41, 199])
   def delete_by_id id, opts = {}
-    update opts.merge(:data => xml.delete_by_id(id))
+    update opts.merge(:data => builder.delete_by_id(id))
   end
 
   # delete one or many documents by query.
@@ -151,7 +151,7 @@ class RSolr::Client
   #   solr.delete_by_query 'available:0'
   #   solr.delete_by_query ['quantity:0', 'manu:"FQ"']
   def delete_by_query query, opts = {}
-    update opts.merge(:data => xml.delete_by_query(query))
+    update opts.merge(:data => builder.delete_by_query(query))
   end
 
   def builder
