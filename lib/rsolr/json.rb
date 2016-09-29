@@ -4,7 +4,8 @@ module RSolr::JSON
       raise "Unable to use add_attr with JSON serialization" unless add_attrs.nil?
       data = [data] unless data.is_a?(Array)
       data.map do |doc|
-        RSolr::Document.new(doc).as_json
+        doc = RSolr::Document.new(doc) if doc.respond_to?(:each_pair)
+        doc.as_json
       end.to_json
     end
 
