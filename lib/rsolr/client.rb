@@ -9,7 +9,7 @@ class RSolr::Client
 
   class << self
     def default_wt
-      @default_wt || :json
+      @default_wt ||= :json
     end
 
     def default_wt= value
