@@ -5,16 +5,24 @@ RSpec.describe RSolr::Document do
     describe ".instance" do
       subject { RSolr::Field }
 
-      it "detect class name by value" do
+      it "uses the class name of the field value" do
         expect(subject.instance({}, Time.new)).to be_a_kind_of(RSolr::TimeField)
       end
 
-      it "detect class name by option" do
+      it "uses the provided type option when it is a class" do
+        expect(subject.instance({:type => RSolr::TimeField}, nil)).to be_a_kind_of(RSolr::TimeField)
+      end
+
+      it "uses the provided type option when it is a string" do
         expect(subject.instance({:type => 'Time'}, nil)).to be_a_kind_of(RSolr::TimeField)
       end
 
-      it "fallback with basic Field" do
+      it "falls back to the base Field class" do
         expect(subject.instance({:type => 'UndefinedType'}, nil)).to be_a_kind_of(RSolr::Field)
+      end
+
+      it "defaults to the base Field class" do
+        expect(subject.instance({}, nil)).to be_a_kind_of(RSolr::Field)
       end
     end
   end
