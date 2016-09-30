@@ -21,7 +21,7 @@ module RSolr::Xml
         end
       end
     end
-    self.use_nokogiri = (defined?(::Nokogiri::XML::Builder) and not defined?(JRuby)) ? true : false
+    self.use_nokogiri = defined?(::Nokogiri::XML::Builder) ? true : false
 
     def nokogiri_build &block
       b = ::Nokogiri::XML::Builder.new do |xml|
