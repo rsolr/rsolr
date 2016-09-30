@@ -17,12 +17,6 @@ RSpec.describe RSolr::Document do
         expect(subject.instance({:type => 'UndefinedType'}, nil)).to be_a_kind_of(RSolr::Field)
       end
     end
-
-    describe "#value" do
-      it "convert value to string" do
-        expect(RSolr::Field.instance({}, 1).value).to eq '1'
-      end
-    end
   end
 
   describe RSolr::TimeField do

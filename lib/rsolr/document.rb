@@ -91,7 +91,7 @@ module RSolr
     end
 
     def value
-      source_value.to_s
+      source_value
     end
 
     def as_json
