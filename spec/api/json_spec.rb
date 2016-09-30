@@ -32,6 +32,18 @@ RSpec.describe RSolr::JSON do
       expect(message).to eq data
     end
 
+    it 'should yield a Document object when #add is called with a block' do
+      documents = [{:id=>1, :name=>'sam', :cat=>['cat 1', 'cat 2']}]
+      result = generator.add(documents) do |doc|
+        doc.field_by_name(:name).attrs[:boost] = 10
+      end
+
+      message = JSON.parse(result, symbolize_names: true)
+
+      expect(message.length).to eq 1
+      expect(message.first).to include name: { boost: 10, value: 'sam' }
+    end
+
     context 'with add_attr' do
       it 'should create an add command with the attributes from a hash' do
         data = {
