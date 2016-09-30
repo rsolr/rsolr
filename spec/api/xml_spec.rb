@@ -79,6 +79,17 @@ RSpec.describe RSolr::Xml do
           expect(result).to match(/<field name="id">1<\/field>/)
         end
 
+        # add a single hash ("doc")
+        it 'should create an add from a hash formatted for atomic updates' do
+          data = {
+            :id=>1,
+            :name=> { set: 'matt' }
+          }
+          result = generator.add(data)
+          expect(result).to match(/<field name="name" update="set">matt<\/field>/)
+          expect(result).to match(/<field name="id">1<\/field>/)
+        end
+
         # add an array of hashes
         it 'should create many adds from an array of hashes' do
           data = [
