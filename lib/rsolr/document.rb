@@ -70,11 +70,26 @@ module RSolr
   class Field
 
     def self.instance(attrs, value)
-      field_type = attrs.fetch(:type, value.class.name) + "Field"
-      search_scope = Module.nesting[1]
-      klass = search_scope.const_defined?(field_type, false) ? search_scope.const_get(field_type) : Field
+      attrs = attrs.dup
+      field_type = attrs.delete(:type) {  value.class.name }
+
+      klass = if field_type.is_a? String
+                class_for_field(field_type)
+              elsif field_type.is_a? Class
+                field_type
+              else
+                self
+              end
+
       klass.new(attrs, value)
     end
+
+    def self.class_for_field(field_type)
+      potential_class_name = field_type + 'Field'.freeze
+      search_scope = Module.nesting[1]
+      search_scope.const_defined?(potential_class_name, false) ? search_scope.const_get(potential_class_name) : self
+    end
+    private_class_method :class_for_field
 
     # "attrs" is a hash for setting the "doc" xml attributes
     # "value" is the text value for the node
