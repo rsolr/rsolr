@@ -1,3 +1,14 @@
+2.0.0.pre1
+
+In this release, we've added many new features, including:
+
+- a new JSON request generator (enabled by default, replacing the XML-based requests) (@mootprinter)
+- using Faraday for added flexibility for HTTP configuration
+- native support for nested child documents and atomic updates in RSolr::Document and RSolr::Client.add
+- better support for custom field value converters (@solenko)
+- removing code deprecated in RSolr 1.x (@vipulnsward, and others)
+
+
 1.0.12
    - Fix bug where specifying the wt property as a string, would add the supplied value to the default ('ruby') rather than overriding it.
 

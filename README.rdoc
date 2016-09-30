@@ -11,7 +11,6 @@ The code docs http://www.rubydoc.info/gems/rsolr
   gem install rsolr
 
 == Example:
-  require 'rubygems'
   require 'rsolr'
   
   # Direct connection
@@ -19,7 +18,17 @@ The code docs http://www.rubydoc.info/gems/rsolr
   
   # Connecting over a proxy server
   solr = RSolr.connect :url => 'http://solrserver.com', :proxy=>'http://user:pass@proxy.example.com:8080'
+
+  # Using an alternate Faraday adapter
+  solr = RSolr.connect :url => 'http://solrserver.com', :adapter => :em_http
   
+  # Using a custom Faraday connection
+  conn = Faraday.new do |faraday|
+    faraday.response :logger                  # log requests to STDOUT
+    faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
+  end
+  solr = RSolr.connect conn, :url => 'http://solrserver.com'
+    
   # send a request to /select
   response = solr.get 'select', :params => {:q => '*:*'}
   
@@ -34,6 +43,14 @@ The +:request+ attribute contains the original request context. You can use this
 
 The +:response+ attribute contains the original response. This object contains the +:status+, +:body+ and +:headers+ keys.
 
+== Request formats
+
+By default, RSolr uses the Solr JSON command format for all requests.
+
+  RSolr.connect :url => 'http://solrserver.com', update_format: :json # the default
+  # or
+  RSolr.connect :url => 'http://solrserver.com', update_format: :xml
+
 == Timeouts
 The read and connect timeout settings can be set when creating a new instance of RSolr:
   solr = RSolr.connect(:read_timeout => 120, :open_timeout => 120)
@@ -44,6 +61,7 @@ A 503 is usually a temporary error which RSolr may retry if requested. You may s
 Only requests which specify a Retry-After header will be retried, after waiting the indicated retry interval, otherwise RSolr will treat the request as a 500. You may specify a maximum Retry-After interval to wait with the +:retry_after_limit+ option (default: one second).
   solr = RSolr.connect(:retry_503 => 1, :retry_after_limit => 1)
 
+For additional control, consider using a custom Faraday connection (see above) using its `retry` middleware.
 
 == Querying
 Use the #get / #post method to send search requests to the /select handler:
@@ -119,9 +137,9 @@ Multiple documents via #add
 The optional +:add_attributes+ hash can also be used to set Solr "add" document attributes:
   solr.add documents, :add_attributes => {:commitWithin => 10}
 
-Raw XML via  #update
-  solr.update :data => '<commit/>'
-  solr.update :data => '<optimize/>'
+Raw commands via  #update
+  solr.update data: '<commit/>', headers: { 'Content-Type' => 'text/xml' }
+  solr.update data: { optimize: true }.to_json, headers: { 'Content-Type' => 'application/json' }
 
 When adding, you can also supply "add" xml element attributes and/or a block for manipulating other "add" related elements (docs and fields) by calling the +xml+ method directly:
   
