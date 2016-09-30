@@ -7,12 +7,14 @@ module RSolr::JSON
       if add_attrs.empty? && data.none? { |doc| doc.is_a?(RSolr::Document) && !doc.attrs.empty? }
         data.map do |doc|
           doc = RSolr::Document.new(doc) if doc.respond_to?(:each_pair)
+          yield doc if block_given?
           doc.as_json
         end.to_json
       else
         i = 0
         data.each_with_object({}) do |doc, hash|
           doc = RSolr::Document.new(doc) if doc.respond_to?(:each_pair)
+          yield doc if block_given?
           hash["add__UNIQUE_RSOLR_SUFFIX_#{i += 1}"] = add_attrs.merge(doc.attrs).merge(doc: doc.as_json)
         end.to_json.gsub(/__UNIQUE_RSOLR_SUFFIX_\d+/, '')
       end
