@@ -57,6 +57,8 @@ module RSolr
         []
       elsif object.respond_to?(:to_ary)
         object.to_ary || [object]
+      elsif object.is_a? Hash
+        [object]
       elsif object.is_a? Enumerable
         object
       else

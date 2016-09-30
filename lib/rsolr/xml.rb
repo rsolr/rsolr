@@ -77,7 +77,14 @@ module RSolr::Xml
             yield doc if block_given?
             doc_node_builder = lambda do |doc_node|
               doc.fields.each do |field_obj|
-                doc_node.field field_obj.value, field_obj.attrs
+                value = field_obj.value
+
+                if value.is_a?(Hash) && value.length == 1 && field_obj.attrs[:update].nil?
+                  update_attr, real_value = value.first
+                  doc_node.field real_value, field_obj.attrs.merge(update: update_attr)
+                else
+                  doc_node.field field_obj.value, field_obj.attrs
+                end
               end
             end
             self.class.use_nokogiri ? add_node.doc_(doc.attrs,&doc_node_builder) : add_node.doc(doc.attrs,&doc_node_builder)
