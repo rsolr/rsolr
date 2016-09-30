@@ -1,3 +1,5 @@
+require 'json'
+
 module RSolr::JSON
   class Generator
     def add data, add_attrs = {}

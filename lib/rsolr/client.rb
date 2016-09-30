@@ -1,8 +1,4 @@
-begin
-  require 'json'
-rescue LoadError
-end
-
+require 'json'
 require 'faraday'
 
 class RSolr::Client
