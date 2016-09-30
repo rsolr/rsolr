@@ -153,7 +153,24 @@ RSpec.describe RSolr::Xml do
           expect(result).to match(/<field name="name">matt1<\/field>/)
           expect(result).to match(/<field name="name">matt2<\/field>/)
         end
-    
+
+        it 'supports nested child documents' do
+          data = {
+            :_childDocuments_ => [
+              {
+                :id => 1
+              },
+              {
+                :id => 2
+              }
+            ]
+          }
+
+          result = generator.add(data)
+          expect(result).to match(%r{<add><doc><doc>})
+          expect(result).to match(%r{<doc><field name="id">1</field></doc>})
+          expect(result).to match(%r{<doc><field name="id">2</field></doc>})
+        end
       end
   
       context :delete_by_id do

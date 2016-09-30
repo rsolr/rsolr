@@ -94,6 +94,23 @@ RSpec.describe RSolr::JSON do
       expect(message.length).to eq 1
       expect(message.first).to eq data
     end
+
+    it 'supports nested child documents' do
+      data = {
+        _childDocuments_: [
+          {
+            id: 1
+          },
+          {
+            id: 2
+          }
+        ]
+      }
+
+      message = JSON.parse(generator.add(data), symbolize_names: true)
+      expect(message.length).to eq 1
+      expect(message.first).to eq data
+    end
   end
 
   it 'should create multiple fields from array values' do
