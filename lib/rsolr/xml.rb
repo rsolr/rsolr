@@ -75,18 +75,7 @@ module RSolr::Xml
           data.each do |doc|
             doc = RSolr::Document.new(doc) if doc.respond_to?(:each_pair)
             yield doc if block_given?
-            doc_node_builder = lambda do |doc_node|
-              doc.fields.each do |field_obj|
-                value = field_obj.value
-
-                if value.is_a?(Hash) && value.length == 1 && field_obj.attrs[:update].nil?
-                  update_attr, real_value = value.first
-                  doc_node.field real_value, field_obj.attrs.merge(update: update_attr)
-                else
-                  doc_node.field field_obj.value, field_obj.attrs
-                end
-              end
-            end
+            doc_node_builder = to_xml(doc)
             self.class.use_nokogiri ? add_node.doc_(doc.attrs,&doc_node_builder) : add_node.doc(doc.attrs,&doc_node_builder)
           end
         end
@@ -130,6 +119,25 @@ module RSolr::Xml
       build do |xml|
         xml.delete do |delete_node|
           queries.each { |query| delete_node.query(query) }
+        end
+      end
+    end
+
+    private
+
+    def to_xml(doc)
+      lambda do |doc_node|
+        doc.fields.each do |field_obj|
+          value = field_obj.value
+          if field_obj.name.to_s == RSolr::Document::CHILD_DOCUMENT_KEY
+            child_node_builder = to_xml(field_obj.value)
+            self.class.use_nokogiri ? doc_node.doc_(&child_node_builder) : doc_node.doc(&child_node_builder)
+          elsif value.is_a?(Hash) && value.length == 1 && field_obj.attrs[:update].nil?
+            update_attr, real_value = value.first
+            doc_node.field real_value, field_obj.attrs.merge(update: update_attr)
+          else
+            doc_node.field field_obj.value, field_obj.attrs
+          end
         end
       end
     end

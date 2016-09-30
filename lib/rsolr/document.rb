@@ -1,6 +1,7 @@
 module RSolr
   class Document
-    
+    CHILD_DOCUMENT_KEY = '_childDocuments_'.freeze
+
     # "attrs" is a hash for setting the "doc" xml attributes
     # "fields" is an array of Field objects
     attr_accessor :attrs, :fields
@@ -38,7 +39,11 @@ module RSolr
     def add_field(name, values, options = {})
       wrap(values).each do |v|
         next if v.nil?
-        @fields << RSolr::Field.instance(options.merge({:name=>name}), v)
+
+        field_attrs = { name: name }
+        field_attrs[:type] = DocumentField if name.to_s == CHILD_DOCUMENT_KEY
+
+        @fields << RSolr::Field.instance(options.merge(field_attrs), v)
       end
     end
 
@@ -139,6 +144,18 @@ module RSolr
   class DateTimeField < Field
     def value
       source_value.to_time.getutc.iso8601
+    end
+  end
+
+  class DocumentField < Field
+    def value
+      return RSolr::Document.new(source_value) if source_value.respond_to? :each_pair
+
+      super
+    end
+
+    def as_json
+      value.as_json
     end
   end
 end
