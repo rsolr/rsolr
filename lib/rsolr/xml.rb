@@ -4,7 +4,7 @@ module RSolr::Xml
   Document = RSolr::Document
   Field = RSolr::Field
 
-  class Generator
+  class Generator < RSolr::Generator
     class << self
       attr_accessor :use_nokogiri
 

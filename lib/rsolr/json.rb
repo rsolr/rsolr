@@ -1,7 +1,7 @@
 require 'json'
 
 module RSolr::JSON
-  class Generator
+  class Generator < RSolr::Generator
     CONTENT_TYPE = 'application/json'.freeze
 
     def content_type

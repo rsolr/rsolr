@@ -67,18 +67,6 @@ RSpec.describe RSolr::Client do
     end
   end
 
-  context "xml" do
-    it "should return an instance of RSolr::Xml::Generator" do
-      expect(client.xml).to be_a RSolr::Xml::Generator
-    end
-  end
-
-  context "json" do
-    it "should return an instance of RSolr::JSON::Generator" do
-      expect(client.json).to be_a RSolr::JSON::Generator
-    end
-  end
-
   context "add" do
     it "should send xml to the connection's #post method" do
       expect(client).to receive(:execute).
@@ -95,7 +83,7 @@ RSpec.describe RSolr::Client do
         :status => 200,
         :headers => {"Content-Type"=>"text/xml"}
       )
-      expect(client.xml).to receive(:add).
+      expect(client.builder).to receive(:add).
         with({:id=>1}, {:commitWith=>10}).
         and_return("<xml/>")
       client.add({:id=>1}, :add_attributes => {:commitWith=>10})
@@ -119,7 +107,7 @@ RSpec.describe RSolr::Client do
               :status => 200,
               :headers => {"Content-Type"=>"text/xml"}
             )
-        expect(client.json).to receive(:add).
+        expect(client.builder).to receive(:add).
           with({:id => 1}, {:commitWith=>10}).
             and_return('{"hello":"this is json"}')
         client.add({:id=>1}, :add_attributes => {:commitWith=>10})
