@@ -79,11 +79,7 @@ class RSolr::Client
   #
   def update opts = {}
     opts[:headers] ||= {}
-    if @update_format == :json
-      opts[:headers]['Content-Type'] ||= 'application/json'
-    else
-      opts[:headers]['Content-Type'] ||= 'text/xml'
-    end
+    opts[:headers]['Content-Type'] ||= builder.content_type
     post opts.fetch(:path, update_path), opts
   end
 
