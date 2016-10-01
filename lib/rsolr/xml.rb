@@ -1,6 +1,3 @@
-begin; require 'nokogiri'; rescue LoadError; end
-require 'time'
-
 module RSolr::Xml
   require 'rsolr/document'
 
