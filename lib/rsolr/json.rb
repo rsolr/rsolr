@@ -2,6 +2,12 @@ require 'json'
 
 module RSolr::JSON
   class Generator
+    CONTENT_TYPE = 'application/json'.freeze
+
+    def content_type
+      CONTENT_TYPE
+    end
+
     def add data, add_attrs = {}
       add_attrs ||= {}
       data = RSolr::Array.wrap(data)

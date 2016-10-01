@@ -20,6 +20,13 @@ module RSolr::Xml
     end
     self.use_nokogiri = defined?(::Nokogiri::XML::Builder) ? true : false
 
+    CONTENT_TYPE = 'text/xml'.freeze
+
+    def content_type
+      CONTENT_TYPE
+    end
+
+
     def nokogiri_build &block
       b = ::Nokogiri::XML::Builder.new do |xml|
         block_given? ? yield(xml) : xml
