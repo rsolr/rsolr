@@ -13,7 +13,7 @@ class RSolr::Client
     end
   end
 
-  attr_reader :uri, :proxy, :options, :update_path
+  attr_reader :uri, :proxy, :update_format, :options, :update_path
 
   def initialize connection, options = {}
     @proxy = @uri = nil
@@ -30,7 +30,7 @@ class RSolr::Client
         @proxy = false  # used to avoid setting the proxy from the environment.
       end
     end
-    @update_format = options.delete(:update_format) || :json
+    @update_format = options.delete(:update_format) || RSolr::JSON::Generator
     @update_path = options.fetch(:update_path, 'update')
     @options = options
   end
@@ -147,19 +147,15 @@ class RSolr::Client
   end
 
   def builder
-    if @update_format == :json
-      json
-    else
-      xml
-    end
-  end
-  # shortcut to RSolr::Xml::Generator
-  def xml
-    @xml ||= RSolr::Xml::Generator.new
-  end
-
-  def json
-    @json ||= RSolr::JSON::Generator.new
+    @builder ||= if update_format.is_a? Class
+                   update_format.new
+                 elsif update_format == :json
+                   RSolr::JSON::Generator.new
+                 elsif update_format == :xml
+                   RSolr::Xml::Generator.new
+                 else
+                   update_format
+                 end
   end
 
   # +send_and_receive+ is the main request method responsible for sending requests to the +connection+ object.
