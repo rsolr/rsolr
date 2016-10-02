@@ -4,7 +4,7 @@ module RSolr::JSON
   class Generator
     def add data, add_attrs = {}
       add_attrs ||= {}
-      data = [data] unless data.is_a?(Array)
+      data = RSolr::Array.wrap(data)
 
       if add_attrs.empty? && data.none? { |doc| doc.is_a?(RSolr::Document) && !doc.attrs.empty? }
         data.map do |doc|

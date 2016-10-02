@@ -37,7 +37,7 @@ module RSolr
     #   document.add_field('title', 'A Title', :boost => 2.0)
     #
     def add_field(name, values, options = {})
-      wrap(values).each do |v|
+      RSolr::Array.wrap(values).each do |v|
         next if v.nil?
 
         field_attrs = { name: name }
@@ -52,22 +52,6 @@ module RSolr
         v = values.map(&:as_json)
         v = v.first if v.length == 1
         result[field] = v
-      end
-    end
-
-    private
-
-    def wrap(object)
-      if object.nil?
-        []
-      elsif object.respond_to?(:to_ary)
-        object.to_ary || [object]
-      elsif object.is_a? Hash
-        [object]
-      elsif object.is_a? Enumerable
-        object
-      else
-        [object]
       end
     end
   end

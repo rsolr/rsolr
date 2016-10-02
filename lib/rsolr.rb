@@ -21,5 +21,20 @@ module RSolr
     # so the result sent to Solr is ultimately a single backslash in front of the particular character 
     str.gsub(/([+\-&|!\(\)\{\}\[\]\^"~\*\?:\\\/])/, '\\\\\1')
   end
-  
+
+  module Array
+    def self.wrap(object)
+      if object.nil?
+        []
+      elsif object.respond_to?(:to_ary)
+        object.to_ary || [object]
+      elsif object.is_a? Hash
+        [object]
+      elsif object.is_a? Enumerable
+        object
+      else
+        [object]
+      end
+    end
+  end
 end
