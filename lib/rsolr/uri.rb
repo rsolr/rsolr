@@ -14,7 +14,7 @@ module RSolr::Uri
     # escape = false if we are here
     mapped = params.map do |k, v|
       next if v.to_s.empty?
-      if v.class == Array
+      if v.class == ::Array
         params_to_solr(v.map { |x| [k, x] }, false)
       else
         "#{k}=#{v}"

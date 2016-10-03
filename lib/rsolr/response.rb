@@ -11,7 +11,7 @@ module RSolr::Response
     @request = request
     @response = response
     self.merge!(result)
-    if self["response"] && self["response"]["docs"].is_a?(Array)
+    if self["response"] && self["response"]["docs"].is_a?(::Array)
       docs = PaginatedDocSet.new(self["response"]["docs"])
       docs.per_page = request[:params]["rows"]
       docs.page_start = request[:params]["start"]
@@ -41,7 +41,7 @@ module RSolr::Response
   end
 
   # A response module which gets mixed into the solr ["response"]["docs"] array.
-  class PaginatedDocSet < Array
+  class PaginatedDocSet < ::Array
 
     attr_accessor :page_start, :per_page, :page_total
     if not (Object.const_defined?("RUBY_ENGINE") and Object::RUBY_ENGINE=='rbx')
