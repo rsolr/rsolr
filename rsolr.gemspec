@@ -30,6 +30,8 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   
   s.required_ruby_version      = '>= 1.9.3'
+  
+  s.requirements << 'Apache Solr'
 
   s.add_dependency 'builder', '>= 2.1.2'
   s.add_dependency 'faraday'
