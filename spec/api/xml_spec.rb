@@ -154,6 +154,31 @@ RSpec.describe RSolr::Xml do
           expect(result).to match(/<field name="name">matt2<\/field>/)
         end
 
+        it 'should add an atomic_update set' do
+          document = RSolr::Document.new
+          document.add_field('id', 1)
+          document.add_field('field_name', 'some value', :update => :set)
+          document.add_field('another_field', [1, 2], :update => :set)
+          result = generator.add(document)
+          expect(result).to match(Regexp.escape('<?xml version="1.0" encoding="UTF-8"?>'))
+          expect(result).to match(/<field name="id">1<\/field>/)
+          expect(result).to match(/<field update="set" name="field_name">some value<\/field>/)
+          expect(result).to match(/<field update="set" name="another_field">1<\/field>/)
+          expect(result).to match(/<field update="set" name="another_field">2<\/field>/)
+        end
+
+        it 'should add an atomic_update set clear' do
+          document = RSolr::Document.new
+          document.add_field('id', 1)
+          document.add_field('field_name', nil, :update => :set)
+          document.add_field('another_field', [], :update => :set)
+          result = generator.add(document)
+          expect(result).to match(Regexp.escape('<?xml version="1.0" encoding="UTF-8"?>'))
+          expect(result).to match(/<field name="id">1<\/field>/)
+          expect(result).to match(/<field update="set" name="field_name" null="true"\/>/)
+          expect(result).to match(/<field update="set" name="another_field" null="true"\/>/)
+        end
+
         it 'supports nested child documents' do
           data = {
             :_childDocuments_ => [
