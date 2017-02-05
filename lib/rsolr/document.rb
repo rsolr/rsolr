@@ -50,7 +50,7 @@ module RSolr
     def as_json
       @fields.group_by(&:name).each_with_object({}) do |(field, values), result|
         v = values.map(&:as_json)
-        v = v.first if v.length == 1
+        v = v.first if v.length == 1 && field.to_s != CHILD_DOCUMENT_KEY
         result[field] = v
       end
     end
