@@ -38,8 +38,6 @@ module RSolr
     #
     def add_field(name, values, options = {})
       RSolr::Array.wrap(values).each do |v|
-        next if v.nil?
-
         field_attrs = { name: name }
         field_attrs[:type] = DocumentField if name.to_s == CHILD_DOCUMENT_KEY
 

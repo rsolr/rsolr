@@ -133,12 +133,15 @@ module RSolr::Xml
       lambda do |doc_node|
         doc.fields.each do |field_obj|
           value = field_obj.value
+
           if field_obj.name.to_s == RSolr::Document::CHILD_DOCUMENT_KEY
             child_node_builder = to_xml(field_obj.value)
             self.class.use_nokogiri ? doc_node.doc_(&child_node_builder) : doc_node.doc(&child_node_builder)
           elsif value.is_a?(Hash) && value.length == 1 && field_obj.attrs[:update].nil?
             update_attr, real_value = value.first
             doc_node.field real_value, field_obj.attrs.merge(update: update_attr)
+          elsif value.nil?
+            doc_node.field field_obj.value, field_obj.attrs.merge(null: true)
           else
             doc_node.field field_obj.value, field_obj.attrs
           end

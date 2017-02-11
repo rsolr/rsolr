@@ -25,7 +25,7 @@ module RSolr
   module Array
     def self.wrap(object)
       if object.nil?
-        []
+        [nil]
       elsif object.respond_to?(:to_ary)
         object.to_ary || [object]
       elsif object.is_a? Hash
