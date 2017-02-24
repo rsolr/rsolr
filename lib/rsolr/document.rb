@@ -37,11 +37,16 @@ module RSolr
     #   document.add_field('title', 'A Title', :boost => 2.0)
     #
     def add_field(name, values, options = {})
-      RSolr::Array.wrap(values).each do |v|
-        next if v.nil?
+      wrapped_values = RSolr::Array.wrap(values)
+      atomic_clear = options[:update] == :set && wrapped_values.empty?
+      wrapped_values = [nil] if atomic_clear
+
+      wrapped_values.each do |v|
+        next if v.nil? && !atomic_clear
 
         field_attrs = { name: name }
         field_attrs[:type] = DocumentField if name.to_s == CHILD_DOCUMENT_KEY
+        field_attrs[:null] = true if atomic_clear
 
         @fields << RSolr::Field.instance(options.merge(field_attrs), v)
       end
