@@ -1,5 +1,17 @@
 module RSolr
-  Dir.glob(File.expand_path("../rsolr/*.rb", __FILE__)).each{|rb_file| require(rb_file)}
+  require 'rsolr/version'
+
+  autoload :Char, 'rsolr/char'
+  autoload :Client, 'rsolr/client'
+  autoload :Document, 'rsolr/document'
+  autoload :Error, 'rsolr/error'
+  autoload :Field, 'rsolr/field'
+  autoload :Generator, 'rsolr/generator'
+  autoload :HashWithResponse, 'rsolr/response'
+  autoload :JSON, 'rsolr/json'
+  autoload :Response, 'rsolr/response'
+  autoload :Uri, 'rsolr/uri'
+  autoload :Xml, 'rsolr/xml'
 
   def self.connect *args
     opts = args.pop if args.last.is_a?(::Hash)

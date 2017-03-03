@@ -1,5 +1,3 @@
-require 'rsolr/generator'
-require 'rsolr/document'
 module RSolr::Xml
   Document = RSolr::Document
   Field = RSolr::Field
