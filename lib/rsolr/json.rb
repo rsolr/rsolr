@@ -1,5 +1,4 @@
 require 'json'
-require 'rsolr/generator'
 
 module RSolr::JSON
   class Generator < RSolr::Generator
