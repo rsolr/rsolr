@@ -261,7 +261,7 @@ class RSolr::Client
       %W(body headers status) == response.keys.map{|k|k.to_s}.sort
 
     result = if respond_to? "evaluate_#{request[:params][:wt]}_response", true
-      send "evaluate_#{request[:params][:wt]}_response", request, response
+      send("evaluate_#{request[:params][:wt]}_response", request, response) || {}
     else
       response[:body]
     end
