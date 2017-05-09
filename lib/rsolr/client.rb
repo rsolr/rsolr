@@ -189,10 +189,10 @@ class RSolr::Client
       end
 
       { status: response.status.to_i, headers: response.headers, body: response.body.force_encoding('utf-8') }
+    rescue Errno::ECONNREFUSED, Faraday::Error::ConnectionFailed
+      raise RSolr::Error::ConnectionRefused, request_context.inspect
     rescue Faraday::Error => e
       raise RSolr::Error::Http.new(request_context, e.response)
-    rescue Errno::ECONNREFUSED
-      raise RSolr::Error::ConnectionRefused, request_context.inspect
     end
     adapt_response(request_context, raw_response) unless raw_response.nil?
   end
