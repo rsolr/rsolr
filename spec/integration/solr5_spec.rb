@@ -23,4 +23,12 @@ RSpec.describe "Solr basic_configs" do
       end
     end
   end
+
+  context "error handling" do
+    subject { RSolr.connect url: "http://localhost:65432/solr/basic_configs/"}
+
+    it "wraps connection errors" do
+      expect { subject.head('admin/ping') }.to raise_error RSolr::Error::ConnectionRefused
+    end
+  end
 end
