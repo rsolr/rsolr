@@ -2,7 +2,8 @@ require 'spec_helper'
 
 RSpec.describe RSolr::Client do
   let(:connection) { nil }
-  let(:connection_options) { { url: "http://localhost:9999/solr", read_timeout: 42, open_timeout: 43, update_format: :xml } }
+  let(:url) { "http://localhost:9999/solr" }
+  let(:connection_options) { { url: url, read_timeout: 42, open_timeout: 43, update_format: :xml } }
 
   let(:client) do
     RSolr::Client.new connection, connection_options
@@ -41,6 +42,23 @@ RSpec.describe RSolr::Client do
       client = RSolr::Client.new(:whatevs, { proxy: false })
       expect(client.proxy).to eq(false)
     end
+
+    context "with an non-HTTP url" do
+      let(:url) { "fake://localhost:9999/solr" }
+
+      it "raises an argument error" do
+        expect { client }.to raise_error ArgumentError, "You must provide an HTTP(S) url."
+      end
+    end
+
+    context "with an HTTPS url" do
+      let(:url) { "https://localhost:9999/solr" }
+
+      it "creates a connection" do
+        expect(client.uri).to be_kind_of URI::HTTPS
+      end
+    end
+
   end
 
   context "send_and_receive" do
