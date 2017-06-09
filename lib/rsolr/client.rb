@@ -277,6 +277,7 @@ class RSolr::Client
     @connection ||= begin
       conn_opts = { request: {} }
       conn_opts[:proxy] = proxy if proxy
+      conn_opts[:url] = options[:url] if options[:url]
       conn_opts[:request][:open_timeout] = options[:open_timeout] if options[:open_timeout]
       conn_opts[:request][:timeout] = options[:read_timeout] if options[:read_timeout]
       conn_opts[:request][:params_encoder] = Faraday::FlatParamsEncoder
