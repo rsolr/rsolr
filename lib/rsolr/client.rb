@@ -17,7 +17,6 @@ class RSolr::Client
 
   def initialize connection, options = {}
     @proxy = @uri = nil
-    @connection = connection
     unless false === options[:url]
       url = options[:url] ? options[:url].dup : 'http://127.0.0.1:8983/solr/'
       url << "/" unless url[-1] == ?/
@@ -33,6 +32,7 @@ class RSolr::Client
     @update_format = options.delete(:update_format) || RSolr::JSON::Generator
     @update_path = options.fetch(:update_path, 'update')
     @options = options
+    @connection = connection
   end
 
   # returns the request uri object.
@@ -276,8 +276,8 @@ class RSolr::Client
   def connection
     @connection ||= begin
       conn_opts = { request: {} }
+      conn_opts[:url] = uri.to_s
       conn_opts[:proxy] = proxy if proxy
-      conn_opts[:url] = options[:url] if options[:url]
       conn_opts[:request][:open_timeout] = options[:open_timeout] if options[:open_timeout]
       conn_opts[:request][:timeout] = options[:read_timeout] if options[:read_timeout]
       conn_opts[:request][:params_encoder] = Faraday::FlatParamsEncoder
