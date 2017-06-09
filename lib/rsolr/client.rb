@@ -17,6 +17,7 @@ class RSolr::Client
 
   def initialize connection, options = {}
     @proxy = @uri = nil
+    @connection = connection
     unless false === options[:url]
       url = options[:url] ? options[:url].dup : 'http://127.0.0.1:8983/solr/'
       url << "/" unless url[-1] == ?/
@@ -32,7 +33,6 @@ class RSolr::Client
     @update_format = options.delete(:update_format) || RSolr::JSON::Generator
     @update_path = options.fetch(:update_path, 'update')
     @options = options
-    @connection = connection
   end
 
   # returns the request uri object.
