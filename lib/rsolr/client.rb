@@ -287,6 +287,7 @@ class RSolr::Client
         conn.request :retry, max: options[:retry_after_limit], interval: 0.05,
                              interval_randomness: 0.5, backoff_factor: 2,
                              exceptions: ['Faraday::Error', 'Timeout::Error'] if options[:retry_503]
+        options[:faraday_client_config].call(conn) if options[:faraday_client_config]
         conn.adapter options[:adapter] || Faraday.default_adapter
       end
     end

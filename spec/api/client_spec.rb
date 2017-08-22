@@ -334,4 +334,18 @@ RSpec.describe RSolr::Client do
       expect(result[:uri].to_s).to match %r{^http://localhost:9999/solr/}
     end
   end
+
+  context "connection" do
+    subject { client.connection }
+    context "faraday_client_config is present" do
+      it 'calls proc' do
+        proc_called = false
+        connection_options.merge!(:faraday_client_config => proc { proc_called = true })
+
+        subject
+
+        expect(proc_called).to be true
+      end
+    end
+  end
 end
