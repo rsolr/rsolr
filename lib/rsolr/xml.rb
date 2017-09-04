@@ -71,7 +71,7 @@ module RSolr::Xml
     #
     def add data, add_attrs = nil, &block
       add_attrs ||= {}
-      data = [data] unless data.is_a?(Array)
+      data = RSolr::Array.wrap(data)
       build do |xml|
         xml.add(add_attrs) do |add_node|
           data.each do |doc|
@@ -104,7 +104,7 @@ module RSolr::Xml
     # generates a <delete><id>ID</id></delete> message
     # "ids" can be a single value or array of values
     def delete_by_id ids
-      ids = [ids] unless ids.is_a?(Array)
+      ids = RSolr::Array.wrap(ids)
       build do |xml|
         xml.delete do |delete_node|
           ids.each do |id| 
@@ -117,7 +117,7 @@ module RSolr::Xml
     # generates a <delete><query>ID</query></delete> message
     # "queries" can be a single value or an array of values
     def delete_by_query(queries)
-      queries = [queries] unless queries.is_a?(Array)
+      queries = RSolr::Array.wrap(queries)
       build do |xml|
         xml.delete do |delete_node|
           queries.each { |query| delete_node.query(query) }
