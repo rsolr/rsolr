@@ -34,7 +34,7 @@ Gem::Specification.new do |s|
   s.requirements << 'Apache Solr'
 
   s.add_dependency 'builder', '>= 2.1.2'
-  s.add_dependency 'faraday'
+  s.add_dependency 'faraday', '>= 0.9.0'
 
   s.add_development_dependency 'activesupport'
   s.add_development_dependency 'nokogiri', '>= 1.4.0'
