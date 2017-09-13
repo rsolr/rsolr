@@ -1,5 +1,6 @@
 require 'json'
 require 'faraday'
+require 'uri'
 
 class RSolr::Client
 
