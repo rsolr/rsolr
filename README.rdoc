@@ -187,7 +187,7 @@ The default response format is Ruby. When the +:wt+ param is set to +:ruby+, the
 * {rsolr-ext}[http://github.com/mwmitchell/rsolr-ext] -- An extension kit for RSolr
 * {rsolr-direct}[http://github.com/mwmitchell/rsolr-direct] -- JRuby direct connection for RSolr
 * {rsolr-nokogiri}[http://github.com/mwmitchell/rsolr-nokogiri] -- Gives RSolr Nokogiri for XML generation.
-* {SunSpot}[http://github.com/outoftime/sunspot] -- An awesome Solr DSL, built with RSolr
+* {SunSpot}[http://github.com/sunspot/sunspot] -- An awesome Solr DSL, built with RSolr
 * {Blacklight}[http://blacklightopac.org] -- A "next generation" Library OPAC, built with RSolr
 * {java_bin}[http://github.com/kennyj/java_bin] -- Provides javabin/binary parsing for RSolr
 * {Solr}[http://lucene.apache.org/solr/] -- The Apache Solr project
