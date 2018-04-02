@@ -149,6 +149,14 @@ RSpec.describe RSolr::JSON do
     expect(message.first).to eq data
   end
 
+  it 'should create multiple fields from array values with options' do
+    message = JSON.parse(
+      generator.add(id: '1') { |doc| doc.add_field(:name, %w[matt1 matt2], boost: 3) },
+      symbolize_names: true
+    )
+    expect(message).to eq [{ id: '1', name: { boost: 3, value: %w[matt1 matt2] } }]
+  end
+
   describe '#commit' do
     it 'generates a commit command' do
       expect(JSON.parse(generator.commit, symbolize_names: true)).to eq(commit: {})
