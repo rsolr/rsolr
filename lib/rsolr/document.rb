@@ -48,6 +48,9 @@ module RSolr
     def as_json
       @fields.group_by(&:name).each_with_object({}) do |(field, values), result|
         v = values.map(&:as_json)
+        if v.length > 1 && v.first.is_a?(Hash) && v.first[:value]
+          v = v.first.merge(value: v.map { |single| single[:value] })
+        end
         v = v.first if v.length == 1 && field.to_s != CHILD_DOCUMENT_KEY
         result[field] = v
       end
