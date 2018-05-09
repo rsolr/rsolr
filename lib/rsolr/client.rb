@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 require 'json'
 require 'faraday'
 require 'uri'
 
 class RSolr::Client
+  DEFAULT_URL = 'http://127.0.0.1:8983/solr/'
 
   class << self
     def default_wt
@@ -20,9 +23,7 @@ class RSolr::Client
     @proxy = @uri = nil
     @connection = connection
     unless false === options[:url]
-      url = options[:url] ? options[:url].dup : 'http://127.0.0.1:8983/solr/'
-      url << "/" unless url[-1] == ?/
-      @uri = ::URI.parse(url)
+      @uri = extract_url_from_options(options)
       if options[:proxy]
         proxy_url = options[:proxy].dup
         proxy_url << "/" unless proxy_url.nil? or proxy_url[-1] == ?/
@@ -34,6 +35,15 @@ class RSolr::Client
     @update_format = options.delete(:update_format) || RSolr::JSON::Generator
     @update_path = options.fetch(:update_path, 'update')
     @options = options
+  end
+
+  def extract_url_from_options(options)
+    url = options[:url] ? options[:url].dup : DEFAULT_URL
+    url << "/" unless url[-1] == ?/
+    uri = ::URI.parse(url)
+    # URI::HTTPS is a subclass of URI::HTTP, so this check accepts HTTP(S)
+    raise ArgumentError, "You must provide an HTTP(S) url." unless uri.kind_of?(URI::HTTP)
+    uri
   end
 
   # returns the request uri object.
