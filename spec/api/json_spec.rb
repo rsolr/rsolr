@@ -158,6 +158,15 @@ RSpec.describe RSolr::JSON do
     expect(message).to eq [{ id: '1', name: { boost: 3, value: test_values } }]
   end
 
+  it 'creates single field from array values on atomic update' do
+    test_values = %w[value1 value2]
+    message = JSON.parse(
+      generator.add(id: '1') { |doc| doc.add_field(:name, test_values, update: :set) },
+      symbolize_names: true
+    )
+    expect(message).to eq [{ id: '1', name: { set: test_values } }]
+  end
+
   describe '#commit' do
     it 'generates a commit command' do
       expect(JSON.parse(generator.commit, symbolize_names: true)).to eq(commit: {})

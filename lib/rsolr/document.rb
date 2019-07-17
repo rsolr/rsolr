@@ -51,6 +51,9 @@ module RSolr
         if v.length > 1 && v.first.is_a?(Hash) && v.first.key?(:value)
           v = v.first.merge(value: v.map { |single| single[:value] })
         end
+        if v.length > 1 && v.first.is_a?(Hash) && v.first.key?(:set)
+          v = [{ set: v.map { |single| single[:set] } }]
+        end
         v = v.first if v.length == 1 && field.to_s != CHILD_DOCUMENT_KEY
         result[field] = v
       end
