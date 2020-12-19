@@ -122,6 +122,14 @@ class RSolr::Client
     update opts.merge(:data => builder.commit( commit_attrs ))
   end
 
+  # soft commit
+  #
+  # https://lucene.apache.org/solr/guide/updatehandlers-in-solrconfig.html#commit-and-softcommit
+  #
+  def soft_commit opts = {}
+    commit(opts.merge params: { softCommit: true })
+  end
+
   # send "optimize" xml with opts.
   #
   # http://wiki.apache.org/solr/UpdateXmlMessages#A.22commit.22_and_.22optimize.22
