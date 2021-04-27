@@ -1,6 +1,4 @@
 =RSolr
-{<img src="https://travis-ci.org/rsolr/rsolr.svg?branch=master" alt="Build Status" />}[https://travis-ci.org/rsolr/rsolr] {<img src="https://badge.fury.io/rb/rsolr.svg" alt="Gem Version" />}[http://badge.fury.io/rb/rsolr]
-
 
 A simple, extensible Ruby client for Apache Solr.
 
@@ -12,26 +10,26 @@ The code docs http://www.rubydoc.info/gems/rsolr
 
 == Example:
   require 'rsolr'
-  
+
   # Direct connection
   solr = RSolr.connect :url => 'http://solrserver.com'
-  
+
   # Connecting over a proxy server
   solr = RSolr.connect :url => 'http://solrserver.com', :proxy=>'http://user:pass@proxy.example.com:8080'
 
   # Using an alternate Faraday adapter
   solr = RSolr.connect :url => 'http://solrserver.com', :adapter => :em_http
-  
+
   # Using a custom Faraday connection
   conn = Faraday.new do |faraday|
     faraday.response :logger                  # log requests to STDOUT
     faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
   end
   solr = RSolr.connect conn, :url => 'http://solrserver.com'
-    
+
   # send a request to /select
   response = solr.get 'select', :params => {:q => '*:*'}
-  
+
   # send a request to /catalog
   response = solr.get 'catalog', :params => {:q => '*:*'}
 
@@ -74,11 +72,11 @@ Use the #get / #post method to send search requests to the /select handler:
 
 The +:params+ sent into the method are sent to Solr as-is, which is to say they are converted to Solr url style, but no special mapping is used.
 When an array is used, multiple parameters *with the same name* are generated for the Solr query. Example:
-  
+
   solr.get 'select', :params => {:q=>'roses', :fq=>['red', 'violet']}
 
 The above statement generates this Solr query:
-  
+
   select?q=roses&fq=red&fq=violet
 
 ===Pagination
@@ -92,14 +90,14 @@ The paginate method returns WillPaginate ready "docs" objects, so for example in
 
 ===Method Missing
 The +RSolr::Client+ class also uses +method_missing+ for setting the request handler/path:
-  
+
   solr.paintings :params => {:q=>'roses', :fq=>['red', 'violet']}
-  
+
 This is sent to Solr as:
   paintings?q=roses&fq=red&fq=violet
 
 This works with pagination as well:
-  
+
   solr.paginate_paintings 1, 10, {:q=>'roses', :fq=>['red', 'violet']}
 
 ===Using POST for Search Queries
@@ -120,10 +118,10 @@ To send header information to Solr using RSolr, just use the +:headers+ option:
 ===Building a Request
 +RSolr::Client+ provides a method for building a request context, which can be useful for debugging or logging etc.:
   request_context = solr.build_request "select", :data => {:q => "*:*"}, :method => :post, :headers => {}
-  
+
 To build a paginated request use build_paginated_request:
   request_context = solr.build_paginated_request 1, 10, "select", ...
-  
+
 == Updating Solr
 Updating is done using native Ruby objects. Hashes are used for single documents and arrays are used for a collection of documents (hashes). These objects get turned into simple XML "messages". Raw XML strings can also be used.
 
@@ -142,7 +140,7 @@ Raw commands via  #update
   solr.update data: { optimize: true }.to_json, headers: { 'Content-Type' => 'application/json' }
 
 When adding, you can also supply "add" xml element attributes and/or a block for manipulating other "add" related elements (docs and fields) by calling the +xml+ method directly:
-  
+
   doc = {:id=>1, :price=>1.00}
   add_attributes = {:allowDups=>false, :commitWithin=>10}
   add_xml = solr.xml.add(doc, add_attributes) do |doc|
