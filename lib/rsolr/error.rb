@@ -121,6 +121,15 @@ module RSolr::Error
 
   end
 
+  # Subclasses Rsolr::Error::Http for legacy backwards compatibility
+  # purposes, because earlier RSolr 2 didn't distinguish these
+  # from Http errors.
+  #
+  # In RSolr 3, it could make sense to `< Timeout::Error` instead,
+  # analagous to ConnectionRefused above
+  class Timeout < Http
+  end
+
   # Thrown if the :wt is :ruby
   # but the body wasn't succesfully parsed/evaluated
   class InvalidJsonResponse < InvalidResponse
