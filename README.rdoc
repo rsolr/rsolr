@@ -50,8 +50,10 @@ By default, RSolr uses the Solr JSON command format for all requests.
   RSolr.connect :url => 'http://solrserver.com', update_format: :xml
 
 == Timeouts
-The read and connect timeout settings can be set when creating a new instance of RSolr:
-  solr = RSolr.connect(:read_timeout => 120, :open_timeout => 120)
+The read and connect timeout settings can be set when creating a new instance of RSolr, and will
+be passed on to underlying Faraday instance:
+
+  solr = RSolr.connect(:timeout => 120, :open_timeout => 120)
 
 == Retry 503s
 A 503 is usually a temporary error which RSolr may retry if requested. You may specify the number of retry attempts with the +:retry_503+ option.
