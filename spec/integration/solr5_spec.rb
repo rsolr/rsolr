@@ -2,9 +2,6 @@ require 'spec_helper'
 require 'solr_wrapper'
 
 RSpec.describe "Solr basic_configs" do
-  SOLR_INSTANCE =  SolrWrapper.default_instance({})
-  before(:all) { SOLR_INSTANCE.start }
-  after(:all) { SOLR_INSTANCE.stop }
 
   context "basic configs" do
     subject { RSolr.connect url: "http://localhost:#{SOLR_INSTANCE.port}/solr/basic_configs/"}

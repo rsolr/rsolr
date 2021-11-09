@@ -12,6 +12,9 @@ jobs:
     strategy:
       matrix:
         ruby: [jruby-9.2.12.0, 2.4, 2.5, 2.6, 2.7, 3.0]
+    services:
+      solr:
+        image: solr:latest
     steps:
     - uses: actions/checkout@v2
     - name: Set up Ruby
@@ -22,3 +25,4 @@ jobs:
       run: bundle install
     - name: Run tests
       run: bundle exec rake
+  
