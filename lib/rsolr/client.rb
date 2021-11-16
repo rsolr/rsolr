@@ -200,6 +200,8 @@ class RSolr::Client
       end
 
       { status: response.status.to_i, headers: response.headers, body: response.body.force_encoding('utf-8') }
+    rescue Faraday::TimeoutError => e
+      raise RSolr::Error::Timeout.new(request_context, e.response)
     rescue Errno::ECONNREFUSED, defined?(Faraday::ConnectionFailed) ? Faraday::ConnectionFailed : Faraday::Error::ConnectionFailed
       raise RSolr::Error::ConnectionRefused, request_context.inspect
     rescue Faraday::Error => e
@@ -283,7 +285,7 @@ class RSolr::Client
 
     result
   end
-  
+
   def connection
     @connection ||= begin
       conn_opts = { request: {} }

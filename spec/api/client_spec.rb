@@ -71,6 +71,14 @@ RSpec.describe RSolr::Client do
     end
   end
 
+  context "execute" do
+    it "maps Faraday::TimeoutError to an RSolr::Error::Timeout" do
+      allow(client.connection).to receive(:send).and_raise(Faraday::TimeoutError)
+
+      expect{ client.execute({}) }.to raise_error RSolr::Error::Timeout
+    end
+  end
+
   context "post" do
     it "should pass the expected params to the connection's #execute method" do
       request_opts = {:data => "the data", :method=>:post, :headers => {"Content-Type" => "text/plain"}}
@@ -342,7 +350,7 @@ RSpec.describe RSolr::Client do
         expect(subject[:headers]).to eq({"Content-Type" => "application/x-www-form-urlencoded; charset=UTF-8"})
       end
     end
-   
+
     it "should properly handle proxy configuration" do
       result = client_with_proxy.build_request('select',
         :method => :post,
