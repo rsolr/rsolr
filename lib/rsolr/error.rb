@@ -1,3 +1,5 @@
+require 'json'
+
 module RSolr::Error
 
   module SolrContext
@@ -24,6 +26,18 @@ module RSolr::Error
 
     def parse_solr_error_response body
       begin
+        # Default JSON response, try to parse and retrieve error message
+        if response[:headers] && response[:headers]["content-type"].start_with?("application/json")
+          begin
+            parsed_body = JSON.parse(body)
+            info = parsed_body && parsed_body["error"] && parsed_body["error"]["msg"]
+          rescue JSON::ParserError
+          end
+        end
+        return info if info
+
+        # legacy analysis, I think trying to handle wt=ruby responses without
+        # a full parse?
         if body =~ /<pre>/
           info = body.scan(/<pre>(.*)<\/pre>/mi)[0]
         elsif body =~ /'msg'=>/
