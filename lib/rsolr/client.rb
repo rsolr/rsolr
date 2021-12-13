@@ -35,6 +35,10 @@ class RSolr::Client
     @update_format = options.delete(:update_format) || RSolr::JSON::Generator
     @update_path = options.fetch(:update_path, 'update')
     @options = options
+
+    if options[:read_timeout]
+      warn "DEPRECATION: Rsolr.new/connect option `read_timeout` is deprecated and will be removed in Rsolr 3. `timeout` is currently a synonym, use that instead."
+    end
   end
 
   def extract_url_from_options(options)
@@ -292,7 +296,13 @@ class RSolr::Client
       conn_opts[:url] = uri.to_s
       conn_opts[:proxy] = proxy if proxy
       conn_opts[:request][:open_timeout] = options[:open_timeout] if options[:open_timeout]
-      conn_opts[:request][:timeout] = options[:read_timeout] if options[:read_timeout]
+
+      if options[:read_timeout] || options[:timeout]
+        # read_timeout was being passed to faraday as timeout since Rsolr 2.0,
+        # it's now deprecated, just use `timeout` directly.
+        conn_opts[:request][:timeout] = options[:timeout] || options[:read_timeout]
+      end
+
       conn_opts[:request][:params_encoder] = Faraday::FlatParamsEncoder
 
       Faraday.new(conn_opts) do |conn|
