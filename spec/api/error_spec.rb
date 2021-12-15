@@ -43,14 +43,6 @@ RSpec.describe RSolr::Error do
       let(:response_body) { (response_lines << "'error'=>{'msg'=> #{msg}").join("\n") }
       it { should include msg }
     end
-
-    context "when the response body is made of multi-byte chars and encoded by ASCII-8bit" do
-      let (:response_lines) { (1..15).to_a.map { |i| "レスポンス #{i}".b } }
-
-      it "encodes errorlogs by UTF-8" do
-        expect(subject.encoding.to_s).to eq 'UTF-8'
-      end
-    end
   end
 
   context "when response is JSON" do

@@ -124,16 +124,9 @@ module RSolr::Error
     }
 
     def initialize request, response
-      response = response_with_force_encoded_body(response)
       @request, @response = request, response
     end
 
-    private
-
-    def response_with_force_encoded_body(response)
-      response[:body] = response[:body].force_encoding('UTF-8')
-      response
-    end
   end
 
   # Thrown if the :wt is :ruby
