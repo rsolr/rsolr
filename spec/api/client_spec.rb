@@ -287,48 +287,6 @@ RSpec.describe RSolr::Client do
 
   end
 
-  context "commit" do
-    it "should add hard commit params for hard commit request" do
-      expect(client).to receive(:execute).
-        with(
-          hash_including({
-            :path => "update",
-            :headers => {"Content-Type"=>"text/xml"},
-            :method => :post,
-            :data => "<?xml version=\"1.0\" encoding=\"UTF-8\"?><commit/>",
-            :params => {:wt=>:json},
-            :query => "wt=json"
-          })
-      ).
-      and_return(
-        :body => "",
-        :status => 200,
-        :headers => {"Content-Type"=>"text/xml"}
-      )
-      client.commit
-    end
-
-    it "should add soft commit params for soft commit request" do
-      expect(client).to receive(:execute).
-        with(
-          hash_including({
-            :path => "update",
-            :headers => {"Content-Type"=>"text/xml"},
-            :method => :post,
-            :data => "<?xml version=\"1.0\" encoding=\"UTF-8\"?><commit/>",
-            :params => {:softCommit=>true, :wt=>:json},
-            :query => "wt=json&softCommit=true"
-          })
-      ).
-      and_return(
-        :body => "",
-        :status => 200,
-        :headers => {"Content-Type"=>"text/xml"}
-      )
-      client.soft_commit
-    end
-  end
-
   context "indifferent access" do
     it "should raise a RuntimeError if the #with_indifferent_access extension isn't loaded" do
       hide_const("::RSolr::HashWithIndifferentAccessWithResponse")
