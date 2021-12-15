@@ -131,7 +131,7 @@ module RSolr::Error
     private
 
     def response_with_force_encoded_body(response)
-      response[:body] = response[:body].force_encoding('UTF-8')
+      response[:body] = response[:body].force_encoding('UTF-8') if response
       response
     end
   end
