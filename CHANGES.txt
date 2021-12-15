@@ -1,3 +1,29 @@
+2.4.0
+
+- Raise specific timeout error for solr timeouts. https://github.com/rsolr/rsolr/pull/214
+- Pass `timeout` RSolr configuration through to Faraday, deprecate `read_timeout` Rsolr configuration. https://github.com/rsolr/rsolr/pull/215
+- Better visibility of Solr error message in `RSolr::Error`. https://github.com/rsolr/rsolr/pull/222
+- Add soft-commit function https://github.com/rsolr/rsolr/pull/210 (thanks @giteshnandre)
+- Avoid encoding exception in error message display https://github.com/rsolr/rsolr/pull/208 (thanks @expajp)
+- Fix JSON generator for atomic updates of array fields https://github.com/rsolr/rsolr/pull/201 (thanks @serggl)
+
+
+2.3.0
+
+- Sorry, not human-edited: https://github.com/rsolr/rsolr/compare/v2.2.0...v2.3.0
+
+2.2.0
+
+- Sorry, not human-edited: https://github.com/rsolr/rsolr/compare/v2.1.0...v2.2.0
+
+2.1.0
+
+- Sorry, not human-edited: https://github.com/rsolr/rsolr/compare/v2.0.0...v2.1.0
+
+2.0.0
+
+- Sorry, not human-edited: https://github.com/rsolr/rsolr/compare/v2.0.0.pre1...v2.0.0
+
 2.0.0.pre1
 
 In this release, we've added many new features, including:
