@@ -158,6 +158,56 @@ RSpec.describe RSolr::JSON do
     expect(message).to eq [{ id: '1', name: { boost: 3, value: test_values } }]
   end
 
+  context 'for atomic updates with arrays' do
+    let(:test_values) { %w[value1 value2] }
+
+    it 'creates single field from array values on SET' do
+      expect(
+        JSON.parse(
+          generator.add(id: 'set-id') { |doc| doc.add_field(:name, test_values, update: :set) },
+          symbolize_names: true
+        )
+      ).to eq [{ id: 'set-id', name: { set: test_values } }]
+    end
+
+    it 'creates single field from array values on ADD' do
+      expect(
+        JSON.parse(
+          generator.add(id: 'add-id') { |doc| doc.add_field(:name, test_values, update: :add) },
+          symbolize_names: true
+        )
+      ).to eq [{ id: 'add-id', name: { add: test_values } }]
+    end
+
+    it 'creates single field from array values on ADD-DISTINCT' do
+      expect(
+        JSON.parse(
+          generator.add(id: 'add-distinct-id') { |doc| doc.add_field(:name, test_values, update: :'add-distinct') },
+          symbolize_names: true
+        )
+      ).to eq [{ id: 'add-distinct-id', name: { 'add-distinct': test_values } }]
+    end
+
+    it 'creates single field from array values on REMOVE' do
+      expect(
+        JSON.parse(
+          generator.add(id: 'remove-id') { |doc| doc.add_field(:name, test_values, update: :remove) },
+          symbolize_names: true
+        )
+      ).to eq [{ id: 'remove-id', name: { remove: test_values } }]
+    end
+
+    it 'creates single field from array values for child document update' do
+      test_nested_values = [{id: 1, name: 'value1'}, {id: 1, name: 'value2'}]
+      expect(
+        JSON.parse(
+          generator.add(id: 'set-id') { |doc| doc.add_field(:child_documents, test_nested_values, update: :set) },
+          symbolize_names: true
+        )
+      ).to eq [{ id: 'set-id', child_documents: { set: test_nested_values } }]
+    end
+  end
+
   describe '#commit' do
     it 'generates a commit command' do
       expect(JSON.parse(generator.commit, symbolize_names: true)).to eq(commit: {})

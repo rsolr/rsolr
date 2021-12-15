@@ -1,6 +1,7 @@
 module RSolr
   class Document
     CHILD_DOCUMENT_KEY = '_childDocuments_'.freeze
+    ATOMIC_MULTI_VALUE_OPERATIONS = %i[set add add-distinct remove]
 
     # "attrs" is a hash for setting the "doc" xml attributes
     # "fields" is an array of Field objects
@@ -48,8 +49,14 @@ module RSolr
     def as_json
       @fields.group_by(&:name).each_with_object({}) do |(field, values), result|
         v = values.map(&:as_json)
-        if v.length > 1 && v.first.is_a?(Hash) && v.first.key?(:value)
-          v = v.first.merge(value: v.map { |single| single[:value] })
+        if v.length > 1 && v.first.is_a?(Hash)
+          if v.first.key?(:value)
+            v = v.first.merge(value: v.map { |single| single[:value] })
+          else
+            (v.first.keys & ATOMIC_MULTI_VALUE_OPERATIONS).each do |op|
+              v = [{ op => v.map { |single| single[op] } }]
+            end
+          end
         end
         v = v.first if v.length == 1 && field.to_s != CHILD_DOCUMENT_KEY
         result[field] = v
