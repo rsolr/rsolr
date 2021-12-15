@@ -3,7 +3,7 @@ require 'spec_helper'
 RSpec.describe RSolr::Client do
   let(:connection) { nil }
   let(:url) { "http://localhost:9999/solr" }
-  let(:connection_options) { { url: url, read_timeout: 42, open_timeout: 43, update_format: :xml } }
+  let(:connection_options) { { url: url, update_format: :xml } }
 
   let(:client) do
     RSolr::Client.new connection, connection_options
@@ -117,7 +117,7 @@ RSpec.describe RSolr::Client do
 
     context 'when the client is configured for json updates' do
       let(:client) do
-        RSolr::Client.new nil, :url => "http://localhost:9999/solr", :read_timeout => 42, :open_timeout=>43, :update_format => :json
+        RSolr::Client.new nil, :url => "http://localhost:9999/solr", :update_format => :json
       end
       it "should send json to the connection's #post method" do
         expect(client).to receive(:execute).
