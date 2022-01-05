@@ -2,6 +2,7 @@
 
 require 'json'
 require 'faraday'
+require 'faraday/net_http'
 require 'uri'
 
 class RSolr::Client
@@ -319,7 +320,7 @@ class RSolr::Client
         conn.request :retry, max: options[:retry_after_limit], interval: 0.05,
                              interval_randomness: 0.5, backoff_factor: 2,
                              exceptions: ['Faraday::Error', 'Timeout::Error'] if options[:retry_503]
-        conn.adapter options[:adapter] || Faraday.default_adapter
+        conn.adapter options[:adapter] || Faraday.default_adapter || :net_http
       end
     end
   end
