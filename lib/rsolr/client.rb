@@ -2,7 +2,6 @@
 
 require 'json'
 require 'faraday'
-require 'faraday/net_http'
 require 'uri'
 
 class RSolr::Client
