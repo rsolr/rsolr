@@ -9,3 +9,5 @@ if defined? JRUBY_VERSION
   # to download the full contents of files (under jruby)?
   gem "http", '< 5', platforms: :jruby
 end
+
+gem 'faraday', ENV['FARADAY_VERSION'] if ENV['FARADAY_VERSION']
