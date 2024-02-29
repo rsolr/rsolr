@@ -2,7 +2,18 @@ require 'json'
 
 module RSolr::Error
 
+  module URICleanup
+    # Removes username and password from URI object.
+    def clean_uri(uri)
+      uri = uri.dup
+      uri.password = "REDACTED" if uri.password
+      uri.user = "REDACTED" if uri.user
+      uri
+    end
+  end
+
   module SolrContext
+    include URICleanup
 
     attr_accessor :request, :response
 
@@ -13,7 +24,7 @@ module RSolr::Error
         details = parse_solr_error_response response[:body]
         m << "\nError: #{details}\n" if details
       end
-      p = "\nURI: #{request[:uri].to_s}"
+      p = "\nURI: #{clean_uri(request[:uri]).to_s}"
       p << "\nRequest Headers: #{request[:headers].inspect}" if request[:headers]
       p << "\nRequest Data: #{request[:data].inspect}" if request[:data]
       p << "\n"
@@ -52,11 +63,16 @@ module RSolr::Error
         nil
       end
     end
-
-
   end
 
   class ConnectionRefused < ::Errno::ECONNREFUSED
+    include URICleanup
+
+    def initialize(request)
+      request[:uri] = clean_uri(request[:uri])
+
+      super(request.inspect)
+    end
   end
 
   class Http < RuntimeError
