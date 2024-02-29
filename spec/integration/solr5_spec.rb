@@ -2,6 +2,10 @@ require 'spec_helper'
 require 'solr_wrapper'
 
 RSpec.describe "Solr basic_configs" do
+  SolrWrapper.default_instance_options = {
+    port: SolrWrapper.default_solr_port,
+    version: '8.11.3'
+  } 
   SOLR_INSTANCE =  SolrWrapper.default_instance({})
   before(:all) { SOLR_INSTANCE.start }
   after(:all) { SOLR_INSTANCE.stop }
