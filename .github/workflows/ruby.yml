@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: [jruby-9.3.3.0, 2.7, '3.0', '3.1']
+        ruby: [jruby-9.3.3.0, '3.0', '3.1']
         faraday: ['~> 0.17', '~> 1', '~>2']
     steps:
     - uses: actions/checkout@v2
@@ -27,18 +27,3 @@ jobs:
       run: bundle exec rake
       env:
         FARADAY_VERSION: ${{ matrix.faraday}}
-  legacy_tests:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        ruby: [jruby-9.2.20.0, 2.5, 2.6, 2.7]
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: ${{ matrix.ruby }}
-    - name: Install dependencies
-      run: bundle install
-    - name: Run tests
-      run: bundle exec rake
