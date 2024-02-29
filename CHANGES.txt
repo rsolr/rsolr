@@ -1,3 +1,12 @@
+2.6.0
+
+- Sanitizing URIs displayed in error messages. https://github.com/rsolr/rsolr/pull/236
+
+2.5.0
+
+- Sorry, not human-edited: https://github.com/rsolr/rsolr/compare/v2.4.0...v2.5.0
+
+
 2.4.0
 
 - Raise specific timeout error for solr timeouts. https://github.com/rsolr/rsolr/pull/214
