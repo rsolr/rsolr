@@ -7,7 +7,7 @@ RSpec.describe RSolr::Error do
     exception
   end
   let (:response_lines) { (1..15).to_a.map { |i| "line #{i}" } }
-  let(:request)  { double :[] => "mocked" }
+  let(:request) { { uri: URI.parse('http://hostname.local:8983/solr/admin/update?wt=json&q=test') } }
   let(:response_body) { response_lines.join("\n") }
   let(:response) {{
     :body   => response_body,
@@ -89,7 +89,7 @@ RSpec.describe RSolr::Error do
             "code":500
           }
         }
-        EOS
+      EOS
       }
       it {
         should include msg
@@ -116,7 +116,7 @@ RSpec.describe RSolr::Error do
             "facet_fields":{}
           },
         }
-        EOS
+      EOS
       }
       it "shows the first eleven lines of the response" do
         expect(subject).to include(response_body.split("\n")[0..10].join("\n"))
@@ -144,6 +144,15 @@ RSpec.describe RSolr::Error do
     it "shows the first eleven lines of the response" do
       expect(subject).to include(response_body.split("\n")[0..10].join("\n"))
       expect(subject).not_to include(response_body.split("\n")[11])
+    end
+  end
+
+  context "when request uri contains credentials" do
+    let(:request) { { uri: URI.parse('http://admin:admin@hostname.local:8983/solr/admin/update?wt=json&q=test') } }
+
+
+    it 'includes redacted url' do
+      expect(subject).to include 'http://REDACTED:REDACTED@hostname.local:8983/solr/admin/update?wt=json&q=test'
     end
   end
 end

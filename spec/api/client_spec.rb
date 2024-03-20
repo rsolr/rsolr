@@ -77,6 +77,24 @@ RSpec.describe RSolr::Client do
 
       expect{ client.execute({}) }.to raise_error RSolr::Error::Timeout
     end
+
+    context 'when an Errno::ECONNREFUSED error is raised' do
+      let(:uri) { URI.parse('http://admin:secret@hostname.local:8983/solr/admin/update?wt=json&q=test') }
+
+      before do
+        allow(client.connection).to receive(:send).and_raise(Errno::ECONNREFUSED)
+      end
+
+      it "maps error to RSolr::Error:ConnectionRefused" do
+        expect { client.execute({ uri: uri }) }.to raise_error RSolr::Error::ConnectionRefused
+      end
+
+      it "removes credentials from uri" do
+        expect {
+          client.execute({ uri: uri })
+        }.to raise_error(RSolr::Error::ConnectionRefused, /http:\/\/REDACTED:REDACTED@hostname\.local:8983/)
+      end
+    end
   end
 
   context "post" do
