@@ -1,5 +1,8 @@
 2.6.0
 
+- Stop testing on Ruby 2. https://github.com/rsolr/rsolr/pull/237
+- Set solr version to 8.11.3. https://github.com/rsolr/rsolr/pull/238
+- Add newer rubies to the test matrix. https://github.com/rsolr/rsolr/pull/239
 - Sanitizing URIs displayed in error messages. https://github.com/rsolr/rsolr/pull/236
 
 2.5.0
