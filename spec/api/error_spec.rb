@@ -148,11 +148,13 @@ RSpec.describe RSolr::Error do
   end
 
   context "when request uri contains credentials" do
-    let(:request) { { uri: URI.parse('http://admin:admin@hostname.local:8983/solr/admin/update?wt=json&q=test') } }
+    let(:request) { { uri: URI.parse('http://user:pass@hostname.local:8983/solr/admin/update?wt=json&q=test') } }
 
 
     it 'includes redacted url' do
-      expect(subject).to include 'http://REDACTED:REDACTED@hostname.local:8983/solr/admin/update?wt=json&q=test'
+      expect(subject).to include 'REDACTED@hostname.local:8983/solr/admin/update?wt=json&q=test'
+      expect(subject).not_to include 'user'
+      expect(subject).not_to include 'pass'
     end
   end
 end
