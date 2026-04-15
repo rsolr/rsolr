@@ -68,32 +68,10 @@ RSpec.describe RSolr::JSON do
           },
         ]
 
-        # custom JSON object class to handle Solr's non-standard JSON command format
-        tmp = Class.new do
-          def initialize
-            @source ||= {}
-          end
-
-          def []=(k, v)
-            if k == :add
-              @source[k] ||= []
-              @source[k] << v.to_h
-            elsif v.class == self.class
-              @source[k] = v.to_h
-            else
-              @source[k] = v
-            end
-          end
-
-          def to_h
-            @source
-          end
-        end
-
         request = generator.add(data, boost: 1)
-        message = JSON.parse(request, object_class: tmp, symbolize_names: true).to_h
-        expect(message[:add].length).to eq 2
-        expect(message[:add].map { |x| x[:doc] }).to eq data
+
+        expect(request).to match /"add":{"boost":1,"doc":{"id":"1","name":"matt"}}/
+        expect(request).to match /"add":{"boost":1,"doc":{"id":"2","name":"sam"}}/
       end
     end
 

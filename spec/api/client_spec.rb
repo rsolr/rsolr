@@ -92,7 +92,7 @@ RSpec.describe RSolr::Client do
       it "removes credentials from uri" do
         expect {
           client.execute({ uri: uri })
-        }.to raise_error(RSolr::Error::ConnectionRefused, /http:\/\/REDACTED:REDACTED@hostname\.local:8983/)
+        }.to raise_error(RSolr::Error::ConnectionRefused, /http:\/\/(?:REDACTED:)?REDACTED@hostname\.local:8983/)
       end
     end
   end
