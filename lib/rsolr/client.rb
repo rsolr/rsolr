@@ -15,6 +15,14 @@ class RSolr::Client
     def default_wt= value
       @default_wt = value
     end
+
+    def default_http_method
+      @default_http_method ||= :get
+    end
+
+    def default_http_method= method
+      @default_http_method = method
+    end
   end
 
   attr_reader :uri, :proxy, :update_format, :options, :update_path
@@ -240,7 +248,7 @@ class RSolr::Client
     raise "path must be a string or symbol, not #{path.inspect}" unless [String,Symbol].include?(path.class)
     path = path.to_s
     opts[:proxy] = proxy unless proxy.nil?
-    opts[:method] ||= :get
+    opts[:method] ||= default_http_method
     raise "The :data option can only be used if :method => :post" if opts[:method] != :post and opts[:data]
     opts[:params] = params_with_wt(opts[:params])
     query = RSolr::Uri.params_to_solr(opts[:params]) unless opts[:params].empty?
@@ -368,5 +376,9 @@ class RSolr::Client
 
   def default_wt
     self.options[:default_wt] || self.class.default_wt
+  end
+
+  def default_http_method
+    self.options[:default_http_method] || self.class.default_http_method
   end
 end
