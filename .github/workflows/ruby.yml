@@ -2,28 +2,28 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   tests:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: [jruby-10.0.3.0, '3.2', '3.3', '3.4', '4.0']
-        faraday: ['~> 0.17', '~> 1', '~>2']
+        ruby: [jruby-10.0.3.0, "3.2", "3.3", "3.4", "4.0"]
+        faraday: ["~> 1", "~>2"]
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: ${{ matrix.ruby }}
-    - name: Install dependencies
-      run: bundle install
-      env:
-        FARADAY_VERSION: ${{ matrix.faraday}}
-    - name: Run tests
-      run: bundle exec rake
-      env:
-        FARADAY_VERSION: ${{ matrix.faraday}}
+      - uses: actions/checkout@v2
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+      - name: Install dependencies
+        run: bundle install
+        env:
+          FARADAY_VERSION: ${{ matrix.faraday}}
+      - name: Run tests
+        run: bundle exec rake
+        env:
+          FARADAY_VERSION: ${{ matrix.faraday}}
