@@ -419,5 +419,24 @@ RSpec.describe RSolr::Client do
       )
       expect(result[:uri].to_s).to match %r{^http://localhost:9999/solr/}
     end
+
+    context "http method" do
+      it "uses get by default" do
+        expect(client.build_request('select', { params: params })[:method]).to eq :get
+      end
+      it "uses the instance default if set" do
+        client = RSolr::Client.new connection, connection_options.merge(default_http_method: :post)
+        expect(client.build_request('select', { data: params })[:method]).to eq :post
+      end
+      it "uses the class default if set" do
+        RSolr::Client.default_http_method = :post
+        expect(client.build_request('select', { data: params })[:method]).to eq :post
+        RSolr::Client.default_http_method = nil
+      end
+      it "uses the method passed in opts" do
+        expect(client.build_request('select', { params: params, method: :get })[:method]).to eq :get
+        expect(client.build_request('select', { data: params, method: :post })[:method]).to eq :post
+      end
+    end
   end
 end
