@@ -251,8 +251,14 @@ class RSolr::Client
     opts[:method] ||= default_http_method
     raise "The :data option can only be used if :method => :post" if opts[:method] != :post and opts[:data]
     opts[:params] = params_with_wt(opts[:params])
-    query = RSolr::Uri.params_to_solr(opts[:params]) unless opts[:params].empty?
-    opts[:query] = query
+    if opts[:method] == :post && (opts[:data].nil? || opts[:data].empty?)
+      # If no data hash is provided move query into data hash
+      # This is useful if the query string is larger than the max url length
+      opts[:data] = opts[:params]
+    else
+      query = RSolr::Uri.params_to_solr(opts[:params]) unless opts[:params].empty?
+      opts[:query] = query
+    end
     if opts[:data].is_a? Hash
       opts[:data] = RSolr::Uri.params_to_solr opts[:data]
       opts[:headers] ||= {}

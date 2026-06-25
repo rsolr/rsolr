@@ -411,6 +411,18 @@ RSpec.describe RSolr::Client do
       end
     end
 
+    context "when post but no hash is passed in as data" do
+      let(:data) { nil }
+
+      it "sets the Content-Type header to application/x-www-form-urlencoded; charset=UTF-8" do
+        expect(subject[:query]).to be_nil
+        [/fq=0/, /fq=1/, /q=test/, /wt=json/].each do |pattern|
+          expect(subject[:data]).to match pattern
+        end
+        expect(subject[:headers]).to eq({"Content-Type" => "application/x-www-form-urlencoded; charset=UTF-8"})
+      end
+    end
+
     it "should properly handle proxy configuration" do
       result = client_with_proxy.build_request('select',
         :method => :post,
