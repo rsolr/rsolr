@@ -11,3 +11,5 @@ if defined? JRUBY_VERSION
 end
 
 gem 'faraday', ENV['FARADAY_VERSION'] if ENV['FARADAY_VERSION']
+
+gem 'rbs', '4.1.0.pre.2'
