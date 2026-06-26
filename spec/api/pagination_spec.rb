@@ -27,5 +27,12 @@ RSpec.describe RSolr::Client do
       }))
       c.paginate 1, 10, "select"
     end
+    it "should raise an error when rows or start params passed in opts (as either string or symbol keys)" do
+      c = RSolr::Client.new(nil, {})#.extend(RSolr::Pagination::Client)
+      allow(c).to receive(:execute)
+      expect { c.paginate 1, 10, "select", params: { "start" => 0, "rows" => 10 } }.to raise_error(ArgumentError)
+      expect { c.paginate 1, 10, "select", params: { start: 0, rows: 10 } }.to raise_error(ArgumentError)
+      expect { c.paginate 1, 10, "select", params: {} }.not_to raise_error(ArgumentError)
+    end
   end
 end
