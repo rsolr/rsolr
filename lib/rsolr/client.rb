@@ -339,7 +339,7 @@ class RSolr::Client
           end
         end
 
-        conn.response :raise_error
+        conn.response :raise_error, include_request: false
         conn.request :retry, max: options[:retry_after_limit], interval: 0.05,
                              interval_randomness: 0.5, backoff_factor: 2,
                              exceptions: ['Faraday::Error', 'Timeout::Error'] if options[:retry_503]
