@@ -6,6 +6,8 @@ require 'uri'
 require 'base64'
 
 class RSolr::Client
+  include RSolr::Error::URICleanup
+
   DEFAULT_URL = 'http://127.0.0.1:8983/solr/'
 
   # HTTP Basic Auth credentials, and how to render them as an Authorization header.
@@ -233,11 +235,11 @@ class RSolr::Client
 
       { status: response.status.to_i, headers: response.headers, body: response.body.force_encoding('utf-8') }
     rescue Faraday::TimeoutError => e
-      raise RSolr::Error::Timeout.new(request_context, e.response)
+      raise RSolr::Error::Timeout.new(request_context, e.response), cause: redact_basic_auth(e)
     rescue Errno::ECONNREFUSED, defined?(Faraday::ConnectionFailed) ? Faraday::ConnectionFailed : Faraday::Error::ConnectionFailed
       raise RSolr::Error::ConnectionRefused.new(request_context)
     rescue Faraday::Error => e
-      raise RSolr::Error::Http.new(request_context, e.response)
+      raise RSolr::Error::Http.new(request_context, e.response), cause: redact_basic_auth(e)
     end
     adapt_response(request_context, raw_response) unless raw_response.nil?
   end
@@ -360,6 +362,26 @@ class RSolr::Client
     else
       BasicAuth.new(uri.user, uri.password)
     end
+  end
+
+  # Faraday's own exception (kept as +cause+) embeds the request unredacted; rebuild it with just the credentials scrubbed.
+  def redact_basic_auth(error)
+    response = error.response
+    return error unless response.is_a?(Hash) && response[:request].is_a?(Hash)
+
+    request = response[:request].dup
+    request[:url] = clean_uri(request[:url]) if request[:url].respond_to?(:user)
+    request[:headers] = redact_authorization_header(request[:headers]) if request[:headers]
+
+    error.class.new(response.merge(request: request))
+  end
+
+  def redact_authorization_header(headers)
+    return headers unless headers['Authorization']
+
+    headers = headers.dup
+    headers['Authorization'] = 'REDACTED'
+    headers
   end
 
   # converts the method name for the solr request handler path.
