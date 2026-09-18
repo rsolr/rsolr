@@ -1,3 +1,13 @@
+3.0.0
+
+- Drop faraday 0.x support by @jcoyne in https://github.com/rsolr/rsolr/pull/255
+- Allow for setting a default http method by @cjcolvar in https://github.com/rsolr/rsolr/pull/252
+- Move query params into data hash when using post and no data is provided by @cjcolvar in https://github.com/rsolr/rsolr/pull/253
+- Support HTTP Basic Auth via a basic_auth: option (in addition to URL-embedded) by @maxkadel in https://github.com/rsolr/rsolr/pull/259
+- Redact only basic auth credentials from Faraday's cause exception by @maxkadel in https://github.com/rsolr/rsolr/pull/261
+
+**Full Changelog**: https://github.com/rsolr/rsolr/compare/v2.6.0...v3.0.0
+
 2.6.0
 
 - Stop testing on Ruby 2. https://github.com/rsolr/rsolr/pull/237
