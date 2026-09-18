@@ -62,6 +62,56 @@ RSpec.describe RSolr::Client do
       )
       expect(header).to eq("Basic #{Base64.strict_encode64('optuser:optpass')}")
     end
+
+    context 'when a connection error is raised' do
+      def error_raised_for(url:, **client_opts)
+        stubs.get('/solr/admin/ping') { |_env| [500, {}, 'boom'] }
+        RSolr::Client.new(nil, { url: url, adapter: [:test, stubs] }.merge(client_opts)).get('admin/ping')
+        nil
+      rescue RSolr::Error::Http => e
+        e
+      end
+
+      context 'with credentials in url' do
+        it 'already redacts the url in RSolr::Error::Http#message' do
+          error = error_raised_for(url: "http://someuser:somepass@localhost:9999/solr")
+
+          expect(error.message).not_to include('somepass')
+          expect(error.message).to include('REDACTED')
+        end
+
+        it 'does not leak basic auth info' do
+          error = error_raised_for(url: "http://someuser:somepass@localhost:9999/solr")
+
+          expect(error.cause.message).not_to include('somepass')
+          expect(error.cause.inspect).not_to include('somepass')
+          expect(error.cause.inspect).to include('REDACTED')
+        end
+      end
+
+      context 'with credentials in header' do
+        it 'already omits credentials from RSolr::Error::Http#message' do
+          error = error_raised_for(
+            url: "http://localhost:9999/solr",
+            basic_auth: { user: 'optuser', password: 'optpass' }
+          )
+          encoded_credentials = Base64.strict_encode64('optuser:optpass')
+
+          expect(error.message).not_to include(encoded_credentials)
+        end
+
+        it 'does not leak basic auth info' do
+          error = error_raised_for(
+            url: "http://localhost:9999/solr",
+            basic_auth: { user: 'optuser', password: 'optpass' }
+          )
+          encoded_credentials = Base64.strict_encode64('optuser:optpass')
+
+          expect(error.cause.inspect).not_to include(encoded_credentials)
+          expect(error.cause.inspect).to include('REDACTED')
+        end
+      end
+    end
   end
 
   context "initialize" do
